@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://jhyeqj7phjk"]
 
-[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_10spk"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_ge8bb"]
-[ext_resource type="Script" path="res://scripts/world/kill_zone.gd" id="3_nh68t"]
+[ext_resource type="Shader" uid="uid://b5aolwxtn8kab" path="res://assets/shaders/prototype_grid.gdshader" id="1_10spk"]
+[ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="2_ge8bb"]
+[ext_resource type="Script" uid="uid://gi0r0hux38f" path="res://scripts/world/kill_zone.gd" id="3_nh68t"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hwrqe"]
 
