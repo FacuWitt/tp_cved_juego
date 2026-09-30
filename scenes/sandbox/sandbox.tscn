@@ -1,8 +1,13 @@
-[gd_scene format=3 uid="uid://jhyeqj7phjk"]
+[gd_scene format=3]
 
-[ext_resource type="Shader" uid="uid://b5aolwxtn8kab" path="res://assets/shaders/prototype_grid.gdshader" id="1_10spk"]
-[ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="2_ge8bb"]
-[ext_resource type="Script" uid="uid://gi0r0hux38f" path="res://scripts/world/kill_zone.gd" id="3_nh68t"]
+[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_10spk"]
+[ext_resource type="Script" path="res://scripts/world/placement_slot.gd" id="2_3gy6f"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_ge8bb"]
+[ext_resource type="Script" path="res://scripts/interaction/pickup_object.gd" id="3_8g51p"]
+[ext_resource type="Script" path="res://scripts/world/kill_zone.gd" id="3_nh68t"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="4_7du5g"]
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="6_yehgl"]
+[ext_resource type="Resource" path="res://config/player_settings.tres" id="7_k7q46"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hwrqe"]
 
@@ -48,6 +53,24 @@ shader_parameter/base_color = Color(0.85, 0.7, 0.4, 1)
 shader_parameter/line_color = Color(0.5525, 0.45499998, 0.26, 1)
 shader_parameter/cell_size = 1.0
 shader_parameter/line_width = 0.03
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uuej0"]
+albedo_color = Color(0.55, 0.08, 0.08, 1)
+roughness = 0.6
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4po2s"]
+size = Vector3(1, 0.6, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sy4oe"]
+albedo_color = Color(0.85, 0.15, 0.15, 1)
+roughness = 0.6
+
+[sub_resource type="SphereMesh" id="SphereMesh_t781p"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_nu4v2"]
+radius = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uuej0"]
 size = Vector3(200, 2, 200)
@@ -114,7 +137,7 @@ size = Vector3(3, 0.3, 8)
 material = SubResource("ShaderMaterial_7du5g")
 
 [node name="RampTop" type="CSGBox3D" parent="Level" unique_id=146269314]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, -3)
+transform = Transform3D(0.99929535, 0, 0.03753413, 0, 1, 0, -0.03753413, 0, 0.99929535, 9, 1, -3)
 use_collision = true
 size = Vector3(3, 2, 4)
 material = SubResource("ShaderMaterial_7du5g")
@@ -129,6 +152,38 @@ transform = Transform3D(0.90630776, 0, 0.42261827, 0, 1, 0, -0.42261827, 0, 0.90
 use_collision = true
 material = SubResource("ShaderMaterial_7du5g")
 
+[node name="PuzzleSocket" type="Node3D" parent="Level" unique_id=1175249769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 9)
+
+[node name="SocketCube" type="CSGBox3D" parent="Level/PuzzleSocket" unique_id=1856204494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+use_collision = true
+size = Vector3(1, 0.8, 1)
+material = SubResource("StandardMaterial3D_uuej0")
+
+[node name="SnapPoint" type="Marker3D" parent="Level/PuzzleSocket" unique_id=1889699938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+
+[node name="PlacementSlot" type="Area3D" parent="Level/PuzzleSocket" unique_id=1905243343 node_paths=PackedStringArray("snap_point")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+script = ExtResource("2_3gy6f")
+snap_point = NodePath("../SnapPoint")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/PuzzleSocket/PlacementSlot" unique_id=1869744141]
+shape = SubResource("BoxShape3D_4po2s")
+
+[node name="PuzzleSphere" type="RigidBody3D" parent="Level" unique_id=421881109]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.3, 9)
+script = ExtResource("3_8g51p")
+settings = ExtResource("4_7du5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/PuzzleSphere" unique_id=1100509274]
+material_override = SubResource("StandardMaterial3D_sy4oe")
+mesh = SubResource("SphereMesh_t781p")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/PuzzleSphere" unique_id=1203749569]
+shape = SubResource("SphereShape3D_nu4v2")
+
 [node name="GoalLight" type="OmniLight3D" parent="." unique_id=1786240904]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 5.5, -3.5)
 light_color = Color(1, 0.8, 0.5, 1)
@@ -138,8 +193,10 @@ omni_range = 6.0
 [node name="SpawnPoint" type="Marker3D" parent="." unique_id=1456830497]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 10)
 
-[node name="Player" parent="." unique_id=1343098036 instance=ExtResource("2_ge8bb")]
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1343098036 instance=ExtResource("2_ge8bb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 10)
+script = ExtResource("6_yehgl")
+settings = ExtResource("7_k7q46")
 
 [node name="KillZone" type="Area3D" parent="." unique_id=673216148 node_paths=PackedStringArray("respawn_point")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 0)

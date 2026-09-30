@@ -8,9 +8,11 @@ extends CharacterBody3D
 var _gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
+var _held_object: PickupObject = null
 
 @onready var _head: Node3D = $Head
 @onready var _camera: Camera3D = $Head/Camera3D
+@onready var _interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay
 
 
 func _ready() -> void:
@@ -26,6 +28,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event.is_action_pressed("capture_mouse"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	elif event.is_action_pressed("interact"):
+		_toggle_pickup()
 
 
 func _physics_process(delta: float) -> void:
@@ -42,6 +46,22 @@ func teleport_to(target: Transform3D) -> void:
 	rotation.y = target.basis.get_euler().y
 	_head.rotation.x = 0.0
 	velocity = Vector3.ZERO
+
+
+## Agarra el objeto al que apunta el InteractionRay, o suelta el que ya tiene agarrado.
+func _toggle_pickup() -> void:
+	if _held_object != null:
+		_held_object.release()
+		_held_object = null
+		return
+
+	if not _interaction_ray.is_colliding():
+		return
+
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is PickupObject:
+		_held_object = collider as PickupObject
+		_held_object.pickup(_camera)
 
 
 func _apply_camera_settings() -> void:
