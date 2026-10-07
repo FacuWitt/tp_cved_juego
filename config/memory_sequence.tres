@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="MemorySequence" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/memory_sequence.gd" id="1_seq"]
+
+[resource]
+script = ExtResource("1_seq")
+scene_paths = Array[String](["res://scenes/memories/memory_1.tscn", "res://scenes/memories/memory_2.tscn", "res://scenes/memories/memory_3.tscn", "res://scenes/memories/memory_4.tscn", "res://scenes/memories/awakening.tscn"])
