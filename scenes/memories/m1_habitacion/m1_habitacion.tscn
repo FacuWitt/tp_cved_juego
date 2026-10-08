@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/memories/memory_1_room.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/memory_1_settings.tres" id="2_e"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/room_layout.tscn" id="3_e"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/props.tscn" id="4_e"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/puzzle.tscn" id="5_e"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="6_e"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="7_e"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="8_e"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="9_e"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="10_e"]
+
+[sub_resource type="Environment" id="Environment_11_s"]
+background_mode = 1
+background_color = Color(0.02, 0.025, 0.04, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.32, 0.28, 0.26, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+
+[node name="M1Habitacion" type="Node3D" node_paths=PackedStringArray("puzzle", "door_hinge", "boat_light", "exit", "subtitles")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+puzzle = NodePath("Puzzle/SequencePuzzle")
+door_hinge = NodePath("RoomLayout/DoorHinge")
+boat_light = NodePath("Props/Barquito/BoatLight")
+exit = NodePath("RoomLayout/Exit")
+subtitles = NodePath("HUD/Subtitles")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_11_s")
+
+[node name="RoomLayout" parent="." instance=ExtResource("3_e")]
+
+[node name="Props" parent="." instance=ExtResource("4_e")]
+
+[node name="Puzzle" parent="." instance=ExtResource("5_e")]
+
+[node name="MoonLight" type="OmniLight3D" parent="."]
+position = Vector3(-2.7, 2.1, 0)
+light_color = Color(0.55, 0.65, 1, 1)
+light_energy = 0.8
+omni_range = 5.0
+
+[node name="CorridorLight" type="OmniLight3D" parent="."]
+position = Vector3(1.3, 1.9, 4.0)
+light_color = Color(0.45, 0.6, 0.7, 1)
+light_energy = 0.35
+omni_range = 3.0
+
+[node name="Player" parent="." instance=ExtResource("6_e")]
+position = Vector3(-0.2, 0.05, 1.0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Center" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("7_e")
+player = NodePath("../../../Player")
+settings = ExtResource("8_e")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("9_e")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("10_e")

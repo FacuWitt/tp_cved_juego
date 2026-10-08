@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3_s"]
+size = Vector3(0.22, 0.22, 0.22)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4_s"]
+size = Vector3(0.22, 0.22, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
+albedo_color = Color(0.78, 0.66, 0.48, 1)
+roughness = 0.85
+
+[node name="PuzzlePiece" type="RigidBody3D" node_paths=PackedStringArray("visual")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+visual = NodePath("MeshInstance3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_3_s")
+material_override = SubResource("StandardMaterial3D_5_s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_4_s")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 0.24, 0)
+pixel_size = 0.003
+text = "PIEZA"
+font_size = 28
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6

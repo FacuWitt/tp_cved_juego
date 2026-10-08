@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="SequencePuzzleConfig" format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/sequence_puzzle_config.gd" id="1_seqcf"]
+
+[resource]
+script = ExtResource("1_seqcf")
+correct_order = Array[StringName]([&"luna", &"red", &"pescador", &"ola", &"ancla", &"faro"])
