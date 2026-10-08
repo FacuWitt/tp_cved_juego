@@ -1,11 +1,10 @@
 class_name Memory1Room
-extends Node3D
+extends Memory
 ## Memoria 1: la habitación de la abuela (etapa 0, greybox).
 ## La abuela le pide que ordene los juguetes; la canción de cuna dice el orden.
 ## Conecta el puzzle con sus consecuencias: barquito que se enciende, voz, puerta y salida.
-## Cuando el jugador sale, emite memory_completed. No sabe cuál es la memoria siguiente.
-
-signal memory_completed
+## Hereda de Memory: la salida (MemoryExit) la completa y GameFlow carga la siguiente.
+## No sabe cuál es la memoria siguiente.
 
 @export var settings: Memory1Settings
 @export var puzzle: SequencePuzzle
@@ -18,6 +17,7 @@ var _door_closed_rotation: float = 0.0
 
 
 func _ready() -> void:
+	super()
 	assert(settings != null, "Memory1Room: falta asignar un Memory1Settings")
 	assert(puzzle != null and door_hinge != null and boat_light != null, "Memory1Room: faltan referencias en el Inspector")
 	assert(exit != null and subtitles != null, "Memory1Room: faltan referencias en el Inspector")
@@ -63,5 +63,5 @@ func _on_puzzle_failed() -> void:
 
 
 func _on_exit_reached() -> void:
+	# La memoria la da por completada el propio MemoryExit (ver MemoryExit._on_body_entered).
 	subtitles.show_line(settings.exit_line, 0.0)
-	memory_completed.emit()

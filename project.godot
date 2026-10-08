@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="cved-prototipo-01"
-run/main_scene="res://scenes/memories/memory_1.tscn"
+run/main_scene="res://scenes/memories/m1_habitacion/m1_habitacion.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

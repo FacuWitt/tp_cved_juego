@@ -5,7 +5,7 @@ Guía para las 4 personas del equipo y para Claude Code. Pensada para quien nunc
 Repo: https://github.com/FacuWitt/tp_cved_juego
 
 ## La idea en una línea
-**Trabajamos de forma incremental: primero el juego completo con objetos genéricos, después se reemplaza por lo real. `main` siempre se juega de principio a fin.**
+**Trabajamos de forma incremental: primero el juego completo con objetos genéricos, después se reemplaza por lo real. `main` siempre se juega de principio a fin. Todo el trabajo se integra primero en `develop`; de `develop` se hace el Pull Request a `main`.**
 
 ## Cómo avanza el proyecto: por etapas
 No hay dueños de niveles. Hay **tareas chicas** que toma cualquiera, y el juego crece en capas sobre una base que siempre funciona.
@@ -22,11 +22,12 @@ La regla de oro: **nunca se rompe el flujo**. Una tarea de la etapa 1 cambia una
 ## Ramas
 | Rama | Para qué |
 |---|---|
-| `main` | Siempre jugable de principio a fin. Solo entra por Pull Request. Facu mergea |
+| `main` | Siempre jugable de principio a fin. Solo entra por Pull Request **desde `develop`**. Facu mergea |
+| `develop` | Rama de integración. Acá se juntan las ramas de tarea y se prueba el juego completo antes de subir a `main`. Las ramas de tarea nacen de `develop` y vuelven a `develop` por Pull Request. Nunca se commitea directo |
 | `feature/<tarea>` | Una tarea chica de una persona. Ejemplos: `feature/m1-puzzle-movil`, `feature/transicion-negro`, `feature/cinematica-caida` |
 | `claude/<tarea>` | Una tarea que hace Claude Code en una sesión |
 
-Todas las ramas son **cortas**: se abren para una tarea, se mergean y se borran. Lo ideal es que una rama no dure más de unos días. Cuanto más dura, más se separa de `main` y más fácil es que haya conflictos.
+Todas las ramas son **cortas**: se abren para una tarea, se mergean y se borran. Lo ideal es que una rama no dure más de unos días. Cuanto más dura, más se separa de `develop` y más fácil es que haya conflictos.
 
 ## Cómo evitamos pisarnos: reclamar la escena
 En Godot, los problemas casi nunca vienen de las ramas. Vienen de **dos personas editando el mismo archivo de escena (`.tscn`) al mismo tiempo**. Como no hay dueños fijos, la regla es:
@@ -69,7 +70,7 @@ cd tp_cved_juego
 
 ### Empezar una tarea
 ```bash
-git checkout main
+git checkout develop
 git pull                                  # traer lo último
 git checkout -b feature/m1-puzzle-movil   # rama nueva para esta tarea
 # avisar en el grupo qué escenas vas a tocar
@@ -86,17 +87,20 @@ git push -u origin feature/m1-puzzle-movil   # el -u solo la primera vez
 ```
 Si `git status` muestra archivos que no tocaste a propósito (típico: `project.godot`), **no los commitees**. Descartalos con `git restore <archivo>` o preguntá.
 
-Si la tarea dura más de un día, traé lo nuevo de `main` cada mañana:
+Si la tarea dura más de un día, traé lo nuevo de `develop` cada mañana:
 ```bash
-git pull origin main
+git pull origin develop
 ```
 
 ### Terminar la tarea
 1. Antes de abrir el PR, **jugá el juego completo** (F5 desde el menú) y verificá que el flujo no se rompió.
-2. En GitHub: **Pull requests → New pull request**, de tu rama hacia `main`.
+2. En GitHub: **Pull requests → New pull request**, de tu rama hacia `develop`.
 3. Título claro y una línea diciendo qué se puede probar.
-4. Facu lo revisa, lo prueba y lo mergea.
+4. Facu lo revisa, lo prueba y lo mergea a `develop`.
 5. Borrás la rama y liberás las escenas que habías reclamado.
+
+### Subir `develop` a `main`
+Cuando `develop` está estable (el juego se juega de punta a punta), Facu abre un Pull Request de `develop` hacia `main`, lo prueba y lo mergea. `main` solo recibe merges de `develop`.
 
 ## Formato de commits
 `tipo(ámbito): descripción`, en español y en presente.
@@ -125,7 +129,7 @@ Ejemplos: `feat(flujo): transición en negro entre M1 y M2`, `feat(cinematica): 
 
 ## Qué NO hacer
 - `git push --force` → nunca.
-- Commitear directo en `main` → nunca.
+- Commitear directo en `main` o en `develop` → nunca. Se entra por Pull Request.
 - Borrar la rama de otro → nunca.
 - Editar una escena reclamada por otro → no.
 - Mergear algo que rompe el flujo de principio a fin → no.
@@ -143,7 +147,8 @@ Ejemplos: `feat(flujo): transición en negro entre M1 y M2`, `feat(cinematica): 
 | No sé en qué rama estoy | `git branch` (la que tiene `*`) |
 
 ## Para Claude Code
-- Trabaja en `claude/<tarea>`, una rama por tarea, y respeta las escenas reclamadas por otros.
+- Trabaja en `claude/<tarea>`, una rama por tarea que nace de `develop`, y respeta las escenas reclamadas por otros.
+- **No ejecuta `git commit`, `git push` ni `git merge`**: deja los cambios en el working tree y el equipo commitea a mano. Sí puede usar comandos de solo lectura (`git status`, `git diff`, `git log`, `git branch`).
 - Antes de cambiar de rama, verifica `git status`. Si hay cambios sin commitear que no son suyos, frena y pregunta.
-- Nunca mergea a `main`. Deja la rama pusheada o abre el Pull Request, y Facu mergea.
+- Nunca mergea a `develop` ni a `main`: eso lo hace Facu por Pull Request.
 - Respeta la etapa actual: en la etapa 0 no agrega modelos, arte ni efectos, solo flujo con formas genéricas.

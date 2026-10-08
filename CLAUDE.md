@@ -16,9 +16,9 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 ## Entorno técnico
 - **Godot 4.7.x estándar** (no .NET). Renderer **Forward+**. Físicas **Jolt**. En Windows usa D3D12.
 - Todo el equipo usa **la misma versión exacta** de Godot.
-- Escena principal actual: `res://scenes/sandbox/sandbox.tscn` (sandbox de prueba, no el juego final).
-- Todavía no hay autoloads.
-- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`.
+- Escena principal actual: `res://scenes/memories/m1_habitacion/m1_habitacion.tscn` (memoria 1 en greybox). El sandbox de prueba sigue en `scenes/sandbox/` (F6).
+- Autoloads: `GameFlow` (encadena las memorias) y `ScreenFade` (fundido a negro). Falta `EventBus`, `AudioManager`, etc.
+- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`, y los de debug `debug_next_memory` (F9) y `debug_restart_memory` (F10).
 
 ## Qué existe hoy
 | Clase | Archivo | Qué hace |
@@ -29,6 +29,11 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `PickupSettings` | `scripts/config/pickup_settings.gd` → `config/pickup_settings.tres` | Valores de feel del agarre |
 | `PlacementSlot` | `scripts/world/placement_slot.gd` | Area3D donde un `PickupObject` encastra. Emite `object_placed` y `object_removed` |
 | `KillZone` | `scripts/world/kill_zone.gd` | Devuelve al jugador a un punto de reaparición |
+| `Memory` | `scripts/memories/memory.gd` | Clase base de la raíz de cada memoria: se registra en `GameFlow`; `complete()` y `fail()` |
+| `MemoryExit` | `scripts/world/memory_exit.gd` | Salida de una memoria: emite `reached` y completa la `Memory` que la contiene (`enabled` la abre o cierra) |
+| `Memory1Room` | `scripts/memories/memory_1_room.gd` | Memoria 1 (habitación de la abuela): une el puzzle con la puerta, el barquito y la salida |
+| `SequencePuzzle` | `scripts/puzzles/sequence_puzzle.gd` | Puzzle genérico de ordenar piezas (`PuzzlePiece`) en casilleros |
+| `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).
 
@@ -64,12 +69,26 @@ El detalle va a vivir en `docs/ARQUITECTURA.md`.
 `main` siempre se juega de principio a fin. Una tarea cambia una memoria por dentro sin romper cómo empieza ni cómo termina. No te adelantes de etapa: en la 0, nada de arte ni efectos.
 
 ## Git (detalle en `docs/GIT_WORKFLOW.md`)
-- Trabajás **siempre** en una rama `claude/<tarea>`, una por tarea. Nunca commiteás directo en `main`.
-- Commits chicos: `tipo(ámbito): descripción` en español. Por ejemplo `feat(player): agrega agacharse`.
+- Trabajás **siempre** en una rama `claude/<tarea>`, una por tarea, que nace de `develop`. Nunca se commitea directo en `main` ni en `develop`.
+- Flujo de integración: `claude/*` y `feature/*` → PR a **`develop`** → cuando `develop` está estable, PR de `develop` a **`main`**. Facu mergea todo.
+- **Claude no ejecuta `git commit`, `git push` ni `git merge`**: el equipo commitea a mano. Dejás los cambios en el working tree y avisás qué quedó modificado. Sí podés usar comandos de solo lectura (`git status`, `git diff`, `git log`, `git branch`) para orientarte.
+- Formato de commit (lo usa el equipo; sugerilo cuando termines): `tipo(ámbito): descripción` en español. Por ejemplo `feat(player): agrega agacharse`.
 - Nunca `push --force`, nunca `reset --hard` sobre trabajo sin commitear, nunca borrar ramas ajenas.
 - **No tocar una escena `.tscn` reclamada por otra persona.** Antes de editar una escena, preguntá si alguien la tiene.
 - `project.godot`, `player.tscn`, los autoloads y los buses de audio son **compartidos**: se tocan con aviso.
 - Antes de cambiar de rama, verificá que no haya cambios sin commitear (`git status`).
+
+## Changelog (obligatorio)
+El profesor pidió que todo lo que hagamos quede en el **documento de la solución**. `CHANGELOG.md` es la materia prima de ese documento: registra qué se hizo, **por qué se eligió así** y qué se descartó. Los commits dicen qué cambió; el changelog dice la decisión.
+
+- **Al empezar la sesión:** leé `CHANGELOG.md` (al menos las últimas entradas) para saber qué se decidió y no contradecirlo ni re-discutirlo.
+- **Al terminar cada tarea** (antes de dar el trabajo por cerrado): agregá una entrada nueva **arriba de todo**, debajo de `<!-- ENTRADAS -->`, con el siguiente número `CL-NNN` libre. El formato y las reglas están en el propio `CHANGELOG.md`; seguilos.
+- **Qué registrar:** mecánicas, arquitectura, flujo de trabajo, diseño narrativo, documentación, bugs importantes y cómo se resolvieron, y decisiones de "no hacer X". Ajustes sueltos de valores de feel o de formato no.
+- **El "por qué" es lo más importante:** el problema que había, la solución elegida y las alternativas descartadas. Si el motivo lo dio el equipo, citá lo que pidieron.
+- **No inventes motivos.** Si no consta por qué se decidió algo, escribí `motivo no registrado` y preguntá. Lo que reconstruyas del historial de git marcalo *(reconstruido del historial)*.
+- **Nunca reescribas ni renumeres entradas viejas.** Si una decisión cambia, agregá una entrada nueva que diga qué cambió y por qué, y referenciá la anterior (`reemplaza CL-NNN`).
+- Si la tarea cambió una decisión que figura en otro doc de `docs/`, actualizá también ese doc.
+- Cerrá tu resumen al usuario mencionando el número de entrada que escribiste.
 
 ## Reglas de trabajo
 - **No editar `.godot/`.** Es caché y está ignorada.
@@ -85,11 +104,12 @@ El detalle va a vivir en `docs/ARQUITECTURA.md`.
 | Doc | Estado |
 |---|---|
 | `README.md` | ✅ Cómo levantar el proyecto |
+| `CHANGELOG.md` | ✅ **Registro de decisiones y cambios. Insumo del documento de la solución. Obligatorio, ver sección "Changelog"** |
 | `docs/GIT_WORKFLOW.md` | ✅ Etapas, ramas, reclamo de escenas, día a día |
 | `docs/ELEMENTOS_ESCENAS.md` | ✅ Inventario de elementos por escena (placeholder de etapa 0, rol, sistemas que pide) |
 | `docs/GUION_MAESTRO.md` | ⏳ Pendiente: la historia completa y los beats por memoria |
 | `docs/SIMBOLOGIA.md` | ⏳ Pendiente: diccionario de símbolos, regla 80/20, capas de audio |
-| `docs/ARQUITECTURA.md` | ⏳ Pendiente |
+| `docs/arquitectura.md` | ✅ Flujo entre memorias (`GameFlow`, `Memory`, `MemoryExit`, secuencia) |
 | `docs/SENALES_Y_ESTADOS.md` | ⏳ Pendiente: contrato del EventBus y del GameManager |
 | `docs/TUNING.md` | ⏳ Pendiente: guía de los Resources de `config/` |
 | `docs/DECISIONES.md` | ⏳ Pendiente |

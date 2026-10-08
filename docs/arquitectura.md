@@ -9,7 +9,7 @@ Este documento explica cómo el juego pasa de una memoria a la siguiente. Las me
 | `GameFlow` (autoload) | `scripts/core/game_flow.gd` | Sabe en qué memoria estamos. Cuando la memoria actual avisa que terminó, hace el fundido y carga la siguiente. También reinicia la memoria actual. |
 | `ScreenFade` (autoload) | `scenes/ui/screen_fade.tscn` + `scripts/core/screen_fade.gd` | Fundido a negro de pantalla completa (`fade_out` / `fade_in`). |
 | `Memory` | `scripts/memories/memory.gd` | Clase base de la raíz de cada escena de memoria. Se registra en `GameFlow` al cargarse. Tiene `complete()` y `fail()`. |
-| `MemoryExit` | `scripts/world/memory_exit.gd` | Area3D que llama a `complete()` cuando entra el jugador. Se puede desactivar con `enabled`. |
+| `MemoryExit` | `scripts/world/memory_exit.gd` | Area3D que, cuando entra el jugador (y `enabled` es true), emite `reached` y llama a `complete()` de la `Memory` que la contiene. En la memoria 1 arranca deshabilitada y la habilita el puzzle. |
 | `MemorySequence` | `scripts/config/memory_sequence.gd` → `config/memory_sequence.tres` | Lista ordenada de escenas del juego. |
 | `FlowSettings` | `scripts/config/flow_settings.gd` → `config/flow_settings.tres` | Duración de los fundidos. |
 
@@ -27,7 +27,7 @@ Señales útiles de `GameFlow`: `memory_started(index)`, `memory_finished(index)
 
 ## Escenas actuales
 
-`scenes/memories/memory_1.tscn` … `memory_4.tscn` son salas provisorias: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
+`scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `memory_2.tscn` … `memory_4.tscn` son salas provisorias: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
 
 F5 arranca desde la memoria 1. El sandbox sigue en `scenes/sandbox/` y se puede abrir y correr con F6.
 
