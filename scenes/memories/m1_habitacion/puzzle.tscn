@@ -14,15 +14,15 @@ albedo_color = Color(0.3, 0.2, 0.13, 1)
 roughness = 0.85
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7_s"]
-size = Vector3(0.42, 0.3, 0.32)
+size = Vector3(0.46, 0.4, 0.42)
 
 [node name="Puzzle" type="Node3D"]
 
 [node name="Shelf" type="Node3D" parent="."]
 
 [node name="Board" type="CSGBox3D" parent="Shelf"]
-position = Vector3(0, 0.95, -1.84)
-size = Vector3(2.9, 0.06, 0.32)
+position = Vector3(0, 0.95, -1.79)
+size = Vector3(2.9, 0.06, 0.42)
 material = SubResource("StandardMaterial3D_5_s")
 use_collision = true
 
@@ -51,15 +51,15 @@ outline_size = 6
 position = Vector3(-1.25, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot1"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot1"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot1" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -67,7 +67,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot1"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "1"
 font_size = 40
@@ -78,15 +78,15 @@ outline_size = 6
 position = Vector3(-0.75, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot2"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot2"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot2" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -94,7 +94,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot2"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "2"
 font_size = 40
@@ -105,15 +105,15 @@ outline_size = 6
 position = Vector3(-0.25, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot3"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot3"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot3" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -121,7 +121,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot3"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "3"
 font_size = 40
@@ -132,15 +132,15 @@ outline_size = 6
 position = Vector3(0.25, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot4"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot4"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot4" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -148,7 +148,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot4"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "4"
 font_size = 40
@@ -159,15 +159,15 @@ outline_size = 6
 position = Vector3(0.75, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot5"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot5"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot5" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -175,7 +175,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot5"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "5"
 font_size = 40
@@ -186,15 +186,15 @@ outline_size = 6
 position = Vector3(1.25, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot6"]
-position = Vector3(0, 0.9825, 0)
-size = Vector3(0.3, 0.005, 0.25)
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
 material = SubResource("StandardMaterial3D_6_s")
 
 [node name="SnapPoint" type="Marker3D" parent="Slot6"]
-position = Vector3(0, 1.09, 0)
+position = Vector3(0, 1.16, 0.05)
 
 [node name="PlacementSlot" type="Area3D" parent="Slot6" node_paths=PackedStringArray("snap_point")]
-position = Vector3(0, 1.13, 0)
+position = Vector3(0, 1.2, 0.05)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 
@@ -202,7 +202,7 @@ snap_point = NodePath("../SnapPoint")
 shape = SubResource("BoxShape3D_7_s")
 
 [node name="Number" type="Label3D" parent="Slot6"]
-position = Vector3(0, 0.9, 0.17)
+position = Vector3(0, 0.9, 0.27)
 pixel_size = 0.003
 text = "6"
 font_size = 40
@@ -217,41 +217,41 @@ slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"),
 [node name="Pieces" type="Node3D" parent="."]
 
 [node name="Luna" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.88, 1.12, 0.25)
+position = Vector3(-1.9, 1.19, 0.2)
 piece_id = &"luna"
 label_text = "LUNA"
 
 [node name="Red" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.75, 0.52, 1.62)
+position = Vector3(-1.6, 0.59, 1.68)
 piece_id = &"red"
 label_text = "RED"
 
 [node name="Pescador" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(1.4, 0.63, 0.2)
+position = Vector3(1.45, 0.7, 0.15)
 piece_id = &"pescador"
 label_text = "PESCADOR"
 
 [node name="Ola" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.25, 0.12, -0.55)
+position = Vector3(-1.2, 0.19, -0.55)
 piece_id = &"ola"
 label_text = "OLA"
 
 [node name="Ancla" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-0.85, 0.12, 0.75)
+position = Vector3(-0.7, 0.19, 0.6)
 piece_id = &"ancla"
 label_text = "ANCLA"
 
 [node name="Faro" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(0.85, 0.12, -0.75)
+position = Vector3(0.8, 0.19, -0.75)
 piece_id = &"faro"
 label_text = "FARO"
 
 [node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(0.3, 0.12, 1.7)
+position = Vector3(0.3, 0.19, 1.7)
 piece_id = &"barco"
 label_text = "BARCO EN TORMENTA (cuadrito)"
 
 [node name="Marea" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.45, 0.52, 1.75)
+position = Vector3(-1.05, 0.19, 1.8)
 piece_id = &"marea"
 label_text = "MAREA (cuadrito)"

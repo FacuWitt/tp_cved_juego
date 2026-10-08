@@ -6,12 +6,13 @@
 [ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/props.tscn" id="4_e"]
 [ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/puzzle.tscn" id="5_e"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="6_e"]
-[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="7_e"]
-[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="8_e"]
-[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="9_e"]
-[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="10_e"]
+[ext_resource type="Resource" path="res://config/player_settings_child.tres" id="7_e"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="8_e"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="9_e"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="10_e"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="11_e"]
 
-[sub_resource type="Environment" id="Environment_11_s"]
+[sub_resource type="Environment" id="Environment_12_s"]
 background_mode = 1
 background_color = Color(0.02, 0.025, 0.04, 1)
 ambient_light_source = 2
@@ -29,7 +30,7 @@ exit = NodePath("RoomLayout/Exit")
 subtitles = NodePath("HUD/Subtitles")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_11_s")
+environment = SubResource("Environment_12_s")
 
 [node name="RoomLayout" parent="." instance=ExtResource("3_e")]
 
@@ -51,6 +52,7 @@ omni_range = 3.0
 
 [node name="Player" parent="." instance=ExtResource("6_e")]
 position = Vector3(-0.2, 0.05, 1.0)
+settings = ExtResource("7_e")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -64,16 +66,16 @@ mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
-script = ExtResource("7_e")
+script = ExtResource("8_e")
 player = NodePath("../../../Player")
-settings = ExtResource("8_e")
+settings = ExtResource("9_e")
 
 [node name="Dot" type="Control" parent="HUD/Center/Reticle"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
-script = ExtResource("9_e")
+script = ExtResource("10_e")
 
 [node name="Label" type="Label" parent="HUD/Center/Reticle"]
 layout_mode = 2
@@ -102,4 +104,4 @@ theme_override_font_sizes/font_size = 22
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-script = ExtResource("10_e")
+script = ExtResource("11_e")

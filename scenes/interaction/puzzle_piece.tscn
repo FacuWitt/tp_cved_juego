@@ -4,10 +4,10 @@
 [ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_3_s"]
-size = Vector3(0.22, 0.22, 0.22)
+size = Vector3(0.36, 0.36, 0.36)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4_s"]
-size = Vector3(0.22, 0.22, 0.22)
+size = Vector3(0.36, 0.36, 0.36)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
 albedo_color = Color(0.78, 0.66, 0.48, 1)
@@ -26,7 +26,7 @@ material_override = SubResource("StandardMaterial3D_5_s")
 shape = SubResource("BoxShape3D_4_s")
 
 [node name="Label3D" type="Label3D" parent="."]
-position = Vector3(0, 0.24, 0)
+position = Vector3(0, 0.32, 0)
 pixel_size = 0.003
 text = "PIEZA"
 font_size = 28
