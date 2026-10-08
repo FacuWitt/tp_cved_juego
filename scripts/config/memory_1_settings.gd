@@ -3,6 +3,14 @@ extends Resource
 ## Valores de "feel" y textos provisorios de la Memoria 1 (la habitación de la abuela).
 ## Se editan desde el Inspector en res://config/memory_1_settings.tres.
 
+@export_group("Al empezar")
+## Texto provisorio de la abuela pidiendo que ordene (en la etapa 2: su voz con eco, desde otra habitación).
+@export_multiline var intro_line: String = "VOZ (abuela, desde otra habitación): Antes de dormir ordená los juguetes, mi amor. Si no te acordás dónde va cada uno, cantá la canción del papel."
+## Pausa entre que empieza la memoria y habla la abuela.
+@export_range(0.0, 10.0, 0.1, "suffix:s") var intro_line_delay: float = 1.5
+## Cuánto tiempo queda en pantalla el texto de la abuela.
+@export_range(0.5, 15.0, 0.1, "suffix:s") var intro_line_duration: float = 7.0
+
 @export_group("Al resolver el puzzle")
 ## Texto provisorio de la voz que felicita (en la etapa 2 se reemplaza por audio con eco).
 @export_multiline var solved_line: String = "VOZ (mamá, con eco): ¡Muy bien, mi amor! ¡Qué inteligente sos!"

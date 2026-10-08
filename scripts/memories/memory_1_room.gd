@@ -1,6 +1,7 @@
 class_name Memory1Room
 extends Node3D
 ## Memoria 1: la habitación de la abuela (etapa 0, greybox).
+## La abuela le pide que ordene los juguetes; la canción de cuna dice el orden.
 ## Conecta el puzzle con sus consecuencias: barquito que se enciende, voz, puerta y salida.
 ## Cuando el jugador sale, emite memory_completed. No sabe cuál es la memoria siguiente.
 
@@ -26,6 +27,14 @@ func _ready() -> void:
 	puzzle.solved.connect(_on_puzzle_solved)
 	puzzle.failed.connect(_on_puzzle_failed)
 	exit.reached.connect(_on_exit_reached)
+	_play_intro()
+
+
+func _play_intro() -> void:
+	await get_tree().create_timer(settings.intro_line_delay).timeout
+	# Si el jugador ya resolvió algo en la pausa, no pisar ese texto.
+	if not puzzle.is_solved and subtitles.text == "":
+		subtitles.show_line(settings.intro_line, settings.intro_line_duration)
 
 
 func _on_puzzle_solved() -> void:

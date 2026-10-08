@@ -45,22 +45,23 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | Mesa de luz con **despertador parado** | AMB | Caja + reloj compartido |
 | Lámpara de mesa (fuente de luz cálida principal) | OBL | Cilindro + `OmniLight3D` |
 | Juguetes de chico | AMB | 3–4 cubos chicos |
-| **Lugar donde se ordenan los objetos** (casilleros del puzzle) | OBL | 📝 Repisa con 6 `PlacementSlot` numerados ❓ |
-| **Texto del acertijo** visible en la habitación | OBL | `Label3D` con el poema ❓ (dónde: libro, almohadón bordado, cuadro) |
+| **Repisa de los juguetes** (casilleros del puzzle) | OBL | ✅ Repisa con 5 `PlacementSlot` numerados |
+| **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama (`Label3D`) |
 
-### Objetos del acertijo (agarrables, `PickupObject`)
-| Objeto | Forma de presentación | Rol en el puzzle |
+### Objetos del acertijo (agarrables, `PuzzlePiece`) ✅
+La abuela le pide que ordene los juguetes y le deja la canción de cuna en un papel para recordar el orden.
+
+| Orden | Verso | Objeto |
 |---|---|---|
-| Luna | Figura | ✅ Pieza 1 |
-| Red | Figura o cuadrito | ✅ Pieza 2 |
-| Pescador | Figura | 📝 Pieza 3 (en M4 el poema tiene 6 pasos) ❓ |
-| Ola | Figura o cuadrito | ✅ Pieza 3/4 |
-| Ancla | Figura (pesada) | ✅ Pieza 4/5 |
-| Faro | Figura | ✅ Pieza 5/6 |
-| Barco (en tormenta) | Cuadrito | 📝 Señuelo |
-| Marea | Cuadrito | 📝 Señuelo |
+| 1 | Cuando el espejo del sol se asomó a mirar el mar | Luna |
+| 2 | los hilos volvieron llenos | Red |
+| 3 | Un muro de espuma blanca se levantó a saludar | Ola |
+| 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
+| 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
 
-Etapa 0: todas cubos del mismo tamaño con `Label3D` arriba ("LUNA", "RED"...).
+**Distractores:** barco, marea y pescador. El pescador está nombrado en el poema ("y el pescador fue a tirar"): es la trampa más fuerte; revisar en pruebas con gente si traba de más.
+
+Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
 
 ### Luz
 - **Cálida:** la lámpara de mesa (dominante).
@@ -279,8 +280,8 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. **Puzzle de M1:** ¿5 piezas (como el poema original) o 6, sumando al pescador como en M4? ¿Barco y marea son los señuelos?
-2. **M1:** ¿dónde se ordenan los objetos (repisa, móvil de cuna, pared) y dónde está escrito el acertijo?
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 3 distractores (barco, marea, pescador).
+2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
 4. **M1:** ¿la voz que felicita es la abuela o la mamá?
 5. La hora del accidente (todos los relojes).

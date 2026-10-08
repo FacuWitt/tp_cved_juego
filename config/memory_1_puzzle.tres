@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_seqcf")
-correct_order = Array[StringName]([&"luna", &"red", &"pescador", &"ola", &"ancla", &"faro"])
+correct_order = Array[StringName]([&"luna", &"red", &"ola", &"ancla", &"faro"])

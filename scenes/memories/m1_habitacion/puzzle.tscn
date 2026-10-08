@@ -48,14 +48,14 @@ use_collision = true
 [node name="Label3D" type="Label3D" parent="Shelf"]
 position = Vector3(0, 1.45, -1.8)
 pixel_size = 0.0025
-text = "REPISA: ordená las figuras como dice la canción"
+text = "REPISA DE LOS JUGUETES: ordenalos como dice la canción"
 font_size = 20
 modulate = Color(1, 1, 1, 1)
 billboard = 1
 outline_size = 6
 
 [node name="Slot1" type="Node3D" parent="."]
-position = Vector3(-1.25, 0, -1.84)
+position = Vector3(-1.1, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot1"]
 position = Vector3(0, 0.9825, 0.05)
@@ -88,7 +88,7 @@ modulate = Color(1, 1, 1, 1)
 outline_size = 6
 
 [node name="Slot2" type="Node3D" parent="."]
-position = Vector3(-0.75, 0, -1.84)
+position = Vector3(-0.55, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot2"]
 position = Vector3(0, 0.9825, 0.05)
@@ -121,7 +121,7 @@ modulate = Color(1, 1, 1, 1)
 outline_size = 6
 
 [node name="Slot3" type="Node3D" parent="."]
-position = Vector3(-0.25, 0, -1.84)
+position = Vector3(0.0, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot3"]
 position = Vector3(0, 0.9825, 0.05)
@@ -154,7 +154,7 @@ modulate = Color(1, 1, 1, 1)
 outline_size = 6
 
 [node name="Slot4" type="Node3D" parent="."]
-position = Vector3(0.25, 0, -1.84)
+position = Vector3(0.55, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot4"]
 position = Vector3(0, 0.9825, 0.05)
@@ -187,7 +187,7 @@ modulate = Color(1, 1, 1, 1)
 outline_size = 6
 
 [node name="Slot5" type="Node3D" parent="."]
-position = Vector3(0.75, 0, -1.84)
+position = Vector3(1.1, 0, -1.84)
 
 [node name="Mark" type="CSGBox3D" parent="Slot5"]
 position = Vector3(0, 0.9825, 0.05)
@@ -219,43 +219,10 @@ font_size = 40
 modulate = Color(1, 1, 1, 1)
 outline_size = 6
 
-[node name="Slot6" type="Node3D" parent="."]
-position = Vector3(1.25, 0, -1.84)
-
-[node name="Mark" type="CSGBox3D" parent="Slot6"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
-
-[node name="SnapPoint" type="Marker3D" parent="Slot6"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot6"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot6" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
-script = ExtResource("1_e")
-snap_point = NodePath("../SnapPoint")
-aim_indicator = NodePath("../AimIndicator")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot6/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
-
-[node name="Number" type="Label3D" parent="Slot6"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "6"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
-
 [node name="SequencePuzzle" type="Node" parent="." node_paths=PackedStringArray("slots")]
 script = ExtResource("2_e")
 config = ExtResource("3_e")
-slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"), NodePath("../Slot3/PlacementSlot"), NodePath("../Slot4/PlacementSlot"), NodePath("../Slot5/PlacementSlot"), NodePath("../Slot6/PlacementSlot")]
+slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"), NodePath("../Slot3/PlacementSlot"), NodePath("../Slot4/PlacementSlot"), NodePath("../Slot5/PlacementSlot")]
 
 [node name="Pieces" type="Node3D" parent="."]
 
@@ -292,9 +259,9 @@ label_text = "FARO"
 [node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
 position = Vector3(0.3, 0.19, 1.7)
 piece_id = &"barco"
-label_text = "BARCO EN TORMENTA (cuadrito)"
+label_text = "BARCO"
 
 [node name="Marea" parent="Pieces" instance=ExtResource("4_e")]
 position = Vector3(-1.05, 0.19, 1.8)
 piece_id = &"marea"
-label_text = "MAREA (cuadrito)"
+label_text = "MAREA"
