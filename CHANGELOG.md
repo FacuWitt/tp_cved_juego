@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-011 · La puerta de la memoria 1 dejaba de bloquear solo a la vista, no a la física · 2026-10-08
+- **Rama / commits:** `develop` · sin commitear
+- **Pedido por:** Facu: "no puedo pasar la puerta una vez que abre" (al probar el paso de la M1 a la M2).
+- **Qué se hizo:** se desactivó `sync_to_physics` en el nodo `Door` (un `AnimatableBody3D`) de `room_layout.tscn`.
+- **Por qué (decisión de diseño):** la puerta se abre girando su nodo padre (`DoorHinge`), no el cuerpo en sí. Con `sync_to_physics` activado, la colisión se quedaba en la posición cerrada aunque la puerta *se viera* abierta, y una pared invisible bloqueaba el hueco. Sin esa sincronización la colisión acompaña al movimiento del padre. Se prefirió esto a rehacer la animación para mover el cuerpo directamente porque cambia una sola propiedad y conserva el diseño de bisagra.
+- **Problemas encontrados:** la prueba automática de CL-009 teletransportaba al jugador a la salida y por eso **no detectó el error**: nadie había recorrido el camino caminando. Ahora la prueba camina con el input real, comprueba que la puerta cerrada bloquea (queda en z=1,70), que la abierta deja pasar y que el flujo llega a la memoria 2. **Lección para próximas pruebas:** recorrer el camino del jugador, no saltarse la física.
+- **Alternativas descartadas:** mover el `AnimatableBody3D` directamente en el tween (más cambios y sin ventaja visible).
+- **Archivos y docs:** `scenes/memories/m1_habitacion/room_layout.tscn`.
+- **Pendiente / ❓ ABIERTO:** ninguno.
+
 ### CL-010 · Changelog como registro para el documento de la solución · 2026-10-08
 - **Rama / commits:** `develop` · sin commitear
 - **Pedido por:** Facu: "el profe dijo que todo lo que hagamos tenemos que ir poniendo en el documento de la solución"; el changelog es "para ese documento más que nada" y debe servir de guía a otras sesiones de Claude.
