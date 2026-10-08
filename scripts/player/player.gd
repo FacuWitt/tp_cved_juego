@@ -64,6 +64,22 @@ func _toggle_pickup() -> void:
 		_held_object.pickup(_camera, self)
 
 
+## El objeto que tiene agarrado ahora mismo, o null si no tiene nada. Para que la UI
+## sepa qué mostrar sin depender de los nombres internos del Player.
+func get_held_object() -> PickupObject:
+	return _held_object
+
+
+## El PickupObject al que apunta el InteractionRay ahora mismo (si se puede agarrar), o null.
+func get_interactable_under_crosshair() -> PickupObject:
+	if not _interaction_ray.is_colliding():
+		return null
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is PickupObject and not (collider as PickupObject).is_locked:
+		return collider as PickupObject
+	return null
+
+
 func _apply_camera_settings() -> void:
 	_camera.fov = settings.fov
 	_head.position.y = settings.camera_height

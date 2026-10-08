@@ -8,6 +8,9 @@
 [ext_resource type="Resource" path="res://config/pickup_settings.tres" id="4_7du5g"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="6_yehgl"]
 [ext_resource type="Resource" path="res://config/player_settings.tres" id="7_k7q46"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="9_yehgl"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="10_k7q46"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="11_uuej0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hwrqe"]
 
@@ -172,10 +175,11 @@ snap_point = NodePath("../SnapPoint")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Level/PuzzleSocket/PlacementSlot" unique_id=1869744141]
 shape = SubResource("BoxShape3D_4po2s")
 
-[node name="PuzzleSphere" type="RigidBody3D" parent="Level" unique_id=421881109]
+[node name="PuzzleSphere" type="RigidBody3D" parent="Level" unique_id=421881109 node_paths=PackedStringArray("visual")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.3, 9)
 script = ExtResource("3_8g51p")
 settings = ExtResource("4_7du5g")
+visual = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Level/PuzzleSphere" unique_id=1100509274]
 material_override = SubResource("StandardMaterial3D_sy4oe")
@@ -214,8 +218,25 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Crosshair" type="ColorRect" parent="HUD/Center" unique_id=994414523]
-custom_minimum_size = Vector2(4, 4)
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" unique_id=987871812 node_paths=PackedStringArray("player")]
 layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("9_yehgl")
+player = NodePath("../../../Player")
+settings = ExtResource("10_k7q46")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle" unique_id=1313110718]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
 mouse_filter = 2
-color = Color(1, 1, 1, 0.8)
+script = ExtResource("11_uuej0")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle" unique_id=263630271]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1

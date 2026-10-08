@@ -7,8 +7,12 @@ signal picked_up(by: Node3D)
 signal dropped
 signal locked
 signal unlocked
+signal settled
 
 @export var settings: PickupSettings
+## Nodo visual (normalmente el MeshInstance3D) al que se le aplica el aplastamiento sutil
+## al aterrizar en un PlacementSlot. Opcional: si queda sin asignar, se salta ese efecto.
+@export var visual: Node3D
 
 var is_held: bool = false
 ## Si está en true, pickup() no hace nada: quedó fijo para siempre (p. ej. una soga ya atada).
@@ -17,6 +21,7 @@ var is_locked: bool = false
 
 var _holder: Node3D = null
 var _holder_body: PhysicsBody3D = null
+var _settle_tween: Tween = null
 
 
 func _ready() -> void:
@@ -29,6 +34,8 @@ func _ready() -> void:
 func pickup(holder: Node3D, holder_body: PhysicsBody3D = null) -> void:
 	if is_locked:
 		return
+	if _settle_tween != null:
+		_settle_tween.kill()
 	_holder = holder
 	_holder_body = holder_body
 	is_held = true
@@ -63,6 +70,43 @@ func lock() -> void:
 func unlock() -> void:
 	is_locked = false
 	unlocked.emit()
+
+
+## Lo anima aterrizando suavemente en destination (posición + rotación) y lo deja congelado
+## ahí al terminar. La usa un PlacementSlot al encastrar el objeto.
+func animate_settle(destination: Transform3D) -> void:
+	is_held = false
+	_holder = null
+	freeze = true
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+
+	if _settle_tween != null:
+		_settle_tween.kill()
+
+	var start_transform: Transform3D = global_transform
+	var start_rotation: Quaternion = start_transform.basis.get_rotation_quaternion()
+	var end_rotation: Quaternion = destination.basis.get_rotation_quaternion()
+
+	_settle_tween = create_tween()
+	_settle_tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
+	_settle_tween.tween_method(
+		func(t: float) -> void:
+			global_transform = Transform3D(
+				Basis(start_rotation.slerp(end_rotation, t)),
+				start_transform.origin.lerp(destination.origin, t)
+			),
+		0.0, 1.0, settings.settle_duration
+	)
+	_settle_tween.finished.connect(func() -> void: settled.emit(), CONNECT_ONE_SHOT)
+
+	if visual != null and settings.settle_squash > 0.0:
+		var squash_tween: Tween = create_tween()
+		var squashed: float = 1.0 - settings.settle_squash
+		var down_time: float = settings.settle_duration * 0.4
+		var up_time: float = settings.settle_duration * 0.6
+		squash_tween.tween_property(visual, "scale:y", squashed, down_time).set_ease(Tween.EASE_OUT)
+		squash_tween.tween_property(visual, "scale:y", 1.0, up_time).set_ease(Tween.EASE_OUT)
 
 
 func _physics_process(_delta: float) -> void:

@@ -17,3 +17,10 @@ extends Resource
 ## Tiene que ser mayor que el alcance del InteractionRay del jugador + hold_distance,
 ## si no, agarrar un objeto justo al límite del alcance lo soltaría solo en el mismo instante.
 @export_range(0.5, 10.0, 0.1, "suffix:m") var auto_release_distance: float = 4.0
+
+@export_group("Aterrizaje en un PlacementSlot")
+## Cuánto tarda la animación de aterrizaje suave cuando encastra en un PlacementSlot.
+@export_range(0.05, 1.0, 0.01, "suffix:s") var settle_duration: float = 0.18
+## Qué tan marcado es el "aplastamiento" sutil al tocar el lugar (0 = sin efecto, 1 = exagerado).
+## Necesita que el PickupObject tenga asignado un nodo visual.
+@export_range(0.0, 0.6, 0.01) var settle_squash: float = 0.15

@@ -15,7 +15,18 @@ signal object_removed(object: PickupObject)
 var _placed_object: PickupObject = null
 
 
+## Grupo al que pertenecen todos los PlacementSlot (para que la UI los consulte).
+const GROUP_NAME := &"placement_slots"
+
+
+## true si el objeto está dentro de la zona y el casillero está libre, o sea que
+## soltarlo ahora lo encastraría.
+func would_accept(object: PickupObject) -> bool:
+	return _placed_object == null and get_overlapping_bodies().has(object)
+
+
 func _ready() -> void:
+	add_to_group(GROUP_NAME)
 	# Capa 2 = "zona de detección": el InteractionRay del jugador solo mira la capa 1
 	# (cuerpos físicos), así que nunca choca contra esta Area3D en vez de contra el
 	# objeto encastrado adentro. Sigue detectando cuerpos en la capa 1 con normalidad.
@@ -33,10 +44,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _place(object: PickupObject) -> void:
-	object.global_position = snap_point.global_position
-	object.freeze = true
-	object.linear_velocity = Vector3.ZERO
-	object.angular_velocity = Vector3.ZERO
+	object.animate_settle(snap_point.global_transform)
 	_placed_object = object
 	if locks_object_on_place:
 		object.lock()
