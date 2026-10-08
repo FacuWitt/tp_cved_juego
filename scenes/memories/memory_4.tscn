@@ -1,82 +1,479 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/memories/memory.gd" id="1_memory"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="3_exit"]
-[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="4_grid"]
+[ext_resource type="Script" path="res://scripts/memories/memory_4_accident.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/memory_4_settings.tres" id="2_e"]
+[ext_resource type="Script" path="res://scripts/world/lightning_controller.gd" id="3_e"]
+[ext_resource type="Script" path="res://scripts/world/ocean_follow.gd" id="4_e"]
+[ext_resource type="Script" path="res://scripts/world/giant_wave.gd" id="5_e"]
+[ext_resource type="Script" path="res://scripts/world/cuttable_rope.gd" id="6_e"]
+[ext_resource type="Script" path="res://scripts/ui/timing_qte.gd" id="7_e"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="8_e"]
+[ext_resource type="Shader" path="res://assets/shaders/ocean.gdshader" id="9_e"]
+[ext_resource type="Shader" path="res://assets/shaders/giant_wave.gdshader" id="10_e"]
+[ext_resource type="Shader" path="res://assets/shaders/rescue_glow.gdshader" id="11_e"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="12_e"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_13_s"]
+shader = ExtResource("9_e")
 
-[sub_resource type="Sky" id="Sky_sky"]
-sky_material = SubResource("ProceduralSkyMaterial_sky")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_14_s"]
+shader = ExtResource("10_e")
 
-[sub_resource type="Environment" id="Environment_env"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_15_s"]
+shader = ExtResource("11_e")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_16_s"]
+albedo_color = Color(0.1, 0.115, 0.13, 1)
+roughness = 0.85
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_17_s"]
+albedo_color = Color(0.04, 0.05, 0.065, 1)
+roughness = 0.7
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_18_s"]
+albedo_color = Color(0.1, 0.11, 0.12, 1)
+roughness = 0.85
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_19_s"]
+albedo_color = Color(0.05, 0.05, 0.055, 1)
+roughness = 0.5
+metallic = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_20_s"]
+albedo_color = Color(1.0, 0.62, 0.22, 1)
+roughness = 0.5
+metallic = 0.0
+emission_enabled = true
+emission = Color(1.0, 0.6, 0.2, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21_s"]
+albedo_color = Color(0.08, 0.08, 0.09, 1)
+roughness = 0.85
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22_s"]
+albedo_color = Color(1.0, 0.1, 0.05, 1)
+roughness = 0.5
+metallic = 0.0
+emission_enabled = true
+emission = Color(1.0, 0.12, 0.05, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_23_s"]
+albedo_color = Color(0.8, 0.6, 0.08, 1)
+roughness = 0.6
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_24_s"]
+shading_mode = 0
+transparency = 1
+albedo_color = Color(0.65, 0.75, 0.85, 0.22)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_25_s"]
+sky_top_color = Color(0.012, 0.016, 0.024, 1)
+sky_horizon_color = Color(0.05, 0.065, 0.082, 1)
+ground_bottom_color = Color(0.0, 0.0, 0.0, 1)
+ground_horizon_color = Color(0.04, 0.05, 0.065, 1)
+sky_curve = 0.12
+ground_curve = 0.05
+
+[sub_resource type="Sky" id="Sky_26_s"]
+sky_material = SubResource("ProceduralSkyMaterial_25_s")
+
+[sub_resource type="Environment" id="Environment_27_s"]
 background_mode = 2
-sky = SubResource("Sky_sky")
-ambient_light_source = 3
+sky = SubResource("Sky_26_s")
+background_energy_multiplier = 1.0
+ambient_light_source = 2
+ambient_light_color = Color(0.14, 0.18, 0.25, 1)
+ambient_light_energy = 0.05
+reflected_light_source = 2
 tonemap_mode = 2
+tonemap_exposure = 1.0
+fog_enabled = true
+fog_light_color = Color(0.02, 0.03, 0.04, 1)
+fog_light_energy = 1.0
+fog_density = 0.0042
+fog_sky_affect = 0.85
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.05
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
-render_priority = 0
-shader = ExtResource("4_grid")
-shader_parameter/base_color = Color(0.5, 0.45, 0.6, 1)
-shader_parameter/line_color = Color(0.33, 0.29, 0.4, 1)
-shader_parameter/cell_size = 1.0
-shader_parameter/line_width = 0.03
+[sub_resource type="PlaneMesh" id="PlaneMesh_28_s"]
+size = Vector2(900, 900)
+subdivide_width = 299
+subdivide_depth = 299
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_exit"]
-render_priority = 0
-shader = ExtResource("4_grid")
-shader_parameter/base_color = Color(0.85, 0.7, 0.4, 1)
-shader_parameter/line_color = Color(0.55, 0.45, 0.26, 1)
-shader_parameter/cell_size = 1.0
-shader_parameter/line_width = 0.03
+[sub_resource type="QuadMesh" id="QuadMesh_29_s"]
+size = Vector2(1, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_exit"]
-size = Vector3(2, 2.5, 2)
+[sub_resource type="BoxShape3D" id="BoxShape3D_30_s"]
+size = Vector3(6, 3, 0.3)
 
-[node name="Memory4" type="Node3D"]
-script = ExtResource("1_memory")
+[sub_resource type="BoxShape3D" id="BoxShape3D_31_s"]
+size = Vector3(0.3, 3, 3.6)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_32_s"]
+radius = 0.3
+height = 1.75
+
+[sub_resource type="SphereMesh" id="SphereMesh_33_s"]
+radius = 0.16
+height = 0.32
+
+[sub_resource type="BoxMesh" id="BoxMesh_34_s"]
+size = Vector3(0.014, 0.55, 0.014)
+
+[node name="Memory4" type="Node3D" node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+player = NodePath("Player")
+ropes = [NodePath("Ship/RopeLeft"), NodePath("Ship/RopeCenter"), NodePath("Ship/RopeRight")]
+qte = NodePath("HUD/Qte")
+subtitles = NodePath("HUD/Subtitles")
+prompt_label = NodePath("HUD/PromptLabel")
+lightning = NodePath("Lightning")
+wave = NodePath("Wave")
+ship = NodePath("Ship")
+searchlight = NodePath("Ship/Searchlight")
+world_environment = NodePath("WorldEnvironment")
+rain = NodePath("Player/Rain")
+ocean = NodePath("Ocean")
+slam_overlay = NodePath("HUD/SlamOverlay")
+water_overlay = NodePath("HUD/WaterOverlay")
+black_overlay = NodePath("HUD/BlackOverlay")
+rescue_glow = NodePath("RescueGlow")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_env")
+environment = SubResource("Environment_27_s")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.76604444, -0.5, -0.66341394, 0.5566704, 0, 0, 0)
+[node name="LightningLight" type="DirectionalLight3D" parent="."]
+light_color = Color(0.72, 0.82, 1.0, 1)
+light_energy = 0.0
 shadow_enabled = true
+directional_shadow_max_distance = 140.0
+rotation_degrees = Vector3(-45, 40, 0)
 
-[node name="Level" type="Node3D" parent="."]
+[node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("3_e")
+settings = ExtResource("2_e")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+flash_materials = Array[ShaderMaterial]([SubResource("ShaderMaterial_13_s"), SubResource("ShaderMaterial_14_s")])
 
-[node name="Floor" type="CSGBox3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+[node name="Ocean" type="MeshInstance3D" parent="."]
+script = ExtResource("4_e")
+mesh = SubResource("PlaneMesh_28_s")
+material_override = SubResource("ShaderMaterial_13_s")
+position = Vector3(0, -2.6, 0)
+cast_shadow = 0
+custom_aabb = AABB(-500, -20, -500, 1000, 40, 1000)
+
+[node name="Wave" type="Node3D" parent="."]
+script = ExtResource("5_e")
+settings = ExtResource("2_e")
+material = SubResource("ShaderMaterial_14_s")
+position = Vector3(0, -2.6, 0)
+
+[node name="Ship" type="Node3D" parent="."]
+
+[node name="Deck" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, -0.15, -4.5)
+material = SubResource("StandardMaterial3D_16_s")
+size = Vector3(5.4, 0.3, 15)
 use_collision = true
-size = Vector3(20, 1, 20)
-material = SubResource("ShaderMaterial_floor")
 
-[node name="Title" type="Label3D" parent="Level"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -6)
-text = "MEMORIA 4 (provisoria)"
-font_size = 96
-outline_size = 16
+[node name="Ramp" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, -0.6, 4.5)
+material = SubResource("StandardMaterial3D_16_s")
+size = Vector3(5.0, 0.25, 3.4)
+rotation_degrees = Vector3(20.7, 0, 0)
+use_collision = true
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+[node name="Hull" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, -1.9, -4.5)
+material = SubResource("StandardMaterial3D_17_s")
+size = Vector3(5.6, 3.2, 15)
 
-[node name="MemoryExit" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
-script = ExtResource("3_exit")
+[node name="Bow" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, -1.9, -12.9)
+material = SubResource("StandardMaterial3D_17_s")
+size = Vector3(3.9, 3.2, 3.9)
+rotation_degrees = Vector3(0, 45, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MemoryExit"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
-shape = SubResource("BoxShape3D_exit")
+[node name="SideLeft" type="CSGBox3D" parent="Ship"]
+position = Vector3(-2.6, 0.55, -4.5)
+material = SubResource("StandardMaterial3D_17_s")
+size = Vector3(0.2, 1.1, 15)
+use_collision = true
 
-[node name="Marker" type="CSGBox3D" parent="MemoryExit"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
-size = Vector3(1.6, 2.5, 1.6)
-material = SubResource("ShaderMaterial_exit")
+[node name="SideRight" type="CSGBox3D" parent="Ship"]
+position = Vector3(2.6, 0.55, -4.5)
+material = SubResource("StandardMaterial3D_17_s")
+size = Vector3(0.2, 1.1, 15)
+use_collision = true
 
-[node name="Label" type="Label3D" parent="MemoryExit"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 0)
-text = "SALIDA"
-font_size = 64
-outline_size = 12
+[node name="BowWall" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, 0.55, -11.95)
+material = SubResource("StandardMaterial3D_17_s")
+size = Vector3(5.4, 1.1, 0.2)
+use_collision = true
+
+[node name="Cabin" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, 1.5, -9.6)
+material = SubResource("StandardMaterial3D_18_s")
+size = Vector3(4.4, 3.0, 3.8)
+use_collision = true
+
+[node name="Window" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, 2.0, -7.68)
+material = SubResource("StandardMaterial3D_20_s")
+size = Vector3(3.4, 0.6, 0.06)
+
+[node name="Mast" type="CSGCylinder3D" parent="Ship"]
+position = Vector3(0, 6.5, -9.8)
+material = SubResource("StandardMaterial3D_21_s")
+radius = 0.12
+height = 7.0
+
+[node name="WinchBase" type="CSGBox3D" parent="Ship"]
+position = Vector3(0, 0.45, -3.2)
+material = SubResource("StandardMaterial3D_19_s")
+size = Vector3(1.6, 0.9, 1.2)
+use_collision = true
+
+[node name="WinchDrum" type="CSGCylinder3D" parent="Ship"]
+position = Vector3(0, 1.05, -3.2)
+material = SubResource("StandardMaterial3D_19_s")
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.45
+height = 2.0
+
+[node name="MastLamp" type="MeshInstance3D" parent="Ship"]
+mesh = SubResource("SphereMesh_33_s")
+material_override = SubResource("StandardMaterial3D_22_s")
+position = Vector3(0, 10.1, -9.8)
+
+[node name="MastLight" type="OmniLight3D" parent="Ship"]
+light_color = Color(1.0, 0.2, 0.1, 1)
+light_energy = 1.2
+omni_range = 14.0
+position = Vector3(0, 10.0, -9.8)
+
+[node name="CabinLight" type="OmniLight3D" parent="Ship"]
+light_color = Color(1.0, 0.66, 0.3, 1)
+light_energy = 1.6
+omni_range = 11.0
+position = Vector3(0, 2.3, -7.0)
+
+[node name="DeckLamp" type="OmniLight3D" parent="Ship"]
+light_color = Color(1.0, 0.72, 0.38, 1)
+light_energy = 1.7
+omni_range = 10.0
+position = Vector3(0, 2.4, -2.0)
+
+[node name="SternLamp" type="OmniLight3D" parent="Ship"]
+light_color = Color(1.0, 0.72, 0.38, 1)
+light_energy = 1.1
+omni_range = 8.0
+position = Vector3(0, 2.2, 2.2)
+
+[node name="Searchlight" type="SpotLight3D" parent="Ship"]
+light_color = Color(1.0, 0.96, 0.86, 1)
+light_energy = 0.0
+spot_range = 160.0
+spot_angle = 9.0
+spot_attenuation = 0.5
+shadow_enabled = false
+position = Vector3(0, 3.5, -8.0)
+rotation_degrees = Vector3(-3, 180, 0)
+
+[node name="SternBlock" type="StaticBody3D" parent="Ship"]
+position = Vector3(0, 1.5, 6.6)
+
+[node name="Shape" type="CollisionShape3D" parent="Ship/SternBlock"]
+shape = SubResource("BoxShape3D_30_s")
+
+[node name="RampBlockLeft" type="StaticBody3D" parent="Ship"]
+position = Vector3(-2.65, 1.5, 4.6)
+
+[node name="Shape" type="CollisionShape3D" parent="Ship/RampBlockLeft"]
+shape = SubResource("BoxShape3D_31_s")
+
+[node name="RampBlockRight" type="StaticBody3D" parent="Ship"]
+position = Vector3(2.65, 1.5, 4.6)
+
+[node name="Shape" type="CollisionShape3D" parent="Ship/RampBlockRight"]
+shape = SubResource("BoxShape3D_31_s")
+
+[node name="Crew1" type="Node3D" parent="Ship"]
+position = Vector3(-1.9, 0.88, -1.0)
+rotation_degrees = Vector3(0, 150, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Ship/Crew1"]
+mesh = SubResource("CapsuleMesh_32_s")
+material_override = SubResource("StandardMaterial3D_23_s")
+
+[node name="Label" type="Label3D" parent="Ship/Crew1"]
+text = "TRIPULANTE"
+position = Vector3(0, 1.25, 0)
+pixel_size = 0.004
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Crew2" type="Node3D" parent="Ship"]
+position = Vector3(1.9, 0.88, -4.6)
+rotation_degrees = Vector3(0, -140, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Ship/Crew2"]
+mesh = SubResource("CapsuleMesh_32_s")
+material_override = SubResource("StandardMaterial3D_23_s")
+
+[node name="Label" type="Label3D" parent="Ship/Crew2"]
+text = "TRIPULANTE"
+position = Vector3(0, 1.25, 0)
+pixel_size = 0.004
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Crew3" type="Node3D" parent="Ship"]
+position = Vector3(-1.6, 0.88, -6.2)
+rotation_degrees = Vector3(0, 170, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Ship/Crew3"]
+mesh = SubResource("CapsuleMesh_32_s")
+material_override = SubResource("StandardMaterial3D_23_s")
+
+[node name="Label" type="Label3D" parent="Ship/Crew3"]
+text = "TRIPULANTE"
+position = Vector3(0, 1.25, 0)
+pixel_size = 0.004
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="RopeLeft" type="Node3D" parent="Ship"]
+script = ExtResource("6_e")
+winch_point = Vector3(-0.4, 0.95, -3.2)
+cut_point = Vector3(-1.6, -0.35, 4.3)
+water_point = Vector3(-4.800000000000001, -2.6, 24)
+
+[node name="RopeCenter" type="Node3D" parent="Ship"]
+script = ExtResource("6_e")
+winch_point = Vector3(0.0, 0.95, -3.2)
+cut_point = Vector3(0.0, -0.35, 4.3)
+water_point = Vector3(0.0, -2.6, 24)
+
+[node name="RopeRight" type="Node3D" parent="Ship"]
+script = ExtResource("6_e")
+winch_point = Vector3(0.4, 0.95, -3.2)
+cut_point = Vector3(1.6, -0.35, 4.3)
+water_point = Vector3(4.800000000000001, -2.6, 24)
+
+[node name="Player" type="CharacterBody3D" parent="." instance=ExtResource("12_e")]
+position = Vector3(0, 0.02, 0.0)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="Rain" type="CPUParticles3D" parent="Player"]
+position = Vector3(0, 9, 0)
+amount = 1800
+lifetime = 0.75
+preprocess = 0.8
+local_coords = false
+mesh = SubResource("BoxMesh_34_s")
+material_override = SubResource("StandardMaterial3D_24_s")
+emission_shape = 3
+emission_box_extents = Vector3(13, 0.1, 13)
+particle_flag_align_y = true
+direction = Vector3(0.12, -1, 0.05)
+spread = 2.0
+initial_velocity_min = 22.0
+initial_velocity_max = 26.0
+gravity = Vector3(0, -12, 0)
+cast_shadow = 0
+
+[node name="RescueGlow" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_29_s")
+material_override = SubResource("ShaderMaterial_15_s")
+visible = false
+cast_shadow = 0
+custom_aabb = AABB(-100, -100, -100, 200, 200, 200)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="SlamOverlay" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.72, 0.86, 0.94, 1)
+
+[node name="WaterOverlay" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.045, 0.06, 1)
+
+[node name="BlackOverlay" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="PromptLabel" type="Label" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -250.0
+offset_right = 220.0
+offset_bottom = -205.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "(E) Cortar la soga"
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+
+[node name="Qte" type="Control" parent="HUD"]
+script = ExtResource("7_e")
+mouse_filter = 2
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("8_e")
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22

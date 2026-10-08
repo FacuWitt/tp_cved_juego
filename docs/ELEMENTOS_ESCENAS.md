@@ -218,6 +218,16 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 
 ## 4. Memoria 4 — El accidente ✅
 
+> ### 🔄 Cambio de diseño (CL-014): cubierta, sogas y ola gigante
+> El prototipo de M4 se armó con **una sola escena de cubierta** (`scenes/memories/memory_4.tscn`) en lugar de camarote + escalera + fondo. Lo que quedó implementado:
+> - **Cortar sogas con hacha:** 3 sogas (izquierda, centro, derecha). Hay que acertar un **quick event** (barra con marcador que va y viene, tecla `interact`) 2 veces por soga. Errar nunca es game over: el barco se inclina un poco más y se vuelve a intentar. Cada soga hace la zona más chica y el marcador más rápido.
+> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, NOMBRE!"* (`protagonist_name` en `config/memory_4_settings.tres`, ❓ falta el nombre).
+> - **La ola gigante** (`GiantWave` + `giant_wave.gdshader`): una malla que se deforma en el shader desde una ola baja, a una pared, a una ola que **rompe hacia el jugador** (`curl`). Avanza acelerando y lo cubre. Todo configurable en `Memory4Settings`.
+> - **Luz:** lo único que ilumina son los **rayos** (`LightningController`) y una luz muy lejana del barco. Entre rayo y rayo, casi negro.
+> - **Después de la ola:** el protagonista emerge, flota; el barco se aleja mirando para otro lado y su reflector barre otras partes del mar sin verlo. Luego se hunde a oscuridad total (talasofobia).
+> - **Final de la memoria:** una luz que crece desde el fondo = **helicóptero** ✅ (reemplaza al barquito luminoso del fondo). ❓ Falta confirmar con el equipo si además aparece el barquito.
+> - **Pendientes ❓:** sonido (capas Amenaza/Afuera), modelos finales, nombre del protagonista, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
+
 **Escena:** `scenes/memories/m4_pesquero/`. Noche, tormenta fuerte. **Sin degradación:** la más nítida y real.
 
 ### Espacio

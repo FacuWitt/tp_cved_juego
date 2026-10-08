@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-014 · Memoria 4: cubierta, sogas con quick event y ola gigante · 2026-10-08
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: "hay que cortar sogas para salvar a toda la tripulación… cuando se corta la última soga dicen LO LOGRAMOS… CUIDADO… aparece la ola GIGANTE… muy de noche… los truenos son lo único que ilumina… abajo del agua completamente oscuro… la luz que nos salva viene de un helicóptero".
+- **Qué se hizo:** escena de cubierta con 3 sogas cortables (quick event), tripulación placeholder, ola gigante procedural que rompe sobre el jugador, mar nocturno con rayos, flotación con el barco alejándose, hundimiento a oscuridad total y luz de helicóptero que termina la memoria (`complete()`).
+- **Por qué (decisión de diseño):** el equipo pidió que la ola dé miedo y se vea creíble sin depender de un modelo 3D animado. Una malla deformada en un shader permite ajustar altura, ancho, velocidad y cuánto rompe desde un Resource. Los rayos son la única luz para reforzar la oscuridad y la talasofobia. El helicóptero tiene más sentido que el barquito como luz de rescate (decisión de Facu).
+- **Alternativas descartadas:** modelo 3D de ola con animación (difícil de conseguir y de ajustar); degradación por frío / input lag / cubierta resbalosa (Facu: "no le hagas caso tanto al paso a paso"); game over al errar el quick event (se reemplazó por más inclinación del barco).
+- **Problemas encontrados:** la ola salía invisible por un `custom_aabb` mal calculado (corregido); los atributos de vértice personalizados no funcionaban en Compatibility, así que las poses se calculan dentro del shader; solapamiento de tweens de rayos (un solo tween por vez). Todo se probó con capturas en el renderer Compatibility; **no se vio en Forward+ real**, los colores y brillos pueden diferir.
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd`, `scripts/world/{giant_wave,lightning_controller,ocean_follow,cuttable_rope,axe_view}.gd`, `scripts/ui/timing_qte.gd`, `scripts/config/memory_4_settings.gd`, `config/memory_4_settings.tres`, shaders `ocean`, `giant_wave`, `rescue_glow`, escena `memory_4.tscn`. Se actualizó `docs/ELEMENTOS_ESCENAS.md` (sección M4).
+- **Pendiente / ❓ ABIERTO:** nombre del protagonista; tecla del quick event; audio; modelos finales; ¿aparece también el barquito?; valores de feel de `Memory4Settings` para que ajuste el equipo.
+
 ### CL-013 · El nene no se va de la habitación sin su barco · 2026-10-08
 - **Rama / commits:** `claude/m1-habitacion` · ver `git log`
 - **Pedido por:** Facu: "Saca el objeto marea (es difícil hacer un objeto marea), que quede como distractor únicamente el barco... cuando intente sobrepasar la puerta, un mensaje de dialogo del propio protagonista dice, no me puedo ir sin mi juguete favorito, y vuelve a buscar el barco (aquí se fortalece la conexión con el barco)".
