@@ -100,6 +100,9 @@ El profesor pidió que todo lo que hagamos quede en el **documento de la soluci�
 - Cuando cambie una decisión, actualizar el doc y anotarla en `docs/DECISIONES.md`.
 - `prueba_script.gd` y `node_3d.tscn` en la raíz son restos de prueba: no usarlos como referencia.
 
+## Tareas temporales
+- Hay un bloque **🔧 TAREAS TEMPORALES M1** en `docs/ELEMENTOS_ESCENAS.md` (sección de la Memoria 1) con trabajo decidido y todavía sin implementar. Hacelo cuando toques la M1 y borrá el bloque al terminar.
+
 ## Documentos
 | Doc | Estado |
 |---|---|

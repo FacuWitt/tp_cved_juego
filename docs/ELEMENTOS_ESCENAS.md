@@ -13,7 +13,7 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | Elemento | Dónde aparece | Etapa 0 | Qué necesita |
 |---|---|---|---|
 | **Barquito de madera** | M1 estante alto · M2 mochila · M3 en las manos · M4 imagen luminosa en el fondo · Final mesita de luz | Prisma marrón | Un solo modelo con dos variantes: normal y **luminosa** (emisión cálida) |
-| **Reloj parado** | M1 despertador · M2 cabaña · M3 varios · M4 camarote · Final reloj de pared | Cilindro con `Label3D` "RELOJ" | Script con modo `parado` (agujas fijas en la hora ❓) o `en marcha` (Final). En ambos modos hace tic-tac al ritmo del bip |
+| **Reloj parado** | M1 despertador · M2 cabaña · M3 varios · M4 camarote · Final reloj de pared | Cilindro con `Label3D` "RELOJ" | Script con modo `parado` (agujas fijas a las **3:00 am** ✅, hora del accidente)  o `en marcha` (Final). En ambos modos hace tic-tac al ritmo del bip |
 | **Luna** | Ventanas de M1 y M3 · cielo de M2 y M4 | Esfera emisiva | Billboard o esfera lejana; las nubes la tapan y destapan |
 | **Tormenta** | M1 (afuera) · M2 (se acerca) · M4 (encima) | — | Lluvia (partículas), relámpagos (flash de luz fría) y truenos con retardo. Intensidad configurable por escena |
 | **Agua / goteo** | M1 techo · M3 charcos, paredes y canilla · M4 cubierta | Esfera chica que cae | Gota con sonido 3D seco (capa amenaza) |
@@ -59,7 +59,7 @@ La abuela le pide que ordene los juguetes y le deja la canción de cuna en un pa
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
 | 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
 
-**Distractores:** barco, marea y pescador. El pescador está nombrado en el poema ("y el pescador fue a tirar"): es la trampa más fuerte; revisar en pruebas con gente si traba de más.
+**Distractores:** barco y marea. ✅ El pescador **no** es un objeto: el poema lo nombra ("y el pescador fue a tirar") porque es el protagonista, y ponerlo como juguete trababa de más. Total: 7 objetos agarrables (5 correctos + 2 distractores).
 
 Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
 
@@ -77,11 +77,22 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Tic-tac del despertador | Amenaza, al ritmo del bip | Mesa de luz (3D) |
 | Voz de la mamá al resolver (*"¡Muy bien, mi amor!"*) | Recuerdo | — |
 | Error: golpe grave, crujido, goteo más cerca | Amenaza | Puerta (3D) |
+| Error: agua que se filtra bajo la puerta ✅ (visual, ver tareas) | Amenaza | Puerta |
+
+
+### 🔧 TAREAS TEMPORALES M1 (decididas 2026-10-08) — borrar este bloque cuando estén todas hechas
+> Para Claude Code. Al terminar cada una: tachala (`~~...~~`), sumá la entrada al `CHANGELOG.md` y probá recorriendo el camino del jugador (no teletransportes). Cuando estén todas, borrá el bloque entero.
+
+- [ ] **T1. Sacar el pescador.** Borrar el nodo `Pescador` de `puzzle.tscn` (queda con 7 objetos: luna, red, ola, ancla, faro, barco, marea). Reacomodar las posiciones si queda un hueco raro. Actualizar `m1_test.gd` / `m1_place_sim.gd` si mencionan `pescador`. El poema **no cambia**.
+- [ ] **T2. Hora del accidente = 3:00 am.** El reloj compartido (`Reloj parado`) toma la hora de un `@export` en un Resource de `config/` (hora y minuto), con 3:00 por defecto. El despertador de M1 la usa. Que M2, M3, M4 reutilicen el mismo valor cuando se arme su reloj. El reloj del Final (en marcha) no la usa.
+- [ ] **T3. Agua bajo la puerta al equivocarse.** En el evento `failed` de `memory_1_room.gd`, un charco finito (placeholder: plano/`CSGBox3D` azul oscuro, semitransparente) crece desde el hueco de la puerta hacia adentro con un tween. 📝 Propuesta (confirmar con Facu si no gusta): cada error lo agranda un poco y al resolver el puzzle se seca o deja de crecer. Valores (tamaño por error, tiempo, color, opacidad) en `memory_1_settings.tres`. Sin colisión y sin castigo. Etapa 2: reemplazar por shader de agua.
+- [ ] **T4. Docs.** Actualizar `docs/ELEMENTOS_ESCENAS.md` si algo de lo anterior cambia al implementarlo, y anotar la decisión en el changelog (ya existe CL-012 con el porqué).
+- [x] **Confirmado, sin cambios:** valores de nene (figuras de 36 cm, cámara a 1,1 m, caminar 3,2, correr 5,0, salto 4,0). "Por el momento está bien así".
 
 ### Sistemas que pide
 - `piece_id` en `PickupObject` + script de puzzle de secuencia que valide qué pieza hay en cada `PlacementSlot`.
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
-- Reacción al error (sin castigo, sube la tensión).
+- Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
 
 ---
 
@@ -280,11 +291,11 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 3 distractores (barco, marea, pescador).
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 2 distractores (barco, marea). El pescador se quitó como objeto.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
 4. ~~M1: quién felicita~~ ✅ la mamá.
-5. La hora del accidente (todos los relojes).
+5. ~~La hora del accidente~~ ✅ **3:00 am** (todos los relojes).
 6. **M2:** ¿la mochila con el barquito se ve en escena?
 7. **M3 → M4:** ¿corte directo o transición en negro con voces?
 8. **M4:** ¿el descenso es controlado o cinemática? ¿Hay timón?

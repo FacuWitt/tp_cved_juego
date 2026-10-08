@@ -41,6 +41,15 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-012 · Decisiones de la memoria 1: hora del accidente, sin pescador y agua bajo la puerta · 2026-10-08
+- **Rama / commits:** `claude/m1-decisiones` · ver `git log`
+- **Pedido por:** Facu: "digamos que fue a las 3 am", "Saquemos al pescador como objeto", "Si!" (agua visible al equivocarse) y "Por el momento está bien así" (valores de nene).
+- **Qué se hizo:** solo documentación. Se cerraron cuatro pendientes de `docs/ELEMENTOS_ESCENAS.md` y se dejó en ese archivo un bloque de tareas temporales (T1 a T4) para implementarlo cuando se vuelva a la M1.
+- **Por qué (decisión de diseño):** (1) todos los relojes marcan las 3:00 am, la hora del accidente, para tener una única referencia que repetir. (2) El pescador sale como objeto porque el protagonista ya es el pescador del poema y, como juguete, confundía de más; quedan 7 objetos. (3) El agua bajo la puerta refuerza la capa de amenaza sin castigar: el error se siente, no se pierde nada. (4) Los valores de escala de nene se mantienen. Motivos (2) y (3) en palabras de Facu: motivo detallado no registrado.
+- **Alternativas descartadas:** ninguna registrada.
+- **Archivos y docs:** `docs/ELEMENTOS_ESCENAS.md`, `CLAUDE.md` (puntero a las tareas), `CHANGELOG.md`.
+- **Pendiente / ❓ ABIERTO:** implementar T1 a T3. Si el agua es acumulativa por error y si se seca al resolver es una propuesta sin confirmar.
+
 ### CL-011 · La puerta de la memoria 1 dejaba de bloquear solo a la vista, no a la física · 2026-10-08
 - **Rama / commits:** `develop` · sin commitear
 - **Pedido por:** Facu: "no puedo pasar la puerta una vez que abre" (al probar el paso de la M1 a la M2).
