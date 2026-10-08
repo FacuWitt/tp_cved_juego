@@ -59,7 +59,16 @@ La abuela le pide que ordene los juguetes y le deja la canción de cuna en un pa
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
 | 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
 
-**Distractores:** barco y marea. ✅ El pescador **no** es un objeto: el poema lo nombra ("y el pescador fue a tirar") porque es el protagonista, y ponerlo como juguete trababa de más. Total: 7 objetos agarrables (5 correctos + 2 distractores).
+**Distractor:** barco. ✅ Es el único. El pescador no es un objeto (el poema lo nombra porque es el protagonista) y la marea se descartó por ser difícil de representar como objeto. Total: **6 objetos** agarrables (5 correctos + el barco).
+
+#### El barco: el juguete favorito ✅
+El barco **no** sirve para el orden, pero el nene no se va sin él:
+1. El barco está suelto en el cuarto (Etapa 0: junto a la cama, sobre la mesa de luz).
+2. Al resolver el puzzle la puerta se abre. El jugador, naturalmente, intenta salir.
+3. Un `ItemGate` (barrera física + zona de aviso) en el umbral lo frena y el protagonista dice: *"No me puedo ir sin mi juguete favorito."* (`gate_line` en `memory_1_settings.tres`).
+4. El jugador vuelve a buscar el barco. Al agarrarlo, el paso queda libre para siempre (aunque lo suelte).
+5. Si agarró el barco antes de resolver, no hay aviso: ya lo lleva.
+Intención narrativa: refuerza el vínculo con el barquito (el cable a tierra) desde la primera memoria.
 
 Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
 
@@ -83,7 +92,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 ### 🔧 TAREAS TEMPORALES M1 (decididas 2026-10-08) — borrar este bloque cuando estén todas hechas
 > Para Claude Code. Al terminar cada una: tachala (`~~...~~`), sumá la entrada al `CHANGELOG.md` y probá recorriendo el camino del jugador (no teletransportes). Cuando estén todas, borrá el bloque entero.
 
-- [ ] **T1. Sacar el pescador.** Borrar el nodo `Pescador` de `puzzle.tscn` (queda con 7 objetos: luna, red, ola, ancla, faro, barco, marea). Reacomodar las posiciones si queda un hueco raro. Actualizar `m1_test.gd` / `m1_place_sim.gd` si mencionan `pescador`. El poema **no cambia**.
+- [x] ~~**T1. Sacar el pescador.**~~ Hecho: se sacaron también la marea (difícil de representar). Quedan 6 objetos. El poema no cambia.
 - [ ] **T2. Hora del accidente = 3:00 am.** El reloj compartido (`Reloj parado`) toma la hora de un `@export` en un Resource de `config/` (hora y minuto), con 3:00 por defecto. El despertador de M1 la usa. Que M2, M3, M4 reutilicen el mismo valor cuando se arme su reloj. El reloj del Final (en marcha) no la usa.
 - [ ] **T3. Agua bajo la puerta al equivocarse.** En el evento `failed` de `memory_1_room.gd`, un charco finito (placeholder: plano/`CSGBox3D` azul oscuro, semitransparente) crece desde el hueco de la puerta hacia adentro con un tween. 📝 Propuesta (confirmar con Facu si no gusta): cada error lo agranda un poco y al resolver el puzzle se seca o deja de crecer. Valores (tamaño por error, tiempo, color, opacidad) en `memory_1_settings.tres`. Sin colisión y sin castigo. Etapa 2: reemplazar por shader de agua.
 - [ ] **T4. Docs.** Actualizar `docs/ELEMENTOS_ESCENAS.md` si algo de lo anterior cambia al implementarlo, y anotar la decisión en el changelog (ya existe CL-012 con el porqué).
@@ -92,6 +101,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 ### Sistemas que pide
 - `piece_id` en `PickupObject` + script de puzzle de secuencia que valide qué pieza hay en cada `PlacementSlot`.
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
+- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto (el barco) y avisa con la señal `blocked`. ✅ Implementado.
 - Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
 
 ---
@@ -291,7 +301,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 2 distractores (barco, marea). El pescador se quitó como objeto.
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 1 distractor: el barco (sin marea ni pescador). El barco es además el juguete favorito que hay que llevarse para salir.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
 4. ~~M1: quién felicita~~ ✅ la mamá.

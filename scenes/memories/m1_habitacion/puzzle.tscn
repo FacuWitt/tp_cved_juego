@@ -236,11 +236,6 @@ position = Vector3(-1.6, 0.59, 1.68)
 piece_id = &"red"
 label_text = "RED"
 
-[node name="Pescador" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(1.45, 0.7, 0.15)
-piece_id = &"pescador"
-label_text = "PESCADOR"
-
 [node name="Ola" parent="Pieces" instance=ExtResource("4_e")]
 position = Vector3(-1.2, 0.19, -0.55)
 piece_id = &"ola"
@@ -257,11 +252,6 @@ piece_id = &"faro"
 label_text = "FARO"
 
 [node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(0.3, 0.19, 1.7)
+position = Vector3(1.45, 0.7, 0.15)
 piece_id = &"barco"
 label_text = "BARCO"
-
-[node name="Marea" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.05, 0.19, 1.8)
-piece_id = &"marea"
-label_text = "MAREA"

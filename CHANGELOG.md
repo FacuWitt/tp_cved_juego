@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-013 · El nene no se va de la habitación sin su barco · 2026-10-08
+- **Rama / commits:** `claude/m1-habitacion` · ver `git log`
+- **Pedido por:** Facu: "Saca el objeto marea (es difícil hacer un objeto marea), que quede como distractor únicamente el barco... cuando intente sobrepasar la puerta, un mensaje de dialogo del propio protagonista dice, no me puedo ir sin mi juguete favorito, y vuelve a buscar el barco (aquí se fortalece la conexión con el barco)".
+- **Qué se hizo:** se quitaron la marea y el pescador del puzzle (quedan 6 objetos: 5 piezas y el barco). Nueva clase `ItemGate`: una barrera física en el umbral de la puerta y una zona de aviso delante. Con la puerta ya abierta, si el jugador intenta salir sin haber agarrado el barco, el protagonista dice la línea y no puede cruzar. Al agarrar el barco la barrera se libera. El barco pasó a la mesa de luz (antes estaba junto a la puerta).
+- **Por qué (decisión de diseño):** el barco era un distractor sin consecuencia. Convertirlo en el juguete favorito que el nene no abandona refuerza desde la primera memoria el vínculo con el barquito (el cable a tierra) y le da al jugador una última pequeña tarea después del puzzle. La barrera es física y no solo un cartel para que no se pueda saltear el momento. El texto vive en `memory_1_settings.tres` (`gate_line`), no en el código. El barco se movió lejos de la puerta para que el "volver a buscarlo" sea un recorrido real. Es una decisión mía de ubicación y se puede cambiar.
+- **Alternativas descartadas:** pedir que lo lleve en la mano hasta la salida (más rígido; si lo suelta el paso quedaría cerrado de nuevo). Dejar que el aviso se repita sin barrera (el jugador podría ignorarlo y salir).
+- **Problemas encontrados:** la prueba automática no corría como script suelto porque `GameFlow` es un autoload y no existe todavía en ese modo; se corrió como escena. Además, al cruzar la salida `GameFlow` cambia de escena y libera la propia prueba, así que el resultado se imprime antes de que eso ocurra.
+- **Archivos y docs:** `scripts/world/item_gate.gd` (nuevo), `scripts/memories/memory_1_room.gd`, `scripts/config/memory_1_settings.gd`, `m1_habitacion.tscn`, `puzzle.tscn`, `docs/ELEMENTOS_ESCENAS.md`.
+- **Pendiente / ❓ ABIERTO:** el barco todavía no brilla ni se resalta al ser el juguete favorito (idea para la etapa 2). En la etapa 2 la línea pasa a ser audio.
+
 ### CL-012 · Decisiones de la memoria 1: hora del accidente, sin pescador y agua bajo la puerta · 2026-10-08
 - **Rama / commits:** `claude/m1-decisiones` · ver `git log`
 - **Pedido por:** Facu: "digamos que fue a las 3 am", "Saquemos al pescador como objeto", "Si!" (agua visible al equivocarse) y "Por el momento está bien así" (valores de nene).

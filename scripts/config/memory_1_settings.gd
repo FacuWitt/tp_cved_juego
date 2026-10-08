@@ -27,6 +27,13 @@ extends Resource
 ## Ángulo final de la puerta abierta.
 @export_range(30.0, 170.0, 1.0, "suffix:°") var door_open_angle: float = 100.0
 
+@export_group("Antes de salir")
+## Pensamiento del protagonista cuando intenta irse sin su juguete favorito (el barco).
+## En la etapa 2: su voz de nene, sin eco, como pensamiento en voz alta.
+@export_multiline var gate_line: String = "NENE (pensando): No me puedo ir sin mi juguete favorito."
+## Cuánto tiempo queda en pantalla el pensamiento.
+@export_range(0.5, 10.0, 0.1, "suffix:s") var gate_line_duration: float = 3.5
+
 @export_group("Al equivocarse")
 ## Texto provisorio de la reacción al error (en la etapa 2: golpe grave, crujido, goteo más cerca).
 @export_multiline var failed_line: String = "(Un golpe grave sacude la puerta. El goteo se escucha más cerca.)"

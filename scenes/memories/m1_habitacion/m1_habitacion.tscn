@@ -11,6 +11,13 @@
 [ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="9_e"]
 [ext_resource type="Script" uid="uid://bgkai17h72nrl" path="res://scripts/ui/reticle_dot.gd" id="10_e"]
 [ext_resource type="Script" uid="uid://bs67gb2yivlh5" path="res://scripts/ui/subtitle_display.gd" id="11_e"]
+[ext_resource type="Script" path="res://scripts/world/item_gate.gd" id="12_e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gate_zone"]
+size = Vector3(1, 2, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gate_barrier"]
+size = Vector3(1, 2.3, 0.1)
 
 [sub_resource type="Environment" id="Environment_12_s"]
 background_mode = 1
@@ -20,13 +27,14 @@ ambient_light_color = Color(0.32, 0.28, 0.26, 1)
 ambient_light_energy = 0.5
 tonemap_mode = 2
 
-[node name="M1Habitacion" type="Node3D" unique_id=1597620723 node_paths=PackedStringArray("puzzle", "door_hinge", "boat_light", "exit", "subtitles")]
+[node name="M1Habitacion" type="Node3D" unique_id=1597620723 node_paths=PackedStringArray("puzzle", "door_hinge", "boat_light", "exit", "exit_gate", "subtitles")]
 script = ExtResource("1_e")
 settings = ExtResource("2_e")
 puzzle = NodePath("Puzzle/SequencePuzzle")
 door_hinge = NodePath("RoomLayout/DoorHinge")
 boat_light = NodePath("Props/Barquito/BoatLight")
 exit = NodePath("RoomLayout/Exit")
+exit_gate = NodePath("ExitGate")
 subtitles = NodePath("HUD/Subtitles")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2099241482]
@@ -38,6 +46,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0026125908, 0.01705277, -0.
 [node name="Props" parent="." unique_id=85168332 instance=ExtResource("4_e")]
 
 [node name="Puzzle" parent="." unique_id=964792445 instance=ExtResource("5_e")]
+
+[node name="ExitGate" type="Area3D" parent="." node_paths=PackedStringArray("required_item", "barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 1, 1.7)
+script = ExtResource("12_e")
+required_item = NodePath("../Puzzle/Pieces/Barco")
+barrier = NodePath("../ExitBarrier")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitGate"]
+shape = SubResource("BoxShape3D_gate_zone")
+
+[node name="ExitBarrier" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 1.15, 2.1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitBarrier"]
+shape = SubResource("BoxShape3D_gate_barrier")
 
 [node name="MoonLight" type="OmniLight3D" parent="." unique_id=1558001159]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7, 2.1, 0)
