@@ -12,6 +12,7 @@ extends VBoxContainer
 @onready var _label: Label = $Label
 
 var _highlighted: bool = false
+var _aimed_slot: PlacementSlot = null
 
 
 func _ready() -> void:
@@ -25,9 +26,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var held: PickupObject = player.get_held_object()
 	var target: PickupObject = player.get_interactable_under_crosshair()
+	var aimed_slot: PlacementSlot = player.get_aimed_slot()
+	_update_aimed_slot(aimed_slot)
 
-	# Con algo en mano, solo se avisa si soltarlo ahora lo encastraría en algún casillero.
-	var can_place: bool = held != null and _is_over_free_slot(held)
+	# Con algo en mano, solo se avisa si soltarlo ahora lo encastraría en algún casillero:
+	# porque la mira apunta a uno libre, o porque el objeto ya está encima de uno.
+	var can_place: bool = held != null and (aimed_slot != null or _is_over_free_slot(held))
 
 	_set_highlighted(can_place or (held == null and target != null))
 
@@ -37,6 +41,17 @@ func _process(_delta: float) -> void:
 		_label.text = pickup_label_text
 	else:
 		_label.text = ""
+
+
+## Prende el indicador del casillero apuntado y apaga el anterior.
+func _update_aimed_slot(slot: PlacementSlot) -> void:
+	if slot == _aimed_slot:
+		return
+	if is_instance_valid(_aimed_slot):
+		_aimed_slot.set_aimed(false)
+	_aimed_slot = slot
+	if _aimed_slot != null:
+		_aimed_slot.set_aimed(true)
 
 
 func _is_over_free_slot(object: PickupObject) -> bool:

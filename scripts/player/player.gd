@@ -49,10 +49,15 @@ func teleport_to(target: Transform3D) -> void:
 
 
 ## Agarra el objeto al que apunta el InteractionRay, o suelta el que ya tiene agarrado.
+## Si al soltar está apuntando a un casillero libre, el objeto va a ese casillero.
 func _toggle_pickup() -> void:
 	if _held_object != null:
-		_held_object.release()
+		var slot: PlacementSlot = get_aimed_slot()
+		var object: PickupObject = _held_object
 		_held_object = null
+		object.release()
+		if slot != null:
+			slot.place(object)
 		return
 
 	if not _interaction_ray.is_colliding():
@@ -68,6 +73,27 @@ func _toggle_pickup() -> void:
 ## sepa qué mostrar sin depender de los nombres internos del Player.
 func get_held_object() -> PickupObject:
 	return _held_object
+
+
+## Con algo agarrado: el casillero libre al que apunta la mira (dentro del alcance del
+## InteractionRay), o null. Lo primero que toca el rayo manda: una pared o un objeto
+## ya encastrado tapan lo que hay detrás.
+func get_aimed_slot() -> PlacementSlot:
+	if _held_object == null:
+		return null
+	var from: Vector3 = _interaction_ray.global_position
+	var to: Vector3 = _interaction_ray.to_global(_interaction_ray.target_position)
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		from, to, 1 | 2, [get_rid(), _held_object.get_rid()]
+	)
+	query.collide_with_areas = true
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return null
+	var slot: PlacementSlot = hit.collider as PlacementSlot
+	if slot == null or not slot.is_free():
+		return null
+	return slot
 
 
 ## El PickupObject al que apunta el InteractionRay ahora mismo (si se puede agarrar), o null.
