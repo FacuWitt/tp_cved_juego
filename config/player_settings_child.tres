@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlayerSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/player_settings.gd" id="1_child"]
+
+[resource]
+script = ExtResource("1_child")
+walk_speed = 3.2
+sprint_speed = 5.0
+jump_velocity = 4.0
+camera_height = 1.1

@@ -1,0 +1,371 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1_s"]
+albedo_color = Color(0.36, 0.23, 0.14, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2_s"]
+albedo_color = Color(0.55, 0.38, 0.24, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3_s"]
+albedo_color = Color(0.85, 0.82, 0.74, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4_s"]
+albedo_color = Color(0.62, 0.22, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
+albedo_color = Color(0.86, 0.8, 0.66, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6_s"]
+albedo_color = Color(0.16, 0.14, 0.12, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
+albedo_color = Color(0.24, 0.24, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8_s"]
+albedo_color = Color(0.34, 0.42, 0.5, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_9_s"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_10_s"]
+albedo_color = Color(0.95, 0.8, 0.55, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(1, 0.7, 0.4, 1)
+emission_energy_multiplier = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11_s"]
+albedo_color = Color(0.8, 0.3, 0.25, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_12_s"]
+albedo_color = Color(0.3, 0.55, 0.8, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_13_s"]
+albedo_color = Color(0.9, 0.75, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_14_s"]
+albedo_color = Color(0.55, 0.36, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_15_s"]
+albedo_color = Color(0.92, 0.9, 0.84, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_16_s"]
+top_radius = 0.05
+bottom_radius = 0.07
+height = 0.28
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_17_s"]
+top_radius = 0.09
+bottom_radius = 0.15
+height = 0.18
+
+[sub_resource type="BoxMesh" id="BoxMesh_18_s"]
+size = Vector3(0.14, 0.12, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_19_s"]
+size = Vector3(0.34, 0.08, 0.12)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_20_s"]
+top_radius = 0.008
+bottom_radius = 0.008
+height = 0.26
+
+[sub_resource type="PrismMesh" id="PrismMesh_21_s"]
+size = Vector3(0.16, 0.2, 0.01)
+
+[node name="Props" type="Node3D"]
+
+[node name="Bed" type="Node3D" parent="."]
+
+[node name="Frame" type="CSGBox3D" parent="Bed"]
+position = Vector3(1.55, 0.175, -0.45)
+size = Vector3(0.95, 0.35, 2.0)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="Mattress" type="CSGBox3D" parent="Bed"]
+position = Vector3(1.55, 0.41, -0.45)
+size = Vector3(0.9, 0.12, 1.95)
+material = SubResource("StandardMaterial3D_3_s")
+use_collision = true
+
+[node name="Blanket" type="CSGBox3D" parent="Bed"]
+position = Vector3(1.55, 0.49, -0.1)
+size = Vector3(0.92, 0.04, 1.3)
+material = SubResource("StandardMaterial3D_4_s")
+use_collision = true
+
+[node name="Pillow" type="CSGBox3D" parent="Bed"]
+position = Vector3(1.55, 0.52, -1.22)
+size = Vector3(0.6, 0.1, 0.3)
+material = SubResource("StandardMaterial3D_3_s")
+use_collision = true
+
+[node name="Headboard" type="CSGBox3D" parent="Bed"]
+position = Vector3(1.55, 0.62, -1.47)
+size = Vector3(0.95, 0.55, 0.06)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="Label3D" type="Label3D" parent="Bed"]
+position = Vector3(1.0, 0.75, 0.3)
+pixel_size = 0.0025
+text = "CAMA (frazada tejida)"
+font_size = 20
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="Nightstand" type="Node3D" parent="."]
+
+[node name="Table" type="CSGBox3D" parent="Nightstand"]
+position = Vector3(1.75, 0.25, -1.75)
+size = Vector3(0.4, 0.5, 0.4)
+material = SubResource("StandardMaterial3D_2_s")
+use_collision = true
+
+[node name="LampBase" type="MeshInstance3D" parent="Nightstand"]
+position = Vector3(1.83, 0.64, -1.82)
+mesh = SubResource("CylinderMesh_16_s")
+material_override = SubResource("StandardMaterial3D_6_s")
+
+[node name="LampShade" type="MeshInstance3D" parent="Nightstand"]
+position = Vector3(1.83, 0.86, -1.82)
+mesh = SubResource("CylinderMesh_17_s")
+material_override = SubResource("StandardMaterial3D_10_s")
+
+[node name="LampLight" type="OmniLight3D" parent="Nightstand"]
+position = Vector3(1.83, 0.92, -1.72)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 1.6
+shadow_enabled = true
+omni_range = 6.5
+
+[node name="AlarmClock" type="MeshInstance3D" parent="Nightstand"]
+position = Vector3(1.63, 0.56, -1.66)
+rotation_degrees = Vector3(0, 20, 0)
+mesh = SubResource("BoxMesh_18_s")
+material_override = SubResource("StandardMaterial3D_9_s")
+
+[node name="Label3D" type="Label3D" parent="Nightstand"]
+position = Vector3(1.7, 1.12, -1.6)
+pixel_size = 0.0025
+text = "MESA DE LUZ: lámpara + RELOJ PARADO (tic-tac)"
+font_size = 18
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="HighShelf" type="Node3D" parent="."]
+
+[node name="Board" type="CSGBox3D" parent="HighShelf"]
+position = Vector3(0, 2.1, -1.85)
+size = Vector3(1.0, 0.05, 0.3)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="BracketL" type="CSGBox3D" parent="HighShelf"]
+position = Vector3(-0.4, 1.99, -1.87)
+size = Vector3(0.04, 0.18, 0.25)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="BracketR" type="CSGBox3D" parent="HighShelf"]
+position = Vector3(0.4, 1.99, -1.87)
+size = Vector3(0.04, 0.18, 0.25)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="Barquito" type="Node3D" parent="."]
+position = Vector3(0, 2.165, -1.85)
+
+[node name="Hull" type="MeshInstance3D" parent="Barquito"]
+mesh = SubResource("BoxMesh_19_s")
+material_override = SubResource("StandardMaterial3D_14_s")
+
+[node name="Mast" type="MeshInstance3D" parent="Barquito"]
+position = Vector3(0, 0.15, 0)
+mesh = SubResource("CylinderMesh_20_s")
+material_override = SubResource("StandardMaterial3D_14_s")
+
+[node name="Sail" type="MeshInstance3D" parent="Barquito"]
+position = Vector3(0.06, 0.17, 0)
+mesh = SubResource("PrismMesh_21_s")
+material_override = SubResource("StandardMaterial3D_15_s")
+
+[node name="BoatLight" type="OmniLight3D" parent="Barquito"]
+position = Vector3(0, 0.2, 0.2)
+light_color = Color(1, 0.78, 0.45, 1)
+light_energy = 0.0
+omni_range = 3.0
+
+[node name="Label3D" type="Label3D" parent="Barquito"]
+position = Vector3(0, 0.42, 0.05)
+pixel_size = 0.0025
+text = "BARQUITO (fuera de alcance)"
+font_size = 20
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="Wardrobe" type="Node3D" parent="."]
+
+[node name="Body" type="CSGBox3D" parent="Wardrobe"]
+position = Vector3(-1.72, 0.9, -1.5)
+size = Vector3(0.55, 1.8, 0.8)
+material = SubResource("StandardMaterial3D_1_s")
+use_collision = true
+
+[node name="Label3D" type="Label3D" parent="Wardrobe"]
+position = Vector3(-1.5, 1.95, -1.5)
+pixel_size = 0.0025
+text = "ROPERO"
+font_size = 20
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="Toys" type="Node3D" parent="."]
+
+[node name="ToyChest" type="CSGBox3D" parent="Toys"]
+position = Vector3(-1.6, 0.2, 1.68)
+size = Vector3(0.6, 0.4, 0.45)
+material = SubResource("StandardMaterial3D_2_s")
+use_collision = true
+
+[node name="Toy1" type="CSGBox3D" parent="Toys"]
+position = Vector3(-0.85, 0.08, 1.35)
+size = Vector3(0.16, 0.16, 0.16)
+material = SubResource("StandardMaterial3D_11_s")
+use_collision = true
+rotation_degrees = Vector3(0, 25, 0)
+
+[node name="Toy2" type="CSGBox3D" parent="Toys"]
+position = Vector3(-0.55, 0.05, 1.7)
+size = Vector3(0.24, 0.1, 0.12)
+material = SubResource("StandardMaterial3D_12_s")
+use_collision = true
+rotation_degrees = Vector3(0, -15, 0)
+
+[node name="Toy3" type="CSGBox3D" parent="Toys"]
+position = Vector3(-1.15, 0.07, 1.0)
+size = Vector3(0.14, 0.14, 0.14)
+material = SubResource("StandardMaterial3D_13_s")
+use_collision = true
+
+[node name="Label3D" type="Label3D" parent="Toys"]
+position = Vector3(-1.4, 0.75, 1.5)
+pixel_size = 0.0025
+text = "BAÚL Y JUGUETES"
+font_size = 20
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="Rug" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.01, 0.3)
+size = Vector3(1.6, 0.02, 1.2)
+material = SubResource("StandardMaterial3D_8_s")
+
+[node name="Drawings" type="Node3D" parent="."]
+
+[node name="Drawing1" type="CSGBox3D" parent="Drawings"]
+position = Vector3(-1.5, 1.4, 1.995)
+size = Vector3(0.4, 0.3, 0.01)
+material = SubResource("StandardMaterial3D_9_s")
+
+[node name="Label1" type="Label3D" parent="Drawings"]
+position = Vector3(-1.5, 1.4, 1.985)
+pixel_size = 0.0025
+text = "DIBUJO:
+CASA"
+font_size = 20
+modulate = Color(0.2, 0.2, 0.25, 1)
+rotation_degrees = Vector3(0, 180, 0)
+outline_size = 0
+
+[node name="Drawing2" type="CSGBox3D" parent="Drawings"]
+position = Vector3(-0.95, 1.32, 1.995)
+size = Vector3(0.4, 0.3, 0.01)
+material = SubResource("StandardMaterial3D_9_s")
+
+[node name="Label2" type="Label3D" parent="Drawings"]
+position = Vector3(-0.95, 1.32, 1.985)
+pixel_size = 0.0025
+text = "DIBUJO:
+FAMILIA"
+font_size = 20
+modulate = Color(0.2, 0.2, 0.25, 1)
+rotation_degrees = Vector3(0, 180, 0)
+outline_size = 0
+
+[node name="Drawing3" type="CSGBox3D" parent="Drawings"]
+position = Vector3(-0.4, 1.45, 1.995)
+size = Vector3(0.4, 0.3, 0.01)
+material = SubResource("StandardMaterial3D_9_s")
+
+[node name="Label3" type="Label3D" parent="Drawings"]
+position = Vector3(-0.4, 1.45, 1.985)
+pixel_size = 0.0025
+text = "DIBUJO:
+PERRO"
+font_size = 20
+modulate = Color(0.2, 0.2, 0.25, 1)
+rotation_degrees = Vector3(0, 180, 0)
+outline_size = 0
+
+[node name="CeilingStain" type="CSGBox3D" parent="."]
+position = Vector3(-0.6, 2.595, 0.7)
+size = Vector3(0.7, 0.01, 0.5)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="StainLabel" type="Label3D" parent="."]
+position = Vector3(-0.6, 2.42, 0.7)
+pixel_size = 0.0025
+text = "MANCHA DE HUMEDAD (goteo)"
+font_size = 18
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="LullabyNote" type="Node3D" parent="."]
+
+[node name="Paper" type="CSGBox3D" parent="LullabyNote"]
+position = Vector3(1.99, 1.62, -0.45)
+size = Vector3(0.01, 0.95, 0.8)
+material = SubResource("StandardMaterial3D_9_s")
+
+[node name="PoemText" type="Label3D" parent="LullabyNote"]
+position = Vector3(1.975, 1.62, -0.45)
+rotation_degrees = Vector3(0, -90, 0)
+pixel_size = 0.00135
+text = "Para acordarte dónde va cada juguete,
+cantá la canción.  — la abuela
+
+Cuando el espejo del sol
+se asomó a mirar el mar,
+los hilos volvieron llenos
+y el pescador fue a tirar.
+Un muro de espuma blanca
+se levantó a saludar;
+y el hierro que nunca flota
+le enseñó a descansar.
+Mientras la torre que no duerme
+lo llamaba sin cesar."
+font_size = 30
+modulate = Color(0.12, 0.12, 0.2, 1)
+outline_size = 0

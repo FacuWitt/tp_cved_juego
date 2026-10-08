@@ -1,0 +1,267 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/placement_slot.gd" id="1_e"]
+[ext_resource type="Script" path="res://scripts/puzzles/sequence_puzzle.gd" id="2_e"]
+[ext_resource type="Resource" path="res://config/memory_1_puzzle.tres" id="3_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/puzzle_piece.tscn" id="4_e"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
+albedo_color = Color(0.48, 0.32, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6_s"]
+albedo_color = Color(0.3, 0.2, 0.13, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
+albedo_color = Color(1.0, 0.85, 0.55, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(1.0, 0.8, 0.45, 1)
+emission_energy_multiplier = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8_s"]
+size = Vector3(0.46, 0.4, 0.42)
+
+[node name="Puzzle" type="Node3D"]
+
+[node name="Shelf" type="Node3D" parent="."]
+
+[node name="Board" type="CSGBox3D" parent="Shelf"]
+position = Vector3(0, 0.95, -1.79)
+size = Vector3(2.9, 0.06, 0.42)
+material = SubResource("StandardMaterial3D_5_s")
+use_collision = true
+
+[node name="BracketL" type="CSGBox3D" parent="Shelf"]
+position = Vector3(-1.4, 0.8, -1.85)
+size = Vector3(0.05, 0.25, 0.3)
+material = SubResource("StandardMaterial3D_5_s")
+use_collision = true
+
+[node name="BracketR" type="CSGBox3D" parent="Shelf"]
+position = Vector3(1.4, 0.8, -1.85)
+size = Vector3(0.05, 0.25, 0.3)
+material = SubResource("StandardMaterial3D_5_s")
+use_collision = true
+
+[node name="Label3D" type="Label3D" parent="Shelf"]
+position = Vector3(0, 1.45, -1.8)
+pixel_size = 0.0025
+text = "REPISA DE LOS JUGUETES: ordenalos como dice la canción"
+font_size = 20
+modulate = Color(1, 1, 1, 1)
+billboard = 1
+outline_size = 6
+
+[node name="Slot1" type="Node3D" parent="."]
+position = Vector3(-1.1, 0, -1.84)
+
+[node name="Mark" type="CSGBox3D" parent="Slot1"]
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
+material = SubResource("StandardMaterial3D_6_s")
+
+[node name="SnapPoint" type="Marker3D" parent="Slot1"]
+position = Vector3(0, 1.16, 0.05)
+
+[node name="AimIndicator" type="CSGBox3D" parent="Slot1"]
+position = Vector3(0, 0.99, 0.05)
+size = Vector3(0.42, 0.012, 0.38)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="PlacementSlot" type="Area3D" parent="Slot1" node_paths=PackedStringArray("snap_point", "aim_indicator")]
+position = Vector3(0, 1.2, 0.05)
+script = ExtResource("1_e")
+snap_point = NodePath("../SnapPoint")
+aim_indicator = NodePath("../AimIndicator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot1/PlacementSlot"]
+shape = SubResource("BoxShape3D_8_s")
+
+[node name="Number" type="Label3D" parent="Slot1"]
+position = Vector3(0, 0.9, 0.27)
+pixel_size = 0.003
+text = "1"
+font_size = 40
+modulate = Color(1, 1, 1, 1)
+outline_size = 6
+
+[node name="Slot2" type="Node3D" parent="."]
+position = Vector3(-0.55, 0, -1.84)
+
+[node name="Mark" type="CSGBox3D" parent="Slot2"]
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
+material = SubResource("StandardMaterial3D_6_s")
+
+[node name="SnapPoint" type="Marker3D" parent="Slot2"]
+position = Vector3(0, 1.16, 0.05)
+
+[node name="AimIndicator" type="CSGBox3D" parent="Slot2"]
+position = Vector3(0, 0.99, 0.05)
+size = Vector3(0.42, 0.012, 0.38)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="PlacementSlot" type="Area3D" parent="Slot2" node_paths=PackedStringArray("snap_point", "aim_indicator")]
+position = Vector3(0, 1.2, 0.05)
+script = ExtResource("1_e")
+snap_point = NodePath("../SnapPoint")
+aim_indicator = NodePath("../AimIndicator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot2/PlacementSlot"]
+shape = SubResource("BoxShape3D_8_s")
+
+[node name="Number" type="Label3D" parent="Slot2"]
+position = Vector3(0, 0.9, 0.27)
+pixel_size = 0.003
+text = "2"
+font_size = 40
+modulate = Color(1, 1, 1, 1)
+outline_size = 6
+
+[node name="Slot3" type="Node3D" parent="."]
+position = Vector3(0.0, 0, -1.84)
+
+[node name="Mark" type="CSGBox3D" parent="Slot3"]
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
+material = SubResource("StandardMaterial3D_6_s")
+
+[node name="SnapPoint" type="Marker3D" parent="Slot3"]
+position = Vector3(0, 1.16, 0.05)
+
+[node name="AimIndicator" type="CSGBox3D" parent="Slot3"]
+position = Vector3(0, 0.99, 0.05)
+size = Vector3(0.42, 0.012, 0.38)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="PlacementSlot" type="Area3D" parent="Slot3" node_paths=PackedStringArray("snap_point", "aim_indicator")]
+position = Vector3(0, 1.2, 0.05)
+script = ExtResource("1_e")
+snap_point = NodePath("../SnapPoint")
+aim_indicator = NodePath("../AimIndicator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot3/PlacementSlot"]
+shape = SubResource("BoxShape3D_8_s")
+
+[node name="Number" type="Label3D" parent="Slot3"]
+position = Vector3(0, 0.9, 0.27)
+pixel_size = 0.003
+text = "3"
+font_size = 40
+modulate = Color(1, 1, 1, 1)
+outline_size = 6
+
+[node name="Slot4" type="Node3D" parent="."]
+position = Vector3(0.55, 0, -1.84)
+
+[node name="Mark" type="CSGBox3D" parent="Slot4"]
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
+material = SubResource("StandardMaterial3D_6_s")
+
+[node name="SnapPoint" type="Marker3D" parent="Slot4"]
+position = Vector3(0, 1.16, 0.05)
+
+[node name="AimIndicator" type="CSGBox3D" parent="Slot4"]
+position = Vector3(0, 0.99, 0.05)
+size = Vector3(0.42, 0.012, 0.38)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="PlacementSlot" type="Area3D" parent="Slot4" node_paths=PackedStringArray("snap_point", "aim_indicator")]
+position = Vector3(0, 1.2, 0.05)
+script = ExtResource("1_e")
+snap_point = NodePath("../SnapPoint")
+aim_indicator = NodePath("../AimIndicator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot4/PlacementSlot"]
+shape = SubResource("BoxShape3D_8_s")
+
+[node name="Number" type="Label3D" parent="Slot4"]
+position = Vector3(0, 0.9, 0.27)
+pixel_size = 0.003
+text = "4"
+font_size = 40
+modulate = Color(1, 1, 1, 1)
+outline_size = 6
+
+[node name="Slot5" type="Node3D" parent="."]
+position = Vector3(1.1, 0, -1.84)
+
+[node name="Mark" type="CSGBox3D" parent="Slot5"]
+position = Vector3(0, 0.9825, 0.05)
+size = Vector3(0.4, 0.005, 0.36)
+material = SubResource("StandardMaterial3D_6_s")
+
+[node name="SnapPoint" type="Marker3D" parent="Slot5"]
+position = Vector3(0, 1.16, 0.05)
+
+[node name="AimIndicator" type="CSGBox3D" parent="Slot5"]
+position = Vector3(0, 0.99, 0.05)
+size = Vector3(0.42, 0.012, 0.38)
+material = SubResource("StandardMaterial3D_7_s")
+
+[node name="PlacementSlot" type="Area3D" parent="Slot5" node_paths=PackedStringArray("snap_point", "aim_indicator")]
+position = Vector3(0, 1.2, 0.05)
+script = ExtResource("1_e")
+snap_point = NodePath("../SnapPoint")
+aim_indicator = NodePath("../AimIndicator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot5/PlacementSlot"]
+shape = SubResource("BoxShape3D_8_s")
+
+[node name="Number" type="Label3D" parent="Slot5"]
+position = Vector3(0, 0.9, 0.27)
+pixel_size = 0.003
+text = "5"
+font_size = 40
+modulate = Color(1, 1, 1, 1)
+outline_size = 6
+
+[node name="SequencePuzzle" type="Node" parent="." node_paths=PackedStringArray("slots")]
+script = ExtResource("2_e")
+config = ExtResource("3_e")
+slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"), NodePath("../Slot3/PlacementSlot"), NodePath("../Slot4/PlacementSlot"), NodePath("../Slot5/PlacementSlot")]
+
+[node name="Pieces" type="Node3D" parent="."]
+
+[node name="Luna" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(-1.9, 1.19, 0.2)
+piece_id = &"luna"
+label_text = "LUNA"
+
+[node name="Red" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(-1.6, 0.59, 1.68)
+piece_id = &"red"
+label_text = "RED"
+
+[node name="Pescador" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(1.45, 0.7, 0.15)
+piece_id = &"pescador"
+label_text = "PESCADOR"
+
+[node name="Ola" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(-1.2, 0.19, -0.55)
+piece_id = &"ola"
+label_text = "OLA"
+
+[node name="Ancla" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(-0.7, 0.19, 0.6)
+piece_id = &"ancla"
+label_text = "ANCLA"
+
+[node name="Faro" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(0.8, 0.19, -0.75)
+piece_id = &"faro"
+label_text = "FARO"
+
+[node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(0.3, 0.19, 1.7)
+piece_id = &"barco"
+label_text = "BARCO"
+
+[node name="Marea" parent="Pieces" instance=ExtResource("4_e")]
+position = Vector3(-1.05, 0.19, 1.8)
+piece_id = &"marea"
+label_text = "MAREA"

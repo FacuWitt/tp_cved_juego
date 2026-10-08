@@ -8,9 +8,11 @@ extends CharacterBody3D
 var _gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
+var _held_object: PickupObject = null
 
 @onready var _head: Node3D = $Head
 @onready var _camera: Camera3D = $Head/Camera3D
+@onready var _interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay
 
 
 func _ready() -> void:
@@ -26,6 +28,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event.is_action_pressed("capture_mouse"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	elif event.is_action_pressed("interact"):
+		_toggle_pickup()
 
 
 func _physics_process(delta: float) -> void:
@@ -42,6 +46,64 @@ func teleport_to(target: Transform3D) -> void:
 	rotation.y = target.basis.get_euler().y
 	_head.rotation.x = 0.0
 	velocity = Vector3.ZERO
+
+
+## Agarra el objeto al que apunta el InteractionRay, o suelta el que ya tiene agarrado.
+## Si al soltar está apuntando a un casillero libre, el objeto va a ese casillero.
+func _toggle_pickup() -> void:
+	if _held_object != null:
+		var slot: PlacementSlot = get_aimed_slot()
+		var object: PickupObject = _held_object
+		_held_object = null
+		object.release()
+		if slot != null:
+			slot.place(object)
+		return
+
+	if not _interaction_ray.is_colliding():
+		return
+
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is PickupObject:
+		_held_object = collider as PickupObject
+		_held_object.pickup(_camera, self)
+
+
+## El objeto que tiene agarrado ahora mismo, o null si no tiene nada. Para que la UI
+## sepa qué mostrar sin depender de los nombres internos del Player.
+func get_held_object() -> PickupObject:
+	return _held_object
+
+
+## Con algo agarrado: el casillero libre al que apunta la mira (dentro del alcance del
+## InteractionRay), o null. Lo primero que toca el rayo manda: una pared o un objeto
+## ya encastrado tapan lo que hay detrás.
+func get_aimed_slot() -> PlacementSlot:
+	if _held_object == null:
+		return null
+	var from: Vector3 = _interaction_ray.global_position
+	var to: Vector3 = _interaction_ray.to_global(_interaction_ray.target_position)
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		from, to, 1 | 2, [get_rid(), _held_object.get_rid()]
+	)
+	query.collide_with_areas = true
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return null
+	var slot: PlacementSlot = hit.collider as PlacementSlot
+	if slot == null or not slot.is_free():
+		return null
+	return slot
+
+
+## El PickupObject al que apunta el InteractionRay ahora mismo (si se puede agarrar), o null.
+func get_interactable_under_crosshair() -> PickupObject:
+	if not _interaction_ray.is_colliding():
+		return null
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is PickupObject and not (collider as PickupObject).is_locked:
+		return collider as PickupObject
+	return null
 
 
 func _apply_camera_settings() -> void:
