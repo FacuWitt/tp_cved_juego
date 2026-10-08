@@ -86,6 +86,7 @@ El detalle va a vivir en `docs/ARQUITECTURA.md`.
 |---|---|
 | `README.md` | ✅ Cómo levantar el proyecto |
 | `docs/GIT_WORKFLOW.md` | ✅ Etapas, ramas, reclamo de escenas, día a día |
+| `docs/ELEMENTOS_ESCENAS.md` | ✅ Inventario de elementos por escena (placeholder de etapa 0, rol, sistemas que pide) |
 | `docs/GUION_MAESTRO.md` | ⏳ Pendiente: la historia completa y los beats por memoria |
 | `docs/SIMBOLOGIA.md` | ⏳ Pendiente: diccionario de símbolos, regla 80/20, capas de audio |
 | `docs/ARQUITECTURA.md` | ⏳ Pendiente |
