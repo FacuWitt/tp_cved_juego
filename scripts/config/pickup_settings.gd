@@ -4,7 +4,7 @@ extends Resource
 ## Se editan desde el Inspector en res://config/pickup_settings.tres.
 
 ## Distancia a la que se sostiene el objeto frente a la cámara.
-@export_range(0.3, 3.0, 0.05, "suffix:m") var hold_distance: float = 1.1
+@export_range(0.3, 3.0, 0.05, "suffix:m") var hold_distance: float = 1.5
 ## Qué tan fuerte "tira" el objeto hacia el punto de sostén. Más alto = más rígido y menos física.
 @export_range(1.0, 40.0, 0.5, "suffix:1/s") var hold_follow_speed: float = 12.0
 ## Velocidad máxima mientras se sostiene, para que no acelere sin control.

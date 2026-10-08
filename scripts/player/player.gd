@@ -61,7 +61,7 @@ func _toggle_pickup() -> void:
 	var collider: Object = _interaction_ray.get_collider()
 	if collider is PickupObject:
 		_held_object = collider as PickupObject
-		_held_object.pickup(_camera)
+		_held_object.pickup(_camera, self)
 
 
 func _apply_camera_settings() -> void:
