@@ -75,7 +75,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Lluvia y truenos | Amenaza | Ventana (3D) |
 | Goteo del techo | Amenaza | Punto de la mancha (3D) |
 | Tic-tac del despertador | Amenaza, al ritmo del bip | Mesa de luz (3D) |
-| Voz al resolver (*"¡Muy bien, mi amor!"*) | Recuerdo | — ❓ (¿abuela o mamá?) |
+| Voz de la mamá al resolver (*"¡Muy bien, mi amor!"*) | Recuerdo | — |
 | Error: golpe grave, crujido, goteo más cerca | Amenaza | Puerta (3D) |
 
 ### Sistemas que pide
@@ -283,7 +283,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 3 distractores (barco, marea, pescador).
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
-4. **M1:** ¿la voz que felicita es la abuela o la mamá?
+4. ~~M1: quién felicita~~ ✅ la mamá.
 5. La hora del accidente (todos los relojes).
 6. **M2:** ¿la mochila con el barquito se ve en escena?
 7. **M3 → M4:** ¿corte directo o transición en negro con voces?
