@@ -7,6 +7,8 @@ uniform vec3 deep_color : source_color = vec3(0.006, 0.016, 0.022);
 uniform vec3 foam_color : source_color = vec3(0.55, 0.62, 0.66);
 uniform vec3 sky_reflect_color : source_color = vec3(0.35, 0.46, 0.6);
 uniform float wave_height = 1.0;
+// Reloj del mar: lo avanza OceanFollow, así el barco (en GDScript) y el agua (acá) siempre coinciden.
+uniform float sea_time = 0.0;
 uniform float chop = 0.55;
 uniform float foam_amount = 0.38;
 uniform float base_roughness = 0.4;
@@ -49,7 +51,7 @@ vec3 swell(vec2 p, float t) {
 
 void vertex() {
 	vec3 wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	vec3 d = swell(wp.xz, TIME);
+	vec3 d = swell(wp.xz, sea_time);
 	VERTEX += vec3(d.x, d.y, d.z);
 	w_pos = wp + d;
 	v_crest = d.y / max(wave_height, 0.001);

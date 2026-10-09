@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-019 · Memoria 4: el barco flota sobre las olas y tecla 0 de prueba · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu (con video): "sigo viendo la parte de debajo del barco cuando estoy debajo del agua… agregá una tecla de prueba que corte todas las sogas, el 0".
+- **Qué se hizo:** (1) el barco ahora sube, baja y se inclina con el oleaje (el agua y el barco comparten un reloj del mar: `sea_time` en `OceanFollow` y en el shader), así el casco sumergido nunca queda a la vista cuando el mar se hunde en un valle; (2) tecla `0` (también del teclado numérico) que corta las 6 sogas de una y sigue el flujo normal (`debug_keys` en `Memory4Accident`).
+- **Por qué (decisión de diseño):** el casco se extiende 1 m bajo el nivel del mar; el oleaje de ±2 m dejaba verlo en los valles, con las luces de la cabina iluminándolo. Flotar con el oleaje es más creíble que subir el casco. La tecla acelera las pruebas.
+- **Alternativas descartadas:** acortar el casco (el barco quedaba "volando" sobre el agua en los valles).
+- **Problemas encontrados:** el video mostraba el barco con parte del casco iluminado bajo la línea del mar. Probado con capturas en Compatibility.
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd`, `scripts/world/ocean_follow.gd`, `assets/shaders/ocean.gdshader`.
+- **Pendiente / ❓ ABIERTO:** apagar `debug_keys` antes de la entrega; mientras el jugador está en cubierta el barco no se mece (solo la cámara).
+
 ### CL-018 · Memoria 4: al salir del agua después de la ola no se ve nada hasta asomar la cabeza · 2026-10-08
 - **Rama / commits:** `memories/m4-barco` · ver `git log`
 - **Pedido por:** Facu (con dos capturas): "cuando la ola supera al jugador se llega a ver el barco" y una de las dos imágenes no era correcta.

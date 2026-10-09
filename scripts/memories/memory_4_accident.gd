@@ -29,6 +29,8 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var water_overlay: ColorRect
 @export var black_overlay: ColorRect
 @export var rescue_glow: MeshInstance3D
+## Tecla de prueba: con 0 se cortan todas las sogas de una (para probar rápido). Apagar antes de entregar.
+@export var debug_keys: bool = true
 @export var abyss_overlay: ColorRect
 @export var deck_slip: DeckSlip
 @export var splash_player: AudioStreamPlayer
@@ -119,6 +121,8 @@ func _process(delta: float) -> void:
 			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
 				_set_underwater_view(false)
 				rain.emitting = true
+	if stage >= Stage.SURFACE:
+		_float_ship()
 	if stage >= Stage.SURFACE and searchlight != null:
 		_search_time += delta
 		# El reflector del barco barre otras zonas del mar: nunca apunta al jugador.
@@ -133,7 +137,22 @@ func _watch_edges() -> void:
 		_fall_overboard()
 
 
+## SOLO PARA PRUEBAS: corta todas las sogas y sigue el flujo normal (aviso, ola, etc.).
+func _debug_cut_all_ropes() -> void:
+	if stage != Stage.DECK or _overboard:
+		return
+	qte.cancel()
+	prompt_label.visible = false
+	for rope: CuttableRope in ropes:
+		if not rope.is_severed:
+			rope.sever()
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if debug_keys and event is InputEventKey and event.pressed and not event.echo \
+			and (event.keycode == KEY_0 or event.keycode == KEY_KP_0):
+		_debug_cut_all_ropes()
+		return
 	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and not _busy and not _overboard:
 		_start_chop(_active_rope)
 
@@ -342,7 +361,10 @@ func _enter_surface() -> void:
 	var turn: Tween = create_tween().set_parallel(true)
 	turn.tween_property(ship, "rotation_degrees:y", settings.ship_turn, float_time * 0.7) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	turn.tween_property(ship, "position", ship.position + heading * settings.ship_drift, float_time) \
+	# Solo X y Z: la altura la pone el oleaje (el barco flota).
+	turn.tween_property(ship, "position:x", ship.position.x + heading.x * settings.ship_drift, float_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	turn.tween_property(ship, "position:z", ship.position.z + heading.z * settings.ship_drift, float_time) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 	# Sale a la superficie: del negro y el agua turbia a la tormenta.
@@ -353,6 +375,24 @@ func _enter_surface() -> void:
 	emerge.tween_property(water_overlay, "modulate:a", 0.0, settings.emerge_time)
 	await get_tree().create_timer(float_time).timeout
 	_begin_descent()
+
+
+## El barco flota sobre el oleaje: sube y baja y se inclina un poco, así nunca se le ve el casco sumergido.
+func _float_ship() -> void:
+	var pos: Vector3 = ship.global_position
+	var heading: Basis = ship.global_transform.basis
+	var bow: Vector3 = pos + heading * Vector3(0.0, 0.0, -12.0)
+	var stern: Vector3 = pos + heading * Vector3(0.0, 0.0, 10.0)
+	var port: Vector3 = pos + heading * Vector3(-4.5, 0.0, 0.0)
+	var starboard: Vector3 = pos + heading * Vector3(4.5, 0.0, 0.0)
+	var h_center: float = ocean.height_at(pos.x, pos.z)
+	var h_bow: float = ocean.height_at(bow.x, bow.z)
+	var h_stern: float = ocean.height_at(stern.x, stern.z)
+	var h_port: float = ocean.height_at(port.x, port.z)
+	var h_star: float = ocean.height_at(starboard.x, starboard.z)
+	ship.position.y = h_center
+	ship.rotation.x = atan2(h_bow - h_stern, 22.0) * 0.8
+	ship.rotation.z = atan2(h_star - h_port, 9.0) * 0.8
 
 
 func _update_float() -> void:
