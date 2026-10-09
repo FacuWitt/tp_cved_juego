@@ -127,7 +127,7 @@ extends Resource
 ## Cuánto gira el barco (de espaldas al jugador, buscando en otra dirección).
 @export_range(0.0, 180.0, 1.0, "suffix:°") var ship_turn: float = 35.0
 ## Intensidad del reflector del barco (se enciende cuando el jugador está en el agua).
-@export_range(0.0, 30.0, 0.5) var searchlight_energy: float = 9.0
+@export_range(0.0, 30.0, 0.5) var searchlight_energy: float = 7.0
 ## Velocidad de barrido del reflector del barco.
 @export_range(0.0, 2.0, 0.05, "suffix:/s") var searchlight_speed: float = 0.35
 
@@ -143,9 +143,16 @@ extends Resource
 ## Separación mínima (además de la apertura del cono) entre el haz y el jugador: así nunca lo encuentra.
 @export_range(0.0, 40.0, 1.0, "suffix:°") var search_safe_margin: float = 12.0
 ## Inclinación del haz de búsqueda sobre el mar.
-@export_range(-30.0, 0.0, 0.5, "suffix:°") var search_pitch: float = -5.0
+@export_range(-30.0, 0.0, 0.5, "suffix:°") var search_pitch: float = -10.0
 ## Segundos que tarda el reflector en pasar de la cubierta a barrer el mar.
 @export_range(0.5, 8.0, 0.1, "suffix:s") var search_turn_time: float = 2.5
+
+## Largo visible del haz de luz (el cono luminoso en el aire).
+@export_range(10.0, 150.0, 1.0, "suffix:m") var beam_length: float = 70.0
+## Visibilidad del haz sobre la cubierta (muy sutil).
+@export_range(0.0, 1.0, 0.01) var beam_strength_deck: float = 0.05
+## Visibilidad del haz mientras busca en el mar.
+@export_range(0.0, 1.0, 0.01) var beam_strength_search: float = 0.3
 
 @export_group("Oscuridad bajo el agua")
 ## Ángulo hacia abajo desde el cual empieza a oscurecerse la parte baja de la pantalla.

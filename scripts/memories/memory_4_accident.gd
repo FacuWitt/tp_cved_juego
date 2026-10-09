@@ -94,6 +94,7 @@ func _ready() -> void:
 	searchlight.light_energy = settings.deck_floodlight_energy
 	searchlight.spot_angle = settings.deck_floodlight_angle
 	searchlight.rotation_degrees = Vector3(settings.deck_floodlight_pitch, 180.0, 0.0)
+	_update_beam(0.0)
 	lightning.start()
 	_say_intro()
 
@@ -147,7 +148,24 @@ func _process(delta: float) -> void:
 			deg_to_rad(lerpf(settings.deck_floodlight_pitch, settings.search_pitch, blend)),
 			local_yaw, 0.0)
 		searchlight.spot_angle = cone
+		_update_beam(blend)
 		searchlight.light_energy = lerpf(settings.deck_floodlight_energy, settings.searchlight_energy, blend)
+
+
+## Cono de luz visible del reflector: sigue la apertura y se hace más presente al buscar.
+func _update_beam(blend: float) -> void:
+	var beam: MeshInstance3D = searchlight.get_node_or_null("Beam") as MeshInstance3D
+	if beam == null:
+		return
+	var length: float = settings.beam_length
+	var radius: float = tan(deg_to_rad(searchlight.spot_angle)) * length
+	# El cono del mesh mide 1 de alto: se gira para apuntar hacia -Z y se escala al largo del haz.
+	beam.transform = Transform3D(
+		Basis(Vector3.RIGHT, -PI * 0.5) * Basis.from_scale(Vector3(radius, length, radius)),
+		Vector3(0.0, 0.0, -length * 0.5))
+	var material: ShaderMaterial = beam.get_surface_override_material(0) as ShaderMaterial
+	if material != null:
+		material.set_shader_parameter("strength", lerpf(settings.beam_strength_deck, settings.beam_strength_search, blend))
 
 
 ## Última posición firme en cubierta y detección de caída por un costado abierto.

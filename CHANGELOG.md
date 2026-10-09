@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-021 · Memoria 4: haz de luz visible, aire más denso, lluvia de la foto y agua iluminada · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu (con foto de un faro de noche bajo la lluvia): que se vea el haz de luz, que el aire se sienta más denso, que la lluvia y el agua se parezcan a la foto.
+- **Qué se hizo:** (1) nuevo `assets/shaders/light_beam.gdshader` y nodo `Searchlight/Beam`: cono aditivo con bordes suaves y rayas de lluvia que cruzan el haz; se ajusta solo a la apertura del reflector (`_update_beam`). (2) Niebla: `fog_density` 0.0042 → 0.008 con color algo más claro, y niebla volumétrica activada en el `Environment` (solo Forward+). (3) Lluvia: más inclinada por el viento (dirección x 0.6) y rayas más largas. (4) Mar: `ocean.gdshader` ilumina el agua con las luces del barco en verde azulado, espuma casi blanca y brillos en las crestas; se agregaron `SeaGlowL/R` (luces junto a la línea de flotación). (5) Se bajó el brillo especular del reflector y de las lámparas de cubierta; `search_pitch` -10° y `searchlight_energy` 7.
+- **Por qué (decisión de diseño):** acercarse a la foto de referencia: poco se ve en la oscuridad, salvo donde llega la luz.
+- **Alternativas descartadas:** solo niebla volumétrica (no se ve en Compatibility ni se puede controlar tanto como el cono).
+- **Problemas encontrados:** probado en Compatibility, donde la niebla volumétrica no existe; hay que revisarla en Forward+ (puede sumarse al cono: si queda excesivo, bajar `beam_strength_*` o `volumetric_fog_density`). Con el jugador a ras del agua, las olas tapan parte de la mancha de luz lejana.
+- **Archivos y docs:** `scenes/memories/memory_4.tscn`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `assets/shaders/ocean.gdshader`, `assets/shaders/light_beam.gdshader`.
+- **Pendiente / ❓ ABIERTO:** ajustar niebla, haz y lluvia en Forward+; decidir si se quiere más lluvia visible dentro del haz; apagar `debug_keys` antes de la entrega.
+
 ### CL-020 · Memoria 4: reflector en el mástil que busca al náufrago · 2026-10-09
 - **Rama / commits:** `memories/m4-barco` · ver `git log`
 - **Pedido por:** Facu (con imagen de referencia): luz focal blanca cálida, muy sutil, sobre el mástil apuntando a cubierta; más adelante busca al protagonista en el mar sin encontrarlo.

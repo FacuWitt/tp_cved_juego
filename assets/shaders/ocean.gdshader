@@ -18,11 +18,13 @@ uniform float flash = 0.0;
 uniform float under_flash_strength = 0.12;
 // Cuánto se apaga la superficie cuando se la mira desde arriba hacia abajo (el abismo no refleja nada).
 // Color y fuerza con que el agua devuelve la luz de un reflector (el haz del barco sobre el mar).
-uniform vec3 spot_lit_color : source_color = vec3(0.34, 0.5, 0.56);
-uniform float spot_lit_strength = 1.0;
+uniform vec3 spot_lit_color : source_color = vec3(0.2, 0.52, 0.5);
+uniform float spot_lit_strength = 5.0;
+uniform float spot_glint = 0.5;
 uniform float look_down_black = 0.92;
 
 varying vec3 w_pos;
+varying float v_foam;
 varying float v_crest;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -72,6 +74,8 @@ void fragment() {
 	float foam_noise = vnoise(w_pos.xz * 0.9 - TIME * 0.35) * 0.65 + vnoise(w_pos.xz * 3.1) * 0.35;
 	float foam = smoothstep(0.78, 1.05, v_crest * 0.5 + foam_noise * 0.62) * foam_amount;
 
+	v_foam = foam / max(foam_amount, 0.001);
+
 	float fres = pow(1.0 - clamp(dot(n, VIEW), 0.0, 1.0), 4.0);
 	// Elevación de la cámara respecto de este punto del agua: 1 = lo miro desde justo arriba.
 	vec3 view_w = normalize((INV_VIEW_MATRIX * vec4(VIEW, 0.0)).xyz);
@@ -101,7 +105,12 @@ void light() {
 		// Luz direccional (relámpagos): comportamiento habitual.
 		DIFFUSE_LIGHT += ALBEDO * ndl * LIGHT_COLOR * ATTENUATION / PI;
 	} else {
-		// Reflectores: el mar iluminado se lee como una mancha clara sobre el negro.
-		DIFFUSE_LIGHT += spot_lit_color * spot_lit_strength * ndl * LIGHT_COLOR * ATTENUATION / PI;
+		// Luces del barco y reflectores: el mar iluminado se vuelve verde azulado, la espuma
+		// casi blanca, y las crestas brillan como en una foto de noche con un foco.
+		vec3 lit = mix(spot_lit_color, foam_color * 1.5, clamp(v_foam, 0.0, 1.0));
+		DIFFUSE_LIGHT += lit * spot_lit_strength * ndl * LIGHT_COLOR * ATTENUATION / PI;
+		vec3 h = normalize(LIGHT + VIEW);
+		float glint = pow(max(dot(NORMAL, h), 0.0), 40.0);
+		SPECULAR_LIGHT += LIGHT_COLOR * ATTENUATION * glint * spot_glint;
 	}
 }
