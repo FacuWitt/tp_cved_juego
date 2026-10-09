@@ -18,6 +18,8 @@
 [ext_resource type="Shader" uid="uid://b2b1y8wmu64bs" path="res://assets/shaders/giant_wave.gdshader" id="16_e"]
 [ext_resource type="Shader" uid="uid://ga7g8eundkxo" path="res://assets/shaders/rescue_glow.gdshader" id="17_e"]
 [ext_resource type="Shader" path="res://assets/shaders/light_beam.gdshader" id="beam_sh"]
+[ext_resource type="PackedScene" path="res://assets/models/m4_barco/m4_barco.glb" id="glb_ship"]
+[ext_resource type="PackedScene" path="res://assets/models/m4_motor_redes/m4_motor_redes.glb" id="glb_motor"]
 [ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="18_e"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_32_s"]
@@ -251,208 +253,131 @@ material = SubResource("ShaderMaterial_20_s")
 
 [node name="Ship" type="Node3D" parent="." unique_id=308627856]
 
+[node name="ShipModel" parent="Ship" instance=ExtResource("glb_ship")]
+transform = Transform3D(0, 0, -20, 0, 20, 0, 20, 0, 0, 0, 4.54, -3.6)
+
+[node name="MotorLm1_0" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, -3.4)
+
+[node name="MotorRm1_0" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, -3.4)
+
+[node name="MotorL3_5" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, 1.8)
+
+[node name="MotorR3_5" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, 1.8)
+
+[node name="MotorL8_0" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, 6.0)
+
+[node name="MotorR8_0" parent="Ship" instance=ExtResource("glb_motor")]
+transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, 6.0)
+
 [node name="Deck" type="CSGBox3D" parent="Ship" unique_id=1799397816]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -3.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 1.7)
+layers = 0
+size = Vector3(7.7, 0.3, 22.6)
 use_collision = true
-size = Vector3(9.4, 0.3, 31)
-material = SubResource("StandardMaterial3D_22_s")
-
-[node name="BowDeck" type="CSGBox3D" parent="Ship" unique_id=1075551991]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, -0.15, -19)
-use_collision = true
-size = Vector3(6.65, 0.3, 6.65)
-material = SubResource("StandardMaterial3D_22_s")
-
-[node name="Hull" type="CSGBox3D" parent="Ship" unique_id=625380939]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.85, -3.5)
-size = Vector3(9.4, 3.4, 31)
-material = SubResource("StandardMaterial3D_23_s")
-
-[node name="BowHull" type="CSGBox3D" parent="Ship" unique_id=1764357692]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, -1.85, -19)
-size = Vector3(6.65, 3.4, 6.65)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkL1" type="CSGBox3D" parent="Ship" unique_id=98010395]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 0.5, -10.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, -7.199999999999999)
+layers = 0
+size = Vector3(0.3, 1.3, 4.8)
 use_collision = true
-size = Vector3(0.2, 1, 16.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkL2" type="CSGBox3D" parent="Ship" unique_id=2018846135]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 0.5, 1.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, -0.7999999999999999)
+layers = 0
+size = Vector3(0.3, 1.3, 2.4000000000000004)
 use_collision = true
-size = Vector3(0.2, 1, 1.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkL3" type="CSGBox3D" parent="Ship" unique_id=1218784931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 0.5, 5.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, 3.9)
+layers = 0
+size = Vector3(0.3, 1.3, 1.3999999999999995)
 use_collision = true
-size = Vector3(0.2, 1, 1.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkL4" type="CSGBox3D" parent="Ship" unique_id=1873819605]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 0.5, 10.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, 10.2)
+layers = 0
+size = Vector3(0.3, 1.3, 5.6)
 use_collision = true
-size = Vector3(0.2, 1, 2.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkR1" type="CSGBox3D" parent="Ship" unique_id=626228220]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 0.5, -10.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, -7.199999999999999)
+layers = 0
+size = Vector3(0.3, 1.3, 4.8)
 use_collision = true
-size = Vector3(0.2, 1, 16.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkR2" type="CSGBox3D" parent="Ship" unique_id=1421224545]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 0.5, 1.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, -0.7999999999999999)
+layers = 0
+size = Vector3(0.3, 1.3, 2.4000000000000004)
 use_collision = true
-size = Vector3(0.2, 1, 1.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkR3" type="CSGBox3D" parent="Ship" unique_id=1010833295]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 0.5, 5.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, 3.9)
+layers = 0
+size = Vector3(0.3, 1.3, 1.3999999999999995)
 use_collision = true
-size = Vector3(0.2, 1, 1.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkR4" type="CSGBox3D" parent="Ship" unique_id=1766741938]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 0.5, 10.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, 10.2)
+layers = 0
+size = Vector3(0.3, 1.3, 5.6)
 use_collision = true
-size = Vector3(0.2, 1, 2.5)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="BulwarkStern" type="CSGBox3D" parent="Ship" unique_id=1378970336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 13.1)
+layers = 0
+size = Vector3(8.3, 1.3, 0.3)
 use_collision = true
-size = Vector3(9.4, 1, 0.2)
-material = SubResource("StandardMaterial3D_23_s")
 
 [node name="Cabin" type="CSGBox3D" parent="Ship" unique_id=1270308307]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -13.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, -13.8)
+layers = 0
+size = Vector3(8.4, 4.0, 8.4)
 use_collision = true
-size = Vector3(5.6, 3.2, 8.4)
-material = SubResource("StandardMaterial3D_24_s")
-
-[node name="Wheelhouse" type="CSGBox3D" parent="Ship" unique_id=174250267]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -14)
-size = Vector3(4.4, 1.6, 4)
-material = SubResource("StandardMaterial3D_24_s")
-
-[node name="Window" type="CSGBox3D" parent="Ship" unique_id=2128638366]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -9.58)
-size = Vector3(4.6, 0.7, 0.06)
-material = SubResource("StandardMaterial3D_26_s")
-
-[node name="WheelhouseWindow" type="CSGBox3D" parent="Ship" unique_id=1252591881]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1, -11.98)
-size = Vector3(3.6, 0.6, 0.06)
-material = SubResource("StandardMaterial3D_26_s")
-
-[node name="Mast" type="CSGCylinder3D" parent="Ship" unique_id=1460615983]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.8, -14)
-radius = 0.14
-height = 8.0
-material = SubResource("StandardMaterial3D_27_s")
-
-[node name="MastCross" type="CSGBox3D" parent="Ship" unique_id=1948340093]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11, -14)
-size = Vector3(3.2, 0.1, 0.1)
-material = SubResource("StandardMaterial3D_27_s")
-
-[node name="GantryPostL" type="CSGBox3D" parent="Ship" unique_id=1269085070]
-transform = Transform3D(0.99026805, -0.1391731, 0, 0.1391731, 0.99026805, 0, 0, 0, 1, -4.2, 3, 11)
-size = Vector3(0.22, 6, 0.22)
-material = SubResource("StandardMaterial3D_27_s")
-
-[node name="GantryPostR" type="CSGBox3D" parent="Ship" unique_id=1795600801]
-transform = Transform3D(0.99026805, 0.1391731, 0, -0.1391731, 0.99026805, 0, 0, 0, 1, 4.2, 3, 11)
-size = Vector3(0.22, 6, 0.22)
-material = SubResource("StandardMaterial3D_27_s")
-
-[node name="GantryBeam" type="CSGBox3D" parent="Ship" unique_id=1662514793]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 11)
-size = Vector3(8.8, 0.2, 0.2)
-material = SubResource("StandardMaterial3D_27_s")
 
 [node name="WinchLm1_0" type="CSGBox3D" parent="Ship" unique_id=529300836]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, -3.4)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumLm1_0" type="CSGCylinder3D" parent="Ship" unique_id=1231584712]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -2, 0.95, -1)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
 
 [node name="WinchRm1_0" type="CSGBox3D" parent="Ship" unique_id=1833337893]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.4, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, -3.4)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumRm1_0" type="CSGCylinder3D" parent="Ship" unique_id=1166049916]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2, 0.95, -1)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
 
 [node name="WinchL3_5" type="CSGBox3D" parent="Ship" unique_id=2083285249]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, 3.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, 1.8)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumL3_5" type="CSGCylinder3D" parent="Ship" unique_id=1582977552]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -2, 0.95, 3.5)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
 
 [node name="WinchR3_5" type="CSGBox3D" parent="Ship" unique_id=1100005339]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.4, 3.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 1.8)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumR3_5" type="CSGCylinder3D" parent="Ship" unique_id=778356574]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2, 0.95, 3.5)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
 
 [node name="WinchL8_0" type="CSGBox3D" parent="Ship" unique_id=503669385]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, 6.0)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumL8_0" type="CSGCylinder3D" parent="Ship" unique_id=2068832007]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -2, 0.95, 8)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
 
 [node name="WinchR8_0" type="CSGBox3D" parent="Ship" unique_id=1227405285]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.4, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 6.0)
+layers = 0
+size = Vector3(1.2, 1.1, 2.5)
 use_collision = true
-size = Vector3(0.9, 0.8, 1)
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="DrumR8_0" type="CSGCylinder3D" parent="Ship" unique_id=32776531]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2, 0.95, 8)
-radius = 0.3
-height = 1.1
-material = SubResource("StandardMaterial3D_25_s")
-
-[node name="MastLamp" type="MeshInstance3D" parent="Ship" unique_id=2067501089]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.3, -14)
-material_override = SubResource("StandardMaterial3D_28_s")
-mesh = SubResource("SphereMesh_39_s")
 
 [node name="MastLight" type="OmniLight3D" parent="Ship" unique_id=1322588119]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.2, -14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.0, -11.84)
 light_color = Color(1, 0.2, 0.1, 1)
 light_energy = 1.2
 omni_range = 16.0
@@ -485,21 +410,21 @@ light_specular = 0.25
 omni_range = 12.0
 
 [node name="SeaGlowL" type="OmniLight3D" parent="Ship"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, -0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, -0.5, 0)
 light_color = Color(0.9, 0.95, 0.85, 1)
 light_energy = 2.2
 light_specular = 0.0
 omni_range = 16.0
 
 [node name="SeaGlowR" type="OmniLight3D" parent="Ship"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, -0.5, 0)
 light_color = Color(0.9, 0.95, 0.85, 1)
 light_energy = 2.2
 light_specular = 0.0
 omni_range = 16.0
 
 [node name="Searchlight" type="SpotLight3D" parent="Ship" unique_id=1852308062]
-position = Vector3(0, 10.4, -14)
+position = Vector3(0, 12.5, -11.5)
 rotation_degrees = Vector3(-46, 180, 0)
 light_color = Color(1, 0.95, 0.84, 1)
 light_energy = 2.0
@@ -514,24 +439,6 @@ transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, -30)
 cast_shadow = 0
 mesh = SubResource("CylinderMesh_beam")
 surface_material_override/0 = SubResource("ShaderMaterial_beam")
-
-[node name="FloodlightHousing" type="MeshInstance3D" parent="Ship"]
-transform = Transform3D(-1, 0, 0, 0, 0.6946584, -0.7193398, 0, -0.7193398, -0.6946584, 0, 10.4, -14.0)
-mesh = SubResource("BoxMesh_flood")
-material_override = SubResource("StandardMaterial3D_flood")
-cast_shadow = 0
-
-[node name="AlleyBlockL" type="StaticBody3D" parent="Ship" unique_id=259983987]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 1.5, -9.4)
-
-[node name="Shape" type="CollisionShape3D" parent="Ship/AlleyBlockL" unique_id=1164309224]
-shape = SubResource("BoxShape3D_37_s")
-
-[node name="AlleyBlockR" type="StaticBody3D" parent="Ship" unique_id=2135237882]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 1.5, -9.4)
-
-[node name="Shape" type="CollisionShape3D" parent="Ship/AlleyBlockR" unique_id=1695095326]
-shape = SubResource("BoxShape3D_37_s")
 
 [node name="Crew1" type="Node3D" parent="Ship" unique_id=165731591]
 transform = Transform3D(-0.9848077, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.9848077, -1, 0.88, -7.6)
@@ -580,40 +487,46 @@ outline_size = 8
 
 [node name="RopeL1" type="Node3D" parent="Ship" unique_id=1866780658]
 script = ExtResource("6_e")
-winch_point = Vector3(-2, 0.95, -1)
-cut_point = Vector3(-4.62, 0.75, -1)
-water_point = Vector3(-17, -2.6, 13)
-
+winch_point = Vector3(-2.49, 0.667, -3.66)
+cut_point = Vector3(-3.9, 0.667, -3.66)
+water_point = Vector3(-17, -2.6, 10.34)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="RopeL2" type="Node3D" parent="Ship" unique_id=490164257]
 script = ExtResource("6_e")
-winch_point = Vector3(-2, 0.95, 3.5)
-cut_point = Vector3(-4.62, 0.75, 3.5)
-water_point = Vector3(-17, -2.6, 17.5)
-
+winch_point = Vector3(-2.49, 0.667, 1.54)
+cut_point = Vector3(-3.9, 0.667, 1.54)
+water_point = Vector3(-17, -2.6, 15.54)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="RopeL3" type="Node3D" parent="Ship" unique_id=1910130194]
 script = ExtResource("6_e")
-winch_point = Vector3(-2, 0.95, 8)
-cut_point = Vector3(-4.62, 0.75, 8)
-water_point = Vector3(-17, -2.6, 22)
-
+winch_point = Vector3(-2.49, 0.667, 5.74)
+cut_point = Vector3(-3.9, 0.667, 5.74)
+water_point = Vector3(-17, -2.6, 19.74)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="RopeR1" type="Node3D" parent="Ship" unique_id=1433216771]
 script = ExtResource("6_e")
-winch_point = Vector3(2, 0.95, -1)
-cut_point = Vector3(4.62, 0.75, -1)
-water_point = Vector3(17, -2.6, 13)
-
+winch_point = Vector3(2.49, 0.667, -3.14)
+cut_point = Vector3(3.9, 0.667, -3.14)
+water_point = Vector3(17, -2.6, 10.86)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="RopeR2" type="Node3D" parent="Ship" unique_id=1125174564]
 script = ExtResource("6_e")
-winch_point = Vector3(2, 0.95, 3.5)
-cut_point = Vector3(4.62, 0.75, 3.5)
-water_point = Vector3(17, -2.6, 17.5)
-
+winch_point = Vector3(2.49, 0.667, 2.06)
+cut_point = Vector3(3.9, 0.667, 2.06)
+water_point = Vector3(17, -2.6, 16.06)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="RopeR3" type="Node3D" parent="Ship" unique_id=1188964986]
 script = ExtResource("6_e")
-winch_point = Vector3(2, 0.95, 8)
-cut_point = Vector3(4.62, 0.75, 8)
-water_point = Vector3(17, -2.6, 22)
-
+winch_point = Vector3(2.49, 0.667, 6.26)
+cut_point = Vector3(3.9, 0.667, 6.26)
+water_point = Vector3(17, -2.6, 20.26)
+radius = 0.09
+rope_color = Color(0.5, 0.45, 0.36, 1)
 [node name="Player" parent="." unique_id=2018142729 instance=ExtResource("18_e")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.02, 1.25)
 settings = ExtResource("13_e")
