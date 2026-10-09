@@ -13,7 +13,7 @@ uniform float base_roughness = 0.4;
 // 0..1: lo pone LightningController mientras dura el rayo.
 uniform float flash = 0.0;
 // Cuánto se ve la superficie desde abajo con cada rayo.
-uniform float under_flash_strength = 0.6;
+uniform float under_flash_strength = 0.12;
 // Cuánto se apaga la superficie cuando se la mira desde arriba hacia abajo (el abismo no refleja nada).
 uniform float look_down_black = 0.92;
 
@@ -82,6 +82,9 @@ void fragment() {
 		// Desde abajo: oscuridad total, salvo el destello del rayo atravesando el agua.
 		ALBEDO = vec3(0.0);
 		ROUGHNESS = 1.0;
+		// Sin brillo: las luces del barco no tienen que asomarse desde abajo del agua.
+		SPECULAR = 0.0;
+		METALLIC = 0.0;
 		EMISSION = vec3(0.05, 0.12, 0.16) * flash * under_flash_strength * (0.4 + fres);
 	}
 }

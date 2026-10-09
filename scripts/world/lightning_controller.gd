@@ -19,6 +19,7 @@ var is_running: bool = false
 var _base_ambient: float = 0.0
 var _base_sky: float = 1.0
 var _level: float = 0.0
+var _sky_visible: bool = true
 var _loop_id: int = 0
 var _tween: Tween = null
 
@@ -83,7 +84,7 @@ func _apply(level: float) -> void:
 	light.light_energy = level * settings.lightning_energy
 	var env: Environment = world_environment.environment
 	env.ambient_light_energy = _base_ambient + level * settings.lightning_ambient
-	env.background_energy_multiplier = _base_sky + level * settings.lightning_sky
+	env.background_energy_multiplier = (_base_sky + level * settings.lightning_sky) if _sky_visible else 0.0
 	for material: ShaderMaterial in flash_materials:
 		material.set_shader_parameter("flash", level)
 
@@ -91,6 +92,12 @@ func _apply(level: float) -> void:
 ## Brillo actual del rayo, de 0 a 1 (para que la lluvia y otros efectos reaccionen).
 func get_level() -> float:
 	return _level
+
+
+## Apaga el cielo para siempre (ya no se ve: el jugador está bajo el agua).
+func hide_sky() -> void:
+	_sky_visible = false
+	_apply(_level)
 
 
 ## Apaga todo y deja la escena a oscuras (bajo el agua).

@@ -362,6 +362,7 @@ func _update_float() -> void:
 func _begin_descent() -> void:
 	stage = Stage.DESCENT
 	var env: Environment = world_environment.environment
+	_go_underwater_after_dip()
 	var sink: Tween = create_tween().set_parallel(true)
 	sink.tween_property(player, "global_position:y", settings.sea_level - settings.sink_depth, settings.sink_time) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
@@ -381,6 +382,25 @@ func _begin_descent() -> void:
 	_show_rescue_light()
 
 
+## Cuando la cabeza ya está bajo el agua, el cielo deja de existir: negro total en vez del horizonte.
+## Así no se asoma el borde del mar, ni el barco, ni la luz del cielo por encima.
+func _go_underwater_after_dip() -> void:
+	while stage == Stage.DESCENT and player.global_position.y + 1.6 > settings.sea_level - 0.6:
+		await get_tree().process_frame
+	if stage != Stage.DESCENT:
+		return
+	var env: Environment = world_environment.environment
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color.BLACK
+	lightning.hide_sky()
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	# Bajo el agua el barco, sus luces y la lluvia ya no existen para el jugador.
+	ship.visible = false
+	ocean.visible = false
+	rain.emitting = false
+	rain.visible = false
+
+
 # ---------- Luz final ----------
 
 func _show_rescue_light() -> void:
@@ -388,7 +408,10 @@ func _show_rescue_light() -> void:
 	# El negro total se levanta: lo único que existe es la luz que viene de arriba.
 	black_overlay.modulate.a = 0.0
 	water_overlay.modulate.a = 0.0
-	rescue_glow.global_position = player.global_position + Vector3(0.0, 40.0, 0.0)
+	# La luz aparece justo donde el jugador está mirando (hacia arriba) y se acerca.
+	var look_dir: Vector3 = -_camera.global_transform.basis.z
+	var origin: Vector3 = _camera.global_position
+	rescue_glow.global_position = origin + look_dir * 70.0
 	rescue_glow.scale = Vector3.ONE * 4.0
 	var material: ShaderMaterial = rescue_glow.material_override as ShaderMaterial
 	material.set_shader_parameter("strength", 0.0)
@@ -396,7 +419,7 @@ func _show_rescue_light() -> void:
 	var rise: Tween = create_tween().set_parallel(true)
 	rise.tween_method(func(v: float) -> void: material.set_shader_parameter("strength", v), 0.0, settings.rescue_light_strength, settings.rescue_light_time) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	rise.tween_property(rescue_glow, "global_position:y", player.global_position.y + 14.0, settings.rescue_light_time) \
+	rise.tween_property(rescue_glow, "global_position", origin + look_dir * 18.0, settings.rescue_light_time) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	rise.tween_property(rescue_glow, "scale", Vector3.ONE * 26.0, settings.rescue_light_time) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

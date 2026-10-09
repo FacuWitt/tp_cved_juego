@@ -1,6 +1,6 @@
 shader_type spatial;
 // Luz difusa del helicóptero vista desde abajo del agua: un disco suave que siempre mira a la cámara.
-render_mode unshaded, blend_add, cull_disabled, depth_draw_never, skip_vertex_transform;
+render_mode unshaded, blend_add, cull_disabled, depth_draw_never, fog_disabled, skip_vertex_transform;
 
 uniform float strength : hint_range(0.0, 3.0) = 0.0;
 uniform vec3 tint : source_color = vec3(0.85, 0.93, 1.0);

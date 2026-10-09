@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-017 · Memoria 4: bajo el agua ya no se ve el barco y la luz final se ve · 2026-10-08
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu: "sigo viendo el barco debajo del agua".
+- **Qué se hizo:** al hundirse (cuando los ojos pasan bajo la superficie) se apagan el barco con sus luces, la lluvia, el mar y el cielo: queda negro total. La luz del final (helicóptero) ahora aparece donde el jugador está mirando y ya no la apaga la niebla densa del hundimiento.
+- **Por qué (decisión de diseño):** la talasofobia necesita oscuridad completa; mientras el barco existiera en la escena, sus luces se asomaban por el borde del mar. En vez de depender de que el agua tape todo, bajo la superficie directamente no existe nada más que la luz que viene a salvarlo.
+- **Alternativas descartadas:** taparlo solo con la superficie del agua (dejaba ver el borde del mar, un resplandor del horizonte y reflejos de las luces).
+- **Problemas encontrados:** la luz del helicóptero se veía casi apagada porque la niebla del hundimiento (densidad 0,35) también la afectaba; se le desactivó la niebla al material y se la ubicó frente a la cámara.
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd`, `scripts/world/lightning_controller.gd`, `assets/shaders/ocean.gdshader`, `assets/shaders/rescue_glow.gdshader`.
+- **Pendiente / ❓ ABIERTO:** rayos de luz (godrays) para el agua y la luz final: ver con Facu el plugin de lens effects (solo funciona con Forward+).
+
 ### CL-016 · Memoria 4: menos resbalón, lluvia en rayas y primer postprocesado · 2026-10-08
 - **Rama / commits:** `memories/m4-barco` · ver `git log`
 - **Pedido por:** Facu: "hay demasiado deslizamiento, es prácticamente imposible cortar la soga; la lluvia quedaba mejor antes; los detalles visuales y el postprocesado son importantes".
