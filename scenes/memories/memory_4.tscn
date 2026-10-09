@@ -22,6 +22,14 @@
 [ext_resource type="PackedScene" path="res://assets/models/m4_motor_redes/m4_motor_redes.glb" id="glb_motor"]
 [ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="18_e"]
 
+[ext_resource type="Script" path="res://scripts/world/axe_pickup.gd" id="axe_pk"]
+[ext_resource type="Resource" path="res://config/axe_settings.tres" id="axe_cfg"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="pickup_cfg"]
+[ext_resource type="PackedScene" path="res://assets/models/m4_hacha/fire_axe.glb" id="glb_axe"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="ui_prompt"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="ui_prompt_cfg"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="ui_dot"]
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_32_s"]
 sky_top_color = Color(0.012, 0.016, 0.024, 1)
 sky_horizon_color = Color(0.05, 0.065, 0.082, 1)
@@ -248,9 +256,15 @@ size = Vector3(1.2, 1.1, 2.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_col17"]
 size = Vector3(1.2, 1.1, 2.5)
 
-[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_axe"]
+size = Vector3(0.45, 1.0, 0.6)
+
+[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player", "axe_item", "reticle")]
 script = ExtResource("1_e")
 settings = ExtResource("2_e")
+axe_settings = ExtResource("axe_cfg")
+axe_item = NodePath("Ship/AxeItem")
+reticle = NodePath("HUD/Center/Reticle")
 player = NodePath("Player")
 ropes = [NodePath("Ship/RopeL1"), NodePath("Ship/RopeL2"), NodePath("Ship/RopeL3"), NodePath("Ship/RopeR1"), NodePath("Ship/RopeR2"), NodePath("Ship/RopeR3")]
 qte = NodePath("HUD/Qte")
@@ -324,6 +338,25 @@ transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, 6.0)
 
 [node name="MotorR8_0" parent="Ship" instance=ExtResource("glb_motor")]
 transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, 6.0)
+
+[node name="AxeItem" type="RigidBody3D" parent="Ship"]
+script = ExtResource("axe_pk")
+settings = ExtResource("pickup_cfg")
+transform = Transform3D(0.00000, 0.00000, 1.00000, -0.40674, 0.91355, 0.00000, -0.91355, -0.40674, 0.00000, 1.55, 1.1902, -9.6371)
+freeze = true
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape3D" parent="Ship/AxeItem"]
+shape = SubResource("BoxShape3D_axe")
+
+[node name="Model" parent="Ship/AxeItem" instance=ExtResource("glb_axe")]
+transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.025, 0, 0, 0)
+
+[node name="AxeGlow" type="OmniLight3D" parent="Ship"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.7, -8.6)
+light_color = Color(1, 0.82, 0.6, 1)
+light_energy = 0.7
+omni_range = 2.6
 
 [node name="Deck" type="StaticBody3D" parent="Ship" unique_id=1799397816]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 1.7)
@@ -622,6 +655,35 @@ script = ExtResource("11_e")
 settings = ExtResource("12_e")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=921258592]
+
+[node name="Center" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("ui_prompt")
+player = NodePath("../../../Player")
+settings = ExtResource("ui_prompt_cfg")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("ui_dot")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
 
 [node name="SlamOverlay" type="ColorRect" parent="HUD" unique_id=89235058]
 anchors_preset = 15

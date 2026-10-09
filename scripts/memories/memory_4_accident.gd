@@ -34,6 +34,11 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var abyss_overlay: ColorRect
 @export var deck_slip: DeckSlip
 @export var splash_player: AudioStreamPlayer
+## El hacha apoyada en la pared de la cabina: hay que agarrarla antes de cortar.
+@export var axe_item: AxePickup
+@export var axe_settings: AxeSettings
+## La mira (puntito) con el aviso (E).
+@export var reticle: Control
 
 var stage: Stage = Stage.DECK
 
@@ -43,6 +48,8 @@ var _lens_wet: float = 0.0
 var _head: Node3D
 var _camera: Camera3D
 var _axe: AxeView
+var _has_axe: bool = false
+var _axe_hint_timer: float = 0.0
 var _active_rope: CuttableRope = null
 var _chop_rope: CuttableRope = null
 var _busy: bool = false
@@ -69,7 +76,10 @@ func _ready() -> void:
 	_camera = player.get_node("Head/Camera3D") as Camera3D
 	_base_fov = _camera.fov
 	_axe = AxeView.new()
+	_axe.settings = axe_settings
+	_axe.player = player
 	_camera.add_child(_axe)
+	axe_item.equipped.connect(_on_axe_equipped)
 
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
@@ -111,6 +121,8 @@ func _say_intro() -> void:
 
 func _process(delta: float) -> void:
 	_time += delta
+	if _axe != null:
+		_axe.boat_roll_degrees = _camera.rotation_degrees.z if _camera != null else 0.0
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
 	deck_slip.enabled = stage <= Stage.WARNING and not _overboard
@@ -123,7 +135,9 @@ func _process(delta: float) -> void:
 		_watch_edges()
 	match stage:
 		Stage.DECK:
+			prompt_label.text = settings.rope_prompt if _has_axe else settings.axe_needed_prompt
 			prompt_label.visible = _active_rope != null and not _busy and not qte.is_active()
+			_update_axe_hint(delta)
 		Stage.SURFACE, Stage.DESCENT:
 			_update_float()
 			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
@@ -196,7 +210,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			and (event.keycode == KEY_0 or event.keycode == KEY_KP_0):
 		_debug_cut_all_ropes()
 		return
-	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and not _busy and not _overboard:
+	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and _has_axe and not _busy and not _overboard:
 		_start_chop(_active_rope)
 
 
@@ -217,7 +231,7 @@ func _begin_qte() -> void:
 
 
 func _on_qte_hit() -> void:
-	_axe.swing()
+	_axe.swing_hit()
 	_shake_amount = 0.05
 	if _chop_rope != null:
 		_chop_rope.add_hit()
@@ -237,7 +251,7 @@ func _on_qte_missed() -> void:
 	_misses += 1
 	_roll_extra = minf(_roll_extra + settings.roll_per_miss, 8.0)
 	_shake_amount = 0.12
-	_axe.swing()
+	_axe.swing_miss()
 	if not settings.urge_lines.is_empty():
 		var line: String = settings.urge_lines[randi() % settings.urge_lines.size()]
 		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
@@ -253,8 +267,15 @@ func _on_rope_range_changed(in_range: bool, rope: CuttableRope) -> void:
 		_active_rope = null
 
 
+func _on_axe_equipped(from_global: Transform3D) -> void:
+	_has_axe = true
+	_axe.shiver = 0.0
+	_axe.equip(from_global)
+
+
 func _on_rope_severed() -> void:
 	_ropes_cut += 1
+	_axe.shiver = axe_settings.shiver_per_rope * float(_ropes_cut)
 	_shake_amount = 0.2
 	_active_rope = null
 	if _ropes_cut >= ropes.size():
@@ -362,6 +383,10 @@ func _on_wave_covered() -> void:
 	stage = Stage.COVERED
 	_shake_amount = 0.5
 	lightning.stop()
+	# La ola le arranca el hacha de las manos.
+	if _has_axe:
+		_axe.torn_away()
+		player.clear_held_object()
 	var slam: Tween = create_tween()
 	slam.tween_property(slam_overlay, "modulate:a", 1.0, 0.35).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	await slam.finished
@@ -387,6 +412,7 @@ func _enter_surface() -> void:
 	_camera.fov = _base_fov
 	_roll_extra = 0.0
 	_axe.visible = false
+	reticle.visible = false
 	# La lluvia que queda es la de alrededor del barco, donde hay luz.
 	rain.emission_box_extents = Vector3(10.0, 0.1, 24.0)
 	# Mientras emerge no ve nada: recién al asomar la cabeza aparecen el cielo y el barco.
@@ -535,6 +561,17 @@ func _setup_wet_fx() -> void:
 	_wet.breath_interval = settings.breath_interval
 	add_child(_wet)
 	_post_fx = get_node_or_null("PostFx") as PostFx
+
+
+## Si pasa un rato sin que agarre el hacha, la tripulación le avisa dónde está.
+func _update_axe_hint(delta: float) -> void:
+	if _has_axe or _axe_hint_timer < 0.0:
+		return
+	_axe_hint_timer += delta
+	if _axe_hint_timer >= settings.axe_hint_delay:
+		_axe_hint_timer = -1.0
+		var line: String = settings.axe_hint_line
+		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
 
 
 func _update_wet_fx() -> void:

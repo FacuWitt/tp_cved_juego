@@ -113,6 +113,14 @@ extends Resource
 ## Grosor de cada raya de lluvia.
 @export_range(0.004, 0.1, 0.002, "suffix:m") var rain_width: float = 0.014
 
+@export_group("Hacha")
+## Cartel cuando está junto a una soga sin el hacha en la mano.
+@export var axe_needed_prompt: String = "Necesitás el hacha"
+## Línea de la tripulación si pasa un rato sin que agarre el hacha.
+@export var axe_hint_line: String = "TRIPULANTE: ¡El hacha, %s! ¡Está junto a la puerta de la cabina!"
+## Cuánto espera antes de avisarle dónde está el hacha.
+@export_range(2.0, 60.0, 1.0, "suffix:s") var axe_hint_delay: float = 14.0
+
 @export_group("Gotas y frío")
 ## Gotas rápidas que pasan al lado y delante de la cara del jugador.
 @export_range(0, 800, 10) var near_drop_amount: int = 260

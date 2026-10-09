@@ -18,6 +18,8 @@ var is_held: bool = false
 ## Si está en true, pickup() no hace nada: quedó fijo para siempre (p. ej. una soga ya atada).
 ## Lo pone en true un PlacementSlot con locks_object_on_place, o se puede llamar lock() a mano.
 var is_locked: bool = false
+## Si es false, el jugador no lo puede soltar una vez que lo agarró (p. ej. el hacha).
+var can_release: bool = true
 
 var _holder: Node3D = null
 var _holder_body: PhysicsBody3D = null
