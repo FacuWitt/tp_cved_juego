@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-016 · Memoria 4: menos resbalón, lluvia en rayas y primer postprocesado · 2026-10-08
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu: "hay demasiado deslizamiento, es prácticamente imposible cortar la soga; la lluvia quedaba mejor antes; los detalles visuales y el postprocesado son importantes".
+- **Qué se hizo:** (1) el resbalón se bajó (`slip_strength` 0,38, `sway_roll` 3,5, freno del suelo 1,4) y, mientras se corta una soga, el jugador tiene los pies firmes (no resbala); (2) se volvió a la lluvia en rayas finas, conservando que dependa de la luz (más visible en rayos y cerca de las lámparas, tenue alrededor del barco cuando se está lejos); (3) nuevo `PostFx` (capa de pantalla completa): pixelado de 2 px, reducción a 32 niveles de color con tramado, viñeta, aberración cromática leve, grano y corrección de color fría. Los valores están en `config/postfx_m4.tres` y cada escena puede tener su perfil.
+- **Por qué (decisión de diseño):** con el resbalón anterior no se podía apuntar el hachazo; ahora el suelo sigue siendo peligroso si uno se queda quieto cerca del borde, pero se puede cortar. El postprocesado da la identidad "PS1 con esteroides" sin depender de los modelos finales.
+- **Alternativas descartadas:** lluvia en manchas borrosas (se probó en CL-015; Facu prefirió las rayas).
+- **Problemas encontrados:** al bajar el empuje por debajo del freno del suelo, el jugador no se movía nunca (efecto "fricción estática"); se ajustó para que solo resbale en los picos del cabeceo. Probado en renderer Compatibility; los efectos de entorno de Forward+ (SSAO, niebla volumétrica, reflejos) no se pudieron ver acá.
+- **Archivos y docs:** `scripts/fx/post_fx.gd`, `scripts/config/postfx_settings.gd`, `assets/shaders/post_fx.gdshader`, `config/postfx_m4.tres`, `scripts/world/deck_slip.gd`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`.
+- **Pendiente / ❓ ABIERTO:** definir el look final (referencias visuales); perfil de postprocesado por memoria (M1 cálida, M4 fría); efectos de Forward+ (niebla volumétrica, SSAO, SSR) a probar en la PC; opción de apagar pixelado/grano en accesibilidad.
+
 ### CL-015 · Memoria 4: barco grande, 6 sogas, cubierta resbaladiza y caída al agua · 2026-10-08
 - **Rama / commits:** `memories/m4-barco` · sin commitear en el momento de escribir (ver `git log`)
 - **Pedido por:** Facu: "el barco tiene que ser bastante más grande, 6 sogas, 3 de cada lado, el suelo resbaladizo… por los costados se puede caer… menos definición a la lluvia… mirar para abajo en mar abierto no da miedo, no es todo negro".

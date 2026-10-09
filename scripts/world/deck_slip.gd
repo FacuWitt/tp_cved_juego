@@ -6,10 +6,14 @@ extends Node
 
 @export var player: Player
 ## Empuje por cada grado de inclinación (m/s² por °).
-@export_range(0.0, 2.0, 0.05, "suffix:m/s²/°") var strength: float = 0.9
+@export_range(0.0, 2.0, 0.05, "suffix:m/s²/°") var strength: float = 0.38
+
+const PLANT_BRAKE: float = 14.0
 
 ## Lo prende y apaga quien maneja la escena.
 var enabled: bool = false
+## Con los pies firmes (p. ej. mientras da un hachazo) no resbala y se frena enseguida.
+var planted: bool = false
 ## Inclinación actual del barco en grados. Positivo = el lado bajo es el -X.
 var roll_degrees: float = 0.0
 
@@ -21,6 +25,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if planted and player.is_on_floor():
+		player.velocity.x = move_toward(player.velocity.x, 0.0, PLANT_BRAKE * delta)
+		player.velocity.z = move_toward(player.velocity.z, 0.0, PLANT_BRAKE * delta)
+		return
 	if not enabled or not player.is_on_floor():
 		return
 	player.velocity.x += -roll_degrees * strength * delta

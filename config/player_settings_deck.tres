@@ -7,6 +7,6 @@ script = ExtResource("1_deck")
 walk_speed = 3.4
 sprint_speed = 4.6
 acceleration = 7.0
-deceleration = 1.2
+deceleration = 1.4
 air_control = 0.2
 jump_velocity = 3.5

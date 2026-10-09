@@ -9,7 +9,7 @@ extends Resource
 ## Escora fija del barco por el peso de la red (hacia un lado, siempre).
 @export_range(0.0, 15.0, 0.1, "suffix:°") var deck_roll: float = 1.5
 ## Cuánto cabecea el barco de lado a lado con el oleaje. Es lo que hace resbalar al jugador.
-@export_range(0.0, 12.0, 0.1, "suffix:°") var sway_roll: float = 5.0
+@export_range(0.0, 12.0, 0.1, "suffix:°") var sway_roll: float = 3.5
 ## Duración de un vaivén completo.
 @export_range(1.0, 12.0, 0.1, "suffix:s") var sway_period: float = 5.0
 ## Inclinación extra por cada golpe fallado (el barco se escora más mientras se tarda).
@@ -17,7 +17,7 @@ extends Resource
 
 @export_group("Cubierta resbaladiza")
 ## Empuje lateral por cada grado de inclinación del barco. Más alto = resbala más.
-@export_range(0.0, 2.0, 0.05, "suffix:m/s²/°") var slip_strength: float = 0.9
+@export_range(0.0, 2.0, 0.05, "suffix:m/s²/°") var slip_strength: float = 0.38
 ## Si el jugador baja de esta altura (cae por un costado abierto), cae al agua.
 @export_range(-6.0, -0.5, 0.1, "suffix:m") var fall_height: float = -1.9
 ## Tiempo en negro, bajo el agua helada, antes de volver a bordo.
@@ -100,18 +100,18 @@ extends Resource
 @export_range(0.0, 40.0, 0.5) var lightning_sky: float = 14.0
 ## Duración de un rayo (incluye los parpadeos).
 @export_range(0.1, 1.5, 0.01, "suffix:s") var lightning_time: float = 0.45
-## Cantidad de gotas de lluvia en el aire (son manchas borrosas, no rayas).
-@export_range(0, 6000, 50) var rain_amount: int = 1100
+## Cantidad de gotas de lluvia en el aire (rayas finas).
+@export_range(0, 6000, 50) var rain_amount: int = 1800
 ## Opacidad de la lluvia donde hay luces del barco (cubierta).
-@export_range(0.0, 0.5, 0.005) var rain_alpha_lit: float = 0.07
+@export_range(0.0, 0.5, 0.005) var rain_alpha_lit: float = 0.22
 ## Opacidad extra de la lluvia durante un rayo.
-@export_range(0.0, 0.5, 0.005) var rain_alpha_flash: float = 0.12
+@export_range(0.0, 0.5, 0.005) var rain_alpha_flash: float = 0.1
 ## Opacidad de la lluvia que se ve alrededor del barco cuando el jugador ya está lejos, en el agua.
-@export_range(0.0, 0.3, 0.005) var rain_alpha_far: float = 0.035
-## Largo de cada mancha de lluvia.
-@export_range(0.3, 3.0, 0.05, "suffix:m") var rain_length: float = 1.3
-## Ancho de cada mancha de lluvia (más ancho = más borroso).
-@export_range(0.02, 0.6, 0.01, "suffix:m") var rain_width: float = 0.22
+@export_range(0.0, 0.3, 0.005) var rain_alpha_far: float = 0.09
+## Largo de cada raya de lluvia.
+@export_range(0.2, 3.0, 0.05, "suffix:m") var rain_length: float = 0.55
+## Grosor de cada raya de lluvia.
+@export_range(0.004, 0.1, 0.002, "suffix:m") var rain_width: float = 0.014
 
 @export_group("En el agua")
 ## Cuánto tarda en salir a la superficie después de la ola.

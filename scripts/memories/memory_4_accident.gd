@@ -69,7 +69,7 @@ func _ready() -> void:
 	prompt_label.visible = false
 	rain.amount = settings.rain_amount
 	rain.top_level = true
-	(rain.mesh as QuadMesh).size = Vector2(settings.rain_width, settings.rain_length)
+	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
 	deck_slip.strength = settings.slip_strength
 	deck_slip.enabled = true
 	_last_safe = player.global_position
@@ -102,6 +102,9 @@ func _process(delta: float) -> void:
 	_time += delta
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
+	deck_slip.enabled = stage <= Stage.WARNING and not _overboard
+	# Mientras corta una soga tiene los pies firmes: si no, no habría forma de apuntar el golpe.
+	deck_slip.planted = stage == Stage.DECK and _busy and not _overboard
 	_update_camera_motion(delta)
 	_update_rain()
 	_update_abyss()
