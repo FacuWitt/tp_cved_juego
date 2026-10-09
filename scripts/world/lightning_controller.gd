@@ -94,10 +94,15 @@ func get_level() -> float:
 	return _level
 
 
-## Apaga el cielo para siempre (ya no se ve: el jugador está bajo el agua).
-func hide_sky() -> void:
-	_sky_visible = false
+## Muestra u oculta el cielo (bajo el agua no se ve).
+func set_sky_visible(value: bool) -> void:
+	_sky_visible = value
 	_apply(_level)
+
+
+## Apaga el cielo (ya no se ve: el jugador está bajo el agua).
+func hide_sky() -> void:
+	set_sky_visible(false)
 
 
 ## Apaga todo y deja la escena a oscuras (bajo el agua).

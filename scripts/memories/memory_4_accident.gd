@@ -50,6 +50,7 @@ var _float_base_y: float = 0.0
 var _search_time: float = 0.0
 var _base_fov: float = 75.0
 var _overboard: bool = false
+var _under_view: bool = false
 var _roll_deg: float = 0.0
 var _last_safe: Vector3 = Vector3.ZERO
 
@@ -115,6 +116,9 @@ func _process(delta: float) -> void:
 			prompt_label.visible = _active_rope != null and not _busy and not qte.is_active()
 		Stage.SURFACE, Stage.DESCENT:
 			_update_float()
+			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
+				_set_underwater_view(false)
+				rain.emitting = true
 	if stage >= Stage.SURFACE and searchlight != null:
 		_search_time += delta
 		# El reflector del barco barre otras zonas del mar: nunca apunta al jugador.
@@ -323,6 +327,8 @@ func _enter_surface() -> void:
 	_axe.visible = false
 	# La lluvia que queda es la de alrededor del barco, donde hay luz.
 	rain.emission_box_extents = Vector3(10.0, 0.1, 24.0)
+	# Mientras emerge no ve nada: recién al asomar la cabeza aparecen el cielo y el barco.
+	_set_underwater_view(true)
 	_float_base_y = sea_y + 0.15
 	black_overlay.modulate.a = 1.0
 	water_overlay.modulate.a = 0.85
@@ -389,16 +395,22 @@ func _go_underwater_after_dip() -> void:
 		await get_tree().process_frame
 	if stage != Stage.DESCENT:
 		return
+	world_environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	_set_underwater_view(true)
+
+
+## Bajo el agua no existe nada más que la oscuridad: ni el barco, ni sus luces, ni la lluvia, ni el mar, ni el cielo.
+func _set_underwater_view(underwater: bool) -> void:
+	_under_view = underwater
 	var env: Environment = world_environment.environment
-	env.background_mode = Environment.BG_COLOR
+	env.background_mode = Environment.BG_COLOR if underwater else Environment.BG_SKY
 	env.background_color = Color.BLACK
-	lightning.hide_sky()
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	# Bajo el agua el barco, sus luces y la lluvia ya no existen para el jugador.
-	ship.visible = false
-	ocean.visible = false
-	rain.emitting = false
-	rain.visible = false
+	lightning.set_sky_visible(not underwater)
+	ship.visible = not underwater
+	ocean.visible = not underwater
+	rain.visible = not underwater
+	if underwater:
+		rain.emitting = false
 
 
 # ---------- Luz final ----------

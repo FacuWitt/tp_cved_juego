@@ -41,6 +41,15 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-018 · Memoria 4: al salir del agua después de la ola no se ve nada hasta asomar la cabeza · 2026-10-08
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu (con dos capturas): "cuando la ola supera al jugador se llega a ver el barco" y una de las dos imágenes no era correcta.
+- **Qué se hizo:** mientras el jugador emerge después de la ola (cabeza bajo el agua) se ocultan el barco, la lluvia, el mar y el cielo, y solo hay negro. Al asomar la cabeza reaparecen el cielo, el mar, la lluvia cerca del barco y la luz lejana del barco. Se unificó con la regla del hundimiento en `_set_underwater_view()`.
+- **Por qué (decisión de diseño):** bajo el agua no se tiene que ver nada del mundo de arriba; la primera vista del mar debe ser el barco como luz muy lejana en la oscuridad.
+- **Alternativas descartadas:** ninguna registrada.
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd`, `scripts/world/lightning_controller.gd`.
+- **Pendiente / ❓ ABIERTO:** confirmar con Facu que la captura "correcta" era la del barco como luz lejana en la oscuridad.
+
 ### CL-017 · Memoria 4: bajo el agua ya no se ve el barco y la luz final se ve · 2026-10-08
 - **Rama / commits:** `memories/m4-barco` · ver `git log`
 - **Pedido por:** Facu: "sigo viendo el barco debajo del agua".
