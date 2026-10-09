@@ -131,6 +131,22 @@ extends Resource
 ## Velocidad de barrido del reflector del barco.
 @export_range(0.0, 2.0, 0.05, "suffix:/s") var searchlight_speed: float = 0.35
 
+@export_group("Reflector del mástil")
+## Intensidad del reflector sobre la cubierta (luz cálida, muy sutil).
+@export_range(0.0, 8.0, 0.1) var deck_floodlight_energy: float = 2.0
+## Apertura del cono del reflector mientras ilumina la cubierta.
+@export_range(10.0, 80.0, 1.0, "suffix:°") var deck_floodlight_angle: float = 40.0
+## Inclinación del reflector sobre la cubierta (negativo = hacia abajo).
+@export_range(-90.0, 0.0, 1.0, "suffix:°") var deck_floodlight_pitch: float = -46.0
+## Apertura del cono cuando busca al náufrago (más cerrado = haz más definido).
+@export_range(4.0, 40.0, 1.0, "suffix:°") var search_angle: float = 10.0
+## Separación mínima (además de la apertura del cono) entre el haz y el jugador: así nunca lo encuentra.
+@export_range(0.0, 40.0, 1.0, "suffix:°") var search_safe_margin: float = 12.0
+## Inclinación del haz de búsqueda sobre el mar.
+@export_range(-30.0, 0.0, 0.5, "suffix:°") var search_pitch: float = -5.0
+## Segundos que tarda el reflector en pasar de la cubierta a barrer el mar.
+@export_range(0.5, 8.0, 0.1, "suffix:s") var search_turn_time: float = 2.5
+
 @export_group("Oscuridad bajo el agua")
 ## Ángulo hacia abajo desde el cual empieza a oscurecerse la parte baja de la pantalla.
 @export_range(0.0, 60.0, 1.0, "suffix:°") var abyss_start_angle: float = 6.0

@@ -17,6 +17,9 @@ uniform float flash = 0.0;
 // Cuánto se ve la superficie desde abajo con cada rayo.
 uniform float under_flash_strength = 0.12;
 // Cuánto se apaga la superficie cuando se la mira desde arriba hacia abajo (el abismo no refleja nada).
+// Color y fuerza con que el agua devuelve la luz de un reflector (el haz del barco sobre el mar).
+uniform vec3 spot_lit_color : source_color = vec3(0.34, 0.5, 0.56);
+uniform float spot_lit_strength = 1.0;
 uniform float look_down_black = 0.92;
 
 varying vec3 w_pos;
@@ -88,5 +91,17 @@ void fragment() {
 		SPECULAR = 0.0;
 		METALLIC = 0.0;
 		EMISSION = vec3(0.05, 0.12, 0.16) * flash * under_flash_strength * (0.4 + fres);
+	}
+}
+
+
+void light() {
+	float ndl = max(dot(NORMAL, LIGHT), 0.0);
+	if (LIGHT_IS_DIRECTIONAL) {
+		// Luz direccional (relámpagos): comportamiento habitual.
+		DIFFUSE_LIGHT += ALBEDO * ndl * LIGHT_COLOR * ATTENUATION / PI;
+	} else {
+		// Reflectores: el mar iluminado se lee como una mancha clara sobre el negro.
+		DIFFUSE_LIGHT += spot_lit_color * spot_lit_strength * ndl * LIGHT_COLOR * ATTENUATION / PI;
 	}
 }

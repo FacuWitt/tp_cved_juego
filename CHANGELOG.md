@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-020 · Memoria 4: reflector en el mástil que busca al náufrago · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · ver `git log`
+- **Pedido por:** Facu (con imagen de referencia): luz focal blanca cálida, muy sutil, sobre el mástil apuntando a cubierta; más adelante busca al protagonista en el mar sin encontrarlo.
+- **Qué se hizo:** (1) `Searchlight` (SpotLight3D) movido a la punta del mástil (0, 10.4, -14) con carcasa emisiva `FloodlightHousing`; en cubierta es luz cálida de baja energía (2.0, cono 40°). (2) Al caer al agua pasa en `search_turn_time` (2.5 s) a un haz estrecho (10°, energía 9) que barre el mar. (3) El haz se mantiene siempre a más de `search_safe_margin` (12°) del jugador: pasa cerca pero nunca lo encuentra (medido: margen mínimo 11.5° en 14 s). (4) `ocean.gdshader` ahora tiene `light()`: el mar iluminado por un reflector se ve como mancha clara; el resto sigue negro. (5) Limpieza en la escena: se sacó la emisión roja de la cubierta y la transparencia/unshaded de la cabina.
+- **Por qué (decisión de diseño):** el agua apenas devolvía luz (albedo casi 0), así que el haz no se leía; se agregó respuesta de luz solo para reflectores. Todo configurable en `Memory4Settings` (grupo "Reflector del mástil").
+- **Alternativas descartadas:** meter emisión en el agua (mancha fija, no sigue al haz).
+- **Problemas encontrados:** probado en Compatibility, no en Forward+; los colores del haz pueden variar un poco.
+- **Archivos y docs:** `scenes/memories/memory_4.tscn`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `assets/shaders/ocean.gdshader`.
+- **Pendiente / ❓ ABIERTO:** ajustar intensidad/color del reflector a gusto de Facu en Forward+; apagar `debug_keys` antes de la entrega.
+
 ### CL-019 · Memoria 4: el barco flota sobre las olas y tecla 0 de prueba · 2026-10-09
 - **Rama / commits:** `memories/m4-barco` · ver `git log`
 - **Pedido por:** Facu (con video): "sigo viendo la parte de debajo del barco cuando estoy debajo del agua… agregá una tecla de prueba que corte todas las sogas, el 0".

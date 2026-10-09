@@ -90,7 +90,10 @@ func _ready() -> void:
 	wave.covered.connect(_on_wave_covered)
 	ocean.position.y = settings.sea_level
 	wave.position.y = settings.sea_level
-	searchlight.light_energy = 0.0
+	# Reflector del mástil: luz cálida y sutil sobre la cubierta.
+	searchlight.light_energy = settings.deck_floodlight_energy
+	searchlight.spot_angle = settings.deck_floodlight_angle
+	searchlight.rotation_degrees = Vector3(settings.deck_floodlight_pitch, 180.0, 0.0)
 	lightning.start()
 	_say_intro()
 
@@ -126,7 +129,25 @@ func _process(delta: float) -> void:
 	if stage >= Stage.SURFACE and searchlight != null:
 		_search_time += delta
 		# El reflector del barco barre otras zonas del mar: nunca apunta al jugador.
-		searchlight.rotation_degrees.y = 180.0 + sin(_search_time * settings.searchlight_speed) * 55.0 + 40.0
+		var blend: float = clampf(_search_time / settings.search_turn_time, 0.0, 1.0)
+		blend = blend * blend * (3.0 - 2.0 * blend)
+		var sweep: float = sin(_search_time * settings.searchlight_speed) * 45.0 + 28.0
+		var cone: float = lerpf(settings.deck_floodlight_angle, settings.search_angle, blend)
+		var local_yaw: float = deg_to_rad(180.0 + sweep * blend)
+		# El haz pasa cerca pero nunca ilumina al jugador: se mantiene a una separación mínima.
+		var to_player: Vector3 = _camera.global_position - searchlight.global_position
+		var player_yaw: float = atan2(-to_player.x, -to_player.z)
+		var ship_yaw: float = ship.global_rotation.y
+		var diff: float = wrapf(ship_yaw + local_yaw - player_yaw, -PI, PI)
+		var min_sep: float = deg_to_rad(cone + settings.search_safe_margin)
+		if absf(diff) < min_sep:
+			diff = min_sep if diff >= 0.0 else -min_sep
+			local_yaw = player_yaw + diff - ship_yaw
+		searchlight.rotation = Vector3(
+			deg_to_rad(lerpf(settings.deck_floodlight_pitch, settings.search_pitch, blend)),
+			local_yaw, 0.0)
+		searchlight.spot_angle = cone
+		searchlight.light_energy = lerpf(settings.deck_floodlight_energy, settings.searchlight_energy, blend)
 
 
 ## Última posición firme en cubierta y detección de caída por un costado abierto.
@@ -353,7 +374,6 @@ func _enter_surface() -> void:
 	water_overlay.modulate.a = 0.85
 	slam_overlay.modulate.a = 0.0
 	lightning.start()
-	searchlight.light_energy = settings.searchlight_energy
 
 	# El barco gira y se aleja: lo perdió de vista y busca en otra dirección.
 	var heading: Vector3 = Basis(Vector3.UP, deg_to_rad(settings.ship_turn)) * Vector3(0.0, 0.0, -1.0)
