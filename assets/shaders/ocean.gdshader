@@ -14,6 +14,8 @@ uniform float base_roughness = 0.4;
 uniform float flash = 0.0;
 // Cuánto se ve la superficie desde abajo con cada rayo.
 uniform float under_flash_strength = 0.6;
+// Cuánto se apaga la superficie cuando se la mira desde arriba hacia abajo (el abismo no refleja nada).
+uniform float look_down_black = 0.92;
 
 varying vec3 w_pos;
 varying float v_crest;
@@ -66,13 +68,16 @@ void fragment() {
 	float foam = smoothstep(0.78, 1.05, v_crest * 0.5 + foam_noise * 0.62) * foam_amount;
 
 	float fres = pow(1.0 - clamp(dot(n, VIEW), 0.0, 1.0), 4.0);
+	// Elevación de la cámara respecto de este punto del agua: 1 = lo miro desde justo arriba.
+	vec3 view_w = normalize((INV_VIEW_MATRIX * vec4(VIEW, 0.0)).xyz);
+	float dim = 1.0 - smoothstep(0.3, 0.8, view_w.y) * look_down_black;
 
 	if (FRONT_FACING) {
-		ALBEDO = mix(deep_color, foam_color, foam);
+		ALBEDO = mix(deep_color, foam_color, foam) * dim;
 		ROUGHNESS = mix(base_roughness, 0.9, foam);
-		SPECULAR = 0.25;
+		SPECULAR = 0.25 * dim;
 		// Reflejo falso del cielo encendido por el rayo, más fuerte de costado.
-		EMISSION = sky_reflect_color * flash * (0.012 + fres * 0.28) + foam_color * foam * flash * 0.05;
+		EMISSION = (sky_reflect_color * flash * (0.012 + fres * 0.28) + foam_color * foam * flash * 0.05) * dim;
 	} else {
 		// Desde abajo: oscuridad total, salvo el destello del rayo atravesando el agua.
 		ALBEDO = vec3(0.0);

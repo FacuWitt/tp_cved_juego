@@ -6,26 +6,38 @@ extends Resource
 @export_group("Barco")
 ## Altura del nivel del mar respecto de la cubierta (negativo = más abajo que la cubierta).
 @export_range(-6.0, -0.5, 0.1, "suffix:m") var sea_level: float = -2.6
-## Inclinación base de la cámara hacia babor: el barco está escorado por el peso de la red.
-@export_range(0.0, 15.0, 0.1, "suffix:°") var deck_roll: float = 4.0
-## Cuánto oscila la cámara de lado a lado con el vaivén del barco.
-@export_range(0.0, 6.0, 0.1, "suffix:°") var sway_roll: float = 1.6
+## Escora fija del barco por el peso de la red (hacia un lado, siempre).
+@export_range(0.0, 15.0, 0.1, "suffix:°") var deck_roll: float = 1.5
+## Cuánto cabecea el barco de lado a lado con el oleaje. Es lo que hace resbalar al jugador.
+@export_range(0.0, 12.0, 0.1, "suffix:°") var sway_roll: float = 5.0
 ## Duración de un vaivén completo.
 @export_range(1.0, 12.0, 0.1, "suffix:s") var sway_period: float = 5.0
 ## Inclinación extra por cada golpe fallado (el barco se escora más mientras se tarda).
-@export_range(0.0, 5.0, 0.1, "suffix:°") var roll_per_miss: float = 1.2
+@export_range(0.0, 5.0, 0.1, "suffix:°") var roll_per_miss: float = 0.8
+
+@export_group("Cubierta resbaladiza")
+## Empuje lateral por cada grado de inclinación del barco. Más alto = resbala más.
+@export_range(0.0, 2.0, 0.05, "suffix:m/s²/°") var slip_strength: float = 0.9
+## Si el jugador baja de esta altura (cae por un costado abierto), cae al agua.
+@export_range(-6.0, -0.5, 0.1, "suffix:m") var fall_height: float = -1.9
+## Tiempo en negro, bajo el agua helada, antes de volver a bordo.
+@export_range(0.5, 8.0, 0.1, "suffix:s") var fall_dark_time: float = 3.0
+## Cuánto se suma a la inclinación del barco cada vez que se cae (como un fallo más).
+@export_range(0.0, 5.0, 0.1, "suffix:°") var fall_roll_penalty: float = 0.8
+## Frase al volver a bordo. %s = nombre del protagonista.
+@export var fall_rescue_line: String = "TRIPULANTE: ¡Te tenemos, %s! ¡Volvé a las sogas!"
 
 @export_group("Cortar las sogas (evento rápido)")
 ## Cuántos golpes bien dados hacen falta para cortar cada soga.
 @export_range(1, 5, 1) var hits_per_rope: int = 2
 ## Velocidad del marcador, en recorridos de la barra por segundo.
-@export_range(0.2, 3.0, 0.05, "suffix:/s") var marker_speed: float = 0.9
+@export_range(0.2, 3.0, 0.05, "suffix:/s") var marker_speed: float = 0.8
 ## Ancho de la zona buena, como fracción de la barra (0.2 = 20%).
-@export_range(0.05, 0.6, 0.01) var zone_width: float = 0.2
+@export_range(0.05, 0.6, 0.01) var zone_width: float = 0.24
 ## Cuánto se achica la zona buena en cada soga siguiente (la tensión sube).
-@export_range(0.0, 0.1, 0.005) var zone_shrink_per_rope: float = 0.03
+@export_range(0.0, 0.1, 0.005) var zone_shrink_per_rope: float = 0.028
 ## Cuánto se acelera el marcador en cada soga siguiente.
-@export_range(0.0, 1.0, 0.05, "suffix:/s") var speed_gain_per_rope: float = 0.2
+@export_range(0.0, 1.0, 0.05, "suffix:/s") var speed_gain_per_rope: float = 0.25
 ## Cuántas veces puede recorrer la barra el marcador sin que el jugador apriete, antes de contar como fallo.
 @export_range(1, 5, 1) var max_passes: int = 2
 ## Pausa después de fallar antes de poder volver a intentar. No hay game over.
@@ -88,8 +100,18 @@ extends Resource
 @export_range(0.0, 40.0, 0.5) var lightning_sky: float = 14.0
 ## Duración de un rayo (incluye los parpadeos).
 @export_range(0.1, 1.5, 0.01, "suffix:s") var lightning_time: float = 0.45
-## Cantidad de gotas de lluvia en el aire.
-@export_range(0, 6000, 50) var rain_amount: int = 1800
+## Cantidad de gotas de lluvia en el aire (son manchas borrosas, no rayas).
+@export_range(0, 6000, 50) var rain_amount: int = 1100
+## Opacidad de la lluvia donde hay luces del barco (cubierta).
+@export_range(0.0, 0.5, 0.005) var rain_alpha_lit: float = 0.07
+## Opacidad extra de la lluvia durante un rayo.
+@export_range(0.0, 0.5, 0.005) var rain_alpha_flash: float = 0.12
+## Opacidad de la lluvia que se ve alrededor del barco cuando el jugador ya está lejos, en el agua.
+@export_range(0.0, 0.3, 0.005) var rain_alpha_far: float = 0.035
+## Largo de cada mancha de lluvia.
+@export_range(0.3, 3.0, 0.05, "suffix:m") var rain_length: float = 1.3
+## Ancho de cada mancha de lluvia (más ancho = más borroso).
+@export_range(0.02, 0.6, 0.01, "suffix:m") var rain_width: float = 0.22
 
 @export_group("En el agua")
 ## Cuánto tarda en salir a la superficie después de la ola.
@@ -108,6 +130,12 @@ extends Resource
 @export_range(0.0, 30.0, 0.5) var searchlight_energy: float = 9.0
 ## Velocidad de barrido del reflector del barco.
 @export_range(0.0, 2.0, 0.05, "suffix:/s") var searchlight_speed: float = 0.35
+
+@export_group("Oscuridad bajo el agua")
+## Ángulo hacia abajo desde el cual empieza a oscurecerse la parte baja de la pantalla.
+@export_range(0.0, 60.0, 1.0, "suffix:°") var abyss_start_angle: float = 6.0
+## Ángulo hacia abajo con el cual todo es negro (mirar el abismo).
+@export_range(10.0, 89.0, 1.0, "suffix:°") var abyss_full_angle: float = 50.0
 
 @export_group("Hundimiento")
 ## Cuánto tarda en hundirse hasta la oscuridad total.

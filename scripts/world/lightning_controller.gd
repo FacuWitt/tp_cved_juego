@@ -88,6 +88,11 @@ func _apply(level: float) -> void:
 		material.set_shader_parameter("flash", level)
 
 
+## Brillo actual del rayo, de 0 a 1 (para que la lluvia y otros efectos reaccionen).
+func get_level() -> float:
+	return _level
+
+
 ## Apaga todo y deja la escena a oscuras (bajo el agua).
 func blackout() -> void:
 	stop()

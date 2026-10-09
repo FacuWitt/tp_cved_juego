@@ -226,6 +226,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 > - **Luz:** lo único que ilumina son los **rayos** (`LightningController`) y una luz muy lejana del barco. Entre rayo y rayo, casi negro.
 > - **Después de la ola:** el protagonista emerge, flota; el barco se aleja mirando para otro lado y su reflector barre otras partes del mar sin verlo. Luego se hunde a oscuridad total (talasofobia).
 > - **Final de la memoria:** una luz que crece desde el fondo = **helicóptero** ✅ (reemplaza al barquito luminoso del fondo). ❓ Falta confirmar con el equipo si además aparece el barquito.
+> - **CL-015 — Barco pesquero grande:** unos 39 m, **6 sogas (3 por banda)** sobre huecos de la baranda, **suelo resbaladizo** (el barco cabecea y empuja al jugador, `DeckSlip` + `config/player_settings_deck.tres`) y **costados abiertos**: si cae al agua → negro con sonido de chapuzón (`assets/audio/m4_fall_splash.wav`, placeholder) y vuelve a bordo como un fallo más. El evento rápido (`E`) se achica y acelera con cada soga. Lluvia en manchas borrosas, que cerca del barco se ve apenas y lejos casi no se ve. Mirando hacia abajo en el agua la pantalla se va a negro (`abyss.gdshader`).
 > - **Pendientes ❓:** sonido (capas Amenaza/Afuera), modelos finales, nombre del protagonista, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
 
 **Escena:** `scenes/memories/m4_pesquero/`. Noche, tormenta fuerte. **Sin degradación:** la más nítida y real.

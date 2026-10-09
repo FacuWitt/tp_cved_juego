@@ -1,7 +1,8 @@
 class_name Memory4Accident
 extends Memory
 ## Memoria 4: el accidente en el barco.
-## 1) CUBIERTA: el jugador corta las sogas de la red con un evento rápido.
+## 1) CUBIERTA: el jugador corta las 6 sogas (3 por banda) con un evento rápido. El suelo resbala
+##    y los costados están abiertos: si cae al agua, vuelve a bordo después de unos segundos en negro.
 ## 2) AVISO: la tripulación grita "¡LO LOGRAMOS!" y enseguida "¡CUIDADO!".
 ## 3) OLA: una ola gigante se enrosca y lo cubre.
 ## 4) SUPERFICIE: flota de noche, el barco lo perdió de vista y se aleja.
@@ -28,6 +29,9 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var water_overlay: ColorRect
 @export var black_overlay: ColorRect
 @export var rescue_glow: MeshInstance3D
+@export var abyss_overlay: ColorRect
+@export var deck_slip: DeckSlip
+@export var splash_player: AudioStreamPlayer
 
 var stage: Stage = Stage.DECK
 
@@ -45,6 +49,9 @@ var _time: float = 0.0
 var _float_base_y: float = 0.0
 var _search_time: float = 0.0
 var _base_fov: float = 75.0
+var _overboard: bool = false
+var _roll_deg: float = 0.0
+var _last_safe: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -61,6 +68,11 @@ func _ready() -> void:
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
 	rain.amount = settings.rain_amount
+	rain.top_level = true
+	(rain.mesh as QuadMesh).size = Vector2(settings.rain_width, settings.rain_length)
+	deck_slip.strength = settings.slip_strength
+	deck_slip.enabled = true
+	_last_safe = player.global_position
 	ocean.target = player
 	for overlay: ColorRect in [slam_overlay, water_overlay, black_overlay]:
 		overlay.modulate.a = 0.0
@@ -88,7 +100,13 @@ func _say_intro() -> void:
 
 func _process(delta: float) -> void:
 	_time += delta
+	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
+	deck_slip.roll_degrees = _roll_deg
 	_update_camera_motion(delta)
+	_update_rain()
+	_update_abyss()
+	if stage <= Stage.WARNING and not _overboard:
+		_watch_edges()
 	match stage:
 		Stage.DECK:
 			prompt_label.visible = _active_rope != null and not _busy and not qte.is_active()
@@ -100,8 +118,16 @@ func _process(delta: float) -> void:
 		searchlight.rotation_degrees.y = 180.0 + sin(_search_time * settings.searchlight_speed) * 55.0 + 40.0
 
 
+## Última posición firme en cubierta y detección de caída por un costado abierto.
+func _watch_edges() -> void:
+	if player.is_on_floor() and absf(player.global_position.x) < 3.9:
+		_last_safe = player.global_position
+	elif player.global_position.y < settings.fall_height:
+		_fall_overboard()
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and not _busy:
+	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and not _busy and not _overboard:
 		_start_chop(_active_rope)
 
 
@@ -116,7 +142,7 @@ func _start_chop(rope: CuttableRope) -> void:
 
 func _begin_qte() -> void:
 	var rope_index: int = _ropes_cut
-	var zone: float = maxf(0.06, settings.zone_width - settings.zone_shrink_per_rope * float(rope_index))
+	var zone: float = maxf(0.05, settings.zone_width - settings.zone_shrink_per_rope * float(rope_index))
 	var speed: float = settings.marker_speed + settings.speed_gain_per_rope * float(rope_index)
 	qte.begin(zone, speed, settings.max_passes)
 
@@ -140,7 +166,7 @@ func _on_rope_hit(hits: int, rope: CuttableRope) -> void:
 
 func _on_qte_missed() -> void:
 	_misses += 1
-	_roll_extra = settings.roll_per_miss * float(_misses)
+	_roll_extra = minf(_roll_extra + settings.roll_per_miss, 8.0)
 	_shake_amount = 0.12
 	_axe.swing()
 	if not settings.urge_lines.is_empty():
@@ -168,6 +194,54 @@ func _on_rope_severed() -> void:
 		_busy = false
 
 
+# ---------- Caída al agua ----------
+
+## Cayó por un costado: un susto en negro bajo el agua helada y vuelve a bordo. Cuenta como un fallo más.
+func _fall_overboard() -> void:
+	_overboard = true
+	_busy = true
+	deck_slip.enabled = false
+	qte.cancel()
+	prompt_label.visible = false
+	_active_rope = null
+	_chop_rope = null
+	subtitles.show_line("", 0.0)
+	_shake_amount = 0.6
+	if splash_player != null:
+		splash_player.play()
+	# Golpe de frío: el campo de visión se abre de golpe y todo se va a negro.
+	var dive: Tween = create_tween().set_parallel(true)
+	dive.tween_property(_camera, "fov", _base_fov + 22.0, 0.25).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	dive.tween_property(water_overlay, "modulate:a", 0.9, 0.2)
+	dive.tween_property(black_overlay, "modulate:a", 1.0, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	await get_tree().create_timer(0.4).timeout
+	player.set_physics_process(false)
+	player.velocity = Vector3.ZERO
+	await get_tree().create_timer(settings.fall_dark_time).timeout
+
+	# Vuelve a bordo, más cerca del centro de la cubierta que de donde cayó.
+	var back: Vector3 = _last_safe
+	back.x *= 0.35
+	player.global_position = back
+	player.rotation.y = PI
+	player.velocity = Vector3.ZERO
+	_head.rotation.x = 0.0
+	_misses += 1
+	_roll_extra = minf(_roll_extra + settings.fall_roll_penalty, 8.0)
+	if stage <= Stage.WARNING:
+		player.set_physics_process(true)
+	var back_tween: Tween = create_tween().set_parallel(true)
+	back_tween.tween_property(_camera, "fov", _base_fov, 1.0)
+	back_tween.tween_property(black_overlay, "modulate:a", 0.0, 1.0)
+	back_tween.tween_property(water_overlay, "modulate:a", 0.0, 1.6)
+	subtitles.show_line(settings.fall_rescue_line % settings.protagonist_name, settings.line_duration)
+	await back_tween.finished
+	_overboard = false
+	if stage == Stage.DECK:
+		_busy = false
+		deck_slip.enabled = true
+
+
 # ---------- Aviso y ola ----------
 
 func _on_all_ropes_cut() -> void:
@@ -175,6 +249,8 @@ func _on_all_ropes_cut() -> void:
 	_busy = true
 	prompt_label.visible = false
 	await get_tree().create_timer(settings.success_delay).timeout
+	while _overboard:
+		await get_tree().process_frame
 	subtitles.show_line(settings.success_line, settings.line_duration)
 	await get_tree().create_timer(settings.warning_delay).timeout
 	# El grito de advertencia y un rayo que deja ver lo que viene.
@@ -185,12 +261,17 @@ func _on_all_ropes_cut() -> void:
 
 func _start_wave() -> void:
 	stage = Stage.WAVE
+	deck_slip.enabled = false
 	player.set_physics_process(false)
+	player.velocity = Vector3.ZERO
 	var start_z: float = player.global_position.z + settings.wave_distance
 	wave.launch(start_z, player.global_position.z)
 
 	# La cámara se levanta a medida que la ola crece, y el campo de visión se abre.
 	var look: Tween = create_tween().set_parallel(true)
+	# Se da vuelta hacia la popa: la ola viene por detrás del barco.
+	look.tween_property(player, "rotation:y", player.rotation.y + wrapf(PI - player.rotation.y, -PI, PI), 1.2) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	look.tween_property(_head, "rotation:x", deg_to_rad(settings.look_up_angle), settings.wave_time * 0.9) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	look.tween_property(_camera, "fov", _base_fov + 14.0, settings.wave_time) \
@@ -237,6 +318,8 @@ func _enter_surface() -> void:
 	_camera.fov = _base_fov
 	_roll_extra = 0.0
 	_axe.visible = false
+	# La lluvia que queda es la de alrededor del barco, donde hay luz.
+	rain.emission_box_extents = Vector3(10.0, 0.1, 24.0)
 	_float_base_y = sea_y + 0.15
 	black_overlay.modulate.a = 1.0
 	water_overlay.modulate.a = 0.85
@@ -318,6 +401,33 @@ func _show_rescue_light() -> void:
 	complete()
 
 
+# ---------- Lluvia y abismo ----------
+
+func _update_rain() -> void:
+	var material: StandardMaterial3D = rain.material_override as StandardMaterial3D
+	var level: float = lightning.get_level()
+	var alpha: float
+	if stage >= Stage.SURFACE:
+		# Lejos del barco solo se ve la lluvia que cae donde están sus luces, y apenas.
+		rain.global_position = ship.global_position + ship.global_transform.basis * Vector3(0.0, 9.0, -6.0)
+		alpha = settings.rain_alpha_far * (1.0 + level * 1.2)
+	else:
+		rain.global_position = player.global_position + Vector3(0.0, 9.0, 0.0)
+		alpha = settings.rain_alpha_lit + level * settings.rain_alpha_flash
+	var color: Color = material.albedo_color
+	color.a = alpha
+	material.albedo_color = color
+
+
+## En el agua, mirar hacia abajo es mirar el vacío: la pantalla se va a negro de abajo hacia arriba.
+func _update_abyss() -> void:
+	var look_down: float = 0.0
+	if stage == Stage.SURFACE or stage == Stage.DESCENT:
+		var pitch_down: float = -rad_to_deg(_head.rotation.x)
+		look_down = smoothstep(settings.abyss_start_angle, settings.abyss_full_angle, pitch_down)
+	(abyss_overlay.material as ShaderMaterial).set_shader_parameter("look_down", look_down)
+
+
 # ---------- Cámara ----------
 
 func _update_camera_motion(delta: float) -> void:
@@ -328,8 +438,9 @@ func _update_camera_motion(delta: float) -> void:
 	match stage:
 		Stage.DECK, Stage.WARNING, Stage.WAVE, Stage.COVERED:
 			# El barco escorado: la cámara queda torcida y se mece con el oleaje.
-			var sway: float = sin(_time * TAU / settings.sway_period) * settings.sway_roll
-			var target: float = deg_to_rad(settings.deck_roll + _roll_extra + sway)
+			# El barco se inclina a lo largo: de frente a la proa o a la popa se ve toda la inclinación, de costado casi nada.
+			var facing: float = -player.global_transform.basis.z.z
+			var target: float = deg_to_rad(_roll_deg * facing)
 			_camera.rotation.z = lerpf(_camera.rotation.z, target, minf(1.0, delta * 3.0))
 		_:
 			_camera.rotation.z = lerpf(_camera.rotation.z, sin(_time * 0.9) * 0.05, minf(1.0, delta * 2.0))

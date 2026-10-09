@@ -70,6 +70,12 @@ func is_active() -> bool:
 	return _active
 
 
+## Corta el evento sin resultado (p. ej. si el jugador cae al agua).
+func cancel() -> void:
+	_active = false
+	visible = false
+
+
 ## Muestra la barra y arranca el marcador. zone_width y speed salen de Memory4Settings.
 func begin(zone_width: float, speed: float, max_passes: int) -> void:
 	_zone_width = zone_width

@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-015 · Memoria 4: barco grande, 6 sogas, cubierta resbaladiza y caída al agua · 2026-10-08
+- **Rama / commits:** `memories/m4-barco` · sin commitear en el momento de escribir (ver `git log`)
+- **Pedido por:** Facu: "el barco tiene que ser bastante más grande, 6 sogas, 3 de cada lado, el suelo resbaladizo… por los costados se puede caer… menos definición a la lluvia… mirar para abajo en mar abierto no da miedo, no es todo negro".
+- **Qué se hizo:** barco de ~39 m con silueta de pesquero (casco rojo, cabina, mástil, pórtico de popa); 6 sogas con hueco en la baranda; el barco cabecea y empuja al jugador (suelo mojado); caer por un costado = susto en negro con sonido y vuelta a bordo (+ inclinación como un fallo); el evento rápido (`E`) va más rápido y con zona más chica en cada soga (zona 0,24 → 0,10; velocidad 0,8 → 2,05); lluvia en manchas blandas que depende de la luz; mirando hacia abajo en el agua, la pantalla se oscurece hasta negro total.
+- **Por qué (decisión de diseño):** la cubierta resbaladiza y los costados abiertos hacen que cortar las sogas dé miedo y no sea solo un minijuego de timing. Caerse no es game over (decisión de Facu). La lluvia en rayas se veía artificial; en manchas borrosas se parece más a lluvia nocturna. La oscuridad hacia abajo refuerza la talasofobia.
+- **Alternativas descartadas:** inclinar de verdad el barco y todo el jugador con él (mucho más complejo; se simula con cámara + empuje); game over al caer; mecánica de frío con input lag (no se pidió ahora).
+- **Problemas encontrados:** el jugador arrancaba pegado a un cabrestante y se trababa al resbalar (se movió entre estaciones). Probado con partida automática en renderer Compatibility; **no se vio en Forward+ real**.
+- **Archivos y docs:** `scripts/world/deck_slip.gd`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `config/player_settings_deck.tres`, `assets/shaders/{ocean,abyss}.gdshader`, `assets/audio/m4_fall_splash.wav`, `scenes/memories/memory_4.tscn`. Se actualizó `docs/ELEMENTOS_ESCENAS.md`.
+- **Pendiente / ❓ ABIERTO:** trueno con sonido (el mensaje de Facu quedó cortado); sonidos definitivos; modelo final del barco; valores de feel (`slip_strength`, `sway_roll`, lluvia) para que ajuste el equipo.
+
 ### CL-014 · Memoria 4: cubierta, sogas con quick event y ola gigante · 2026-10-08
 - **Rama / commits:** `memories/m4-barco` · sin commitear
 - **Pedido por:** Facu: "hay que cortar sogas para salvar a toda la tripulación… cuando se corta la última soga dicen LO LOGRAMOS… CUIDADO… aparece la ola GIGANTE… muy de noche… los truenos son lo único que ilumina… abajo del agua completamente oscuro… la luz que nos salva viene de un helicóptero".
