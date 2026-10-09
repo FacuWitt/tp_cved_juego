@@ -113,6 +113,22 @@ extends Resource
 ## Grosor de cada raya de lluvia.
 @export_range(0.004, 0.1, 0.002, "suffix:m") var rain_width: float = 0.014
 
+@export_group("Gotas y frío")
+## Gotas rápidas que pasan al lado y delante de la cara del jugador.
+@export_range(0, 800, 10) var near_drop_amount: int = 260
+## Opacidad de esas gotas (sube un poco con los rayos).
+@export_range(0.0, 1.0, 0.01) var near_drop_alpha: float = 0.34
+## Largo de cada gota cercana.
+@export_range(0.05, 1.5, 0.01, "suffix:m") var near_drop_length: float = 0.38
+## Cantidad de bruma fría que flota alrededor.
+@export_range(0, 120, 2) var mist_amount: int = 36
+## Opacidad de la bruma fría.
+@export_range(0.0, 0.3, 0.005) var mist_alpha: float = 0.05
+## Cada cuánto sale el vaho del aliento (frío).
+@export_range(1.0, 8.0, 0.1, "suffix:s") var breath_interval: float = 3.4
+## Cuántas gotas hay pegadas en la lente en cubierta (0 = ninguna).
+@export_range(0.0, 1.0, 0.05) var lens_wet_deck: float = 0.55
+
 @export_group("En el agua")
 ## Cuánto tarda en salir a la superficie después de la ola.
 @export_range(0.5, 8.0, 0.1, "suffix:s") var emerge_time: float = 3.0

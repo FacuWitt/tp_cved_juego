@@ -197,6 +197,57 @@ emission_enabled = true
 emission = Color(1, 0.93, 0.78, 1)
 emission_energy_multiplier = 0.6
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_col1"]
+size = Vector3(7.7, 0.3, 22.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col2"]
+size = Vector3(0.3, 1.3, 4.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col3"]
+size = Vector3(0.3, 1.3, 2.4000000000000004)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col4"]
+size = Vector3(0.3, 1.3, 1.3999999999999995)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col5"]
+size = Vector3(0.3, 1.3, 5.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col6"]
+size = Vector3(0.3, 1.3, 4.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col7"]
+size = Vector3(0.3, 1.3, 2.4000000000000004)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col8"]
+size = Vector3(0.3, 1.3, 1.3999999999999995)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col9"]
+size = Vector3(0.3, 1.3, 5.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col10"]
+size = Vector3(8.3, 1.3, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col11"]
+size = Vector3(8.4, 4.0, 8.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col12"]
+size = Vector3(1.2, 1.1, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col13"]
+size = Vector3(1.2, 1.1, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col14"]
+size = Vector3(1.2, 1.1, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col15"]
+size = Vector3(1.2, 1.1, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col16"]
+size = Vector3(1.2, 1.1, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col17"]
+size = Vector3(1.2, 1.1, 2.5)
+
 [node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player")]
 script = ExtResource("1_e")
 settings = ExtResource("2_e")
@@ -274,107 +325,107 @@ transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, 6.0)
 [node name="MotorR8_0" parent="Ship" instance=ExtResource("glb_motor")]
 transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, 6.0)
 
-[node name="Deck" type="CSGBox3D" parent="Ship" unique_id=1799397816]
+[node name="Deck" type="StaticBody3D" parent="Ship" unique_id=1799397816]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 1.7)
-layers = 0
-size = Vector3(7.7, 0.3, 22.6)
-use_collision = true
 
-[node name="BulwarkL1" type="CSGBox3D" parent="Ship" unique_id=98010395]
+[node name="Shape" type="CollisionShape3D" parent="Ship/Deck"]
+shape = SubResource("BoxShape3D_col1")
+
+[node name="BulwarkL1" type="StaticBody3D" parent="Ship" unique_id=98010395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, -7.199999999999999)
-layers = 0
-size = Vector3(0.3, 1.3, 4.8)
-use_collision = true
 
-[node name="BulwarkL2" type="CSGBox3D" parent="Ship" unique_id=2018846135]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkL1"]
+shape = SubResource("BoxShape3D_col2")
+
+[node name="BulwarkL2" type="StaticBody3D" parent="Ship" unique_id=2018846135]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, -0.7999999999999999)
-layers = 0
-size = Vector3(0.3, 1.3, 2.4000000000000004)
-use_collision = true
 
-[node name="BulwarkL3" type="CSGBox3D" parent="Ship" unique_id=1218784931]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkL2"]
+shape = SubResource("BoxShape3D_col3")
+
+[node name="BulwarkL3" type="StaticBody3D" parent="Ship" unique_id=1218784931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, 3.9)
-layers = 0
-size = Vector3(0.3, 1.3, 1.3999999999999995)
-use_collision = true
 
-[node name="BulwarkL4" type="CSGBox3D" parent="Ship" unique_id=1873819605]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkL3"]
+shape = SubResource("BoxShape3D_col4")
+
+[node name="BulwarkL4" type="StaticBody3D" parent="Ship" unique_id=1873819605]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0.65, 10.2)
-layers = 0
-size = Vector3(0.3, 1.3, 5.6)
-use_collision = true
 
-[node name="BulwarkR1" type="CSGBox3D" parent="Ship" unique_id=626228220]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkL4"]
+shape = SubResource("BoxShape3D_col5")
+
+[node name="BulwarkR1" type="StaticBody3D" parent="Ship" unique_id=626228220]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, -7.199999999999999)
-layers = 0
-size = Vector3(0.3, 1.3, 4.8)
-use_collision = true
 
-[node name="BulwarkR2" type="CSGBox3D" parent="Ship" unique_id=1421224545]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkR1"]
+shape = SubResource("BoxShape3D_col6")
+
+[node name="BulwarkR2" type="StaticBody3D" parent="Ship" unique_id=1421224545]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, -0.7999999999999999)
-layers = 0
-size = Vector3(0.3, 1.3, 2.4000000000000004)
-use_collision = true
 
-[node name="BulwarkR3" type="CSGBox3D" parent="Ship" unique_id=1010833295]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkR2"]
+shape = SubResource("BoxShape3D_col7")
+
+[node name="BulwarkR3" type="StaticBody3D" parent="Ship" unique_id=1010833295]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, 3.9)
-layers = 0
-size = Vector3(0.3, 1.3, 1.3999999999999995)
-use_collision = true
 
-[node name="BulwarkR4" type="CSGBox3D" parent="Ship" unique_id=1766741938]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkR3"]
+shape = SubResource("BoxShape3D_col8")
+
+[node name="BulwarkR4" type="StaticBody3D" parent="Ship" unique_id=1766741938]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0.65, 10.2)
-layers = 0
-size = Vector3(0.3, 1.3, 5.6)
-use_collision = true
 
-[node name="BulwarkStern" type="CSGBox3D" parent="Ship" unique_id=1378970336]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkR4"]
+shape = SubResource("BoxShape3D_col9")
+
+[node name="BulwarkStern" type="StaticBody3D" parent="Ship" unique_id=1378970336]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 13.1)
-layers = 0
-size = Vector3(8.3, 1.3, 0.3)
-use_collision = true
 
-[node name="Cabin" type="CSGBox3D" parent="Ship" unique_id=1270308307]
+[node name="Shape" type="CollisionShape3D" parent="Ship/BulwarkStern"]
+shape = SubResource("BoxShape3D_col10")
+
+[node name="Cabin" type="StaticBody3D" parent="Ship" unique_id=1270308307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, -13.8)
-layers = 0
-size = Vector3(8.4, 4.0, 8.4)
-use_collision = true
 
-[node name="WinchLm1_0" type="CSGBox3D" parent="Ship" unique_id=529300836]
+[node name="Shape" type="CollisionShape3D" parent="Ship/Cabin"]
+shape = SubResource("BoxShape3D_col11")
+
+[node name="WinchLm1_0" type="StaticBody3D" parent="Ship" unique_id=529300836]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, -3.4)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
 
-[node name="WinchRm1_0" type="CSGBox3D" parent="Ship" unique_id=1833337893]
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchLm1_0"]
+shape = SubResource("BoxShape3D_col12")
+
+[node name="WinchRm1_0" type="StaticBody3D" parent="Ship" unique_id=1833337893]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, -3.4)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
 
-[node name="WinchL3_5" type="CSGBox3D" parent="Ship" unique_id=2083285249]
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchRm1_0"]
+shape = SubResource("BoxShape3D_col13")
+
+[node name="WinchL3_5" type="StaticBody3D" parent="Ship" unique_id=2083285249]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, 1.8)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
 
-[node name="WinchR3_5" type="CSGBox3D" parent="Ship" unique_id=1100005339]
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchL3_5"]
+shape = SubResource("BoxShape3D_col14")
+
+[node name="WinchR3_5" type="StaticBody3D" parent="Ship" unique_id=1100005339]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 1.8)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
 
-[node name="WinchL8_0" type="CSGBox3D" parent="Ship" unique_id=503669385]
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchR3_5"]
+shape = SubResource("BoxShape3D_col15")
+
+[node name="WinchL8_0" type="StaticBody3D" parent="Ship" unique_id=503669385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.55, 6.0)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
 
-[node name="WinchR8_0" type="CSGBox3D" parent="Ship" unique_id=1227405285]
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchL8_0"]
+shape = SubResource("BoxShape3D_col16")
+
+[node name="WinchR8_0" type="StaticBody3D" parent="Ship" unique_id=1227405285]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.55, 6.0)
-layers = 0
-size = Vector3(1.2, 1.1, 2.5)
-use_collision = true
+
+[node name="Shape" type="CollisionShape3D" parent="Ship/WinchR8_0"]
+shape = SubResource("BoxShape3D_col17")
 
 [node name="MastLight" type="OmniLight3D" parent="Ship" unique_id=1322588119]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.0, -11.84)

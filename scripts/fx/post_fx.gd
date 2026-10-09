@@ -34,6 +34,7 @@ func _process(delta: float) -> void:
 	_time += delta
 	# El grano cambia unas 24 veces por segundo, como el cine.
 	_material.set_shader_parameter("time_seed", floorf(_time * 24.0) * 7.13)
+	_material.set_shader_parameter("lens_time", _time)
 
 
 ## Vuelve a pasar los valores del Resource al shader (por si se cambió en pleno juego).
@@ -50,3 +51,8 @@ func apply_settings() -> void:
 	_material.set_shader_parameter("shadow_tint", settings.shadow_tint)
 	_material.set_shader_parameter("highlight_tint", settings.highlight_tint)
 	_material.set_shader_parameter("black_lift", settings.black_lift)
+
+
+## Cuántas gotas hay pegadas en la lente: 0 = seca, 1 = muy mojada.
+func set_lens_wet(amount: float) -> void:
+	_material.set_shader_parameter("lens_wet", clampf(amount, 0.0, 1.0))

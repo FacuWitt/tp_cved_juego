@@ -17,6 +17,9 @@ uniform vec3 highlight_tint : source_color = vec3(0.03, 0.02, 0.0);
 uniform float black_lift = 0.0;
 // Lo actualiza PostFx cada cuadro (para que el grano se mueva).
 uniform float time_seed = 0.0;
+// Gotas pegadas en la lente (0 = lente seca). Las maneja la memoria que lo necesite.
+uniform float lens_wet = 0.0;
+uniform float lens_time = 0.0;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -31,12 +34,45 @@ float bayer4(vec2 p) {
 	return m[idx] / 16.0 - 0.5;
 }
 
+// Gotas en la lente: devuelve (desplazamiento del UV, brillo). Grilla de celdas con una gota por celda.
+vec3 lens_drops(vec2 uv, float aspect, float t) {
+	vec2 acc = vec2(0.0);
+	float shine = 0.0;
+	float scale = 7.0;
+	for (int layer = 0; layer < 2; layer++) {
+		scale = layer == 0 ? 7.0 : 12.0;
+		vec2 p = vec2(uv.x * aspect, uv.y) * scale;
+		// Las gotas resbalan lento hacia abajo.
+		p.y += t * (layer == 0 ? 0.05 : 0.09);
+		vec2 id = floor(p);
+		vec2 f = fract(p) - 0.5;
+		float h = hash(id + float(layer) * 17.0);
+		// Solo algunas celdas tienen gota, y se van y vuelven con el tiempo.
+		float life = fract(h * 5.0 + t * 0.03);
+		float on = step(1.0 - lens_wet * 0.55, hash(id * 1.7 + 3.0)) * smoothstep(0.0, 0.15, life) * (1.0 - smoothstep(0.7, 1.0, life));
+		vec2 c = (vec2(hash(id + 5.0), hash(id + 9.0)) - 0.5) * 0.5;
+		vec2 d = f - c;
+		float r = 0.11 + 0.1 * hash(id + 2.0);
+		d.y *= 0.8;
+		float m = smoothstep(r, r * 0.55, length(d)) * on;
+		acc += -d * m * 0.9;
+		shine += m * smoothstep(0.0, 0.5, -d.y + 0.2) * 0.25;
+	}
+	return vec3(acc * 0.18, shine);
+}
+
 void fragment() {
 	vec2 res = 1.0 / SCREEN_PIXEL_SIZE;
 	vec2 block = vec2(max(pixel_size, 1.0));
 	// Coordenada del "píxel grande" al que pertenece este punto.
 	vec2 cell = floor(FRAGCOORD.xy / block);
 	vec2 uv = (cell + 0.5) * block / res;
+	float drop_shine = 0.0;
+	if (lens_wet > 0.001) {
+		vec3 dr = lens_drops(uv, res.x / res.y, lens_time);
+		uv += dr.xy;
+		drop_shine = dr.z;
+	}
 
 	// Aberración cromática: más fuerte hacia los bordes.
 	vec2 from_center = uv - 0.5;
@@ -46,6 +82,8 @@ void fragment() {
 	col.r = texture(screen_tex, uv + shift).r;
 	col.g = texture(screen_tex, uv).g;
 	col.b = texture(screen_tex, uv - shift).b;
+
+	col += vec3(0.55, 0.65, 0.8) * drop_shine * lens_wet;
 
 	// Color: contraste, saturación y tinte de sombras/luces.
 	float luma = dot(col, vec3(0.299, 0.587, 0.114));

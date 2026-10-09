@@ -37,6 +37,9 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 
 var stage: Stage = Stage.DECK
 
+var _wet: WetFx
+var _post_fx: PostFx
+var _lens_wet: float = 0.0
 var _head: Node3D
 var _camera: Camera3D
 var _axe: AxeView
@@ -73,6 +76,7 @@ func _ready() -> void:
 	rain.amount = settings.rain_amount
 	rain.top_level = true
 	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
+	_setup_wet_fx()
 	deck_slip.strength = settings.slip_strength
 	deck_slip.enabled = true
 	_last_safe = player.global_position
@@ -519,7 +523,33 @@ func _show_rescue_light() -> void:
 
 # ---------- Lluvia y abismo ----------
 
+## Gotas cercanas, bruma fría, aliento y gotas en la lente: que todo se sienta mojado y helado.
+func _setup_wet_fx() -> void:
+	_wet = WetFx.new()
+	_wet.camera = _camera
+	_wet.amount_drops = settings.near_drop_amount
+	_wet.drop_alpha = settings.near_drop_alpha
+	_wet.drop_length = settings.near_drop_length
+	_wet.mist_amount = settings.mist_amount
+	_wet.mist_alpha = settings.mist_alpha
+	_wet.breath_interval = settings.breath_interval
+	add_child(_wet)
+	_post_fx = get_node_or_null("PostFx") as PostFx
+
+
+func _update_wet_fx() -> void:
+	# Solo mientras hay lluvia sobre el jugador: en cubierta y hasta que la ola lo tapa.
+	var on: bool = stage <= Stage.WAVE and not _overboard and not _under_view
+	_wet.set_enabled(on)
+	_wet.set_flash(lightning.get_level())
+	if _post_fx != null:
+		var target: float = settings.lens_wet_deck if on else 0.0
+		_lens_wet = move_toward(_lens_wet, target, get_process_delta_time() * 0.6)
+		_post_fx.set_lens_wet(_lens_wet)
+
+
 func _update_rain() -> void:
+	_update_wet_fx()
 	var material: StandardMaterial3D = rain.material_override as StandardMaterial3D
 	var level: float = lightning.get_level()
 	var alpha: float
