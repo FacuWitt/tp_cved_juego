@@ -51,6 +51,30 @@ func flash_now(strength: float = 1.0) -> void:
 	_do_flash(strength)
 
 
+## Un relámpago largo (varios segundos, con parpadeos) que deja ver bien el mar y el cielo.
+## Se puede esperar con await. Sirve para el comienzo de una memoria.
+func long_flash(duration: float, strength: float = 1.0) -> void:
+	light.rotation_degrees = Vector3(-34.0, 215.0, 0.0)
+	flashed.emit(strength)
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	var tween: Tween = create_tween()
+	_tween = tween
+	tween.tween_method(func(v: float) -> void: _apply(v * strength), 0.0, 1.0, 0.08)
+	var level: float = 1.0
+	var elapsed: float = 0.08
+	while elapsed < duration - 0.6:
+		var next: float = randf_range(0.62, 1.0)
+		var step: float = randf_range(0.07, 0.2)
+		var from_level: float = level
+		tween.tween_method(func(v: float) -> void: _apply(v * strength), from_level, next, step)
+		level = next
+		elapsed += step
+	tween.tween_method(func(v: float) -> void: _apply(v * strength), level, 0.0, 0.6) \
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	await tween.finished
+
+
 func _loop(id: int) -> void:
 	while is_running and id == _loop_id:
 		var wait: float = randf_range(settings.lightning_min_interval, settings.lightning_max_interval)

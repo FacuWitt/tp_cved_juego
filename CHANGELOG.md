@@ -41,6 +41,36 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-026 · Memoria 4: océano más realista, reflectante y amenazante · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: agua más realista y reflectante. Referencias: pintura de tormenta (olas enormes, vetas de espuma, horizonte oscuro) para el miedo al océano; foto nocturna con reflector (haces de luz, espuma iluminada); boya en mar de fondo color pizarra para cómo se ve el agua cuando cae un rayo. Se mantiene la estética actual (el grupo no quiere PS1).
+- **Qué se hizo:** (1) Olas que crecen con la distancia al barco (hasta 3,2 veces) y una ola de fondo larguísima y lenta: cerca el barco flota estable, el horizonte se ve enorme. (2) Normales analíticas por píxel + ondas chicas: reflejos más nítidos. (3) Fresnel con reflejo falso del cielo (nubes que se encienden con el rayo). (4) Color pizarra azulado en las olas cuando cae un rayo. (5) Espuma en vetas y en crestas comprimidas, más visible. (6) Brillos más finos del reflector del barco. (7) SSR activado en el Environment. Todos los valores nuevos son `uniform` del shader; `OceanFollow.height_at` replica las constantes.
+- **Por qué (decisión de diseño):** el miedo al océano viene de la escala y de verlo solo por instantes; el rayo revela olas gigantes de color pizarra y vuelve a la oscuridad.
+- **Alternativas descartadas:** FFT/textura de olas (demasiado costoso para el plazo); olas gigantes cerca del barco (rompían la flotación).
+- **Problemas encontrados:** solo se pudo probar en Compatibility: SSR y niebla volumétrica no se ven ahí.
+- **Archivos y docs:** `assets/shaders/ocean.gdshader`, `scripts/world/ocean_follow.gd`, `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** ajustar en Forward+ (`far_scale`, `big_swell_far`, `reflect_strength`, `slate_strength`); si SSR molesta, apagarlo en el Environment.
+
+### CL-025 · Memoria 4: el nivel empieza en lo alto de la escalera, con un relámpago largo sobre el océano · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: el jugador despierta por la tormenta en el borde del barco, arriba de la escalera junto a la cabina; ve un relámpago largo (~2 s) que le muestra la tormenta y el océano; después baja la escalera mientras el tripulante le grita desde la cabina; ahí empieza el nivel. Tiene que dar miedo la inmensidad y oscuridad del mar. Hay un solo tripulante además del jugador, dentro de la cabina. Regla de todos los niveles: siempre hay tormenta y se despierta por la tormenta (excepto el hospital).
+- **Qué se hizo:** (1) El jugador empieza en la pasarela de estribor, arriba de la escalera lateral de la cabina, mirando al mar. (2) `Memory4Accident._play_intro()`: 1,3 s de oscuridad con lluvia, `LightningController.long_flash()` (relámpago largo con parpadeos) mientras la cabeza se gira y sube hacia el horizonte, una pausa y recién entonces el tripulante grita y se devuelve el control. Se puede saltear con `play_intro = false`. (3) Colisiones nuevas: pasarela, escalera (rampa), baranda y tope en ambos lados; la caja de colisión de la cabina se achicó para dejar pasar. (4) Se quitaron los tres tripulantes de cubierta: queda un marcador dentro de la cabina. (5) Si el jugador cae al agua estando en la escalera o la pasarela, vuelve al pie de la escalera. Valores en el grupo "Inicio del nivel" de `Memory4Settings`.
+- **Por qué (decisión de diseño):** mostrar el mar y la tormenta antes de pedirle nada al jugador hace que el miedo venga del lugar y no de un cartel; la oscuridad previa y el rayo largo acentúan la inmensidad.
+- **Alternativas descartadas:** empezar directo en cubierta (como estaba: el jugador no llegaba a ver dónde estaba).
+- **Problemas encontrados:** la cabina bloqueaba la escalera con su colisión; la escalera es una rampa invisible (43°, dentro del límite del personaje).
+- **Archivos y docs:** `scenes/memories/memory_4.tscn`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `scripts/world/lightning_controller.gd`.
+- **Pendiente / ❓ ABIERTO:** voz/sonido del tripulante dentro de la cabina (audio); que el mar se vea más grande y amenazante en el relámpago (olas más altas); probar en Forward+.
+
+### CL-024 · Memoria 4: sogas trenzadas, con curva y tensión, que se cortan de un latigazo y se cortan apuntando · 2026-10-09
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: que parezcan sogas (textura y color como el rollo del motor), que cuelguen más curvas y estén tirantes hasta el corte, que al cortarse salgan disparadas, y que al acercarse y apuntar con el mouse aparezca la opción de cortar, manteniendo el evento rápido de apretar en el momento justo.
+- **Qué se hizo:** (1) `CuttableRope` ya no usa cilindros rectos: dibuja un tubo trenzado (textura `assets/textures/rope_strands.png`, gris cálido como el cable del tambor) que sigue una curva con caída (`sag`) y panza hacia la proa (`belly`). (2) Al cortar, cada tramo pasa a una simulación de cadena de puntos: el del mar sale disparado, dibuja un arco y se hunde; el del cabrestante vuelve de un latigazo, cae sobre la cubierta y se arrastra. (3) Cada golpe de hacha hace vibrar la soga y la deshilacha un poco. (4) La soga se corta apuntándole con la mira a menos de 2,5 m: aparece "(E) Cortar la soga" (o "Necesitás el hacha"); ya no depende de pararse en un círculo invisible. El evento rápido sigue igual. (5) Todo en `config/rope_settings.tres` (`RopeSettings`).
+- **Por qué (decisión de diseño):** las sogas eran palos lisos; la tensión previa y el latigazo comunican el peligro del momento y refuerzan la sensación de que el barco está al límite. Apuntar da más agencia que una zona de proximidad.
+- **Alternativas descartadas:** animar con rotaciones fijas (como estaba: se veía rígido); física de cuerpos rígidos por tramo (inestable y más cara que una cadena de puntos).
+- **Problemas encontrados:** al principio la soga cortada se quebraba en zigzag y quedaba flotando en la superficie; se resolvió con rigidez a la flexión y haciendo que se hunda.
+- **Archivos y docs:** `scripts/world/cuttable_rope.gd`, `scripts/config/rope_settings.gd`, `config/rope_settings.tres`, `assets/textures/rope_strands.png`, `scripts/ui/interaction_prompt.gd`, `scripts/memories/memory_4_accident.gd`, `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** probado en Compatibility (revisar brillo de la textura en Forward+); sonido del tensado y del latigazo, y salpicón al caer al agua (cuando se diseñe el audio); la soga hace un codo al pasar por el borde, se podría redondear.
+
 ### CL-023 · Memoria 4: el hacha es un objeto que se agarra, vibra de frío y reacciona al personaje · 2026-10-09
 - **Rama / commits:** `memories/m4-barco` · sin commitear
 - **Pedido por:** Facu: que el hacha sea un objeto como los del puzzle, en la parte derecha de la pantalla y cerca de la cámara; animación de golpe acertado y de golpe fallido; que vibre más a medida que se cortan sogas; que reaccione a los movimientos del personaje; que empiece apoyada en la pared de la cabina; que no se pueda soltar y se pierda sola cuando llega la ola; y agregar el puntito blanco de la mira.

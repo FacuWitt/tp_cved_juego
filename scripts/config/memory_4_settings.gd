@@ -54,6 +54,7 @@ extends Resource
 @export_group("Tripulación")
 ## Nombre provisorio del protagonista (❓ ABIERTO: todavía no está decidido).
 @export var protagonist_name: String = "NOMBRE"
+
 ## Frase de la tripulación al empezar, para que el jugador sepa qué hacer. %s = nombre del protagonista.
 @export var intro_line: String = "TRIPULANTE: ¡Las sogas, %s! ¡Cortalas o nos damos vuelta!"
 ## Pausa antes de la frase inicial.
@@ -68,6 +69,21 @@ extends Resource
 @export_range(0.0, 4.0, 0.05, "suffix:s") var warning_delay: float = 1.6
 ## Cuánto tiempo queda en pantalla cada frase.
 @export_range(0.5, 6.0, 0.1, "suffix:s") var line_duration: float = 2.6
+
+@export_group("Inicio del nivel")
+## Si es false se salta la escena del relámpago y se empieza directo en cubierta (para probar).
+@export var play_intro: bool = true
+## Oscuridad total antes del relámpago (solo viento, lluvia y mar).
+@export_range(0.0, 5.0, 0.1, "suffix:s") var intro_dark_time: float = 1.3
+## Cuánto dura el relámpago largo que deja ver la tormenta y el océano.
+@export_range(0.5, 6.0, 0.1, "suffix:s") var intro_flash_time: float = 2.6
+## Cuánto gira la cabeza del jugador durante el relámpago (grados; negativo = hacia la proa).
+@export_range(-90.0, 90.0, 1.0, "suffix:°") var intro_yaw_sweep: float = 55.0
+## Hacia dónde mira al empezar y al terminar el relámpago (grados; negativo = hacia abajo).
+@export_range(-60.0, 60.0, 1.0, "suffix:°") var intro_pitch_start: float = -22.0
+@export_range(-60.0, 60.0, 1.0, "suffix:°") var intro_pitch_end: float = 2.0
+## Pausa en la oscuridad después del relámpago, antes de que el tripulante grite.
+@export_range(0.0, 4.0, 0.1, "suffix:s") var intro_after_time: float = 0.9
 
 @export_group("La ola")
 ## Altura de la cresta sobre el mar.

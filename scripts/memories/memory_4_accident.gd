@@ -38,7 +38,7 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var axe_item: AxePickup
 @export var axe_settings: AxeSettings
 ## La mira (puntito) con el aviso (E).
-@export var reticle: Control
+@export var reticle: InteractionPrompt
 
 var stage: Stage = Stage.DECK
 
@@ -49,6 +49,7 @@ var _head: Node3D
 var _camera: Camera3D
 var _axe: AxeView
 var _has_axe: bool = false
+var _intro_active: bool = false
 var _axe_hint_timer: float = 0.0
 var _active_rope: CuttableRope = null
 var _chop_rope: CuttableRope = null
@@ -83,6 +84,7 @@ func _ready() -> void:
 
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
+	reticle.override_text = ""
 	rain.amount = settings.rain_amount
 	rain.top_level = true
 	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
@@ -96,7 +98,7 @@ func _ready() -> void:
 	rescue_glow.visible = false
 
 	for rope: CuttableRope in ropes:
-		rope.player_range_changed.connect(_on_rope_range_changed.bind(rope))
+		rope.water_level = settings.sea_level
 		rope.hit_taken.connect(_on_rope_hit.bind(rope))
 		rope.severed.connect(_on_rope_severed)
 	qte.hit.connect(_on_qte_hit)
@@ -109,8 +111,18 @@ func _ready() -> void:
 	searchlight.spot_angle = settings.deck_floodlight_angle
 	searchlight.rotation_degrees = Vector3(settings.deck_floodlight_pitch, 180.0, 0.0)
 	_update_beam(0.0)
-	lightning.start()
-	_say_intro()
+	_begin_level()
+
+
+## Empieza el nivel: relámpago largo desde lo alto de la escalera y después el grito del tripulante.
+func _begin_level() -> void:
+	if settings.play_intro:
+		await _play_intro()
+		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
+		lightning.start()
+	else:
+		lightning.start()
+		_say_intro()
 
 
 func _say_intro() -> void:
@@ -119,13 +131,38 @@ func _say_intro() -> void:
 		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
 
 
+## El jugador despierta en lo alto de la escalera, a oscuras. Un relámpago largo le muestra la tormenta
+## y la inmensidad del mar; con eso entiende en qué lío está. Recién entonces puede moverse.
+func _play_intro() -> void:
+	_intro_active = true
+	deck_slip.enabled = false
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	player.velocity = Vector3.ZERO
+	var yaw: float = player.rotation.y
+	_head.rotation.x = deg_to_rad(settings.intro_pitch_start)
+	await get_tree().create_timer(settings.intro_dark_time).timeout
+	_shake_amount = 0.06
+	var look: Tween = create_tween().set_parallel(true)
+	look.tween_property(player, "rotation:y", yaw + deg_to_rad(settings.intro_yaw_sweep), settings.intro_flash_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	look.tween_property(_head, "rotation:x", deg_to_rad(settings.intro_pitch_end), settings.intro_flash_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await lightning.long_flash(settings.intro_flash_time)
+	await get_tree().create_timer(settings.intro_after_time).timeout
+	player.set_physics_process(true)
+	player.set_process_unhandled_input(true)
+	deck_slip.enabled = true
+	_intro_active = false
+
+
 func _process(delta: float) -> void:
 	_time += delta
 	if _axe != null:
 		_axe.boat_roll_degrees = _camera.rotation_degrees.z if _camera != null else 0.0
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
-	deck_slip.enabled = stage <= Stage.WARNING and not _overboard
+	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active
 	# Mientras corta una soga tiene los pies firmes: si no, no habría forma de apuntar el golpe.
 	deck_slip.planted = stage == Stage.DECK and _busy and not _overboard
 	_update_camera_motion(delta)
@@ -135,8 +172,7 @@ func _process(delta: float) -> void:
 		_watch_edges()
 	match stage:
 		Stage.DECK:
-			prompt_label.text = settings.rope_prompt if _has_axe else settings.axe_needed_prompt
-			prompt_label.visible = _active_rope != null and not _busy and not qte.is_active()
+			_update_rope_aim()
 			_update_axe_hint(delta)
 		Stage.SURFACE, Stage.DESCENT:
 			_update_float()
@@ -200,6 +236,7 @@ func _debug_cut_all_ropes() -> void:
 		return
 	qte.cancel()
 	prompt_label.visible = false
+	reticle.override_text = ""
 	for rope: CuttableRope in ropes:
 		if not rope.is_severed:
 			rope.sever()
@@ -220,6 +257,7 @@ func _start_chop(rope: CuttableRope) -> void:
 	_busy = true
 	_chop_rope = rope
 	prompt_label.visible = false
+	reticle.override_text = ""
 	_begin_qte()
 
 
@@ -260,11 +298,19 @@ func _on_qte_missed() -> void:
 		_busy = false
 
 
-func _on_rope_range_changed(in_range: bool, rope: CuttableRope) -> void:
-	if in_range:
-		_active_rope = rope
-	elif _active_rope == rope:
-		_active_rope = null
+## La soga que el jugador está mirando (con la mira) lo bastante cerca. Si hay una, la mira
+## muestra "(E) Cortar", o avisa que falta el hacha.
+func _update_rope_aim() -> void:
+	var aimed: CuttableRope = null
+	if not _busy and not _overboard and not qte.is_active():
+		var ray: RayCast3D = _camera.get_node("InteractionRay") as RayCast3D
+		var hit: Object = ray.get_collider() if ray.is_colliding() else null
+		if hit is Area3D and (hit as Area3D).has_meta("rope"):
+			var rope: CuttableRope = (hit as Area3D).get_meta("rope") as CuttableRope
+			if rope != null and not rope.is_severed:
+				aimed = rope
+	_active_rope = aimed
+	reticle.override_text = "" if aimed == null else (settings.rope_prompt if _has_axe else settings.axe_needed_prompt)
 
 
 func _on_axe_equipped(from_global: Transform3D) -> void:
@@ -293,6 +339,7 @@ func _fall_overboard() -> void:
 	deck_slip.enabled = false
 	qte.cancel()
 	prompt_label.visible = false
+	reticle.override_text = ""
 	_active_rope = null
 	_chop_rope = null
 	subtitles.show_line("", 0.0)
@@ -312,6 +359,9 @@ func _fall_overboard() -> void:
 	# Vuelve a bordo, más cerca del centro de la cubierta que de donde cayó.
 	var back: Vector3 = _last_safe
 	back.x *= 0.35
+	if _last_safe.y > 0.5 or _last_safe.z < -9.0:
+		# Estaba en la escalera o en la pasarela junto a la cabina: vuelve al pie de la escalera.
+		back = Vector3(0.0, 0.02, -7.0)
 	player.global_position = back
 	player.rotation.y = PI
 	player.velocity = Vector3.ZERO
@@ -338,6 +388,7 @@ func _on_all_ropes_cut() -> void:
 	stage = Stage.WARNING
 	_busy = true
 	prompt_label.visible = false
+	reticle.override_text = ""
 	await get_tree().create_timer(settings.success_delay).timeout
 	while _overboard:
 		await get_tree().process_frame
@@ -565,7 +616,7 @@ func _setup_wet_fx() -> void:
 
 ## Si pasa un rato sin que agarre el hacha, la tripulación le avisa dónde está.
 func _update_axe_hint(delta: float) -> void:
-	if _has_axe or _axe_hint_timer < 0.0:
+	if _has_axe or _axe_hint_timer < 0.0 or _intro_active:
 		return
 	_axe_hint_timer += delta
 	if _axe_hint_timer >= settings.axe_hint_delay:
