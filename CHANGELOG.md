@@ -41,6 +41,26 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-028 · Memoria 4: teclas de prueba 8 (vuelo libre) y 9 (luz de rayo fija) · 2026-10-10
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: poder mirar la escena con detenimiento y moverse libremente para revisar la estética del nivel.
+- **Qué se hizo:** (1) Tecla 9: deja la luz del rayo encendida y fija (los rayos automáticos y el relámpago largo no la cambian); otra vez 9 la suelta. `LightningController.set_held()`. (2) Tecla 8: modo espectador sin colisiones ni gravedad; WASD vuela hacia donde mira la cámara, Espacio sube, Shift baja, Ctrl acelera; otra vez 8 vuelve al juego normal. Durante el vuelo se pausan las caídas por la borda, el resbalón de cubierta y la flotación del jugador. Ambas dependen de `debug_keys` (igual que la tecla 0).
+- **Por qué (decisión de diseño):** herramientas de desarrollo para ajustar iluminación, agua y sogas sin depender del azar de los rayos.
+- **Alternativas descartadas:** ninguna relevante.
+- **Problemas encontrados:** ninguno.
+- **Archivos y docs:** `scripts/world/lightning_controller.gd`, `scripts/memories/memory_4_accident.gd`.
+- **Pendiente / ❓ ABIERTO:** apagar `debug_keys` antes de entregar.
+
+### CL-027 · Memoria 4: las sogas se apoyan en el borde del barco, sin quiebre en el aire · 2026-10-10
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: la soga se veía quebrada en el aire. La primera mitad (recta) tiene que ir desde la parte superior del cabrestante hasta el borde del barco, apoyándose ahí; la segunda mitad es la que se mueve y queda curva como estaba.
+- **Qué se hizo:** (1) El tramo recto va del tope del tambor (`winch_point`, y 0,97) al borde del casco (`cut_point`, x 4,2 y 0,09; antes terminaba en el aire a 3,9 y 0,667). (2) El tramo curvo que cuelga hacia el mar es ahora una curva Bézier que arranca en el borde siguiendo la dirección del tramo recto (sin codo) y llega al agua. (3) Dos valores nuevos en `RopeSettings`: `edge_tangent` (cuánto sigue recta después del borde) y `water_tangent` (cómo llega al mar). (4) El corte sigue igual: el hacha pega en el borde, el tramo del mar sale disparado y el del cabrestante vuelve de un latigazo.
+- **Por qué (decisión de diseño):** una soga que se apoya en el borde se lee como tensa y real; el quiebre en el aire rompía la ilusión.
+- **Alternativas descartadas:** dejar el codo y suavizarlo solo con rigidez (seguía quebrando donde no hay nada que sostenga la soga).
+- **Problemas encontrados:** el borde real del casco está en x≈4,2 (no en 3,9); los tests de apuntado tuvieron que usar coordenadas del barco porque ahora se mueve con el oleaje.
+- **Archivos y docs:** `scripts/world/cuttable_rope.gd`, `scripts/config/rope_settings.gd`, `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** textura de la soga algo más pálida que el cable del tambor.
+
 ### CL-026 · Memoria 4: océano más realista, reflectante y amenazante · 2026-10-09
 - **Rama / commits:** `memories/m4-barco` · sin commitear
 - **Pedido por:** Facu: agua más realista y reflectante. Referencias: pintura de tormenta (olas enormes, vetas de espuma, horizonte oscuro) para el miedo al océano; foto nocturna con reflector (haces de luz, espuma iluminada); boya en mar de fondo color pizarra para cómo se ve el agua cuando cae un rayo. Se mantiene la estética actual (el grupo no quiere PS1).

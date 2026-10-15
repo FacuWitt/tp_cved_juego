@@ -15,6 +15,9 @@ signal flashed(strength: float)
 @export var flash_materials: Array[ShaderMaterial] = []
 
 var is_running: bool = false
+## SOLO PARA PRUEBAS: mientras es verdadero la luz del rayo queda fija encendida y los rayos no la cambian.
+var is_held: bool = false
+var _held_level: float = 0.85
 
 var _base_ambient: float = 0.0
 var _base_sky: float = 1.0
@@ -46,6 +49,17 @@ func stop() -> void:
 	_loop_id += 1
 
 
+## SOLO PARA PRUEBAS: deja la luz del rayo prendida (para mirar la escena con calma) o la suelta.
+func set_held(value: bool, level: float = 0.85) -> void:
+	is_held = value
+	_held_level = level
+	if _tween != null and _tween.is_valid():
+		_tween.kill()
+	if value:
+		light.rotation_degrees = Vector3(-45.0, 215.0, 0.0)
+	_apply(_held_level if value else 0.0)
+
+
 ## Rayo inmediato (para momentos de la historia: la ola, el aviso de la tripulación).
 func flash_now(strength: float = 1.0) -> void:
 	_do_flash(strength)
@@ -54,6 +68,8 @@ func flash_now(strength: float = 1.0) -> void:
 ## Un relámpago largo (varios segundos, con parpadeos) que deja ver bien el mar y el cielo.
 ## Se puede esperar con await. Sirve para el comienzo de una memoria.
 func long_flash(duration: float, strength: float = 1.0) -> void:
+	if is_held:
+		return
 	light.rotation_degrees = Vector3(-34.0, 215.0, 0.0)
 	flashed.emit(strength)
 	if _tween != null and _tween.is_valid():
@@ -85,6 +101,8 @@ func _loop(id: int) -> void:
 
 
 func _do_flash(strength: float) -> void:
+	if is_held:
+		return
 	# Cada rayo cae desde una dirección distinta, para que las sombras cambien de lugar.
 	light.rotation_degrees = Vector3(randf_range(-70.0, -30.0), randf_range(0.0, 360.0), 0.0)
 	flashed.emit(strength)
@@ -104,6 +122,8 @@ func _do_flash(strength: float) -> void:
 
 
 func _apply(level: float) -> void:
+	if is_held:
+		level = _held_level
 	_level = level
 	light.light_energy = level * settings.lightning_energy
 	var env: Environment = world_environment.environment

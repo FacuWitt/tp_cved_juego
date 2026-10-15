@@ -52,6 +52,8 @@ var _has_axe: bool = false
 var _intro_active: bool = false
 var _axe_hint_timer: float = 0.0
 var _active_rope: CuttableRope = null
+# Teclas de prueba (debug_keys): 8 = vuelo libre, 9 = luz de rayo fija.
+var _fly_mode: bool = false
 var _chop_rope: CuttableRope = null
 var _busy: bool = false
 var _ropes_cut: int = 0
@@ -162,20 +164,23 @@ func _process(delta: float) -> void:
 		_axe.boat_roll_degrees = _camera.rotation_degrees.z if _camera != null else 0.0
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
-	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active
+	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active and not _fly_mode
+	if _fly_mode:
+		_fly_move(delta)
 	# Mientras corta una soga tiene los pies firmes: si no, no habría forma de apuntar el golpe.
 	deck_slip.planted = stage == Stage.DECK and _busy and not _overboard
 	_update_camera_motion(delta)
 	_update_rain()
 	_update_abyss()
-	if stage <= Stage.WARNING and not _overboard:
+	if stage <= Stage.WARNING and not _overboard and not _fly_mode:
 		_watch_edges()
 	match stage:
 		Stage.DECK:
 			_update_rope_aim()
 			_update_axe_hint(delta)
 		Stage.SURFACE, Stage.DESCENT:
-			_update_float()
+			if not _fly_mode:
+				_update_float()
 			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
 				_set_underwater_view(false)
 				rain.emitting = true
@@ -230,6 +235,36 @@ func _watch_edges() -> void:
 		_fall_overboard()
 
 
+## SOLO PARA PRUEBAS (tecla 8): modo espectador. WASD vuela hacia donde mira, Espacio sube, Shift baja, Ctrl acelera.
+func _toggle_fly_mode() -> void:
+	_fly_mode = not _fly_mode
+	player.set_physics_process(not _fly_mode)
+	if not _fly_mode:
+		player.velocity = Vector3.ZERO
+	print("[debug] modo vuelo: ", _fly_mode)
+
+
+func _fly_move(delta: float) -> void:
+	var basis: Basis = _camera.global_transform.basis
+	var direction: Vector3 = Vector3.ZERO
+	if Input.is_physical_key_pressed(KEY_W):
+		direction -= basis.z
+	if Input.is_physical_key_pressed(KEY_S):
+		direction += basis.z
+	if Input.is_physical_key_pressed(KEY_D):
+		direction += basis.x
+	if Input.is_physical_key_pressed(KEY_A):
+		direction -= basis.x
+	if Input.is_physical_key_pressed(KEY_SPACE):
+		direction += Vector3.UP
+	if Input.is_physical_key_pressed(KEY_SHIFT):
+		direction += Vector3.DOWN
+	var speed: float = 14.0 if Input.is_physical_key_pressed(KEY_CTRL) else 5.0
+	if direction.length() > 0.01:
+		player.global_position += direction.normalized() * speed * delta
+	player.velocity = Vector3.ZERO
+
+
 ## SOLO PARA PRUEBAS: corta todas las sogas y sigue el flujo normal (aviso, ola, etc.).
 func _debug_cut_all_ropes() -> void:
 	if stage != Stage.DECK or _overboard:
@@ -243,6 +278,14 @@ func _debug_cut_all_ropes() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if debug_keys and event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_8 or event.keycode == KEY_KP_8:
+			_toggle_fly_mode()
+			return
+		if event.keycode == KEY_9 or event.keycode == KEY_KP_9:
+			lightning.set_held(not lightning.is_held)
+			print("[debug] luz de rayo fija: ", lightning.is_held)
+			return
 	if debug_keys and event is InputEventKey and event.pressed and not event.echo \
 			and (event.keycode == KEY_0 or event.keycode == KEY_KP_0):
 		_debug_cut_all_ropes()

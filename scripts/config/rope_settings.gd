@@ -17,6 +17,10 @@ extends Resource
 @export_range(0.0, 3.0, 0.05, "suffix:m") var sag: float = 0.85
 ## Cuánto se curva el tramo hacia la proa, empujado por el viento y la corriente.
 @export_range(0.0, 3.0, 0.05, "suffix:m") var belly: float = 0.55
+## Cuánto sigue recta la soga después de apoyarse en el borde antes de empezar a caer (suaviza el quiebre).
+@export_range(0.5, 8.0, 0.1, "suffix:m") var edge_tangent: float = 5.0
+## Cuánto llega horizontal la soga al agua (curva de llegada al mar).
+@export_range(0.0, 10.0, 0.1, "suffix:m") var water_tangent: float = 5.0
 ## Cuánto vibra cuando recibe un golpe de hacha.
 @export_range(0.0, 0.3, 0.005, "suffix:m") var hit_tremor: float = 0.06
 

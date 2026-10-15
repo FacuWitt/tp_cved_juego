@@ -15,7 +15,7 @@ const TEXTURE: Texture2D = preload("res://assets/textures/rope_strands.png")
 
 ## Punto de la soga en el cabrestante, en coordenadas locales.
 @export var winch_point: Vector3 = Vector3(0.0, 0.9, -3.0)
-## Punto donde se corta (el borde de la rampa).
+## Punto donde se corta: el borde del barco, donde la soga se apoya. Del cabrestante hasta acá es recta.
 @export var cut_point: Vector3 = Vector3(0.0, -0.4, 4.0)
 ## Punto donde la soga entra al mar.
 @export var water_point: Vector3 = Vector3(0.0, -2.6, 22.0)
@@ -103,15 +103,23 @@ func get_cut_position() -> Vector3:
 # ---------- Forma ----------
 
 func _build_sea_path() -> Array[Vector3]:
+	# Curva suave que sale del borde del barco siguiendo la dirección del tramo recto
+	# (así no hay quiebre) y cae hasta el mar. Bézier cúbica: borde -> tangente -> mar.
 	var points: Array[Vector3] = []
 	var n: int = _cfg.sea_points
+	var straight_dir: Vector3 = (cut_point - winch_point).normalized()
+	var back: Vector3 = Vector3(cut_point.x - water_point.x, 0.0, cut_point.z - water_point.z).normalized()
+	var p0: Vector3 = cut_point
+	var p1: Vector3 = cut_point + straight_dir * _cfg.edge_tangent
+	p1.y -= _cfg.sag * 0.3
+	var p2: Vector3 = water_point + back * _cfg.water_tangent
+	p1.z -= _cfg.belly * 0.5
+	p2.z -= _cfg.belly
+	var p3: Vector3 = water_point
 	for i: int in n:
 		var t: float = float(i) / float(n - 1)
-		var bend: float = 4.0 * t * (1.0 - t)
-		var p: Vector3 = cut_point.lerp(water_point, t)
-		p.y -= _cfg.sag * bend
-		p.z -= _cfg.belly * bend
-		points.append(p)
+		var u: float = 1.0 - t
+		points.append(p0 * u * u * u + p1 * 3.0 * u * u * t + p2 * 3.0 * u * t * t + p3 * t * t * t)
 	return points
 
 
