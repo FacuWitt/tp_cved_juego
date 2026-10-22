@@ -27,7 +27,7 @@ Señales útiles de `GameFlow`: `memory_started(index)`, `memory_finished(index)
 
 ## Escenas actuales
 
-`scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `memory_2.tscn` … `memory_4.tscn` son salas provisorias: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
+`scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `m2_lago/m2_lago.tscn` es la memoria 2 en greybox (el lago helado; raíz `Memory2Lake`). `memory_4.tscn` es la memoria 4 (el barco; raíz `Memory4Accident`). `memory_3.tscn` sigue siendo una sala provisoria; `memory_2.tscn` quedó sin uso. Las salas provisorias son: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
 
 F5 arranca desde la memoria 1. El sandbox sigue en `scenes/sandbox/` y se puede abrir y correr con F6.
 
@@ -39,6 +39,15 @@ Solo funcionan en builds de debug, por ejemplo al correr desde el editor:
 |---|---|
 | F9 | `debug_next_memory`: pasa a la memoria siguiente |
 | F10 | `debug_restart_memory`: reinicia la memoria actual |
+
+Además, cada memoria tiene un nodo `DebugTools` (teclas fijas, solo para desarrollo y para mostrar el juego en clase; se apagan con `debug_keys` en la raíz de cada memoria antes de llegar a `main`):
+
+| Tecla | Acción |
+|---|---|
+| 8 | Cámara libre: WASD hacia donde se mira, Espacio sube, Shift baja, Ctrl acelera |
+| 9 | Luz de rayo fija (si la escena tiene rayos) |
+| 0 | Saltar el evento principal (M2: ir al perro y disparar el final; M4: cortar todas las sogas) |
+| 7 | Disparar un flashback (M2) |
 
 ## Cómo agregar o reordenar una memoria
 

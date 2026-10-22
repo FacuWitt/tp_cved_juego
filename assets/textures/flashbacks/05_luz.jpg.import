@@ -2,24 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b673a4gmlm8db"
-path.s3tc="res://.godot/imported/m4_barco_1.jpg-ecdece155bf057d3407c92280238a078.s3tc.ctex"
+uid="uid://dsvt43e8x67gy"
+path="res://.godot/imported/05_luz.jpg-1fae2bbcd35ea4f414e2ff160773ce6e.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
-}
-generator_parameters={
-"md5": "6494f73671895511b1576062ff059825"
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/models/m4_barco/m4_barco_1.jpg"
-dest_files=["res://.godot/imported/m4_barco_1.jpg-ecdece155bf057d3407c92280238a078.s3tc.ctex"]
+source_file="res://assets/textures/flashbacks/05_luz.jpg"
+dest_files=["res://.godot/imported/05_luz.jpg-1fae2bbcd35ea4f414e2ff160773ce6e.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -27,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -41,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

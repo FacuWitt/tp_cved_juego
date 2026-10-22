@@ -8,6 +8,9 @@ extends Node
 ## Empezó un rayo. `strength` va de 0 a 1.
 signal flashed(strength: float)
 
+## Valores de los rayos. Si está vacío se usan los de `settings` (Memory4Settings, compatibilidad con M4).
+@export var lightning_settings: LightningSettings
+## Solo para la Memoria 4, que guarda sus rayos dentro de Memory4Settings.
 @export var settings: Memory4Settings
 @export var light: DirectionalLight3D
 @export var world_environment: WorldEnvironment
@@ -28,7 +31,7 @@ var _tween: Tween = null
 
 
 func _ready() -> void:
-	assert(settings != null and light != null and world_environment != null, "LightningController: faltan referencias en el Inspector")
+	assert((lightning_settings != null or settings != null) and light != null and world_environment != null, "LightningController: faltan referencias en el Inspector")
 	_base_ambient = world_environment.environment.ambient_light_energy
 	_base_sky = world_environment.environment.background_energy_multiplier
 	_apply(0.0)
@@ -93,7 +96,7 @@ func long_flash(duration: float, strength: float = 1.0) -> void:
 
 func _loop(id: int) -> void:
 	while is_running and id == _loop_id:
-		var wait: float = randf_range(settings.lightning_min_interval, settings.lightning_max_interval)
+		var wait: float = randf_range(_cfg("lightning_min_interval"), _cfg("lightning_max_interval"))
 		await get_tree().create_timer(wait).timeout
 		if not is_running or id != _loop_id:
 			return
@@ -106,7 +109,7 @@ func _do_flash(strength: float) -> void:
 	# Cada rayo cae desde una dirección distinta, para que las sombras cambien de lugar.
 	light.rotation_degrees = Vector3(randf_range(-70.0, -30.0), randf_range(0.0, 360.0), 0.0)
 	flashed.emit(strength)
-	var time: float = settings.lightning_time
+	var time: float = _cfg("lightning_time")
 	# Un solo rayo a la vez: si había otro en curso, se corta.
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
@@ -125,12 +128,19 @@ func _apply(level: float) -> void:
 	if is_held:
 		level = _held_level
 	_level = level
-	light.light_energy = level * settings.lightning_energy
+	light.light_energy = level * _cfg("lightning_energy")
 	var env: Environment = world_environment.environment
-	env.ambient_light_energy = _base_ambient + level * settings.lightning_ambient
-	env.background_energy_multiplier = (_base_sky + level * settings.lightning_sky) if _sky_visible else 0.0
+	env.ambient_light_energy = _base_ambient + level * _cfg("lightning_ambient")
+	env.background_energy_multiplier = (_base_sky + level * _cfg("lightning_sky")) if _sky_visible else 0.0
 	for material: ShaderMaterial in flash_materials:
 		material.set_shader_parameter("flash", level)
+
+
+## Cambia la luz ambiente y el cielo "de base" (sin rayo). Sirve para escenas que oscurecen de a poco.
+func set_base_levels(ambient: float, sky: float) -> void:
+	_base_ambient = ambient
+	_base_sky = sky
+	_apply(_level)
 
 
 ## Brillo actual del rayo, de 0 a 1 (para que la lluvia y otros efectos reaccionen).
@@ -153,3 +163,10 @@ func hide_sky() -> void:
 func blackout() -> void:
 	stop()
 	_apply(0.0)
+
+
+# Lee un valor de los rayos del Resource que esté asignado.
+func _cfg(key: String) -> float:
+	if lightning_settings != null:
+		return float(lightning_settings.get(key))
+	return float(settings.get(key))

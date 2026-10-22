@@ -1,0 +1,902 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/memories/memory_2_lake.gd" id="s_mem"]
+[ext_resource type="Resource" path="res://config/memory_2_settings.tres" id="r_mem"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="p_player"]
+[ext_resource type="Resource" path="res://config/player_settings_ice.tres" id="r_player"]
+[ext_resource type="Script" path="res://scripts/world/ice_plate.gd" id="s_ice"]
+[ext_resource type="Resource" path="res://config/ice_settings.tres" id="r_ice"]
+[ext_resource type="Script" path="res://scripts/world/lightning_controller.gd" id="s_light"]
+[ext_resource type="Resource" path="res://config/lightning_m2.tres" id="r_light"]
+[ext_resource type="Script" path="res://scripts/fx/wake_up_intro.gd" id="s_wake"]
+[ext_resource type="Resource" path="res://config/wake_up_m2.tres" id="r_wake"]
+[ext_resource type="Script" path="res://scripts/ui/flashback_overlay.gd" id="s_fb"]
+[ext_resource type="Resource" path="res://config/flashbacks_m2.tres" id="r_fb"]
+[ext_resource type="Script" path="res://scripts/debug/debug_tools.gd" id="s_dbg"]
+[ext_resource type="Script" path="res://scripts/world/dog_npc.gd" id="s_dog"]
+[ext_resource type="Script" path="res://scripts/world/equip_pickup.gd" id="s_equip"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="r_pickup"]
+[ext_resource type="Script" path="res://scripts/world/item_gate.gd" id="s_gate"]
+[ext_resource type="Script" path="res://scripts/fx/held_item_view.gd" id="s_held"]
+[ext_resource type="Resource" path="res://config/held_flashlight.tres" id="r_hflash"]
+[ext_resource type="Resource" path="res://config/held_boat.tres" id="r_hboat"]
+[ext_resource type="Script" path="res://scripts/fx/post_fx.gd" id="s_pfx"]
+[ext_resource type="Resource" path="res://config/postfx_m2.tres" id="r_pfx"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="s_sub"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="s_prompt"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="r_prompt"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="s_dot"]
+[ext_resource type="Shader" path="res://assets/shaders/light_beam.gdshader" id="sh_beam"]
+[ext_resource type="Shader" path="res://assets/shaders/rescue_glow.gdshader" id="sh_glow"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.05, 0.06, 0.11, 1)
+sky_horizon_color = Color(0.3, 0.24, 0.3, 1)
+sky_curve = 0.18
+ground_bottom_color = Color(0.02, 0.025, 0.035, 1)
+ground_horizon_color = Color(0.22, 0.2, 0.25, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.42, 0.48, 0.6, 1)
+ambient_light_energy = 0.32
+reflected_light_source = 2
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.45
+ssr_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.24, 0.27, 0.33, 1)
+fog_density = 0.03
+fog_sky_affect = 0.7
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.8, 0.85, 0.92, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_snow"]
+albedo_color = Color(0.82, 0.85, 0.9, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="m_water"]
+albedo_color = Color(0.008, 0.02, 0.03, 1)
+metallic = 0.3
+roughness = 0.06
+cull_mode = 2
+
+[sub_resource type="PlaneMesh" id="pm_water"]
+size = Vector2(400, 400)
+
+[sub_resource type="StandardMaterial3D" id="m_wood"]
+albedo_color = Color(0.33, 0.22, 0.14, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_wood_dark"]
+albedo_color = Color(0.18, 0.12, 0.08, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_floe"]
+albedo_color = Color(0.7, 0.78, 0.84, 1)
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="m_lamp"]
+albedo_color = Color(1, 0.75, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.4, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="StandardMaterial3D" id="m_dog"]
+albedo_color = Color(0.42, 0.26, 0.14, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_bag"]
+albedo_color = Color(0.2, 0.32, 0.25, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_toy"]
+albedo_color = Color(0.62, 0.4, 0.22, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.35, 1)
+emission_energy_multiplier = 0.35
+
+[sub_resource type="StandardMaterial3D" id="m_sail"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 0.25
+
+[sub_resource type="StandardMaterial3D" id="m_metal"]
+albedo_color = Color(0.12, 0.13, 0.14, 1)
+metallic = 0.7
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="m_lens"]
+albedo_color = Color(1, 0.95, 0.8, 1)
+emission_enabled = true
+emission = Color(1, 0.92, 0.75, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="m_skin"]
+albedo_color = Color(0.75, 0.55, 0.45, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_snowflake"]
+shading_mode = 0
+albedo_color = Color(0.95, 0.97, 1, 0.9)
+transparency = 1
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+
+[sub_resource type="QuadMesh" id="qm_snow"]
+size = Vector2(0.045, 0.045)
+
+[sub_resource type="BoxShape3D" id="sh_gate"]
+size = Vector3(1.6, 2.2, 1.2)
+
+[sub_resource type="BoxShape3D" id="sh_barrier"]
+size = Vector3(1.2, 2.2, 0.25)
+
+[sub_resource type="BoxShape3D" id="sh_bag"]
+size = Vector3(0.36, 0.44, 0.24)
+
+[sub_resource type="CapsuleMesh" id="cm_dog"]
+radius = 0.2
+height = 0.75
+
+[sub_resource type="PrismMesh" id="prism_hull"]
+size = Vector3(0.1, 0.07, 0.28)
+
+[sub_resource type="PrismMesh" id="prism_hull_small"]
+size = Vector3(0.06, 0.045, 0.17)
+
+[sub_resource type="CylinderMesh" id="cone_beam"]
+top_radius = 1.0
+bottom_radius = 0.0
+height = 1.0
+radial_segments = 24
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="m_beam"]
+render_priority = 1
+shader = ExtResource("sh_beam")
+shader_parameter/beam_color = Color(1, 0.93, 0.8, 1)
+shader_parameter/strength = 0.6
+shader_parameter/rain_streaks = 0.5
+shader_parameter/rain_dir = Vector3(0.4, -1, 0.15)
+
+[sub_resource type="ShaderMaterial" id="m_glow_father"]
+render_priority = 0
+shader = ExtResource("sh_glow")
+shader_parameter/strength = 0.0
+shader_parameter/tint = Color(1, 0.88, 0.7, 1)
+
+[sub_resource type="QuadMesh" id="quad_glow"]
+
+[sub_resource type="StandardMaterial3D" id="m_father_lens"]
+shading_mode = 0
+albedo_color = Color(1, 0.93, 0.78, 1)
+emission_enabled = true
+emission = Color(1, 0.9, 0.7, 1)
+emission_energy_multiplier = 6.0
+
+[node name="Memory2" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "world_environment", "lightning", "wake_up", "flashback", "debug_tools", "dog", "dog_path", "plates_root", "dog_plate", "backpack", "item_gate", "flashlight_view", "boat_view", "shore_respawn", "snow", "father_light", "father_hand")]
+script = ExtResource("s_mem")
+settings = ExtResource("r_mem")
+player = NodePath("Player")
+subtitles = NodePath("HUD/Subtitles")
+world_environment = NodePath("WorldEnvironment")
+lightning = NodePath("Lightning")
+wake_up = NodePath("WakeUp")
+flashback = NodePath("Flashback")
+debug_tools = NodePath("DebugTools")
+dog = NodePath("Dog")
+dog_path = NodePath("DogPath")
+plates_root = NodePath("Lake/Plates")
+dog_plate = NodePath("Lake/Plates/DogPlate")
+backpack = NodePath("Cabin/Backpack")
+item_gate = NodePath("Cabin/DoorGate")
+flashlight_view = NodePath("Player/Head/Camera3D/Flashlight")
+boat_view = NodePath("Player/Head/Camera3D/ToyBoat")
+shore_respawn = NodePath("ShoreRespawn")
+snow = NodePath("Snow")
+father_light = NodePath("FatherLight")
+father_hand = NodePath("FatherHand")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.766, -0.413, 0.492, 0, 0.766, 0.643, -0.643, -0.492, 0.587, 0, 20, 0)
+light_color = Color(0.62, 0.7, 0.9, 1)
+light_energy = 0.35
+shadow_enabled = true
+
+[node name="LightningLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 20, 0)
+light_color = Color(0.75, 0.85, 1, 1)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("s_light")
+lightning_settings = ExtResource("r_light")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="Shore" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -1, 40)
+use_collision = true
+size = Vector3(140, 2, 60)
+material = SubResource("m_snow")
+
+[node name="Dock" type="Node3D" parent="."]
+
+[node name="Plank0" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7, 0.1, 9.4)
+use_collision = true
+size = Vector3(1.6, 0.12, 1.2)
+material = SubResource("m_wood")
+
+[node name="Plank1" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7, 0.1, 8.1)
+use_collision = true
+size = Vector3(1.6, 0.12, 1.2)
+material = SubResource("m_wood")
+
+[node name="Plank2" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7, 0.1, 6.8)
+use_collision = true
+size = Vector3(1.6, 0.12, 1.2)
+material = SubResource("m_wood")
+
+[node name="Plank3" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7, 0.1, 5.5)
+use_collision = true
+size = Vector3(1.6, 0.12, 1.2)
+material = SubResource("m_wood")
+
+[node name="Plank4" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7, 0.1, 4.2)
+use_collision = true
+size = Vector3(1.6, 0.12, 1.2)
+material = SubResource("m_wood")
+
+[node name="Post0L" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.75, -0.4, 9)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="Post0R" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.25, -0.4, 9)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="Post1L" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.75, -0.4, 6.6)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="Post1R" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.25, -0.4, 6.6)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="Post2L" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.75, -0.4, 4.2)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="Post2R" type="CSGCylinder3D" parent="Dock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.25, -0.4, 4.2)
+radius = 0.08
+height = 1.2
+material = SubResource("m_wood_dark")
+
+[node name="FatherBoat" type="CSGBox3D" parent="Dock"]
+transform = Transform3D(0.98877, 0, 0.14944, 0, 1, 0, -0.14944, 0, 0.98877, -9.2, -0.2, 6.5)
+size = Vector3(1.4, 0.5, 3.4)
+material = SubResource("m_wood_dark")
+
+[node name="Cabin" type="Node3D" parent="."]
+
+[node name="Walls" type="CSGCombiner3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 24)
+use_collision = true
+
+[node name="Outer" type="CSGBox3D" parent="Cabin/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1.4, 0)
+size = Vector3(4.4, 2.8, 4.4)
+material = SubResource("m_wood")
+
+[node name="Inner" type="CSGBox3D" parent="Cabin/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1.3, 0)
+operation = 2
+size = Vector3(4.0, 2.6, 4.0)
+material = SubResource("m_wood")
+
+[node name="Door" type="CSGBox3D" parent="Cabin/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1, -2.1)
+operation = 2
+size = Vector3(1.1, 2.0, 0.6)
+
+[node name="Window" type="CSGBox3D" parent="Cabin/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.1, 1.5, 0.3)
+operation = 2
+size = Vector3(0.6, 0.7, 1.0)
+
+[node name="Floor" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.02, 24)
+use_collision = true
+size = Vector3(4.0, 0.04, 4.0)
+material = SubResource("m_wood_dark")
+
+[node name="Roof" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 2.9, 24)
+size = Vector3(5.0, 0.2, 5.0)
+material = SubResource("m_wood_dark")
+
+[node name="Cot" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.35, 0.22, 24.6)
+use_collision = true
+size = Vector3(0.9, 0.4, 2.0)
+material = SubResource("m_wood")
+
+[node name="Table" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.25, 0.38, 23.1)
+use_collision = true
+size = Vector3(1.0, 0.76, 0.8)
+material = SubResource("m_wood_dark")
+
+[node name="Radio" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.5, 0.86, 23.25)
+size = Vector3(0.3, 0.2, 0.14)
+material = SubResource("m_metal")
+
+[node name="Clock" type="Label3D" parent="Cabin"]
+transform = Transform3D(-1, 0, 1.2246e-16, 0, 1, 0, -1.2246e-16, 0, -1, 0, 1.9, 25.95)
+text = "3:00"
+font_size = 48
+modulate = Color(0.9, 0.85, 0.7, 1)
+
+[node name="InsideLight" type="OmniLight3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 2.2, 24)
+light_color = Color(1, 0.72, 0.45, 1)
+light_energy = 0.7
+omni_range = 6.5
+omni_attenuation = 1.8
+
+[node name="Lantern" type="CSGBox3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.85, 2.1, 21.65)
+size = Vector3(0.18, 0.26, 0.18)
+material = SubResource("m_lamp")
+
+[node name="LanternLight" type="OmniLight3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.85, 2, 21.4)
+light_color = Color(1, 0.7, 0.4, 1)
+light_energy = 2.6
+omni_range = 10.0
+shadow_enabled = true
+
+[node name="Backpack" type="RigidBody3D" parent="Cabin"]
+transform = Transform3D(0.92106, 0, 0.38942, 0, 1, 0, -0.38942, 0, 0.92106, -1.15, 1, 23.05)
+script = ExtResource("s_equip")
+settings = ExtResource("r_pickup")
+
+[node name="Shape" type="CollisionShape3D" parent="Cabin/Backpack"]
+shape = SubResource("sh_bag")
+
+[node name="Bag" type="CSGBox3D" parent="Cabin/Backpack"]
+size = Vector3(0.36, 0.44, 0.24)
+material = SubResource("m_bag")
+
+[node name="ToyHull" type="MeshInstance3D" parent="Cabin/Backpack"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0.04, 0.27, 0)
+mesh = SubResource("prism_hull")
+material_override = SubResource("m_toy")
+
+[node name="ToyMast" type="CSGCylinder3D" parent="Cabin/Backpack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.04, 0.36, 0)
+radius = 0.008
+height = 0.2
+material = SubResource("m_toy")
+
+[node name="ToyGlow" type="OmniLight3D" parent="Cabin/Backpack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.04, 0.35, 0)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.4
+omni_range = 0.8
+
+[node name="DoorGate" type="Area3D" parent="Cabin" node_paths=PackedStringArray("required_item", "barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1.1, 22.6)
+script = ExtResource("s_gate")
+required_item = NodePath("../Backpack")
+barrier = NodePath("../DoorBarrier")
+
+[node name="Shape" type="CollisionShape3D" parent="Cabin/DoorGate"]
+shape = SubResource("sh_gate")
+
+[node name="DoorBarrier" type="StaticBody3D" parent="Cabin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1.1, 22)
+
+[node name="Shape" type="CollisionShape3D" parent="Cabin/DoorBarrier"]
+shape = SubResource("sh_barrier")
+
+[node name="Lake" type="Node3D" parent="."]
+
+[node name="Water" type="MeshInstance3D" parent="Lake"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.32, -60)
+mesh = SubResource("pm_water")
+material_override = SubResource("m_water")
+cast_shadow = 0
+
+[node name="Plates" type="Node3D" parent="Lake"]
+
+[node name="Plate01" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99612, 0, -0.08797, 0, 1, 0, 0.08797, 0, 0.99612, 0, -0.19, 7.95)
+script = ExtResource("s_ice")
+size = Vector3(4.2, 0.3, 3.6)
+settings = ExtResource("r_ice")
+
+[node name="Plate02" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.9848, 0, -0.17369, 0, 1, 0, 0.17369, 0, 0.9848, 1.4, -0.19, 3.95)
+script = ExtResource("s_ice")
+size = Vector3(3.2, 0.3, 3.0)
+settings = ExtResource("r_ice")
+
+[node name="Plate03" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99715, 0, 0.075396, 0, 1, 0, -0.075396, 0, 0.99715, -0.8, -0.19, 0.05)
+script = ExtResource("s_ice")
+size = Vector3(3.0, 0.3, 3.2)
+settings = ExtResource("r_ice")
+
+[node name="Plate04" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.97724, 0, -0.21216, 0, 1, 0, 0.21216, 0, 0.97724, 1.6, -0.19, -3.75)
+script = ExtResource("s_ice")
+size = Vector3(2.6, 0.3, 2.6)
+settings = ExtResource("r_ice")
+
+[node name="Plate05" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99984, 0, 0.01794, 0, 1, 0, -0.01794, 0, 0.99984, -0.4, -0.19, -7.25)
+script = ExtResource("s_ice")
+size = Vector3(3.0, 0.3, 2.8)
+settings = ExtResource("r_ice")
+
+[node name="Plate06" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99775, 0, -0.067105, 0, 1, 0, 0.067105, 0, 0.99775, -2.6, -0.19, -10.75)
+script = ExtResource("s_ice")
+size = Vector3(2.4, 0.3, 2.4)
+settings = ExtResource("r_ice")
+
+[node name="Plate07" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.97568, 0, -0.21921, 0, 1, 0, 0.21921, 0, 0.97568, -0.6, -0.19, -14.45)
+script = ExtResource("s_ice")
+size = Vector3(3.0, 0.3, 3.0)
+settings = ExtResource("r_ice")
+
+[node name="Plate08" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99999, 0, 0.0037179, 0, 1, 0, -0.0037179, 0, 0.99999, 1.8, -0.19, -18.15)
+script = ExtResource("s_ice")
+size = Vector3(2.4, 0.3, 2.6)
+settings = ExtResource("r_ice")
+
+[node name="Plate09" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.97338, 0, -0.2292, 0, 1, 0, 0.2292, 0, 0.97338, 0.2, -0.19, -21.85)
+script = ExtResource("s_ice")
+size = Vector3(2.8, 0.3, 2.8)
+settings = ExtResource("r_ice")
+
+[node name="Plate10" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.99945, 0, -0.033171, 0, 1, 0, 0.033171, 0, 0.99945, -1.4, -0.19, -25.35)
+script = ExtResource("s_ice")
+size = Vector3(2.4, 0.3, 2.4)
+settings = ExtResource("r_ice")
+
+[node name="Plate11" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(0.97696, 0, -0.21342, 0, 1, 0, 0.21342, 0, 0.97696, 0.4, -0.19, -28.95)
+script = ExtResource("s_ice")
+size = Vector3(2.6, 0.3, 2.8)
+settings = ExtResource("r_ice")
+
+[node name="DogPlate" type="AnimatableBody3D" parent="Lake/Plates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.19, -33.55)
+script = ExtResource("s_ice")
+size = Vector3(4.4, 0.3, 4.4)
+settings = ExtResource("r_ice")
+crackable = false
+
+[node name="FarFloes" type="Node3D" parent="Lake"]
+
+[node name="Floe00" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.31559, 0, 0.94889, 0, 1, 0, -0.94889, 0, -0.31559, -27.49, -0.19, -74.92)
+size = Vector3(4.83, 0.3, 6.74)
+material = SubResource("m_floe")
+
+[node name="Floe01" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.84395, 0, 0.53642, 0, 1, 0, -0.53642, 0, -0.84395, -28.51, -0.19, -45.89)
+size = Vector3(6.88, 0.3, 2.23)
+material = SubResource("m_floe")
+
+[node name="Floe02" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.45753, 0, 0.8892, 0, 1, 0, -0.8892, 0, -0.45753, 22.35, -0.19, -33.5)
+size = Vector3(4.85, 0.3, 4.80)
+material = SubResource("m_floe")
+
+[node name="Floe03" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.98231, 0, 0.18725, 0, 1, 0, -0.18725, 0, 0.98231, -28.68, -0.19, -25.05)
+size = Vector3(3.86, 0.3, 4.74)
+material = SubResource("m_floe")
+
+[node name="Floe04" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.17311, 0, 0.9849, 0, 1, 0, -0.9849, 0, 0.17311, -30.14, -0.19, -37.31)
+size = Vector3(4.66, 0.3, 5.89)
+material = SubResource("m_floe")
+
+[node name="Floe05" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.97, 0, 0.2431, 0, 1, 0, -0.2431, 0, 0.97, 20.1, -0.19, -58.64)
+size = Vector3(2.90, 0.3, 5.90)
+material = SubResource("m_floe")
+
+[node name="Floe06" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.97985, 0, 0.19972, 0, 1, 0, -0.19972, 0, -0.97985, 26.48, -0.19, -4.738)
+size = Vector3(5.65, 0.3, 3.44)
+material = SubResource("m_floe")
+
+[node name="Floe07" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.30096, 0, 0.95364, 0, 1, 0, -0.95364, 0, 0.30096, -25.97, -0.19, -65.81)
+size = Vector3(3.71, 0.3, 6.67)
+material = SubResource("m_floe")
+
+[node name="Floe08" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.49261, 0, 0.87025, 0, 1, 0, -0.87025, 0, -0.49261, -35.82, -0.19, -30.72)
+size = Vector3(6.38, 0.3, 3.57)
+material = SubResource("m_floe")
+
+[node name="Floe09" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.14796, 0, 0.98899, 0, 1, 0, -0.98899, 0, 0.14796, 28.62, -0.19, -40.77)
+size = Vector3(6.20, 0.3, 6.72)
+material = SubResource("m_floe")
+
+[node name="Floe10" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.7802, 0, 0.62554, 0, 1, 0, -0.62554, 0, -0.7802, -8.366, -0.19, -19.67)
+size = Vector3(5.24, 0.3, 6.97)
+material = SubResource("m_floe")
+
+[node name="Floe11" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.48329, 0, 0.87546, 0, 1, 0, -0.87546, 0, 0.48329, 33.95, -0.19, -3.715)
+size = Vector3(3.74, 0.3, 6.70)
+material = SubResource("m_floe")
+
+[node name="Floe12" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.36823, 0, 0.92974, 0, 1, 0, -0.92974, 0, 0.36823, -25.25, -0.19, -61.23)
+size = Vector3(3.44, 0.3, 5.69)
+material = SubResource("m_floe")
+
+[node name="Floe13" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.77521, 0, 0.63171, 0, 1, 0, -0.63171, 0, -0.77521, 9.143, -0.19, -41.37)
+size = Vector3(4.75, 0.3, 6.42)
+material = SubResource("m_floe")
+
+[node name="Floe14" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.76981, 0, 0.63827, 0, 1, 0, -0.63827, 0, 0.76981, 33.55, -0.19, 4.836)
+size = Vector3(5.41, 0.3, 3.90)
+material = SubResource("m_floe")
+
+[node name="Floe15" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.19531, 0, 0.98074, 0, 1, 0, -0.98074, 0, -0.19531, -12.87, -0.19, -60.05)
+size = Vector3(3.17, 0.3, 4.42)
+material = SubResource("m_floe")
+
+[node name="Floe16" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.57693, 0, 0.8168, 0, 1, 0, -0.8168, 0, 0.57693, 17, -0.19, -67.47)
+size = Vector3(4.67, 0.3, 5.05)
+material = SubResource("m_floe")
+
+[node name="Floe17" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.98691, 0, 0.16127, 0, 1, 0, -0.16127, 0, 0.98691, -32.93, -0.19, -35.67)
+size = Vector3(5.09, 0.3, 5.38)
+material = SubResource("m_floe")
+
+[node name="Floe18" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.84091, 0, 0.54117, 0, 1, 0, -0.54117, 0, 0.84091, 21.52, -0.19, -46.11)
+size = Vector3(4.41, 0.3, 4.00)
+material = SubResource("m_floe")
+
+[node name="Floe19" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.12919, 0, 0.99162, 0, 1, 0, -0.99162, 0, -0.12919, -23.18, -0.19, -70.55)
+size = Vector3(5.00, 0.3, 2.51)
+material = SubResource("m_floe")
+
+[node name="Floe20" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.42785, 0, 0.90385, 0, 1, 0, -0.90385, 0, 0.42785, -43.01, -0.19, -27.22)
+size = Vector3(2.35, 0.3, 3.04)
+material = SubResource("m_floe")
+
+[node name="Floe21" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(0.10639, 0, 0.99432, 0, 1, 0, -0.99432, 0, 0.10639, 43.26, -0.19, -28.2)
+size = Vector3(4.37, 0.3, 2.58)
+material = SubResource("m_floe")
+
+[node name="Floe22" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.60539, 0, 0.79593, 0, 1, 0, -0.79593, 0, -0.60539, 24.74, -0.19, -53.18)
+size = Vector3(2.72, 0.3, 5.75)
+material = SubResource("m_floe")
+
+[node name="Floe23" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.013975, 0, 0.9999, 0, 1, 0, -0.9999, 0, -0.013975, 38.33, -0.19, -66.12)
+size = Vector3(2.12, 0.3, 6.75)
+material = SubResource("m_floe")
+
+[node name="Floe24" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.35036, 0, 0.93662, 0, 1, 0, -0.93662, 0, -0.35036, -32.91, -0.19, -1.383)
+size = Vector3(5.79, 0.3, 3.49)
+material = SubResource("m_floe")
+
+[node name="Floe25" type="CSGBox3D" parent="Lake/FarFloes"]
+transform = Transform3D(-0.67798, 0, 0.73508, 0, 1, 0, -0.73508, 0, -0.67798, -33.15, -0.19, -57.54)
+size = Vector3(3.83, 0.3, 2.84)
+material = SubResource("m_floe")
+
+[node name="Dog" type="Node3D" parent="." node_paths=PackedStringArray("bark_label")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.6, 0, 22.7)
+script = ExtResource("s_dog")
+bark_label = NodePath("Bark")
+
+[node name="Body" type="MeshInstance3D" parent="Dog"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.32, 0)
+mesh = SubResource("cm_dog")
+material_override = SubResource("m_dog")
+
+[node name="Head" type="CSGBox3D" parent="Dog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.5, -0.42)
+size = Vector3(0.22, 0.22, 0.26)
+material = SubResource("m_dog")
+
+[node name="Bark" type="Label3D" parent="Dog"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1, 0)
+billboard = 1
+text = "¡GUAU!"
+font_size = 40
+outline_size = 8
+modulate = Color(1, 0.95, 0.85, 1)
+
+[node name="DogPath" type="Node3D" parent="."]
+
+[node name="P00" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 21.2)
+
+[node name="P01" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.3, 0, 11)
+
+[node name="P02" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.02, 7.95)
+
+[node name="P03" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.4, -0.02, 3.95)
+
+[node name="P04" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.8, -0.02, 0.05)
+
+[node name="P05" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.6, -0.02, -3.75)
+
+[node name="P06" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.4, -0.02, -7.25)
+
+[node name="P07" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.6, -0.02, -10.75)
+
+[node name="P08" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.6, -0.02, -14.45)
+
+[node name="P09" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.8, -0.02, -18.15)
+
+[node name="P10" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.2, -0.02, -21.85)
+
+[node name="P11" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.4, -0.02, -25.35)
+
+[node name="P12" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.4, -0.02, -28.95)
+
+[node name="P13" type="Marker3D" parent="DogPath"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.02, -34.15)
+
+[node name="ShoreRespawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.1, 11.5)
+
+[node name="Player" parent="." instance=ExtResource("p_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.5, 0.05, 24.9)
+settings = ExtResource("r_player")
+
+[node name="Flashlight" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("s_held")
+settings = ExtResource("r_hflash")
+player = NodePath("../../..")
+
+[node name="Body" type="CSGCylinder3D" parent="Player/Head/Camera3D/Flashlight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.02)
+radius = 0.032
+height = 0.24
+material = SubResource("m_metal")
+
+[node name="Lens" type="CSGCylinder3D" parent="Player/Head/Camera3D/Flashlight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.1)
+radius = 0.042
+height = 0.04
+material = SubResource("m_lens")
+
+[node name="Beam" type="SpotLight3D" parent="Player/Head/Camera3D/Flashlight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, -0.13)
+light_color = Color(1, 0.93, 0.8, 1)
+light_energy = 4.0
+shadow_enabled = true
+spot_range = 24.0
+spot_angle = 24.0
+spot_attenuation = 0.8
+
+[node name="BeamCone" type="MeshInstance3D" parent="Player/Head/Camera3D/Flashlight"]
+transform = Transform3D(2.0, 0, 0, 0, 0, 2.0, 0, -9.0, 0, 0, 0, -4.63)
+cast_shadow = 0
+mesh = SubResource("cone_beam")
+material_override = SubResource("m_beam")
+
+[node name="ToyBoat" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("s_held")
+settings = ExtResource("r_hboat")
+player = NodePath("../../..")
+
+[node name="Hull" type="MeshInstance3D" parent="Player/Head/Camera3D/ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+mesh = SubResource("prism_hull_small")
+material_override = SubResource("m_toy")
+
+[node name="Mast" type="CSGCylinder3D" parent="Player/Head/Camera3D/ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.06, 0)
+radius = 0.004
+height = 0.11
+material = SubResource("m_toy")
+
+[node name="Sail" type="CSGBox3D" parent="Player/Head/Camera3D/ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.065, 0.02)
+size = Vector3(0.003, 0.075, 0.045)
+material = SubResource("m_sail")
+
+[node name="Glow" type="OmniLight3D" parent="Player/Head/Camera3D/ToyBoat"]
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.0
+omni_range = 2.5
+
+[node name="Snow" type="CPUParticles3D" parent="."]
+material_override = SubResource("m_snowflake")
+cast_shadow = 0
+amount = 1800
+lifetime = 5.0
+preprocess = 5.0
+mesh = SubResource("qm_snow")
+emission_shape = 3
+emission_box_extents = Vector3(22, 0.5, 22)
+direction = Vector3(0.4, -1, 0.15)
+spread = 25.0
+gravity = Vector3(0.6, -0.9, 0.15)
+initial_velocity_min = 0.4
+initial_velocity_max = 1.1
+
+[node name="FatherLight" type="SpotLight3D" parent="."]
+light_color = Color(1, 0.88, 0.68, 1)
+light_energy = 0.0
+spot_range = 14.0
+spot_angle = 28.0
+
+[node name="Glow" type="CSGSphere3D" parent="FatherLight"]
+radius = 0.28
+radial_segments = 16
+rings = 8
+material = SubResource("m_father_lens")
+
+[node name="GlowLight" type="OmniLight3D" parent="FatherLight"]
+light_color = Color(1, 0.86, 0.65, 1)
+light_energy = 0.0
+omni_range = 4.0
+
+[node name="FatherHand" type="Node3D" parent="."]
+
+[node name="Arm" type="CSGCylinder3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.35, 0)
+radius = 0.06
+height = 0.7
+material = SubResource("m_skin")
+
+[node name="Palm" type="CSGBox3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.08, 0)
+size = Vector3(0.17, 0.2, 0.07)
+material = SubResource("m_skin")
+
+[node name="Fingers" type="CSGBox3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.25, 0.02)
+size = Vector3(0.16, 0.14, 0.05)
+material = SubResource("m_skin")
+
+[node name="WakeUp" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("s_wake")
+settings = ExtResource("r_wake")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="Flashback" type="CanvasLayer" parent="."]
+script = ExtResource("s_fb")
+settings = ExtResource("r_fb")
+
+[node name="DebugTools" type="Node" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("s_dbg")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="PostFx" type="CanvasLayer" parent="."]
+layer = 0
+script = ExtResource("s_pfx")
+settings = ExtResource("r_pfx")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Center" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("s_prompt")
+player = NodePath("../../../Player")
+settings = ExtResource("r_prompt")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("s_dot")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("s_sub")

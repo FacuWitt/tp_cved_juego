@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bydqcfiwu5qru"
-path="res://.godot/imported/m4_barco.glb-b644038865af466785556ea5aa35d063.scn"
+uid="uid://6h46ou17gya5"
+path="res://.godot/imported/m4_barco_hd_opt.glb-66b4fb031c411cd3bb2dae9d89d4306a.scn"
 
 [deps]
 
-source_file="res://assets/models/m4_barco/m4_barco.glb"
-dest_files=["res://.godot/imported/m4_barco.glb-b644038865af466785556ea5aa35d063.scn"]
+source_file="res://assets/models/m4_barco_hd/m4_barco_hd_opt.glb"
+dest_files=["res://.godot/imported/m4_barco_hd_opt.glb-66b4fb031c411cd3bb2dae9d89d4306a.scn"]
 
 [params]
 

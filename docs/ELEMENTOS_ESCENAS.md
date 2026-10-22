@@ -5,6 +5,9 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 > Estados: ✅ definido · 📝 propuesta · ❓ abierto
 > **Etapa 0** = el placeholder genérico que se usa ahora (cubos, cápsulas, `Label3D` con el nombre). **Etapa 3** = el asset final (modelo, textura, sonido).
 > Columna **Rol**: **OBL** = obligatorio para el flujo (sin esto no se puede terminar la escena) · **AMB** = ambientación (se puede sumar después).
+>
+> **Regla de todas las memorias ✅:** siempre hay tormenta y el protagonista **se despierta por la tormenta**. La excepción es el hospital, donde despierta por otra cosa.
+> **Plan de la demo de la próxima clase:** `docs/PLAN_DEMO.md` (recorridos de M2 y M3, sistemas compartidos y teclas de debug).
 
 ---
 
@@ -15,7 +18,7 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Barquito de madera** | M1 estante alto · M2 mochila · M3 en las manos · M4 imagen luminosa en el fondo · Final mesita de luz | Prisma marrón | Un solo modelo con dos variantes: normal y **luminosa** (emisión cálida) |
 | **Reloj parado** | M1 despertador · M2 cabaña · M3 varios · M4 camarote · Final reloj de pared | Cilindro con `Label3D` "RELOJ" | Script con modo `parado` (agujas fijas a las **3:00 am** ✅, hora del accidente)  o `en marcha` (Final). En ambos modos hace tic-tac al ritmo del bip |
 | **Luna** | Ventanas de M1 y M3 · cielo de M2 y M4 | Esfera emisiva | Billboard o esfera lejana; las nubes la tapan y destapan |
-| **Tormenta** | M1 (afuera) · M2 (se acerca) · M4 (encima) | — | Lluvia (partículas), relámpagos (flash de luz fría) y truenos con retardo. Intensidad configurable por escena |
+| **Tormenta** | M1 (afuera) · M2 (se acerca) · M3 (afuera, por las ventanas) · M4 (encima) | — | Lluvia (partículas), relámpagos (flash de luz fría) y truenos con retardo. Intensidad configurable por escena |
 | **Agua / goteo** | M1 techo · M3 charcos, paredes y canilla · M4 cubierta | Esfera chica que cae | Gota con sonido 3D seco (capa amenaza) |
 | **Ritmo del bip** | Tic-tac (M1) · ladridos (M2) · canilla (M3) · bomba de achique (M4) · monitor (Final) | — | **Un único pulso global** (BPM en `config/`) que siguen todos estos sonidos |
 | **Ventana con exterior falso** | M1, M3, Final | Plano con color | Plano detrás del vidrio (cielo, luna, lluvia o día) |
@@ -108,7 +111,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 
 ## 2. Memoria 2 — El lago helado ✅
 
-**Escena:** `scenes/memories/m2_lago/`. Atardecer → noche, frío, viento, nieve. Degradación media (niebla, la orilla parece lejos).
+**Escena:** `scenes/memories/m2_lago/m2_lago.tscn` ✅ greybox jugable (CL-031). Atardecer → noche, frío, viento, nieve. Degradación media (niebla, la orilla parece lejos).
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
@@ -127,8 +130,9 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Redes colgadas, cañas | AMB | Planos / cilindros finos |
 | **Radio a pilas** (alerta de tormenta) | AMB | Cubo chico + fuente de audio |
 | Reloj de la cabaña parado | AMB | Reloj compartido |
-| **Mochila con el barquito adentro** | AMB ❓ (¿se ve? ¿la lleva el jugador?) | Cubo |
+| **Mochila con el barquito adentro** | OBL 📝 Abierta en la mesa de la cabaña, el barquito asoma con un brillo cálido; al agarrarla, el barquito asoma por encima del hombro (objeto en mano, como el hacha de M4); en la caída al agua flota hacia arriba encendido. No es realista: es un sueño. Detalle en `PLAN_DEMO.md` | Cubo + prisma |
 | Luna detrás de las nubes | AMB | Compartido |
+| **Linterna del protagonista** ✅ | OBL | En la mano desde el comienzo (objeto en mano). Se le cae al agua cuando se rompe el hielo, se hunde y se apaga | Cilindro + `SpotLight3D` |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
@@ -137,7 +141,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | **Padre** | Con linterna. Aparece en el rescate | Cápsula alta + `SpotLight3D` |
 
 ### Luz
-- **Cálida:** farol de la cabaña y linterna del padre.
+- **Cálida:** farol de la cabaña, la linterna del protagonista (hasta que se hunde) y la linterna del padre.
 - **Fría:** el azul del hielo y del agua (domina).
 
 ### Audio
@@ -153,7 +157,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 - Nieve (partículas).
 
 ### Cinemática (sin control) 📝
-El hielo se rompe → el jugador y el perro caen al agua → la mano y la voz del padre los sacan (*"agarrate, no te suelto"*) → negro.
+✅ El hielo se rompe → el jugador y el perro caen al agua → **la linterna se le cae y se hunde apagándose** → oscuridad total → **flashbacks** → la luz, la mano y la voz del padre los sacan (*"agarrate, no te suelto"*) → negro.
 
 ### Sistemas que pide
 - Placas de hielo físicas: inclinación según dónde pisa, deslizamiento y grieta que avanza con un tiempo (todo configurable en `config/`).
@@ -165,7 +169,7 @@ El hielo se rompe → el jugador y el perro caen al agua → la mano y la voz de
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar ✅
 
-**Escena:** `scenes/memories/m3_casa/`. Madrugada, silencio, sin tormenta. **La más degradada:** pasillos que se estiran, cocina que se repite.
+**Escena:** `scenes/memories/m3_casa/`. Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno 📝. **La más degradada:** pasillos que se estiran, cocina que se repite.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
@@ -207,7 +211,7 @@ El hielo se rompe → el jugador y el perro caen al agua → la mano y la voz de
 | Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) |
 
 ### Cinemática (sin control) 📝
-Sale por la puerta → todo se oscurece → **sin transición en negro con voces**: corte directo al camarote de M4 ❓.
+✅ Sale por la puerta de su casa → **todo se pone negro** (sin voces del hospital) → empieza M4 en el camarote.
 
 ### Sistemas que pide
 - Laberinto que se repite: zonas que teletransportan sin que se note y que cambian según el progreso.
@@ -274,7 +278,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 | Canción de cuna, muy tenue, al hundirse | Recuerdo | — |
 
 ### Cinemáticas (sin control) 📝
-- Despertar en el camarote (viene de M3).
+- ✅ **Despertar en el camarote** (viene de M3): se levanta de la litera, lo despierta la tormenta y lo llaman porque lo necesitan en cubierta (el tripulante grita desde afuera). El jugador sale corriendo por el pasillo; la puerta da a la pasarela de arriba de la escalera, donde ocurre el relámpago largo de CL-025 📝.
 - La ola y la caída al agua.
 - El descenso: ❓ ¿controlado (hundirse lento hacia la luz) o cinemática?
 
@@ -317,7 +321,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
 4. ~~M1: quién felicita~~ ✅ la mamá.
 5. ~~La hora del accidente~~ ✅ **3:00 am** (todos los relojes).
-6. **M2:** ¿la mochila con el barquito se ve en escena?
-7. **M3 → M4:** ¿corte directo o transición en negro con voces?
+6. ~~**M2:** ¿la mochila con el barquito se ve en escena?~~ 📝 Sí, ver la tabla de props de M2 y `PLAN_DEMO.md`.
+7. ~~**M3 → M4:** ¿corte directo o transición en negro con voces?~~ ✅ Sale por la puerta de casa → negro → M4 empieza en el camarote.
 8. **M4:** ¿el descenso es controlado o cinemática? ¿Hay timón?
 9. **Final:** ¿el jugador puede mover la cámara? ¿Qué pasa después del último plano?

@@ -34,6 +34,16 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `Memory1Room` | `scripts/memories/memory_1_room.gd` | Memoria 1 (habitación de la abuela): une el puzzle con la puerta, el barquito y la salida |
 | `SequencePuzzle` | `scripts/puzzles/sequence_puzzle.gd` | Puzzle genérico de ordenar piezas (`PuzzlePiece`) en casilleros |
 | `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" |
+| `DebugTools` | `scripts/debug/debug_tools.gd` | Teclas de prueba comunes a todas las memorias: 8 cámara libre, 9 luz de rayo fija, 0 saltar el evento principal, 7 flashback (se apagan con `debug_keys` de cada memoria) |
+| `LightningController` + `LightningSettings` | `scripts/world/lightning_controller.gd` | Rayos de tormenta (luz, ambiente, cielo, materiales con `flash`) |
+| `WakeUpIntro` + `WakeUpSettings` | `scripts/fx/wake_up_intro.gd` | Despertar por la tormenta al empezar una memoria (ojos, trueno, se levanta) |
+| `HeldItemView` + `HeldItemSettings` | `scripts/fx/held_item_view.gd` | Objeto en la mano en primera persona (linterna, barquito) |
+| `EquipPickup` | `scripts/world/equip_pickup.gd` | Objeto que se agarra con E y pasa a llevarse puesto (no se suelta) |
+| `FlashbackOverlay` + `FlashbackSettings` | `scripts/ui/flashback_overlay.gd` | Flashbacks de menos de un segundo, con opción de fotosensibilidad |
+| `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 (el lago helado): cabaña, placas, perro, final bajo el hielo |
+| `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
+| `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
+| `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).
 
@@ -112,6 +122,7 @@ El profesor pidió que todo lo que hagamos quede en el **documento de la soluci�
 | `docs/ELEMENTOS_ESCENAS.md` | ✅ Inventario de elementos por escena (placeholder de etapa 0, rol, sistemas que pide) |
 | `docs/GUION_MAESTRO.md` | ⏳ Pendiente: la historia completa y los beats por memoria |
 | `docs/SIMBOLOGIA.md` | ⏳ Pendiente: diccionario de símbolos, regla 80/20, capas de audio |
+| `docs/PLAN_DEMO.md` | ✅ Plan de la demo de la próxima clase: qué se muestra de cada memoria, sistemas compartidos y teclas de debug |
 | `docs/arquitectura.md` | ✅ Flujo entre memorias (`GameFlow`, `Memory`, `MemoryExit`, secuencia) |
 | `docs/SENALES_Y_ESTADOS.md` | ⏳ Pendiente: contrato del EventBus y del GameManager |
 | `docs/TUNING.md` | ⏳ Pendiente: guía de los Resources de `config/` |
