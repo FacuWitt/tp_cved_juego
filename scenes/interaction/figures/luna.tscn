@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+[ext_resource type="PackedScene" path="res://assets/models/m1_figuras/moon_globe.glb" id="3_model"]
+
+[sub_resource type="BoxShape3D" id="col_box"]
+size = Vector3(0.36, 0.36, 0.36)
+
+[node name="Luna" type="RigidBody3D" node_paths=PackedStringArray("visual")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+piece_id = &"luna"
+label_text = "LUNA"
+visual = NodePath("Visual")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Modelo" parent="Visual" instance=ExtResource("3_model")]
+position = Vector3(0, 0.180422, 0)
+scale = Vector3(0.008297, 0.008297, 0.008297)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("col_box")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 0.32, 0)
+pixel_size = 0.003
+text = "LUNA"
+font_size = 28
+billboard = 1
+outline_size = 6

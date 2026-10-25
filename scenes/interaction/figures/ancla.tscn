@@ -1,0 +1,96 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+
+[sub_resource type="StandardMaterial3D" id="mat_madera"]
+albedo_color = Color(0.78, 0.6, 0.38, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="col_box"]
+size = Vector3(0.36, 0.36, 0.36)
+
+[sub_resource type="CylinderMesh" id="m1"]
+top_radius = 0.012
+bottom_radius = 0.012
+height = 0.26
+radial_segments = 24
+
+[sub_resource type="TorusMesh" id="m2"]
+inner_radius = 0.018
+outer_radius = 0.032
+rings = 32
+ring_segments = 12
+
+[sub_resource type="BoxMesh" id="m3"]
+size = Vector3(0.14, 0.016, 0.016)
+
+[sub_resource type="CylinderMesh" id="m4"]
+top_radius = 0.012
+bottom_radius = 0.012
+height = 0.09
+radial_segments = 24
+
+[sub_resource type="SphereMesh" id="m5"]
+radius = 0.014
+height = 0.028
+radial_segments = 24
+rings = 12
+
+[node name="Ancla" type="RigidBody3D" node_paths=PackedStringArray("visual")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+piece_id = &"ancla"
+label_text = "ANCLA"
+visual = NodePath("Visual")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Canio" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, -0.01, 0)
+mesh = SubResource("m1")
+material_override = SubResource("mat_madera")
+
+[node name="Anillo" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.135, 0)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("m2")
+material_override = SubResource("mat_madera")
+
+[node name="Travesano" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.085, 0)
+mesh = SubResource("m3")
+material_override = SubResource("mat_madera")
+
+[node name="BrazoDer" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.033, -0.152, 0)
+rotation_degrees = Vector3(0, 0, -70)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera")
+
+[node name="BrazoIzq" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.033, -0.152, 0)
+rotation_degrees = Vector3(0, 0, 70)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera")
+
+[node name="UnaDer" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.0658, -0.164, 0)
+mesh = SubResource("m5")
+material_override = SubResource("mat_madera")
+
+[node name="UnaIzq" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.0658, -0.164, 0)
+mesh = SubResource("m5")
+material_override = SubResource("mat_madera")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("col_box")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 0.32, 0)
+pixel_size = 0.003
+text = "ANCLA"
+font_size = 28
+billboard = 1
+outline_size = 6

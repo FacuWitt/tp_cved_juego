@@ -34,7 +34,7 @@ Plan para la próxima clase. **No es el diseño final de cada memoria:** es qué
 ### Recorrido de la demo 📝
 1. **Despertar por la tormenta** (regla de todas las memorias ✅). El protagonista, adolescente, se despierta en la **cabaña de pesca** con un trueno. Afuera atardece y la tormenta se acerca por el horizonte. La radio a pilas avisa de la tormenta.
    - **Tiene una linterna en la mano** ✅ desde el comienzo. Es su luz para cruzar el lago cuando oscurece.
-2. **La mochila con el barquito** (ver abajo). Está sobre la mesa de la cabaña. No se sale sin ella (se reutiliza `ItemGate` de M1).
+2. **La mochila con el barquito** (ver abajo). Está sobre la mesa de la cabaña. No se sale sin ella (se usa `ItemGate`, que ya existe; M1 dejó de usarlo).
 3. **El perro escapa.** Sale corriendo y ladrando hacia el lago, y queda esperando sobre una placa de hielo lejana. Los ladridos guían.
 4. **Cruzar el hielo.** Placas que se inclinan según dónde se pisa, resbalan y se agrietan si uno se queda quieto. Caerse al agua = negro breve y se vuelve a la última placa firme (como caerse del barco en M4: un fallo más, nunca game over).
 5. **Flashbacks** de la noche del accidente (capturas de M4), de menos de un segundo, cuando el hielo cruje fuerte o una placa se parte, y sobre todo en la oscuridad del final.

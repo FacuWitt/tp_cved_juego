@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-034 · Ola y luna con modelos 3D externos; se sacan marea y pescador · 2026-10-25
+- **Rama / commits:** `develop` · `sin commitear`
+- **Pedido por:** Facu: "reemplazá los objetos de la ola y la luna que ya están hechos por estos: `wave_sculpture.glb` y `moon_globe.glb`", "la OLA no se ve en el juego. Y quiero que saques el objeto marea y pescador".
+- **Qué se hizo:** las figuras `ola` y `luna` del puzzle de M1 ya no se arman con primitivas: instancian los modelos `wave_sculpture.glb` y `moon_globe.glb` como hijos de `Visual`, escalados para que su lado mayor mida 0,36 m y apoyados en el piso del cubo de colisión (procedimiento de `docs/FIGURAS_M1.md`). `wave_sculpture` venía comprimido con Draco (`KHR_draco_mesh_compression`) y texturas WebP (`EXT_texture_webp`), que Godot 4 no soporta: su importación fallaba y por eso la figura no aparecía. Se decodificó Draco con `draco3d` (Node.js), se soldaron vértices por posición (4,49 M → 749 k), se decimó a ~100 mil triángulos con `meshopt` (50 k vértices finales) y las texturas WebP se convirtieron a JPEG a 2048 px: GLB final de 4 MB validado con el validador oficial de Khronos (0 problemas). Además se quitaron los distractores `marea` y `pescador` del puzzle (escenas borradas, instancias de `puzzle.tscn` removidas); queda solo el barco, y con CL-011/CL-012 quedan los 6 objetos agarrables que ese pedido describía.
+- **Por qué (decisión de diseño):** el formato entrante no era importable por Godot (Draco/WebP no soportados), y decodificado a pelo pesaría ~160 MB (4,5 M de vértices), inaceptable para un juego liviano. Se decidió decimar con error despreciable (0,0004) porque la figura es un juguete de 36 cm visto desde una repisa a 1-2 m. La luna importaba directo, solo hizo falta escalarla.
+- **Alternativas descartadas:** importar el modelo a resolución completa (~160 MB, rompe un juego liviano); pedir otra descarga sin Draco (depende de terceros y no resuelve el WebP).
+- **Archivos y docs:** `assets/models/m1_figuras/wave_sculpture.glb` y `moon_globe.glb` (nuevos), `scenes/interaction/figures/ola.tscn` y `luna.tscn` (modelos en vez de primitivas), `scenes/memories/m1_habitacion/puzzle.tscn` (sin marea ni pescador), `CREDITS.md` (créditos pendientes de completar), `docs/FIGURAS_M1.md` (tabla actualizada), `docs/ELEMENTOS_ESCENAS.md` (distractor único: el barco).
+- **Pendiente / ❓ ABIERTO:** completar en `CREDITS.md` el autor, la licencia y la fuente de `wave_sculpture` y `moon_globe` (descargados sin ese dato); si no son CC0, acreditar en los créditos del juego.
+
+### CL-033 · Memoria 4: brillo en las ventanas de la cabina y proyector visible · 2026-10-15
+
 ### CL-033 · Memoria 4: brillo en las ventanas de la cabina y proyector visible · 2026-10-15
 - `ShipWindowGlow` (+ `soft_glow.gdshader`): un rectángulo luminoso cálido y suave en cada una de las 5 ventanas de la cabina, con halo y titileo leve. Tapa el interior y deja solo el brillo (como en el primer barco).
 - `ProjectorGlare` (+ `dazzle.gdshader`): el proyector del mástil tiene carcasa, lente brillante y halo que mira siempre a la cámara. Al mirarlo de frente (sin nada en el medio) el halo se agranda y encandila; al mirar para otro lado se va en ~0,1 s, sin dejar la vista quemada.

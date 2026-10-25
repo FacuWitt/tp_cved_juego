@@ -62,18 +62,15 @@ La abuela le pide que ordene los juguetes y le deja la canción de cuna en un pa
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
 | 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
 
-**Distractor:** barco. ✅ Es el único. El pescador no es un objeto (el poema lo nombra porque es el protagonista) y la marea se descartó por ser difícil de representar como objeto. Total: **6 objetos** agarrables (5 correctos + el barco).
+**Distractor:** barco. Total: **6 objetos** agarrables (5 correctos + 1 distractor). El pescador aparece nombrado en el poema pero no es un juguete: es el propio protagonista (decisión CL-012; marea y pescador fueron sacados del puzzle).
 
-#### El barco: el juguete favorito ✅
-El barco **no** sirve para el orden, pero el nene no se va sin él:
-1. El barco está suelto en el cuarto (Etapa 0: junto a la cama, sobre la mesa de luz).
-2. Al resolver el puzzle la puerta se abre. El jugador, naturalmente, intenta salir.
-3. Un `ItemGate` (barrera física + zona de aviso) en el umbral lo frena y el protagonista dice: *"No me puedo ir sin mi juguete favorito."* (`gate_line` en `memory_1_settings.tres`).
-4. El jugador vuelve a buscar el barco. Al agarrarlo, el paso queda libre para siempre (aunque lo suelte).
-5. Si agarró el barco antes de resolver, no hay aviso: ya lo lleva.
-Intención narrativa: refuerza el vínculo con el barquito (el cable a tierra) desde la primera memoria.
+#### El barquito: el juguete favorito ✅
+El barco **no** sirve para el orden: es un distractor más. El barquito que le talló el abuelo está en el estante alto (2,1 m), **fuera de alcance, y no se puede agarrar**.
+1. Al resolver el puzzle la puerta se abre y el jugador sale **sin condiciones**: no hay barrera en el umbral.
+2. El barquito del estante se enciende con luz cálida al resolver, pero sigue fuera de alcance.
+Intención narrativa: el barquito queda como un recuerdo que no se puede tocar (el vínculo se recupera en las memorias siguientes).
 
-Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
+Figuras (36 cm, escala de nene): están en `scenes/interaction/figures/` (ver `docs/FIGURAS_M1.md`). La `ola` y la `luna` usan modelos 3D externos (`assets/models/m1_figuras/`); el resto se arma con primitivas. Se colocan apuntando al casillero con la mira.
 
 ### Luz
 - **Cálida:** la lámpara de mesa (dominante).
@@ -104,7 +101,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 ### Sistemas que pide
 - `piece_id` en `PickupObject` + script de puzzle de secuencia que valide qué pieza hay en cada `PlacementSlot`.
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
-- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto (el barco) y avisa con la señal `blocked`. ✅ Implementado.
+- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto y avisa con la señal `blocked`. ✅ Implementado (M1 ya no lo usa: se mantiene para M2).
 - Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
 
 ---
@@ -316,9 +313,9 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 1 distractor: el barco (sin marea ni pescador). El barco es además el juguete favorito que hay que llevarse para salir.
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro), 1 distractor (barco) y el papel de la abuela con la canción. Total: 6 objetos agarrables. La `ola` y la `luna` usan modelos 3D externos.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
-3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
+3. ~~**M1:** ¿cómo sale el jugador?~~ ✅ Al resolver se abre la puerta y se sale sin condiciones (sin `ItemGate`). El barquito del estante se enciende pero queda fuera de alcance.
 4. ~~M1: quién felicita~~ ✅ la mamá.
 5. ~~La hora del accidente~~ ✅ **3:00 am** (todos los relojes).
 6. ~~**M2:** ¿la mochila con el barquito se ve en escena?~~ 📝 Sí, ver la tabla de props de M2 y `PLAN_DEMO.md`.
