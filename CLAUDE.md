@@ -123,6 +123,8 @@ El profesor pidió que todo lo que hagamos quede en el **documento de la soluci�
 | `docs/GUION_MAESTRO.md` | ⏳ Pendiente: la historia completa y los beats por memoria |
 | `docs/SIMBOLOGIA.md` | ⏳ Pendiente: diccionario de símbolos, regla 80/20, capas de audio |
 | `docs/PLAN_DEMO.md` | ✅ Plan de la demo de la próxima clase: qué se muestra de cada memoria, sistemas compartidos y teclas de debug |
+| `docs/INSTRUCCIONES_SDD.md` | ✅ **Cómo mantener el *Solution Design Document* (Google Doc).** Dónde está, de dónde sale la info, cómo se narra y cómo se agrega. **Toda sesión que cambie una decisión de diseño (mecánica reemplazada, decisión narrativa, cambio de alcance) la narra en el SDD siguiendo ese archivo**, además de la entrada del CHANGELOG |
+| `docs/SDD_EVOLUCION.md` | 🗄️ Primer borrador del relato de evolución. Superado por el Google Doc: ya no se mantiene |
 | `docs/arquitectura.md` | ✅ Flujo entre memorias (`GameFlow`, `Memory`, `MemoryExit`, secuencia) |
 | `docs/SENALES_Y_ESTADOS.md` | ⏳ Pendiente: contrato del EventBus y del GameManager |
 | `docs/TUNING.md` | ⏳ Pendiente: guía de los Resources de `config/` |

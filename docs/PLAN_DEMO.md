@@ -18,51 +18,44 @@ Plan para la próxima clase. **No es el diseño final de cada memoria:** es qué
 
 | Aspecto | M1 Habitación | M2 Lago | M3 Casa | M4 Barco |
 |---|---|---|---|---|
-| Técnico | Puzzle de secuencia, agarrar/colocar | Placas de hielo físicas, nieve, flashbacks | Laberinto que se repite (teletransportes invisibles) | Océano, sogas simuladas, ola, rayos, flotación |
-| Visual | Luz cálida | Hielo frío + farol cálido, niebla | Casa que se degrada, luz fría + velador cálido | Tormenta nocturna, rayos, reflector |
-| Narrativo | Canción de la abuela, barquito favorito | Perro, padre, rescate, mochila con el barquito | Entrega del barquito a la hija | Despertar en el camarote, la ola, el hundimiento |
+| Técnico | Puzzle de secuencia, agarrar/colocar | Bote a remos con corriente y viento, pesca, río generado de una curva, flashbacks | Laberinto que se repite (teletransportes invisibles) | Océano, sogas simuladas, ola, rayos, flotación |
+| Visual | Luz cálida | Atardecer en calma → tormenta de nieve; linternas en la oscuridad | Casa que se degrada, luz fría + velador cálido | Tormenta nocturna, rayos, reflector |
+| Narrativo | Canción de la abuela, barquito favorito | Pesca con el padre, la red, la huida por el río, el rescate | Entrega del barquito a la hija | Despertar en el camarote, la ola, el hundimiento |
 | Estructural | Flujo entre memorias (`GameFlow`) | Sistemas compartidos reutilizados (sección 4) | Reutiliza el layout de M1 | Transición M3 → M4 |
 | Modelado | Greybox | Greybox + assets libres si llegan | Greybox (reusa M1) | Barco, cabrestantes, hacha |
-| Mecánicas | Ordenar juguetes | Cruzar el hielo hasta el perro | Encontrar el cuarto y entregar | Cortar sogas con el evento rápido |
-| Personajes | Abuela (voz), mamá (voz) | Perro, padre (linterna, voz) | Hija | Tripulante (voz desde la cabina) |
-| Sonido | ❓ | Ladridos, crujidos, viento (placeholder) | Goteo, voz de la hija (placeholder) | Chapuzón (placeholder) |
+| Mecánicas | Ordenar juguetes | Pescar, cortar la red, remar esquivando obstáculos | Encontrar el cuarto y entregar | Cortar sogas con el evento rápido |
+| Personajes | Abuela (voz), mamá (voz) | Padre (pesca al lado, guía con su luz, rescata) | Hija | Tripulante (voz desde la cabina) |
+| Sonido | ❓ | Voz del padre, viento, crujidos del bote (placeholder) | Goteo, voz de la hija (placeholder) | Chapuzón (placeholder) |
 
 ---
 
-## 2. Memoria 2 — El lago helado (demo)
+## 2. Memoria 2 — El lago y el río (demo)
 
-### Recorrido de la demo 📝
-1. **Despertar por la tormenta** (regla de todas las memorias ✅). El protagonista, adolescente, se despierta en la **cabaña de pesca** con un trueno. Afuera atardece y la tormenta se acerca por el horizonte. La radio a pilas avisa de la tormenta.
-   - **Tiene una linterna en la mano** ✅ desde el comienzo. Es su luz para cruzar el lago cuando oscurece.
-2. **La mochila con el barquito** (ver abajo). Está sobre la mesa de la cabaña. No se sale sin ella (se reutiliza `ItemGate` de M1).
-3. **El perro escapa.** Sale corriendo y ladrando hacia el lago, y queda esperando sobre una placa de hielo lejana. Los ladridos guían.
-4. **Cruzar el hielo.** Placas que se inclinan según dónde se pisa, resbalan y se agrietan si uno se queda quieto. Caerse al agua = negro breve y se vuelve a la última placa firme (como caerse del barco en M4: un fallo más, nunca game over).
-5. **Flashbacks** de la noche del accidente (capturas de M4), de menos de un segundo, cuando el hielo cruje fuerte o una placa se parte, y sobre todo en la oscuridad del final.
-6. **Llegar al perro → cinemática** ✅: el hielo se rompe y caen los dos al agua → **la linterna se le cae y se hunde**, girando y apagándose → **oscuridad total** → **flashbacks** de la noche del accidente → la luz del padre desde arriba, su mano y su voz (*"agarrate, no te suelto"*) → negro → M3.
+> **Segunda versión ✅ (CL-034).** La primera (cruzar placas de hielo detrás del perro, con la mochila del barquito) se probó y se descartó: la mochila no quedaba bien y saltar entre placas no era entretenido. El detalle de cómo se llegó a esto está en `docs/SDD_EVOLUCION.md` (sección 7).
 
-### El barquito en la mochila 📝 (era el pendiente ❓ 6)
-Estamos en un sueño: no tiene que ser realista.
-- **En la cabaña:** la mochila está abierta sobre la mesa y el barquito asoma, con un brillo cálido apenas visible (la misma variante "luminosa" del barquito compartido, muy baja).
-- **Al agarrarla:** queda colgada del hombro y el barquito **asoma por encima del hombro, en la esquina inferior de la pantalla**, como el hacha en M4 (mismo sistema de objeto en mano). Se mueve con el paso y tiembla de frío.
-- **En la caída al agua:** después de los flashbacks, el barquito **flota hacia arriba, encendido**, y es lo último que se ve antes de la luz del padre. Anticipa la luz del final de M4.
-- **La linterna** va en la otra mano: el barquito asoma a la izquierda y la linterna a la derecha.
-- Alternativa más barata si no llegamos: el barquito brillando en la mochila sobre la mesa y nada más (la mochila no se ve después).
+### Recorrido de la demo ✅
+1. **Despertar por la tormenta** (regla de todas las memorias): dormitando en el bote, un trueno lejano lo despierta. El padre, en su bote al lado: "¿Te dormiste? Dale, que están picando".
+2. **Pesca.** (E) lanzar → espera → pica (la boya se hunde) → (E) a tiempo para enganchar → pelea: con **W / S** se mueve un punto en una barra y hay que mantenerlo dentro del área verde, que se mueve y se achica. Hacen falta 2 peces.
+3. **La red.** (E) tirar la red. Mientras flota llega la tormenta: el cielo se cierra, nieva fuerte, se prende la linterna de la proa.
+4. **Cortar la red.** La red se traba. Padre: "¡CORTÁ LA RED, HIJO! ¡VOLVAMOS, QUE VIENE LA TORMENTA!". Aparece el cuchillo: se apunta a la soga y se corta con el mismo evento rápido del hacha de M4 (3 golpes).
+5. **La huida.** "¡Rápido, hijo, seguime!". Se rema detrás de la luz del padre por el río:
+   - **Remos:** Q / E remo izquierdo / derecho hacia adelante (solo uno = gira), A / D hacia atrás por lado, S los dos hacia atrás.
+   - **Obstáculos:** ramas que salen de las orillas, rocas en los rápidos, hielo flotante.
+   - **Viento:** ráfagas de costado que empujan e inclinan el bote; se compensa remando del otro lado.
+   - **Golpes:** el bote aguanta 3; con cada uno cruje y entra agua. Al tercero se hunde.
+   - **El padre** va adelante por la línea que esquiva los obstáculos; si el hijo se queda atrás, lo espera, lo alumbra y lo llama.
+6. **Final ✅:** si el bote se hunde o el último rápido lo da vuelta, cae al agua → la linterna se hunde → oscuridad → flashbacks → el barquito sube encendido → la luz, la mano y la voz del padre → negro → M3. Nunca hay pantalla de "perdiste": jugar mejor o peor cambia cómo se llega a la caída.
 
-### Prioridades
-| Qué | Prioridad | Reutiliza |
-|---|---|---|
-| Terreno: orilla, cabaña con farol, lago, placas | A | — |
-| Placas de hielo (`IcePlate`: inclinación, deslizamiento, grieta con tiempo) | A | `DeckSlip` (empuje), ajustes en un Resource |
-| Caer al agua y volver a la última placa firme | A | Lógica de caída de M4 (`_fall_overboard`) |
-| Perro (cápsula que corre a un punto y ladra) | A | `NPC simple` |
-| Linterna en la mano (luz para cruzar el lago) | A | `HeldItemView` |
-| Cinemática final (caída, la linterna se hunde, oscuridad, flashbacks, el padre) | A | Vista bajo el agua de M4 |
-| Despertar por la tormenta en la cabaña | A | `WakeUpIntro` (sección 4) |
-| Flashbacks | A | `FlashbackOverlay` (sección 4) |
-| Mochila + barquito sobre el hombro | B | `HeldItemView` (sección 4) + `ItemGate` |
-| Nieve, viento, niebla, rayos lejanos | B | Lluvia de M4 con otros valores, `LightningController` |
-| Lago con el shader del océano en calma | B | `ocean.gdshader` (olas casi nulas, color helado) |
-| Radio con la alerta de tormenta (voz/texto) | C | — |
+### Tecla 0 en M2 (saltar etapa)
+Pesca → red → tormenta → cortar → lleva el bote antes del último rápido.
+
+### Pendiente
+| Qué | Prioridad |
+|---|---|
+| Capturas definitivas de los flashbacks (las hace el equipo) | A |
+| Voces del padre y sonidos (agua, remos, viento, crujidos, rápidos) | B |
+| Modelos de los botes, la caña y el cuchillo | C |
+| Ajustar a mano la dificultad (fuerza de remada, viento, ancho del río) jugando | A |
 
 ---
 
@@ -117,7 +110,7 @@ Es el avance **estructural** de la demo: lo que se hizo para M4 pasa a servir pa
 | `DebugTools` | Teclas de debug comunes (sección 5). Se pone en cada memoria como un nodo | Teclas 8 y 9 de `Memory4Accident` | M1–M4 |
 | `LightningController` sin depender de M4 | Hoy lee los valores de `Memory4Settings`; pasa a tener su propio `LightningSettings` | `lightning_controller.gd` | M2, M3, M4 (y M1 por la ventana, C) |
 | `WakeUpIntro` | Despertar por la tormenta: negro, trueno, parpadeo de ojos, se devuelve el control | Intro de M4 | M2, M3, M4 |
-| `HeldItemView` | Objeto en mano en la esquina de la pantalla, que se mueve con el paso y tiembla | `AxeView` | Barquito (M3), mochila (M2), hacha (M4) |
+| `HeldItemView` | Objeto en mano en la esquina de la pantalla, que se mueve con el paso y tiembla | `AxeView` | Barquito (M3), caña y cuchillo (M2), hacha (M4) |
 | `FlashbackOverlay` | Imágenes a pantalla completa de menos de un segundo, con opción de reducirlas (fotosensibilidad) | Nuevo | M2 (y donde se quiera) |
 | Capturas de M4 | Imágenes para los flashbacks: la cubierta con el rayo, la soga cortándose, la ola, el agua negra, la luz del fondo | Se sacan de `memory_4.tscn` | M2 |
 | Caída al agua / volver a lo firme | Negro, chapuzón y vuelta al último punto firme | `_fall_overboard` de M4 | M2 |
