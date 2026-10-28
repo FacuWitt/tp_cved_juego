@@ -41,6 +41,36 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-042 · Memoria 4: con (E) sin el hacha, la vista gira hacia el hacha y el tripulante la señala · 2026-10-28
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: "al apretar la E sin tener el hacha, el personaje solo mire hacia donde está el hacha y haga lo que hace ahora el personaje, que lo saluda y le indica donde está el hacha". Ante la pregunta de quién mira, eligió "los dos": la vista del jugador y el tripulante.
+- **Qué se hizo:** en cubierta, apretar (E) sin el hacha (y sin estar apuntándola, porque ahí la agarra) hace que la vista del jugador gire sola hacia el hacha en 0,7 s y se quede un instante; mientras gira, el mouse no mueve la vista. Al mismo tiempo el tripulante dice "¡El hacha...! ¡Está junto a la puerta de la cabina!", saluda (el gesto que ya hacía al hablar) y gira la cabeza hacia el hacha durante 3 s antes de volver a mirar al jugador. Hay una espera de 3 s entre avisos para que (E) no lo repita sin parar. El aviso automático a los 14 s ahora también hace que el tripulante mire el hacha (sin girar la vista del jugador). El tripulante puede bajar más la mirada (50°) porque el hacha está abajo.
+- **Por qué (decisión de diseño):** pedido de Facu. Guiar la mirada hacia el objeto resuelve el "¿dónde está el hacha?" sin flechas ni carteles, y el gesto del tripulante hace que la indicación venga de un personaje del recuerdo.
+- **Alternativas descartadas:** que gire solo la cámara del jugador o solo el tripulante (Facu eligió los dos).
+- **Problemas encontrados:** ninguno. Probado apretando (E) con el input del juego después de la intro: la vista queda apuntando al hacha (0° de desvío) a los 0,8 s, el control vuelve, un segundo (E) inmediato no repite el aviso y el tripulante vuelve a mirar al jugador a los 3 s.
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd` (nueva referencia `crew`), `scripts/config/memory_4_settings.gd`, `config/character_crew_m4.tres`, `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** que el tripulante señale con el brazo hacia el hacha en lugar de saludar, si se quiere más claro.
+
+### CL-041 · Memoria 4: las luces del hospital pasan a ser grandes y estar arriba, como un techo (reemplaza parte de CL-040) · 2026-10-28
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu, al probar CL-040: "que no sea tan sutil"; mirando hacia arriba dibujó cómo deberían verse (6 paneles grandes, 2 columnas a los costados y 3 filas) y marcó que en la dirección del rayo no se veían los 6 focos.
+- **Qué se hizo:** los paneles ahora están arriba de la cabeza (`placement = OVERHEAD`), en un plano horizontal que sigue a la cámara, con columnas a los costados y filas a lo largo del barco; mirando hacia arriba ocupan casi toda la pantalla, como en el dibujo. Se dibujan con un shader propio (`hospital_light.gdshader`) que los mezcla como rectángulos sólidos en lugar de sumar brillo, así se ven aunque el cielo esté muy iluminado por el rayo. Aparecen en todos los rayos y siguen su intensidad sin umbral alto. La opción anterior (en la dirección del rayo) sigue disponible con `placement = LIGHTNING_SOURCE`.
+- **Por qué (decisión de diseño):** pedido de Facu: la versión sutil no se veía en su equipo (Forward+), porque el brillo sumado se perdía contra el cielo del rayo. Arriba de la cabeza coincide con lo que ve alguien acostado en la cama del hospital.
+- **Alternativas descartadas:** mantenerlas en la dirección del rayo (CL-040), donde no se distinguían.
+- **Problemas encontrados:** las pruebas de CL-040 se hicieron en Compatibility, donde el cielo del rayo es mucho menos brillante que en Forward+; ahora se probó en Forward+ (Vulkan por software) con el rayo fijo al 100 % y al 50 %.
+- **Archivos y docs:** `assets/shaders/hospital_light.gdshader`, `scripts/world/hospital_lights.gd`, `scripts/config/hospital_lights_settings.gd`, `docs/ELEMENTOS_ESCENAS.md`.
+- **Pendiente / ❓ ABIERTO:** ajustar tamaño, color y brillo jugando; las mismas 6 luces en el techo del hospital; decidir si van también en la M2.
+
+### CL-040 · Memoria 4: las luces del hospital aparecen en el cielo con los rayos · 2026-10-28
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: agregar 6 luces amarillas cuadradas, como las de las ventanas, que funcionen como los rayos; "la idea detrás de esto es que si al jugador se le ocurre ver los rayos cuando caen, en realidad lo que está viendo son las luces del hospital (luego asegurémonos que en el hospital estén las mismas 6 luces)". "Tiene que ser sutil".
+- **Qué se hizo:** `HospitalLights` + `HospitalLightsSettings` (`config/hospital_lights_m4.tres`): 6 paneles (2 columnas por 3 filas) con el mismo brillo de las ventanas de la cabina, dibujados en el cielo en la dirección de donde viene cada rayo, a 170 m de la cámara y siempre de frente a ella. Solo se ven mientras el rayo ilumina, siguen sus parpadeos y aparecen en los picos (curva y umbral). Aparecen en el 70 % de los rayos y no en el relámpago largo del comienzo. Bajo el agua no se ven. `LightningController` suma `in_long_flash` e `is_sky_visible()` para que otros efectos sepan qué rayo es y si el cielo está visible.
+- **Por qué (decisión de diseño):** el rayo es el momento en que el jugador mira al cielo; poner ahí las luces del techo del hospital anticipa el final (está acostado, en coma, mirando ese techo) sin decirlo. Se dibujan en la dirección de la luz del rayo para que parezcan su origen. Que no aparezcan en todos los rayos ni a media intensidad las mantiene sutiles.
+- **Alternativas descartadas:** ninguna registrada.
+- **Problemas encontrados:** el cielo dibujaba un disco brillante (un "sol") en la dirección de la luz del rayo que tapaba los paneles. Se apagó ese disco (`sky_mode` de la luz en "solo luz", opción `hide_sun_disc`): ahora en ese lugar están las luces. Probado con capturas en Compatibility con el rayo fijo al 100 % y al 60 %.
+- **Archivos y docs:** `scripts/world/hospital_lights.gd`, `scripts/config/hospital_lights_settings.gd`, `config/hospital_lights_m4.tres`, `scripts/world/lightning_controller.gd`, `scenes/memories/memory_4.tscn`, `docs/ELEMENTOS_ESCENAS.md`, `CLAUDE.md`.
+- **Pendiente / ❓ ABIERTO:** el hospital tiene que tener las mismas 6 luces en el techo (2 x 3, misma proporción); ajustar tamaño, brillo y frecuencia jugando; decidir si también van en la M2 (también tiene rayos).
+
 ### CL-039 · Memoria 4: el hacha pasa al modelo PS1 · 2026-10-28
 - **Rama / commits:** `develop` · sin commitear
 - **Pedido por:** Facu: "Cambia el modelo del hacha del nivel 4, por la que está en recursos > tools > fire axe ps1 style".

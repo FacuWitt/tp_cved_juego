@@ -30,3 +30,4 @@ talk_shake = Dictionary[StringName, Vector3]({
 })
 talk_shake_rate = 2.6
 look_max_yaw = 75.0
+look_max_pitch = 50.0

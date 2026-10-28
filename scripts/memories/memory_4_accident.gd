@@ -39,6 +39,8 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var axe_settings: AxeSettings
 ## La mira (puntito) con el aviso (E).
 @export var reticle: InteractionPrompt
+## El tripulante en la cabina (opcional): mira el hacha cuando avisa dónde está.
+@export var crew: CharacterRig
 
 var stage: Stage = Stage.DECK
 
@@ -68,6 +70,11 @@ var _overboard: bool = false
 var _under_view: bool = false
 var _roll_deg: float = 0.0
 var _last_safe: Vector3 = Vector3.ZERO
+# Giro automático de la vista hacia el hacha (< 0 = no está girando).
+var _axe_look_t: float = -1.0
+var _axe_look_from: Vector2 = Vector2.ZERO
+var _axe_point_cooldown: float = 0.0
+var _crew_look_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -179,6 +186,7 @@ func _process(delta: float) -> void:
 	_update_abyss()
 	if stage <= Stage.WARNING and not _overboard and not _debug.is_flying:
 		_watch_edges()
+	_update_axe_pointing(delta)
 	match stage:
 		Stage.DECK:
 			_update_rope_aim()
@@ -255,6 +263,11 @@ func _debug_cut_all_ropes() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and _has_axe and not _busy and not _overboard:
 		_start_chop(_active_rope)
+	elif stage == Stage.DECK and event.is_action_pressed("interact") and settings.axe_point_on_interact \
+			and not _has_axe and not _busy and not _overboard and not _intro_active:
+		# Si está apuntando al hacha, la agarra (lo hace el Player): no hay que señalarla.
+		if player.get_interactable_under_crosshair() != axe_item:
+			_point_to_axe(true)
 
 
 # ---------- Cubierta ----------
@@ -626,9 +639,54 @@ func _update_axe_hint(delta: float) -> void:
 		return
 	_axe_hint_timer += delta
 	if _axe_hint_timer >= settings.axe_hint_delay:
-		_axe_hint_timer = -1.0
-		var line: String = settings.axe_hint_line
-		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+		_point_to_axe(false)
+
+
+## El tripulante avisa dónde está el hacha: la mira, saluda (lo hace solo al ver su línea en los
+## subtítulos) y lo dice. Si `turn_view`, además la vista del jugador gira sola hacia el hacha.
+func _point_to_axe(turn_view: bool) -> void:
+	if _axe_point_cooldown > 0.0:
+		return
+	_axe_point_cooldown = settings.axe_point_cooldown
+	_axe_hint_timer = -1.0
+	var line: String = settings.axe_hint_line
+	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+	if crew != null:
+		crew.look_target = axe_item
+		_crew_look_timer = settings.crew_look_axe_time
+	if turn_view:
+		_axe_look_t = 0.0
+		_axe_look_from = Vector2(player.rotation.y, _head.rotation.x)
+		# Mientras gira, el mouse no mueve la vista.
+		player.set_process_unhandled_input(false)
+
+
+func _update_axe_pointing(delta: float) -> void:
+	_axe_point_cooldown = maxf(_axe_point_cooldown - delta, 0.0)
+	if _crew_look_timer > 0.0:
+		_crew_look_timer -= delta
+		if _crew_look_timer <= 0.0 and crew != null:
+			crew.look_target = player
+	if _axe_look_t < 0.0:
+		return
+	if _has_axe or _overboard or stage != Stage.DECK:
+		_end_axe_look()
+		return
+	_axe_look_t += delta
+	var dir: Vector3 = axe_item.global_position - _camera.global_position
+	var yaw: float = atan2(-dir.x, -dir.z)
+	var limit: float = deg_to_rad(player.settings.pitch_limit)
+	var pitch: float = clampf(atan2(dir.y, Vector2(dir.x, dir.z).length()), -limit, limit)
+	var k: float = smoothstep(0.0, 1.0, minf(_axe_look_t / settings.axe_look_time, 1.0))
+	player.rotation.y = lerp_angle(_axe_look_from.x, yaw, k)
+	_head.rotation.x = lerpf(_axe_look_from.y, pitch, k)
+	if _axe_look_t >= settings.axe_look_time + settings.axe_look_hold:
+		_end_axe_look()
+
+
+func _end_axe_look() -> void:
+	_axe_look_t = -1.0
+	player.set_process_unhandled_input(true)
 
 
 func _update_wet_fx() -> void:

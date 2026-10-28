@@ -277,6 +277,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 
 ### Luz
 - Cálida solo en la cabina y el faro lejano. El resto: oscuridad + relámpagos fríos.
+- **Luces del hospital en el cielo** (CL-040, CL-041): con cada rayo, mirando hacia arriba, se ven 6 paneles amarillos grandes (2 columnas x 3 filas) como los del techo del hospital. `HospitalLights` + `config/hospital_lights_m4.tres`.
 - Bajo el agua: todo azul verdoso, salvo la luz del faro.
 
 ### Audio
@@ -310,6 +311,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 | Cama (el jugador está acostado: solo mira alrededor ❓) | OBL | Caja |
 | **Monitor cardíaco** (el bip real) | OBL | Caja + audio 3D |
 | Ventana con luz de día | OBL | Plano blanco + `DirectionalLight3D` |
+| **6 luces de techo** (2 x 3), las mismas que se ven en el cielo con los rayos de la M4 (CL-040) | OBL | Paneles con el mismo brillo que `HospitalLights` |
 | **Reloj de pared en marcha** | OBL | Reloj compartido en modo "en marcha" |
 | **Hija** al lado de la cama | OBL | Cápsula chica |
 | **Barquito en la mesita de luz** (último plano) | OBL | Prisma |

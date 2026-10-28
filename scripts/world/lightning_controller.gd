@@ -18,6 +18,8 @@ signal flashed(strength: float)
 @export var flash_materials: Array[ShaderMaterial] = []
 
 var is_running: bool = false
+## Verdadero mientras dura un relámpago largo (`long_flash`).
+var in_long_flash: bool = false
 ## SOLO PARA PRUEBAS: mientras es verdadero la luz del rayo queda fija encendida y los rayos no la cambian.
 var is_held: bool = false
 var _held_level: float = 0.85
@@ -74,6 +76,7 @@ func long_flash(duration: float, strength: float = 1.0) -> void:
 	if is_held:
 		return
 	light.rotation_degrees = Vector3(-34.0, 215.0, 0.0)
+	in_long_flash = true
 	flashed.emit(strength)
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
@@ -92,6 +95,7 @@ func long_flash(duration: float, strength: float = 1.0) -> void:
 	tween.tween_method(func(v: float) -> void: _apply(v * strength), level, 0.0, 0.6) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	await tween.finished
+	in_long_flash = false
 
 
 func _loop(id: int) -> void:
@@ -108,6 +112,7 @@ func _do_flash(strength: float) -> void:
 		return
 	# Cada rayo cae desde una dirección distinta, para que las sombras cambien de lugar.
 	light.rotation_degrees = Vector3(randf_range(-70.0, -30.0), randf_range(0.0, 360.0), 0.0)
+	in_long_flash = false
 	flashed.emit(strength)
 	var time: float = _cfg("lightning_time")
 	# Un solo rayo a la vez: si había otro en curso, se corta.
@@ -152,6 +157,11 @@ func get_level() -> float:
 func set_sky_visible(value: bool) -> void:
 	_sky_visible = value
 	_apply(_level)
+
+
+## Si el cielo se ve (bajo el agua no).
+func is_sky_visible() -> bool:
+	return _sky_visible
 
 
 ## Apaga el cielo (ya no se ve: el jugador está bajo el agua).

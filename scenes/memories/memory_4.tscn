@@ -20,19 +20,20 @@
 [ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="18_e"]
 [ext_resource type="Resource" path="res://config/axe_settings.tres" id="axe_cfg"]
 [ext_resource type="Script" uid="uid://dcye8l4nmkpef" path="res://scripts/world/axe_pickup.gd" id="axe_pk"]
-[ext_resource type="Shader" uid="uid://pyi6gslk4a2a" path="res://assets/shaders/light_beam.gdshader" id="beam_sh"]
 [ext_resource type="PackedScene" path="res://scenes/props/axe_model.tscn" id="glb_axe"]
 [ext_resource type="PackedScene" uid="uid://hqpen7v3fy8f" path="res://assets/models/m4_motor_redes/m4_motor_redes.glb" id="glb_motor"]
 [ext_resource type="PackedScene" uid="uid://6h46ou17gya5" path="res://assets/models/m4_barco_hd/m4_barco_hd_opt.glb" id="glb_ship"]
+[ext_resource type="Resource" path="res://config/hospital_lights_m4.tres" id="hl_cfg"]
+[ext_resource type="Script" uid="uid://htn52u7qhadt" path="res://scripts/world/hospital_lights.gd" id="hl_s"]
+[ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
 [ext_resource type="Script" uid="uid://d1i6g4i0lsfcv" path="res://scripts/world/projector_glare.gd" id="pg_s"]
 [ext_resource type="Resource" path="res://config/pickup_settings.tres" id="pickup_cfg"]
+[ext_resource type="Resource" path="res://config/character_crew_m4.tres" id="r_pose_crew"]
 [ext_resource type="Resource" path="res://config/ship_lights_m4.tres" id="sl_cfg"]
 [ext_resource type="Script" uid="uid://bgkai17h72nrl" path="res://scripts/ui/reticle_dot.gd" id="ui_dot"]
 [ext_resource type="Script" uid="uid://ca85vpobuc806" path="res://scripts/ui/interaction_prompt.gd" id="ui_prompt"]
 [ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="ui_prompt_cfg"]
 [ext_resource type="Script" uid="uid://0tbwcha81rl8" path="res://scripts/world/ship_window_glow.gd" id="wg_s"]
-[ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
-[ext_resource type="Resource" path="res://config/character_crew_m4.tres" id="r_pose_crew"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_32_s"]
 sky_top_color = Color(0.012, 0.016, 0.024, 1)
@@ -196,24 +197,6 @@ size = Vector3(1.2, 1.1, 2.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_col17"]
 size = Vector3(1.2, 1.1, 2.5)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_beam"]
-top_radius = 1.0
-bottom_radius = 0.0
-height = 1.0
-radial_segments = 32
-rings = 1
-cap_top = false
-cap_bottom = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_beam"]
-render_priority = 1
-shader = ExtResource("beam_sh")
-shader_parameter/beam_color = Color(1, 0.93, 0.8, 1)
-shader_parameter/strength = 0.05
-shader_parameter/rain_streaks = 0.9
-shader_parameter/rain_dir = Vector3(0.55, -1, 0.08)
-shader_parameter/fade_power = 1.4
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_mount"]
 top_radius = 0.07
 bottom_radius = 0.09
@@ -255,7 +238,7 @@ shader_parameter/tint = Color(0.85, 0.93, 1, 1)
 shader = ExtResource("10_e")
 shader_parameter/look_down = 0.0
 
-[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player", "axe_item", "reticle")]
+[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player", "axe_item", "reticle", "crew")]
 script = ExtResource("1_e")
 settings = ExtResource("2_e")
 player = NodePath("Player")
@@ -280,6 +263,7 @@ splash_player = NodePath("FallSplash")
 axe_item = NodePath("Ship/AxeItem")
 axe_settings = ExtResource("axe_cfg")
 reticle = NodePath("HUD/Center/Reticle")
+crew = NodePath("Ship/CrewInCabin/Character")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=461777008]
 environment = SubResource("Environment_34_s")
@@ -297,6 +281,11 @@ settings = ExtResource("2_e")
 light = NodePath("../LightningLight")
 world_environment = NodePath("../WorldEnvironment")
 flash_materials = Array[ShaderMaterial]([SubResource("ShaderMaterial_19_s"), SubResource("ShaderMaterial_20_s")])
+
+[node name="HospitalLights" type="Node3D" parent="." unique_id=520278958 node_paths=PackedStringArray("lightning")]
+script = ExtResource("hl_s")
+settings = ExtResource("hl_cfg")
+lightning = NodePath("../Lightning")
 
 [node name="Ocean" type="MeshInstance3D" parent="." unique_id=1915546956]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.6, 0)
@@ -336,7 +325,7 @@ transform = Transform3D(0, 0, -1.3, 0, 1.3, 0, 1.3, 0, 0, -2.2, 0.563, 6)
 transform = Transform3D(0, 0, 1.3, 0, 1.3, 0, -1.3, 0, 0, 2.2, 0.563, 6)
 
 [node name="AxeItem" type="RigidBody3D" parent="Ship" unique_id=2062099394]
-transform = Transform3D(0, 0, 1, -0.40674, 0.91355, 0, -0.91355, -0.40674, 0, 1.55, 1.1902, -9.6371)
+transform = Transform3D(0, 0, 1, -0.40674, 0.91355, 0, -0.91355, -0.40674, 0, -0.76516515, 1.3113753, -9.258846)
 collision_mask = 0
 freeze = true
 script = ExtResource("axe_pk")
@@ -348,7 +337,7 @@ shape = SubResource("BoxShape3D_axe")
 [node name="Model" parent="Ship/AxeItem" unique_id=168711976 instance=ExtResource("glb_axe")]
 
 [node name="AxeGlow" type="OmniLight3D" parent="Ship" unique_id=428549675]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.7, -8.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8151651, 1.8211753, -8.221746)
 light_color = Color(1, 0.82, 0.6, 1)
 light_energy = 0.7
 omni_range = 2.6
@@ -560,12 +549,6 @@ spot_range = 170.0
 spot_attenuation = 0.8
 spot_angle = 40.0
 
-[node name="Beam" type="MeshInstance3D" parent="Ship/Searchlight" unique_id=1542930035]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, -30)
-cast_shadow = 0
-mesh = SubResource("CylinderMesh_beam")
-surface_material_override/0 = SubResource("ShaderMaterial_beam")
-
 [node name="ProjectorGlare" type="Node3D" parent="Ship/Searchlight" unique_id=402770607]
 script = ExtResource("pg_s")
 settings = ExtResource("sl_cfg")
@@ -579,22 +562,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2621193, -0.2645998)
 script = ExtResource("wg_s")
 settings = ExtResource("sl_cfg")
 
-[node name="V9" type="Node3D" parent="Ship/WindowGlow" unique_id=1855960611]
-transform = Transform3D(9.133514, 0, 0, 0, -1.8331523, -6.4151473, 0, 2.5833895, -6.1783295, 14.207778, 11.452045, -30.544262)
-
-[node name="V8" type="Node3D" parent="Ship/WindowGlow" unique_id=1635571049]
-transform = Transform3D(5.2538595, 0, 0, 0, 3.9234715, -1.6246071, 0, 0.6542318, 2.8230748, 7.430722, -24.537838, -2.1172905)
-
 [node name="V7" type="Node3D" parent="Ship/WindowGlow" unique_id=486417369]
-transform = Transform3D(1.3193076, 0, 0, 0, 0.087401316, 1.7393804, 0, -1.2538972, 3.7481844, 0.03145206, 4.640146, -10.957842)
+transform = Transform3D(1.3193076, 0, 0, 0, 0.087401316, 1.7393804, 0, -1.2538972, 3.7481844, 0.03145206, 4.640146, -11.203797)
 
-[node name="V6" type="Node3D" parent="Ship/WindowGlow" unique_id=1432778963]
-transform = Transform3D(1.7384391, 0, 0, 0, -0.08057691, -2.318767, 0, 0.933771, -1.6511494, 1.2899195, 4.56536, -11.127503)
+[node name="V8" type="Node3D" parent="Ship/WindowGlow" unique_id=792938606]
+transform = Transform3D(1.3193076, 0, 0, 0, 0.087401316, 1.7393804, 0, -1.2538972, 3.7481844, -1.580978, 4.640146, -11.203797)
+
+[node name="V9" type="Node3D" parent="Ship/WindowGlow" unique_id=36746107]
+transform = Transform3D(1.3193076, 0, 0, 0, 0.087401316, 1.7393804, 0, -1.2538972, 3.7481844, 1.4880908, 4.640146, -11.203797)
 
 [node name="CrewInCabin" type="Node3D" parent="Ship" unique_id=165731591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -13)
 
-[node name="Character" parent="Ship/CrewInCabin" node_paths=PackedStringArray("subtitles", "look_target") instance=ExtResource("pc_man")]
+[node name="Character" parent="Ship/CrewInCabin" unique_id=1610506069 node_paths=PackedStringArray("subtitles", "look_target") instance=ExtResource("pc_man")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.87, 1.685, 1.8)
 pose = ExtResource("r_pose_crew")
 subtitles = NodePath("../../../HUD/Subtitles")

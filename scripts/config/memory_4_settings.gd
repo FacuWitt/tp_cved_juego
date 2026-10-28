@@ -136,6 +136,17 @@ extends Resource
 @export var axe_hint_line: String = "TRIPULANTE: ¡El hacha, %s! ¡Está junto a la puerta de la cabina!"
 ## Cuánto espera antes de avisarle dónde está el hacha.
 @export_range(2.0, 60.0, 1.0, "suffix:s") var axe_hint_delay: float = 14.0
+## Al apretar (E) sin el hacha (y sin estar apuntándola): la vista gira sola hacia el hacha,
+## el tripulante la mira, saluda y dice dónde está.
+@export var axe_point_on_interact: bool = true
+## Cuánto tarda la vista en girar hacia el hacha.
+@export_range(0.1, 3.0, 0.05, "suffix:s") var axe_look_time: float = 0.7
+## Cuánto se queda mirándola antes de devolverle el control del mouse.
+@export_range(0.0, 3.0, 0.05, "suffix:s") var axe_look_hold: float = 0.35
+## Tiempo mínimo entre dos avisos seguidos al apretar (E).
+@export_range(0.0, 20.0, 0.5, "suffix:s") var axe_point_cooldown: float = 3.0
+## Cuánto tiempo mira el tripulante el hacha antes de volver a mirar al jugador.
+@export_range(0.5, 10.0, 0.1, "suffix:s") var crew_look_axe_time: float = 3.0
 
 @export_group("Gotas y frío")
 ## Gotas rápidas que pasan al lado y delante de la cara del jugador.
