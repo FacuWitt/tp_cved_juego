@@ -148,6 +148,24 @@ extends Resource
 ## Cuánto tiempo mira el tripulante el hacha antes de volver a mirar al jugador.
 @export_range(0.5, 10.0, 0.1, "suffix:s") var crew_look_axe_time: float = 3.0
 
+@export_group("Ancla")
+## Después de cortar las sogas hay que subir el ancla con la manivela de popa.
+## Línea del tripulante al terminar las sogas (con %s = nombre).
+@export var anchor_line: String = "TRIPULANTE: ¡Ahora el ancla, %s! ¡Subila con la manivela de popa!"
+## Línea si el ancla se le va para abajo (con %s = nombre).
+@export var anchor_urge_line: String = "TRIPULANTE: ¡No la sueltes, %s! ¡Se va para abajo!"
+## Cada cuánto puede repetir el aviso de arriba.
+@export_range(1.0, 20.0, 0.5, "suffix:s") var anchor_urge_interval: float = 4.0
+## Al terminar las sogas la vista gira sola hacia la manivela (como con el hacha; usa
+## axe_look_time y axe_look_hold).
+@export var anchor_look_on_start: bool = true
+## Si aprieta (E) en la manivela antes de cortar las sogas (con %s = nombre).
+@export var crank_too_early_line: String = "TRIPULANTE: ¡Primero las sogas, %s! ¡El ancla después!"
+## Cartel al apuntar a la manivela.
+@export var crank_prompt: String = "(E) Girar la manivela"
+## Cartel mientras está en la manivela.
+@export var crank_active_prompt: String = "(E) ¡Girá rápido!   (W/A/S/D) Soltar"
+
 @export_group("Gotas y frío")
 ## Gotas rápidas que pasan al lado y delante de la cara del jugador.
 @export_range(0, 800, 10) var near_drop_amount: int = 260

@@ -41,6 +41,53 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-046 · Memoria 4: arreglos de la manivela del ancla (volante, soga, mirada y aviso) · 2026-10-28
+- **Rama / commits:** `memories/m2-lago` · sin commitear (toca la M4)
+- **Pedido por:** Facu, al probar CL-045: "la manivela está al revés, hace falta espejarla"; "la soga no cuelga de donde debería" (marcó el bloque naranja del pórtico); "cuando terminemos de cortar las sogas, que el personaje mire automáticamente a la manivela (así como el hacha)"; "si intento girar la manivela antes de las sogas, que me avise el compañero que primero van las sogas".
+- **Qué se hizo:**
+  - El volante se dio vuelta: el mango queda hacia afuera, del lado del jugador, y el cubo contra el engranaje del malacate.
+  - La soga cuelga del bloque que tiene el modelo del barco debajo de la viga del pórtico (medido de los vértices: x -0,13, y 4,67, z 13,86). El ancla ya no baja vertical (habría atravesado la popa): sube en línea recta desde el agua, detrás de la popa (`AnchorBottom`), hasta quedar colgando bajo el bloque (`AnchorTop`). Se sacó `anchor_depth`.
+  - Al terminar las sogas, junto con la línea del tripulante, la vista gira sola hacia la manivela con el mismo giro que el hacha y el tripulante la mira (`anchor_look_on_start`).
+  - Antes de cortar las sogas, apuntar a la manivela muestra "(E) Girar la manivela" y (E) hace que el tripulante diga "¡Primero las sogas...! ¡El ancla después!" (`crank_too_early_line`), sin engancharse.
+- **Por qué (decisión de diseño):** pedido de Facu; guiar la mirada a la siguiente tarea repite la ayuda del hacha y evita que el jugador busque la manivela.
+- **Alternativas descartadas:** ninguna.
+- **Problemas encontrados:** el giro automático del hacha estaba atado al hacha; se generalizó para cualquier objetivo. Probado como jugador: (E) en la manivela antes de las sogas da el aviso y no engancha; al terminar las sogas, dado vuelta (150° de desvío), la vista queda en la manivela (0°) en 1,8 s, devuelve el mouse y (E) engancha sin apuntar a mano; el ancla sube y sigue la ola.
+- **Archivos y docs:** `scenes/props/anchor_winch.tscn`, `scripts/world/anchor_winch.gd`, `scripts/config/anchor_winch_settings.gd`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`.
+- **Pendiente / ❓ ABIERTO:** modelo del ancla y sonido, como en CL-045.
+
+### CL-045 · Memoria 4: subir el ancla con la manivela apretando (E) · 2026-10-28
+- **Rama / commits:** `memories/m2-lago` · sin commitear (toca la M4)
+- **Pedido por:** Facu, con un dibujo sobre el pórtico de popa: "Apretando repetidamente la letra E, hay que subir el ancla", con los modelos del soporte de la manivela y de la manivela (lo que gira el jugador), de `RECURSOS/MODELOS 3D/BARCO M4`. Ante las preguntas eligió: el ancla va después de las sogas; si el jugador deja de apretar, el ancla se va bajando; mientras gira, queda fijo en la manivela.
+- **Qué se hizo:**
+  - **`AnchorWinch`** + `AnchorWinchSettings` (`config/anchor_winch_m4.tres`) en la escena `scenes/props/anchor_winch.tscn`: el soporte (malacate) y la manivela (volante en la punta del eje del tambor, que gira), una soga que sube del tambor a la roldana del pórtico y otra que baja por popa hasta el ancla. El ancla es provisoria (formas simples) porque no había modelo. Está en la popa, al lado de la pata izquierda del pórtico. Los puntos (roldana, ancla arriba, dónde se para el jugador) son marcadores que se mueven en el editor.
+  - **Etapa nueva `ANCHOR`** entre las sogas y la ola: al cortar la última soga, el tripulante dice "¡Ahora el ancla...! ¡Subila con la manivela de popa!". Al apuntar a la manivela aparece "(E) Girar la manivela"; con (E) el jugador se acomoda frente a ella (no camina, puede mirar) y el hacha deja de verse en la mano. Cada (E) sube el ancla un 4 % y da un golpecito de cámara; si pasan más de 0,35 s sin apretar, el ancla baja un 12 % por segundo y el tripulante grita "¡No la sueltes!". W/A/S/D suelta la manivela. Arriba del todo sigue lo de antes: "¡LO LOGRAMOS!", el aviso y la ola.
+  - Tecla 0 de debug: en la etapa del ancla la sube de una.
+- **Por qué (decisión de diseño):** pedido de Facu. Apretar rápido una tecla traduce el esfuerzo físico de subir el ancla en la tormenta; que el ancla se resbale si se afloja mantiene la presión, y el orden (sogas, ancla, ola) hace que la ola llegue justo cuando el jugador cree que terminó.
+- **Alternativas descartadas:** que el ancla quede donde está al soltar, y poder caminar mientras se gira (Facu eligió lo contrario); hacer el ancla antes de las sogas o en cualquier orden.
+- **Problemas encontrados:** los modelos vienen normalizados a 1,9 unidades: el soporte se escaló a 0,9 y el volante a 0,35, encastrado por su cubo en el extremo del eje (medido de los vértices). Probado como jugador con el input del juego: camina desde el inicio hasta la manivela, aparece el cartel, se engancha con (E), con 5 (E) por segundo sube en unos 9 s (33 apretadas, con 3 s de pausa en el medio en la que bajó de 0,56 a 0,28 y el tripulante gritó), S suelta y (E) vuelve a enganchar, y al terminar sigue la ola.
+- **Archivos y docs:** `scripts/world/anchor_winch.gd`, `scripts/config/anchor_winch_settings.gd`, `config/anchor_winch_m4.tres`, `scenes/props/anchor_winch.tscn`, `assets/models/m4_manivela/`, `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `scenes/memories/memory_4.tscn`, `docs/ELEMENTOS_ESCENAS.md`, `CLAUDE.md`.
+- **Pendiente / ❓ ABIERTO:** modelo del ancla; sonido de la manivela y la cadena; confirmar los textos del tripulante (los escribí yo); ajustar cuánto sube por (E) y cuánto se resbala jugando.
+
+### CL-044 · Memoria 4: se recupera el haz de luz del reflector · 2026-10-28
+- **Rama / commits:** `memories/m2-lago` · sin commitear (toca la escena de la M4)
+- **Pedido por:** Facu: "Perdí el haz de luz con partículas, ¿cuándo se borró? ¿Podés recuperarlo?".
+- **Qué se hizo:** se restauraron en `memory_4.tscn` el nodo `Ship/Searchlight/Beam`, su malla (cono) y su material con `light_beam.gdshader`, con los mismos valores que en `9110405`. El script ya lo buscaba por nombre (`_update_beam`), así que vuelve a funcionar sin otros cambios.
+- **Por qué (decisión de diseño):** el haz se perdió sin querer; se mantiene la decisión de db9454a (haz visible con la lluvia).
+- **Alternativas descartadas:** ninguna.
+- **Problemas encontrados:** se borró en `0c5b563` al guardar la escena en el editor junto con las ventanas flotantes V8 y V9 (esas sí se sacaron a propósito). Como `_update_beam` no da error si el nodo no existe, el haz desapareció sin aviso. Se comprobó cargando la escena y con una captura en Forward+.
+- **Archivos y docs:** `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** ninguno.
+
+### CL-043 · Memoria 2: prueba del skybox pixel art de noche · 2026-10-28
+- **Rama / commits:** `memories/m2-lago` · sin commitear
+- **Pedido por:** Facu: "Hay un skybox en la carpeta de recursos, intenta implementar ese skybox en la memoria 2 a ver cómo queda".
+- **Qué se hizo:** se usó `m2_Skybox_Gemini_Generated.jpg` (cielo nocturno pixel art con luna y nubes, panorámico 2:1, generado con Gemini) como cielo de la M2: `assets/textures/skies/m2_sky_night.jpg` en un `PanoramaSkyMaterial` sin filtrado (se ven los píxeles), en lugar del cielo procedural. La niebla afecta menos al cielo (`fog_sky_affect` de 0,6 a 0,15) porque si no la niebla rosada del atardecer lo tapaba. En la tormenta el cielo se oscurece y se ilumina con los rayos como antes.
+- **Por qué (decisión de diseño):** pedido de Facu, a modo de prueba. El pack "psx-skyboxes-free" de la misma carpeta no se usó: la imagen nueva está hecha para esta memoria.
+- **Alternativas descartadas:** ninguna todavía. Se probó en capturas (sin aplicar) una variante en la que el sol del atardecer pasa a ser luz de luna fría desde la posición de la luna de la imagen y la niebla de la calma pasa a azul; queda más coherente que el cielo de noche con luz naranja.
+- **Problemas encontrados:** con la luz de atardecer, la niebla volumétrica iluminada por el sol naranja deja manchas rojizas sobre un cielo de noche.
+- **Archivos y docs:** `assets/textures/skies/m2_sky_night.jpg`, `scenes/memories/m2_lago/m2_lago.tscn`.
+- **Pendiente / ❓ ABIERTO:** decidir si la calma pasa de atardecer a noche de luna (cambia la luz, la niebla y el texto de `ELEMENTOS_ESCENAS.md`); el cielo procedural anterior se recupera desde git si no convence.
+
 ### CL-042 · Memoria 4: con (E) sin el hacha, la vista gira hacia el hacha y el tripulante la señala · 2026-10-28
 - **Rama / commits:** `memories/m4-barco` · sin commitear
 - **Pedido por:** Facu: "al apretar la E sin tener el hacha, el personaje solo mire hacia donde está el hacha y haga lo que hace ahora el personaje, que lo saluda y le indica donde está el hacha". Ante la pregunta de quién mira, eligió "los dos": la vista del jugador y el tripulante.

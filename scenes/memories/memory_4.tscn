@@ -34,6 +34,8 @@
 [ext_resource type="Script" uid="uid://ca85vpobuc806" path="res://scripts/ui/interaction_prompt.gd" id="ui_prompt"]
 [ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="ui_prompt_cfg"]
 [ext_resource type="Script" uid="uid://0tbwcha81rl8" path="res://scripts/world/ship_window_glow.gd" id="wg_s"]
+[ext_resource type="Shader" uid="uid://pyi6gslk4a2a" path="res://assets/shaders/light_beam.gdshader" id="beam_sh"]
+[ext_resource type="PackedScene" path="res://scenes/props/anchor_winch.tscn" id="anchor_winch"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_32_s"]
 sky_top_color = Color(0.012, 0.016, 0.024, 1)
@@ -238,7 +240,25 @@ shader_parameter/tint = Color(0.85, 0.93, 1, 1)
 shader = ExtResource("10_e")
 shader_parameter/look_down = 0.0
 
-[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player", "axe_item", "reticle", "crew")]
+[sub_resource type="CylinderMesh" id="CylinderMesh_beam"]
+top_radius = 1.0
+bottom_radius = 0.0
+height = 1.0
+radial_segments = 32
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_beam"]
+render_priority = 1
+shader = ExtResource("beam_sh")
+shader_parameter/beam_color = Color(1, 0.93, 0.8, 1)
+shader_parameter/strength = 0.05
+shader_parameter/rain_streaks = 0.9
+shader_parameter/rain_dir = Vector3(0.55, -1, 0.08)
+shader_parameter/fade_power = 1.4
+
+[node name="Memory4" type="Node3D" unique_id=1635934280 node_paths=PackedStringArray("player", "ropes", "qte", "subtitles", "prompt_label", "lightning", "wave", "ship", "searchlight", "world_environment", "rain", "ocean", "slam_overlay", "water_overlay", "black_overlay", "rescue_glow", "abyss_overlay", "deck_slip", "splash_player", "axe_item", "reticle", "crew", "anchor_winch")]
 script = ExtResource("1_e")
 settings = ExtResource("2_e")
 player = NodePath("Player")
@@ -264,6 +284,7 @@ axe_item = NodePath("Ship/AxeItem")
 axe_settings = ExtResource("axe_cfg")
 reticle = NodePath("HUD/Center/Reticle")
 crew = NodePath("Ship/CrewInCabin/Character")
+anchor_winch = NodePath("Ship/AnchorWinch")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=461777008]
 environment = SubResource("Environment_34_s")
@@ -549,6 +570,12 @@ spot_range = 170.0
 spot_attenuation = 0.8
 spot_angle = 40.0
 
+[node name="Beam" type="MeshInstance3D" parent="Ship/Searchlight" unique_id=1542930035]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, -30)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_beam")
+surface_material_override/0 = SubResource("ShaderMaterial_beam")
+
 [node name="ProjectorGlare" type="Node3D" parent="Ship/Searchlight" unique_id=402770607]
 script = ExtResource("pg_s")
 settings = ExtResource("sl_cfg")
@@ -580,6 +607,9 @@ pose = ExtResource("r_pose_crew")
 subtitles = NodePath("../../../HUD/Subtitles")
 speaker_prefix = "TRIPULANTE"
 look_target = NodePath("../../../Player")
+
+[node name="AnchorWinch" parent="Ship" instance=ExtResource("anchor_winch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 11)
 
 [node name="RopeL1" type="Node3D" parent="Ship" unique_id=1866780658]
 script = ExtResource("6_e")

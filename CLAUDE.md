@@ -45,6 +45,7 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
 | `HospitalLights` + `HospitalLightsSettings` | `scripts/world/hospital_lights.gd` | 6 luces del techo del hospital que se ven en el cielo, en la dirección del rayo, mientras el rayo ilumina (M4) |
+| `AnchorWinch` + `AnchorWinchSettings` | `scripts/world/anchor_winch.gd` | Malacate del ancla de la M4: se sube apretando (E) en la manivela y se resbala si se afloja. Escena: `scenes/props/anchor_winch.tscn` |
 | `CharacterRig` + `CharacterPose` | `scripts/world/character_rig.gd` | Posa por código un modelo con esqueleto sin animaciones (pose base, respiración, remar, gesto al hablar según los subtítulos, mirar a un objetivo). Escena: `scenes/characters/male_character.tscn` |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).

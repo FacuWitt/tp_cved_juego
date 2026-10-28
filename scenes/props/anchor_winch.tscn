@@ -1,0 +1,102 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/anchor_winch.gd" id="1_winch"]
+[ext_resource type="PackedScene" path="res://assets/models/m4_manivela/soporte_manivela.glb" id="2_support"]
+[ext_resource type="PackedScene" path="res://assets/models/m4_manivela/manivela.glb" id="3_crank"]
+[ext_resource type="Resource" path="res://config/anchor_winch_m4.tres" id="4_cfg"]
+
+[sub_resource type="BoxShape3D" id="aim_shape"]
+size = Vector3(0.5, 0.9, 0.9)
+
+[sub_resource type="BoxShape3D" id="body_shape"]
+size = Vector3(1.6, 1.25, 1.05)
+
+[sub_resource type="StandardMaterial3D" id="iron"]
+albedo_color = Color(0.16, 0.15, 0.14, 1)
+metallic = 0.6
+roughness = 0.7
+
+[node name="AnchorWinch" type="Node3D"]
+script = ExtResource("1_winch")
+settings = ExtResource("4_cfg")
+
+[node name="Support" parent="." instance=ExtResource("2_support")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.644, 0)
+
+[node name="CrankPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8235, 0.524, 0)
+
+[node name="Crank" parent="CrankPivot" instance=ExtResource("3_crank")]
+transform = Transform3D(0, 0, 0.35, 0, 0.35, 0, -0.35, 0, 0, 0.1, 0, 0)
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+shape = SubResource("body_shape")
+
+[node name="AimArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.524, 0)
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="AimArea"]
+shape = SubResource("aim_shape")
+
+[node name="DrumPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+
+[node name="StandPoint" type="Marker3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.75, 0, 0)
+
+[node name="Pulley" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.327, 4.67, 2.86)
+
+[node name="AnchorTop" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.327, 4.45, 3.2)
+
+[node name="AnchorBottom" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.327, -5, 5.8)
+
+[node name="Anchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.327, -5, 5.8)
+
+[node name="Ring" type="CSGTorus3D" parent="Anchor"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.08, 0)
+inner_radius = 0.06
+outer_radius = 0.11
+sides = 8
+ring_sides = 5
+material = SubResource("iron")
+
+[node name="Stock" type="CSGBox3D" parent="Anchor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.28, 0)
+size = Vector3(0.9, 0.08, 0.08)
+material = SubResource("iron")
+
+[node name="Shank" type="CSGCylinder3D" parent="Anchor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, 0)
+radius = 0.06
+height = 1.5
+sides = 8
+material = SubResource("iron")
+
+[node name="ArmL" type="CSGBox3D" parent="Anchor"]
+transform = Transform3D(0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 0, 0, 1, -0.3, -1.55, 0)
+size = Vector3(0.75, 0.1, 0.1)
+material = SubResource("iron")
+
+[node name="ArmR" type="CSGBox3D" parent="Anchor"]
+transform = Transform3D(0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, 0, 0, 1, 0.3, -1.55, 0)
+size = Vector3(0.75, 0.1, 0.1)
+material = SubResource("iron")
+
+[node name="FlukeL" type="CSGBox3D" parent="Anchor"]
+transform = Transform3D(0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 0, 0, 1, -0.56, -1.3, 0)
+size = Vector3(0.28, 0.06, 0.3)
+material = SubResource("iron")
+
+[node name="FlukeR" type="CSGBox3D" parent="Anchor"]
+transform = Transform3D(0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, 0, 0, 1, 0.56, -1.3, 0)
+size = Vector3(0.28, 0.06, 0.3)
+material = SubResource("iron")

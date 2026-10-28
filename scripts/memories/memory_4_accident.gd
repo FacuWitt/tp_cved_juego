@@ -10,7 +10,7 @@ extends Memory
 ## 6) LUZ: aparece la luz del helicóptero y la memoria se completa.
 ## Este script solo ordena las etapas; cada pieza (ola, rayos, soga, evento rápido) vive en su propia clase.
 
-enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
+enum Stage { DECK, ANCHOR, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 
 @export var settings: Memory4Settings
 @export var player: Player
@@ -41,6 +41,8 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var reticle: InteractionPrompt
 ## El tripulante en la cabina (opcional): mira el hacha cuando avisa dónde está.
 @export var crew: CharacterRig
+## El malacate del ancla (opcional). Si está, después de las sogas hay que subir el ancla.
+@export var anchor_winch: AnchorWinch
 
 var stage: Stage = Stage.DECK
 
@@ -73,8 +75,14 @@ var _last_safe: Vector3 = Vector3.ZERO
 # Giro automático de la vista hacia el hacha (< 0 = no está girando).
 var _axe_look_t: float = -1.0
 var _axe_look_from: Vector2 = Vector2.ZERO
+# A qué mira la vista mientras gira sola (el hacha o la manivela).
+var _look_target: Node3D = null
 var _axe_point_cooldown: float = 0.0
 var _crew_look_timer: float = 0.0
+# Manivela del ancla.
+var _cranking: bool = false
+var _anchor_urge_cd: float = 0.0
+var _crank_kick: Tween
 
 
 func _ready() -> void:
@@ -97,6 +105,8 @@ func _ready() -> void:
 	_debug.enabled = debug_keys
 	add_child(_debug)
 	_debug.skip_requested.connect(_debug_cut_all_ropes)
+	if anchor_winch != null:
+		anchor_winch.raised.connect(_on_anchor_raised)
 
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
@@ -180,7 +190,7 @@ func _process(delta: float) -> void:
 	deck_slip.roll_degrees = _roll_deg
 	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active and not _debug.is_flying
 	# Mientras corta una soga tiene los pies firmes: si no, no habría forma de apuntar el golpe.
-	deck_slip.planted = stage == Stage.DECK and _busy and not _overboard
+	deck_slip.planted = ((stage == Stage.DECK and _busy) or _cranking) and not _overboard
 	_update_camera_motion(delta)
 	_update_rain()
 	_update_abyss()
@@ -191,6 +201,8 @@ func _process(delta: float) -> void:
 		Stage.DECK:
 			_update_rope_aim()
 			_update_axe_hint(delta)
+		Stage.ANCHOR:
+			_update_crank(delta)
 		Stage.SURFACE, Stage.DESCENT:
 			if not _debug.is_flying:
 				_update_float()
@@ -250,6 +262,9 @@ func _watch_edges() -> void:
 
 ## SOLO PARA PRUEBAS: corta todas las sogas y sigue el flujo normal (aviso, ola, etc.).
 func _debug_cut_all_ropes() -> void:
+	if stage == Stage.ANCHOR and anchor_winch != null and not _overboard:
+		anchor_winch.complete_now()
+		return
 	if stage != Stage.DECK or _overboard:
 		return
 	qte.cancel()
@@ -261,8 +276,19 @@ func _debug_cut_all_ropes() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if stage == Stage.ANCHOR and event.is_action_pressed("interact") and not _overboard:
+		if _cranking:
+			anchor_winch.press()
+			_kick_crank_camera()
+		elif _aiming_crank():
+			_engage_crank()
+		return
 	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and _has_axe and not _busy and not _overboard:
 		_start_chop(_active_rope)
+	elif stage == Stage.DECK and event.is_action_pressed("interact") and anchor_winch != null \
+			and _active_rope == null and not _busy and not _overboard and not _intro_active and _aiming_crank():
+		# La manivela antes de tiempo: el tripulante avisa que primero van las sogas.
+		_warn_crank_too_early()
 	elif stage == Stage.DECK and event.is_action_pressed("interact") and settings.axe_point_on_interact \
 			and not _has_axe and not _busy and not _overboard and not _intro_active:
 		# Si está apuntando al hacha, la agarra (lo hace el Player): no hay que señalarla.
@@ -330,6 +356,8 @@ func _update_rope_aim() -> void:
 				aimed = rope
 	_active_rope = aimed
 	reticle.override_text = "" if aimed == null else (settings.rope_prompt if _has_axe else settings.axe_needed_prompt)
+	if aimed == null and anchor_winch != null and not _busy and not _overboard and _aiming_crank():
+		reticle.override_text = settings.crank_prompt
 
 
 func _on_axe_equipped(from_global: Transform3D) -> void:
@@ -396,14 +424,122 @@ func _fall_overboard() -> void:
 	subtitles.show_line(settings.fall_rescue_line % settings.protagonist_name, settings.line_duration)
 	await back_tween.finished
 	_overboard = false
-	if stage == Stage.DECK:
+	if stage == Stage.DECK or stage == Stage.ANCHOR:
 		_busy = false
 		deck_slip.enabled = true
+
+
+# ---------- Ancla ----------
+
+## Terminó las sogas: falta subir el ancla con la manivela de popa.
+func _begin_anchor() -> void:
+	stage = Stage.ANCHOR
+	_busy = false
+	anchor_winch.is_active = true
+	await get_tree().create_timer(settings.success_delay).timeout
+	while _overboard:
+		await get_tree().process_frame
+	var line: String = settings.anchor_line
+	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration * 1.4)
+	# Como con el hacha: la vista gira sola hacia la manivela y el tripulante la mira.
+	if crew != null:
+		crew.look_target = anchor_winch.aim_area
+		_crew_look_timer = settings.crew_look_axe_time
+	if settings.anchor_look_on_start and stage == Stage.ANCHOR and not _cranking and not _overboard:
+		_start_auto_look(anchor_winch.aim_area)
+
+
+## Apretó (E) en la manivela antes de cortar todas las sogas.
+func _warn_crank_too_early() -> void:
+	if _axe_point_cooldown > 0.0:
+		return
+	_axe_point_cooldown = settings.axe_point_cooldown
+	var line: String = settings.crank_too_early_line
+	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+
+
+func _aiming_crank() -> bool:
+	var ray: RayCast3D = _camera.get_node("InteractionRay") as RayCast3D
+	if not ray.is_colliding():
+		return false
+	var hit: Object = ray.get_collider()
+	return hit is Area3D and (hit as Area3D).get_meta("winch", null) == anchor_winch
+
+
+func _update_crank(delta: float) -> void:
+	_anchor_urge_cd = maxf(_anchor_urge_cd - delta, 0.0)
+	if _overboard:
+		reticle.override_text = ""
+		return
+	if _cranking:
+		reticle.override_text = settings.crank_active_prompt
+		for action: String in ["move_forward", "move_back", "move_left", "move_right"]:
+			if Input.is_action_just_pressed(action):
+				_leave_crank()
+				return
+	else:
+		reticle.override_text = settings.crank_prompt if _aiming_crank() else ""
+	if anchor_winch.is_slipping() and anchor_winch.progress > 0.05 and _anchor_urge_cd <= 0.0:
+		_anchor_urge_cd = settings.anchor_urge_interval
+		var line: String = settings.anchor_urge_line
+		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+
+
+## Se para frente a la manivela: no camina (puede mirar) hasta soltarla o terminar.
+func _engage_crank() -> void:
+	_cranking = true
+	player.set_physics_process(false)
+	player.velocity = Vector3.ZERO
+	_axe.visible = false
+	var stand: Node3D = anchor_winch.stand_point
+	var yaw: float = stand.global_basis.get_euler().y
+	var crank_pos: Vector3 = anchor_winch.aim_area.global_position
+	var eye: Vector3 = stand.global_position + Vector3.UP * (_camera.global_position.y - player.global_position.y)
+	var to_crank: Vector3 = crank_pos - eye
+	var pitch: float = atan2(to_crank.y, Vector2(to_crank.x, to_crank.z).length())
+	var t: Tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	t.tween_property(player, "global_position", stand.global_position, anchor_winch.settings.engage_time)
+	t.tween_method(func(k: float) -> void: player.rotation.y = lerp_angle(player.rotation.y, yaw, k), 0.0, 1.0, anchor_winch.settings.engage_time)
+	t.tween_property(_head, "rotation:x", pitch, anchor_winch.settings.engage_time)
+
+
+func _leave_crank() -> void:
+	if not _cranking:
+		return
+	_cranking = false
+	reticle.override_text = ""
+	player.set_physics_process(true)
+	_axe.visible = _has_axe
+
+
+## Cada (E) en la manivela: la cabeza acompaña el esfuerzo con un golpecito hacia abajo.
+func _kick_crank_camera() -> void:
+	if _crank_kick != null and _crank_kick.is_valid():
+		_crank_kick.kill()
+	var kick: float = deg_to_rad(anchor_winch.settings.press_camera_kick)
+	var base: float = _head.rotation.x
+	_crank_kick = create_tween()
+	_crank_kick.tween_property(_head, "rotation:x", base - kick, 0.05)
+	_crank_kick.tween_property(_head, "rotation:x", base, 0.12)
+
+
+func _on_anchor_raised() -> void:
+	_leave_crank()
+	anchor_winch.is_active = false
+	_finish_deck()
 
 
 # ---------- Aviso y ola ----------
 
 func _on_all_ropes_cut() -> void:
+	if anchor_winch != null:
+		_begin_anchor()
+	else:
+		_finish_deck()
+
+
+## Terminaron las tareas de cubierta: festejo, el grito de advertencia y la ola.
+func _finish_deck() -> void:
 	stage = Stage.WARNING
 	_busy = true
 	prompt_label.visible = false
@@ -655,10 +791,16 @@ func _point_to_axe(turn_view: bool) -> void:
 		crew.look_target = axe_item
 		_crew_look_timer = settings.crew_look_axe_time
 	if turn_view:
-		_axe_look_t = 0.0
-		_axe_look_from = Vector2(player.rotation.y, _head.rotation.x)
-		# Mientras gira, el mouse no mueve la vista.
-		player.set_process_unhandled_input(false)
+		_start_auto_look(axe_item)
+
+
+## La vista del jugador gira sola hacia `target` (el hacha o la manivela). Mientras gira, el
+## mouse no mueve la vista.
+func _start_auto_look(target: Node3D) -> void:
+	_look_target = target
+	_axe_look_t = 0.0
+	_axe_look_from = Vector2(player.rotation.y, _head.rotation.x)
+	player.set_process_unhandled_input(false)
 
 
 func _update_axe_pointing(delta: float) -> void:
@@ -669,11 +811,16 @@ func _update_axe_pointing(delta: float) -> void:
 			crew.look_target = player
 	if _axe_look_t < 0.0:
 		return
-	if _has_axe or _overboard or stage != Stage.DECK:
+	var cancel: bool = _overboard or _look_target == null
+	if _look_target == axe_item:
+		cancel = cancel or _has_axe or stage != Stage.DECK
+	else:
+		cancel = cancel or stage != Stage.ANCHOR or _cranking
+	if cancel:
 		_end_axe_look()
 		return
 	_axe_look_t += delta
-	var dir: Vector3 = axe_item.global_position - _camera.global_position
+	var dir: Vector3 = _look_target.global_position - _camera.global_position
 	var yaw: float = atan2(-dir.x, -dir.z)
 	var limit: float = deg_to_rad(player.settings.pitch_limit)
 	var pitch: float = clampf(atan2(dir.y, Vector2(dir.x, dir.z).length()), -limit, limit)
@@ -686,6 +833,7 @@ func _update_axe_pointing(delta: float) -> void:
 
 func _end_axe_look() -> void:
 	_axe_look_t = -1.0
+	_look_target = null
 	player.set_process_unhandled_input(true)
 
 
@@ -734,7 +882,7 @@ func _update_camera_motion(delta: float) -> void:
 	_shake_amount = move_toward(_shake_amount, 0.0, delta * 0.35)
 	_camera.position = Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), 0.0) * _shake_amount
 	match stage:
-		Stage.DECK, Stage.WARNING, Stage.WAVE, Stage.COVERED:
+		Stage.DECK, Stage.ANCHOR, Stage.WARNING, Stage.WAVE, Stage.COVERED:
 			# El barco escorado: la cámara queda torcida y se mece con el oleaje.
 			# El barco se inclina a lo largo: de frente a la proa o a la popa se ve toda la inclinación, de costado casi nada.
 			var facing: float = -player.global_transform.basis.z.z

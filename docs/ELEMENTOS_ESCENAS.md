@@ -267,6 +267,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 | Timón | (tareas) | AMB ❓ | Cilindro |
 | **La ola** | 4. La ola | OBL | Evento + cinemática |
 | Ancla y cadena | 5. El hundimiento | OBL | Cilindros; acompaña la caída |
+| **Malacate del ancla en popa** ✅ (CL-045): después de las sogas hay que subir el ancla apretando (E) en la manivela; si se afloja, baja | (tareas) | OBL | `AnchorWinch` (`scenes/props/anchor_winch.tscn`): soporte y manivela con modelo, ancla provisoria con formas simples |
 | **Luz del faro en el fondo + imagen del barquito luminosa** | 6. El faro | OBL | Luz + barquito luminoso |
 | Cajones y equipo sueltos, salvavidas | — | AMB | Cajas |
 
