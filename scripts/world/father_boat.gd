@@ -26,6 +26,7 @@ var _target_speed: float = 0.0
 var _hull: Node3D
 var _flashlight: SpotLight3D
 var _oars: Array[Node3D] = []
+var _character: CharacterRig
 
 
 func _ready() -> void:
@@ -33,6 +34,7 @@ func _ready() -> void:
 	_hull = get_node_or_null("Hull") as Node3D
 	_flashlight = get_node_or_null("Hull/Flashlight") as SpotLight3D
 	_oars = [get_node_or_null("Hull/OarL") as Node3D, get_node_or_null("Hull/OarR") as Node3D]
+	_character = get_node_or_null("Hull/Character") as CharacterRig
 
 
 ## Empieza a remar desde el punto de la línea más cercano a donde está.
@@ -89,6 +91,12 @@ func _update_visuals(waiting: bool) -> void:
 		var side_sign: float = -1.0 if i == 0 else 1.0
 		var phase: float = _time * 1.6 * TAU
 		oar.rotation = Vector3(0.0, -side_sign * sin(phase) * 0.5 * rowing, -side_sign * (0.25 + maxf(sin(phase), 0.0) * 0.2 * rowing))
+	# El cuerpo rema con los remos (+1 = brazos adelante, cuando el mango del remo va hacia la proa)
+	# y mira al hijo mientras pescan o cuando lo espera.
+	if _character != null:
+		_character.cycle_value = sin(_time * 1.6 * TAU)
+		_character.cycle_amount = rowing
+		_character.look_enabled = waiting or not is_running
 	# Si espera, alumbra al hijo; si no, el camino.
 	if _flashlight != null and follow_target != null:
 		var forward_point: Vector3 = _flashlight.global_position - global_basis.z * 10.0 + Vector3.DOWN * 1.2

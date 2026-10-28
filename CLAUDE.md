@@ -44,6 +44,7 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
+| `CharacterRig` + `CharacterPose` | `scripts/world/character_rig.gd` | Posa por código un modelo con esqueleto sin animaciones (pose base, respiración, remar, gesto al hablar según los subtítulos, mirar a un objetivo). Escena: `scenes/characters/male_character.tscn` |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).
 

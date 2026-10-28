@@ -18,6 +18,8 @@ extends Resource
 @export var hit_lines: PackedStringArray = PackedStringArray(["(el bote cruje: entra agua)", "(otro golpe: el agua sube)"])
 @export var gust_line: String = "PADRE: ¡Cuidado con el viento! ¡Remá del otro lado!"
 @export var rapids_line: String = "PADRE: ¡Rápidos! ¡Agarrate fuerte!"
+@export var tree_line: String = "PADRE: ¡Cuidado, el árbol!"
+@export var dark_line: String = "PADRE: ¡No se ve nada! ¡Seguí mi luz y alumbrá adelante!"
 @export var capsize_line: String = "(el bote se da vuelta)"
 @export var sink_line: String = "(el bote se hunde)"
 @export var father_line: String = "PADRE: ¡Agarrate! No te suelto."
@@ -63,13 +65,20 @@ extends Resource
 @export_range(0.2, 10.0, 0.1, "suffix:s") var gust_duration: float = 2.6
 @export_range(0.0, 10.0, 0.05, "suffix:m/s²") var gust_force: float = 1.7
 ## Velocidad del padre remando y distancia a la que se mantiene adelante.
-@export_range(0.5, 8.0, 0.1, "suffix:m/s") var father_speed: float = 3.0
+@export_range(0.5, 10.0, 0.1, "suffix:m/s") var father_speed: float = 4.5
 @export_range(1.0, 40.0, 0.5, "suffix:m") var father_min_gap: float = 7.0
 @export_range(2.0, 60.0, 0.5, "suffix:m") var father_max_gap: float = 22.0
 ## Cada cuánto llama si el hijo se queda atrás.
 @export_range(1.0, 30.0, 0.5, "suffix:s") var father_call_interval: float = 6.0
 ## Energía de la linterna del bote del hijo.
 @export_range(0.0, 20.0, 0.1) var bow_lamp_energy: float = 4.0
+## La linterna de la proa gira hacia donde mira el jugador (hasta este ángulo a cada lado).
+@export var bow_lamp_follows_look: bool = true
+@export_range(0.0, 90.0, 1.0, "suffix:°") var bow_lamp_max_yaw: float = 60.0
+## Inclinación del haz hacia el agua (negativo = más cerca del bote).
+@export_range(-30.0, 10.0, 0.5, "suffix:°") var bow_lamp_pitch: float = -2.5
+## Qué tan rápido sigue la mirada.
+@export_range(0.5, 20.0, 0.5, "suffix:1/s") var bow_lamp_follow_speed: float = 6.0
 ## Luz que la linterna derrama adentro del bote (para ver las manos, la soga y los remos).
 @export_range(0.0, 5.0, 0.05) var bow_glow_energy: float = 0.7
 

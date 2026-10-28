@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/world/river_events.gd" id="s_events"]
+[ext_resource type="Resource" path="res://config/river_events.tres" id="r_events"]
 [ext_resource type="Script" path="res://scripts/memories/memory_2_lake.gd" id="s_mem"]
 [ext_resource type="Resource" path="res://config/memory_2_settings.tres" id="r_mem"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="p_player"]
@@ -36,6 +38,8 @@
 [ext_resource type="Shader" path="res://assets/shaders/ocean.gdshader" id="sh_ocean"]
 [ext_resource type="Shader" path="res://assets/shaders/light_beam.gdshader" id="sh_beam"]
 [ext_resource type="Shader" path="res://assets/shaders/net.gdshader" id="sh_net"]
+[ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
+[ext_resource type="Resource" path="res://config/character_father_m2.tres" id="r_pose_father"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.12, 0.13, 0.22, 1)
@@ -327,7 +331,7 @@ size = Vector3(2.02, 0.5, 1.70)
 [sub_resource type="BoxShape3D" id="sh_capsize"]
 size = Vector3(21.1, 4, 4)
 
-[node name="Memory2" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "world_environment", "lightning", "wake_up", "flashback", "debug_tools", "prompt", "qte", "river", "boat", "father", "fishing", "knife_view", "net", "net_rope", "bow_lamp", "capsize_zone", "ocean", "snow", "snow_storm", "toy_boat", "father_light", "father_hand", "sun")]
+[node name="Memory2" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "world_environment", "lightning", "wake_up", "flashback", "debug_tools", "prompt", "qte", "river", "boat", "father", "fishing", "knife_view", "net", "net_rope", "bow_lamp", "capsize_zone", "ocean", "snow", "snow_storm", "toy_boat", "father_light", "father_hand", "sun", "events")]
 script = ExtResource("s_mem")
 settings = ExtResource("r_mem")
 player = NodePath("Player")
@@ -355,6 +359,7 @@ toy_boat = NodePath("ToyBoat")
 father_light = NodePath("FatherLight")
 father_hand = NodePath("FatherHand")
 sun = NodePath("Sun")
+events = NodePath("RiverEvents")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("env")
@@ -965,6 +970,13 @@ shape = SubResource("sh_floe_RiverFloe04")
 size = Vector3(2.02, 0.35, 1.70)
 material = SubResource("m_floe")
 
+[node name="RiverEvents" type="Node3D" parent="." node_paths=PackedStringArray("river", "boat", "father_line")]
+script = ExtResource("s_events")
+settings = ExtResource("r_events")
+river = NodePath("../River")
+boat = NodePath("../Boat")
+father_line = NodePath("../FatherLine")
+
 [node name="CapsizeZone" type="Area3D" parent="."]
 transform = Transform3D(0.84974, 0, -0.5272, 0, 1, 0, 0.5272, 0, 0.84974, -0.9906, 0.5, -314.1)
 monitorable = false
@@ -1224,35 +1236,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, 0, 0)
 size = Vector3(0.5, 0.03, 0.16)
 material = SubResource("m_wood")
 
-[node name="Body" type="CSGCylinder3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0.25)
-radius = 0.24
-height = 0.85
-sides = 10
-material = SubResource("m_coat")
-
-[node name="Head" type="CSGSphere3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.13, 0.22)
-radius = 0.15
-radial_segments = 10
-rings = 6
-material = SubResource("m_skin")
-
-[node name="Hat" type="CSGCylinder3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.27, 0.22)
-radius = 0.17
-height = 0.1
-sides = 10
-material = SubResource("m_wood_dark")
+[node name="Character" parent="Father/Hull" node_paths=PackedStringArray("subtitles", "look_target") instance=ExtResource("pc_man")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.92, 0.25)
+pose = ExtResource("r_pose_father")
+subtitles = NodePath("../../../HUD/Subtitles")
+speaker_prefix = "PADRE"
+look_target = NodePath("../../../Player")
 
 [node name="Lantern" type="OmniLight3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -1.0)
 light_color = Color(1, 0.75, 0.45, 1)
 light_energy = 1.8
 omni_range = 9.0
 
 [node name="LanternGlow" type="CSGSphere3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -1.0)
 radius = 0.07
 radial_segments = 8
 rings = 4

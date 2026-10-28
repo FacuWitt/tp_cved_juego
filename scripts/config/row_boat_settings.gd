@@ -6,20 +6,21 @@ extends Resource
 @export_group("Remadas")
 ## Duración de una remada completa (el remo entra, empuja y sale).
 @export_range(0.2, 2.0, 0.01, "suffix:s") var stroke_time: float = 0.62
-## Empuje hacia adelante de cada remada (en el pico de la remada).
-@export_range(0.0, 20.0, 0.1, "suffix:m/s²") var stroke_force: float = 4.2
+## Empuje hacia adelante de cada remada (en el pico de la remada). Bajo = el bote tarda
+## en tomar velocidad (con los dos remos llega a la máxima en unos 4 s).
+@export_range(0.0, 20.0, 0.1, "suffix:m/s²") var stroke_force: float = 1.8
 ## Cuánto gira el bote por remada de un solo lado (en el pico de la remada).
 @export_range(0.0, 10.0, 0.05, "suffix:rad/s²") var stroke_turn: float = 1.7
 ## Las remadas hacia atrás empujan esta fracción de una remada hacia adelante.
-@export_range(0.1, 1.5, 0.05) var back_stroke_factor: float = 0.7
+@export_range(0.1, 1.5, 0.05) var back_stroke_factor: float = 1.0
 ## Velocidad máxima respecto del agua.
-@export_range(0.5, 12.0, 0.1, "suffix:m/s") var max_speed: float = 3.6
+@export_range(0.5, 12.0, 0.1, "suffix:m/s") var max_speed: float = 6.2
 
 @export_group("Agua")
 ## Cuánto sobresale el casco del agua (más alto = el agua no se mete por el piso con olas).
 @export_range(0.0, 0.6, 0.01, "suffix:m") var hull_lift: float = 0.14
 ## Cuánto lo frena el agua hacia adelante (por segundo). Bajo = se desliza más.
-@export_range(0.0, 5.0, 0.01, "suffix:1/s") var forward_drag: float = 0.55
+@export_range(0.0, 5.0, 0.01, "suffix:1/s") var forward_drag: float = 0.2
 ## Cuánto lo frena el agua de costado (la quilla no lo deja derrapar).
 @export_range(0.0, 10.0, 0.05, "suffix:1/s") var side_drag: float = 2.8
 ## Cuánto se frena el giro.
@@ -40,7 +41,7 @@ extends Resource
 ## Golpes que aguanta: con este golpe se hunde.
 @export_range(1, 10, 1) var max_hits: int = 3
 ## Velocidad de choque mínima para que cuente como golpe.
-@export_range(0.1, 5.0, 0.05, "suffix:m/s") var hit_speed: float = 1.1
+@export_range(0.1, 5.0, 0.05, "suffix:m/s") var hit_speed: float = 1.5
 ## Tiempo sin poder recibir otro golpe.
 @export_range(0.0, 5.0, 0.05, "suffix:s") var hit_cooldown: float = 1.6
 ## Cuánto rebota al chocar (0 = se queda pegado, 1 = rebota entero).

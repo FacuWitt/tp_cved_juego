@@ -31,6 +31,8 @@
 [ext_resource type="Script" uid="uid://ca85vpobuc806" path="res://scripts/ui/interaction_prompt.gd" id="ui_prompt"]
 [ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="ui_prompt_cfg"]
 [ext_resource type="Script" uid="uid://0tbwcha81rl8" path="res://scripts/world/ship_window_glow.gd" id="wg_s"]
+[ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
+[ext_resource type="Resource" path="res://config/character_crew_m4.tres" id="r_pose_crew"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_32_s"]
 sky_top_color = Color(0.012, 0.016, 0.024, 1)
@@ -217,14 +219,6 @@ top_radius = 0.07
 bottom_radius = 0.09
 height = 1.0
 radial_segments = 8
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_29_s"]
-albedo_color = Color(0.8, 0.6, 0.08, 1)
-roughness = 0.6
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_38_s"]
-radius = 0.3
-height = 1.75
 
 [sub_resource type="Gradient" id="Gradient_28_s"]
 offsets = PackedFloat32Array(0, 0.45, 1)
@@ -601,18 +595,12 @@ transform = Transform3D(1.7384391, 0, 0, 0, -0.08057691, -2.318767, 0, 0.933771,
 [node name="CrewInCabin" type="Node3D" parent="Ship" unique_id=165731591]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -13)
 
-[node name="Body" type="MeshInstance3D" parent="Ship/CrewInCabin" unique_id=202729717]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8677459, 2.563283, 2.1791258)
-material_override = SubResource("StandardMaterial3D_29_s")
-mesh = SubResource("CapsuleMesh_38_s")
-
-[node name="Label" type="Label3D" parent="Ship/CrewInCabin" unique_id=1660088250]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
-pixel_size = 0.004
-billboard = 1
-text = "TRIPULANTE"
-font_size = 28
-outline_size = 8
+[node name="Character" parent="Ship/CrewInCabin" node_paths=PackedStringArray("subtitles", "look_target") instance=ExtResource("pc_man")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.87, 1.685, 1.8)
+pose = ExtResource("r_pose_crew")
+subtitles = NodePath("../../../HUD/Subtitles")
+speaker_prefix = "TRIPULANTE"
+look_target = NodePath("../../../Player")
 
 [node name="RopeL1" type="Node3D" parent="Ship" unique_id=1866780658]
 script = ExtResource("6_e")

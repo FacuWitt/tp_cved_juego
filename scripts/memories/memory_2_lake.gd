@@ -33,6 +33,8 @@ enum Stage { WAKE, FISHING, NET, STORM, CUT, CHASE, ENDING }
 @export var bow_lamp: Node3D
 ## Al entrar el bote acá, el último rápido lo da vuelta.
 @export var capsize_zone: Area3D
+## Árboles que caen, troncos flotando y tramos oscuros del río.
+@export var events: RiverEvents
 @export var ocean: MeshInstance3D
 ## Nieve liviana (siempre) y nieve de tormenta (se prende con la tormenta).
 @export var snow: CPUParticles3D
@@ -61,6 +63,11 @@ var _rapids_warned: Array[int] = []
 var _bow_light: SpotLight3D
 var _bow_glow: OmniLight3D
 var _waiting_net: bool = false
+var _dark: float = 0.0
+var _dark_warned: Array[int] = []
+var _dark_stopped_lightning: bool = false
+var _lamp_angle: float = 26.0
+var _lamp_range: float = 32.0
 
 
 func _ready() -> void:
@@ -95,6 +102,11 @@ func _ready() -> void:
 	_bow_light = _find_spot(bow_lamp)
 	if _bow_light != null:
 		_bow_light.light_energy = 0.0
+		_lamp_angle = _bow_light.spot_angle
+		_bow_light.rotation.x = deg_to_rad(settings.bow_lamp_pitch)
+		_lamp_range = _bow_light.spot_range
+	if events != null:
+		events.tree_falling.connect(_on_tree_falling)
 	if bow_lamp != null:
 		for child: Node in bow_lamp.find_children("*", "OmniLight3D", true, false):
 			_bow_glow = child as OmniLight3D
@@ -157,6 +169,8 @@ func _process(delta: float) -> void:
 		Stage.CHASE:
 			_update_gusts(delta)
 			_check_rapids()
+			_update_darkness(delta)
+			_update_bow_lamp(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -330,6 +344,8 @@ func _on_net_cut() -> void:
 		_bow_glow.light_energy = settings.bow_glow_energy
 	boat.controls_enabled = true
 	father.start()
+	if events != null:
+		events.active = true
 	_gust_timer = randf_range(settings.gust_interval_min, settings.gust_interval_max)
 	await get_tree().create_timer(settings.line_duration + 0.3).timeout
 	if stage == Stage.CHASE:
@@ -372,6 +388,59 @@ func _check_rapids() -> void:
 			subtitles.show_line(settings.rapids_line, settings.line_duration)
 
 
+## Tramos oscuros: la niebla se cierra y se apaga el cielo; solo se ve lo que alumbra la
+## linterna (un poco más abierta) y la luz del padre.
+func _update_darkness(delta: float) -> void:
+	if events == null:
+		return
+	var es: RiverEventsSettings = events.settings
+	var offset: float = river.offset_of(boat.global_position)
+	_dark = move_toward(_dark, events.darkness_at(offset), delta * 1.2)
+	var env: Environment = world_environment.environment
+	env.fog_density = lerpf(settings.storm_fog_density, es.dark_fog_density, _dark)
+	env.fog_light_color = settings.storm_fog_color.lerp(es.dark_fog_color, _dark)
+	var ambient: float = lerpf(settings.storm_ambient, es.dark_ambient, _dark)
+	var sky: float = lerpf(settings.storm_sky, es.dark_sky, _dark)
+	if lightning != null:
+		lightning.set_base_levels(ambient, sky)
+		if es.dark_stops_lightning:
+			if _dark > 0.5 and lightning.is_running:
+				lightning.stop()
+				_dark_stopped_lightning = true
+			elif _dark < 0.5 and _dark_stopped_lightning:
+				_dark_stopped_lightning = false
+				lightning.start()
+	else:
+		env.ambient_light_energy = ambient
+		env.background_energy_multiplier = sky
+	if _bow_light != null:
+		_bow_light.spot_angle = lerpf(_lamp_angle, es.dark_lamp_angle, _dark)
+		_bow_light.spot_range = lerpf(_lamp_range, es.dark_lamp_range, _dark)
+		_bow_light.light_energy = lerpf(settings.bow_lamp_energy, es.dark_lamp_energy, _dark)
+	for i: int in es.dark_zones.size():
+		var z: Vector2 = es.dark_zones[i]
+		if offset > z.x - es.dark_fade * 0.5 and offset < z.y and not _dark_warned.has(i):
+			_dark_warned.append(i)
+			subtitles.show_line(settings.dark_line, settings.line_duration)
+
+
+## La linterna de la proa apunta hacia donde mira el jugador (con un tope a cada lado).
+func _update_bow_lamp(delta: float) -> void:
+	if bow_lamp == null or not settings.bow_lamp_follows_look:
+		return
+	var max_yaw: float = deg_to_rad(settings.bow_lamp_max_yaw)
+	var target: float = clampf(wrapf(player.rotation.y, -PI, PI), -max_yaw, max_yaw)
+	bow_lamp.rotation.y = lerp_angle(bow_lamp.rotation.y, target, minf(delta * settings.bow_lamp_follow_speed, 1.0))
+
+
+func _on_tree_falling(_index: int) -> void:
+	if stage != Stage.CHASE:
+		return
+	if lightning != null and events.settings.tree_flash > 0.0:
+		lightning.flash_now(events.settings.tree_flash)
+	subtitles.show_line(settings.tree_line, settings.line_duration * 0.8)
+
+
 func _on_boat_hit(hits: int) -> void:
 	if stage != Stage.CHASE:
 		return
@@ -397,6 +466,8 @@ func _play_ending(drowned: bool) -> void:
 	boat.wind = Vector3.ZERO
 	boat.set_physics_process(false)
 	father.is_running = false
+	if events != null:
+		events.active = false
 	qte.cancel()
 	prompt.override_text = ""
 	if debug_tools != null and debug_tools.is_flying:
@@ -563,5 +634,7 @@ func _debug_skip() -> void:
 			var f_target: Vector3 = river.point_at(end_offset - 14.0)
 			father.global_position = Vector3(f_target.x, father.water_level, f_target.z)
 			father.start()
+			if events != null:
+				events.settle_trees_before(end_offset)
 		_:
 			pass

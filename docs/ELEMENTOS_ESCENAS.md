@@ -113,7 +113,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 
 **Escena:** `scenes/memories/m2_lago/m2_lago.tscn` ✅ greybox jugable (CL-034, reemplaza a la versión de las placas de hielo de CL-031). La genera `gen_m2_rio.py` (en la nube de Claude); se puede editar a mano: las orillas salen solas de la curva del cauce. Atardecer en calma → tormenta de nieve de noche.
 
-**Recorrido ✅:** despierta en el bote por un trueno lejano → pesca 2 peces → tira la red → llega la tormenta → la red se traba → el padre grita "¡CORTÁ LA RED, HIJO!" → evento rápido con cuchillo → huida remando detrás de la luz del padre por el río (ramas, rocas, hielo flotante, rápidos, viento) → el bote se hunde (3 golpes) o el último rápido lo da vuelta → cae al agua → la linterna se hunde → oscuridad y flashbacks → sube el barquito encendido → la luz, la mano y la voz del padre → negro.
+**Recorrido ✅:** despierta en el bote por un trueno lejano → pesca 2 peces → tira la red → llega la tormenta → la red se traba → el padre grita "¡CORTÁ LA RED, HIJO!" → evento rápido con cuchillo → huida remando detrás de la luz del padre por el río (ramas, rocas, hielo y troncos flotando, árboles que caen, tramos oscuros, rápidos, viento) → el bote se hunde (3 golpes) o el último rápido lo da vuelta → cae al agua → la linterna se hunde → oscuridad y flashbacks → sube el barquito encendido → la luz, la mano y la voz del padre → negro.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
@@ -122,26 +122,29 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Río que sale del lago, con curvas | OBL | `RiverFlow` (curva + ancho + corriente + rápidos) y `RiverBuilder` (orillas con colisión, lomas, árboles, espuma) |
 | **Rápidos** (2): corriente más fuerte, el bote se sacude | OBL | Rangos en `RiverFlow.rapids` + espuma |
 | Zona del vuelco (último rápido) | OBL | `Area3D` `CapsizeZone` |
+| **Tramos oscuros** (2): se cierra la niebla y solo se ve lo que alumbra la linterna y la luz del padre | OBL | `RiverEvents` + `config/river_events.tres` (`dark_zones`); la memoria baja niebla, cielo y luz ambiente y frena los rayos |
 | Orillas nevadas, lomas, pinos | AMB | Generado por `RiverBuilder` |
 
 ### Props e interactivos
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes |
+| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes |
 | **Caña de pescar** ✅ | OBL | Objeto en mano (`HeldItemView`) + `FishingRod` (boya, línea, pez) |
 | **Red** con su soga ✅ | OBL | Plano con shader de red + `CuttableRope` (la misma soga de M4, más chica) |
 | **Cuchillo** ✅ | OBL | Objeto en mano; corta con el evento rápido de M4 (`TimingQte`) |
-| **Linterna del protagonista** ✅ | OBL | Atada a la proa del bote (deja las manos libres para remar). Se prende con la tormenta; en la caída se hunde y se apaga |
+| **Linterna del protagonista** ✅ | OBL | Atada a la proa del bote (deja las manos libres para remar) y gira hacia donde mira el jugador (hasta 60° por lado). Se prende con la tormenta; en la caída se hunde y se apaga |
 | **Ramas** que salen de las orillas | OBL | Troncos con colisión (grupo `boat_hazard`) |
 | **Rocas** en los rápidos | OBL | Esferas con colisión (`boat_hazard`) |
 | **Hielo flotante** | OBL | `DriftingFloe` (deriva con la corriente, `boat_hazard`) |
+| **Árboles que caen** (4) al acercarse el bote, del lado contrario a la línea del padre | OBL | `RiverEvents` (los arma por código; `tree_offsets`), con relámpago y "¡Cuidado, el árbol!" |
+| **Troncos flotando** que aparecen adelante del bote y bajan con la corriente | OBL | `RiverEvents` (pool de troncos; se corren de costado si el bote los toca) |
 | **Barquito** (aparece encendido en el final) ✅ | OBL | Prisma + mástil + vela + luz |
 | ~~Mochila con el barquito~~ | — | **Se sacó** (no quedaba bien). El barquito solo aparece en el final |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Padre** ✅ | Pesca en su propio bote al lado. En la huida rema adelante por la línea segura (esquiva los obstáculos), espera si el hijo se queda atrás y lo alumbra; llama ("¡Hijo! ¡Por acá!"). En el final lo rescata | `FatherBoat`: bote + cuerpo + farol + linterna, sigue la curva `FatherLine` |
+| **Padre** ✅ | Pesca en su propio bote al lado. En la huida rema adelante por la línea segura (esquiva los obstáculos), espera si el hijo se queda atrás y lo alumbra; llama ("¡Hijo! ¡Por acá!"). En el final lo rescata | `FatherBoat`: bote + farol + linterna, sigue la curva `FatherLine`. **Modelo del hombre** (`male_character`, CL-038) sentado, rema con los remos y mira al hijo (`CharacterRig` + `config/character_father_m2.tres`) |
 | ~~Perro~~ | **Se sacó** con la versión de las placas | — |
 
 ### Luz
@@ -168,7 +171,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 ### Sistemas que pide
 - `RowBoat` + `RowBoatSettings` (`config/row_boat.tres`).
 - `FishingRod` + `FishingBar` + `FishingSettings` (`config/fishing.tres`).
-- `RiverFlow`, `RiverBuilder`, `DriftingFloe`, `FatherBoat`.
+- `RiverFlow`, `RiverBuilder`, `DriftingFloe`, `FatherBoat`, `CharacterRig` (padre).
 - Reutiliza: `CuttableRope`, `TimingQte`, `HeldItemView`, `WakeUpIntro`, `FlashbackOverlay`, `LightningController`, `DebugTools`.
 - Acciones nuevas del InputMap: `row_left` (Q) y `row_right` (E). A, D y S usan las de caminar.
 
@@ -270,7 +273,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Compañero** | En el camarote o en la cubierta le pide que tome su turno; grita durante la tormenta | Cápsula |
+| **Compañero** (tripulante) ✅ | Al timón, detrás de las ventanas de popa de la cabina: mira al jugador y grita durante la tormenta (levanta el brazo) | **Modelo del hombre** (`male_character`, CL-038) con `CharacterRig` + `config/character_crew_m4.tres` |
 
 ### Luz
 - Cálida solo en la cabina y el faro lejano. El resto: oscuridad + relámpagos fríos.
