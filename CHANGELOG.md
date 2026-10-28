@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-039 · Memoria 4: el hacha pasa al modelo PS1 · 2026-10-28
+- **Rama / commits:** `develop` · sin commitear
+- **Pedido por:** Facu: "Cambia el modelo del hacha del nivel 4, por la que está en recursos > tools > fire axe ps1 style".
+- **Qué se hizo:** se agregó "Fire Axe, PSX / PS1 Style Low Poly" (Sketchfab, autor youpzdev, licencia CC-BY 4.0) en `assets/models/m4_hacha_ps1/` y la escena `scenes/props/axe_model.tscn`, que lo gira y lo escala para que quede igual que el hacha anterior: filo hacia +Z, pivote al medio y 0,92 m de largo. La usan el hacha colgada en la pared (`AxeItem`) y el hacha en primera persona (`AxeView`). `AxeSettings.model_scale` pasa a ser un multiplicador (1 = tamaño de la pared; antes 0,025 porque el modelo viejo venía en centímetros).
+- **Por qué (decisión de diseño):** pedido de Facu; el modelo nuevo es coherente con la estética PS1 del resto de los modelos. Envolverlo en una escena propia deja intactas la posición en la pared, la pose en la mano y los golpes, que ya estaban ajustados.
+- **Alternativas descartadas:** ninguna registrada.
+- **Problemas encontrados:** el modelo nuevo mide 0,6 m, trae el pivote abajo y el filo hacia +X; se corrigió en la escena del modelo comparando capturas con el hacha anterior en la misma posición de la mano.
+- **Archivos y docs:** `scenes/props/axe_model.tscn`, `assets/models/m4_hacha_ps1/`, `scripts/world/axe_view.gd`, `scripts/config/axe_settings.gd`, `scenes/memories/memory_4.tscn`.
+- **Pendiente / ❓ ABIERTO:** la licencia CC-BY pide nombrar al autor (youpzdev) en los créditos del juego; el modelo viejo (`assets/models/m4_hacha/`) queda sin uso y se puede borrar.
+
 ### CL-038 · Primer modelo de personaje: el hombre es el padre en la M2 y el tripulante en la M4 · 2026-10-28
 - **Rama / commits:** `memories/m2-lago` · sin commitear
 - **Pedido por:** Facu: "descargué el modelo de una niña y un hombre, haz que el hombre sea tu padre en el nivel del lago, y tu compañero de barco en el 4to nivel. Usa male_character y la niña, no uses el de dad por ahora".

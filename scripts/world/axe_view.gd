@@ -5,7 +5,7 @@ extends Node3D
 ## tiembla de frío (más cuanto más sogas se cortaron) y tiene un golpe acertado y uno fallido.
 ## Todo el feel sale de un AxeSettings.
 
-const MODEL: PackedScene = preload("res://assets/models/m4_hacha/fire_axe.glb")
+const MODEL: PackedScene = preload("res://scenes/props/axe_model.tscn")
 
 var settings: AxeSettings
 var player: Player
@@ -35,7 +35,7 @@ func _ready() -> void:
 	_noise.frequency = 1.0
 	_model = MODEL.instantiate() as Node3D
 	_model.scale = Vector3.ONE * settings.model_scale
-	# El modelo trae el filo hacia +Z y el pivote al medio: se gira para que el filo mire adelante
+	# La escena del modelo deja el filo hacia +Z y el pivote al medio: se gira para que el filo mire adelante
 	# y se sube para que la mano agarre el mango, un poco más abajo de la mitad.
 	_model.rotation_degrees = Vector3(0.0, 180.0, 0.0)
 	_model.position = Vector3(0.0, 0.2, 0.0)

@@ -8,8 +8,8 @@ extends Resource
 @export var rest_position: Vector3 = Vector3(0.34, -0.40, -0.55)
 ## Cómo queda inclinada en reposo (grados).
 @export var rest_rotation_degrees: Vector3 = Vector3(-14.0, 8.0, -16.0)
-## Tamaño del modelo (el original viene en centímetros).
-@export_range(0.005, 0.1, 0.001) var model_scale: float = 0.025
+## Tamaño del hacha en la mano (1 = 0,92 m, el mismo tamaño que el hacha que cuelga en la pared).
+@export_range(0.2, 3.0, 0.01) var model_scale: float = 1.0
 ## Cuánto tarda en pasar de la pared a la mano.
 @export_range(0.05, 1.5, 0.01, "suffix:s") var equip_time: float = 0.35
 

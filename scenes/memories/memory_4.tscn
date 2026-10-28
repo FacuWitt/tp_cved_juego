@@ -21,7 +21,7 @@
 [ext_resource type="Resource" path="res://config/axe_settings.tres" id="axe_cfg"]
 [ext_resource type="Script" uid="uid://dcye8l4nmkpef" path="res://scripts/world/axe_pickup.gd" id="axe_pk"]
 [ext_resource type="Shader" uid="uid://pyi6gslk4a2a" path="res://assets/shaders/light_beam.gdshader" id="beam_sh"]
-[ext_resource type="PackedScene" uid="uid://d3ck1k2hw6jue" path="res://assets/models/m4_hacha/fire_axe.glb" id="glb_axe"]
+[ext_resource type="PackedScene" path="res://scenes/props/axe_model.tscn" id="glb_axe"]
 [ext_resource type="PackedScene" uid="uid://hqpen7v3fy8f" path="res://assets/models/m4_motor_redes/m4_motor_redes.glb" id="glb_motor"]
 [ext_resource type="PackedScene" uid="uid://6h46ou17gya5" path="res://assets/models/m4_barco_hd/m4_barco_hd_opt.glb" id="glb_ship"]
 [ext_resource type="Script" uid="uid://d1i6g4i0lsfcv" path="res://scripts/world/projector_glare.gd" id="pg_s"]
@@ -346,7 +346,6 @@ settings = ExtResource("pickup_cfg")
 shape = SubResource("BoxShape3D_axe")
 
 [node name="Model" parent="Ship/AxeItem" unique_id=168711976 instance=ExtResource("glb_axe")]
-transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.025, 0, 0, 0)
 
 [node name="AxeGlow" type="OmniLight3D" parent="Ship" unique_id=428549675]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.7, -8.6)
