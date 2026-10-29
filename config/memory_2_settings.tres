@@ -2,5 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/config/memory_2_settings.gd" id="1"]
 
+[ext_resource type="Resource" path="res://config/character_father_rescue_m2.tres" id="2_rescue"]
+
 [resource]
 script = ExtResource("1")
+father_rescue_pose = ExtResource("2_rescue")

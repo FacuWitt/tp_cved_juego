@@ -38,7 +38,11 @@ extends Resource
 @export_range(0.0, 2.0, 0.01) var wind_turn: float = 0.22
 
 @export_group("Golpes")
-## Golpes que aguanta: con este golpe se hunde.
+## Si es true, con `max_hits` golpes el bote se hunde y empieza el final. Si es false (lo que
+## pidió el equipo), los golpes solo lo sacuden y lo llenan de agua, y el final llega siempre en el
+## último rápido.
+@export var sinks_on_hits: bool = false
+## Golpes que llenan el bote de agua (y, con `sinks_on_hits`, con este golpe se hunde).
 @export_range(1, 10, 1) var max_hits: int = 3
 ## Velocidad de choque mínima para que cuente como golpe.
 @export_range(0.1, 5.0, 0.05, "suffix:m/s") var hit_speed: float = 1.5

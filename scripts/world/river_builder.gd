@@ -21,6 +21,27 @@ extends Node3D
 ## Árboles por cada 10 m de orilla (de cada lado).
 @export_range(0.0, 10.0, 0.1) var tree_density: float = 2.6
 @export var tree_seed: int = 11
+
+@export_group("Vegetación")
+## Modelos de árbol (assets/models/m2_arboles). Si está vacío, se usan los conos de siempre.
+@export var tree_meshes: Array[Mesh] = []
+## Altura de cada árbol: al azar entre estos dos valores.
+@export_range(1.0, 30.0, 0.5, "suffix:m") var tree_height_min: float = 6.0
+@export_range(1.0, 30.0, 0.5, "suffix:m") var tree_height_max: float = 10.5
+## Modelos de arbusto.
+@export var bush_meshes: Array[Mesh] = []
+## Arbustos por cada 10 m de orilla (de cada lado), cerca del agua.
+@export_range(0.0, 20.0, 0.1) var bush_density: float = 3.0
+## Hasta cuántos metros del borde del agua aparecen arbustos.
+@export_range(0.5, 20.0, 0.5, "suffix:m") var bush_reach: float = 5.0
+## Altura de cada arbusto: al azar entre estos dos valores.
+@export_range(0.2, 5.0, 0.05, "suffix:m") var bush_height_min: float = 0.7
+@export_range(0.2, 5.0, 0.05, "suffix:m") var bush_height_max: float = 1.5
+## Saturación del color de la vegetación (1 = la del modelo; más bajo = más apagado, como con poca luz).
+@export_range(0.0, 1.5, 0.01) var vegetation_saturation: float = 0.45
+## Brillo de la vegetación (1 = el del modelo).
+@export_range(0.0, 2.0, 0.01) var vegetation_brightness: float = 0.8
+@export_group("")
 @export var rebuild: bool = false:
 	set(value):
 		rebuild = false
@@ -28,6 +49,7 @@ extends Node3D
 
 var _pending: bool = false
 
+const FOLIAGE_SHADER: Shader = preload("res://assets/shaders/foliage_ps1.gdshader")
 const ORDER_RIGHT: Array[int] = [0, 1, 2, 0, 2, 3]
 const ORDER_LEFT: Array[int] = [0, 2, 1, 0, 3, 2]
 
@@ -179,6 +201,10 @@ func _build_trees() -> void:
 			var basis: Basis = Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(scale, scale * rng.randf_range(0.9, 1.3), scale))
 			spots.append(Transform3D(basis, pos))
 		s += 10.0 / maxf(tree_density, 0.1)
+	if not tree_meshes.is_empty():
+		_scatter_models("_GTrees", tree_meshes, spots, tree_height_min, tree_height_max, rng)
+		_build_bushes()
+		return
 	var trunk: CylinderMesh = CylinderMesh.new()
 	trunk.top_radius = 0.12
 	trunk.bottom_radius = 0.2
@@ -196,6 +222,69 @@ func _build_trees() -> void:
 	crown_mat.roughness = 1.0
 	_multimesh("_GTrunks", trunk, trunk_mat, spots, Vector3(0.0, 1.2, 0.0))
 	_multimesh("_GCrowns", crown, crown_mat, spots, Vector3(0.0, 4.0, 0.0))
+
+
+## Arbustos pegados al borde del agua, de los dos lados.
+func _build_bushes() -> void:
+	if bush_meshes.is_empty() or bush_density <= 0.0:
+		return
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = tree_seed + 17
+	var length: float = river.get_length()
+	var spots: Array[Transform3D] = []
+	var s: float = 0.0
+	while s < length:
+		for side: float in [-1.0, 1.0]:
+			var center: Vector3 = river.to_local(river.point_at(s))
+			var t: Vector3 = river.tangent_at(s)
+			var left: Vector3 = Vector3(-t.z, 0.0, t.x)
+			var half: float = river.width_at(s) * 0.5
+			var lateral: float = half + rng.randf_range(0.6, bush_reach)
+			var pos: Vector3 = center + left * lateral * side + t * rng.randf_range(-1.5, 1.5)
+			pos.y = _ground_height(lateral, half) - 0.05
+			spots.append(Transform3D(Basis(), pos))
+		s += 10.0 / bush_density
+	_scatter_models("_GBushes", bush_meshes, spots, bush_height_min, bush_height_max, rng)
+
+
+## Reparte los modelos en los lugares dados: cada lugar elige un modelo al azar, gira y se escala
+## para quedar con una altura entre `h_min` y `h_max`. Un MultiMesh por modelo (las texturas de
+## cada malla se mantienen).
+func _scatter_models(prefix: String, meshes: Array[Mesh], spots: Array[Transform3D], h_min: float, h_max: float, rng: RandomNumberGenerator) -> void:
+	var groups: Array = []
+	for i: int in meshes.size():
+		groups.append([] as Array[Transform3D])
+	for spot: Transform3D in spots:
+		var k: int = rng.randi_range(0, meshes.size() - 1)
+		var mesh: Mesh = meshes[k]
+		if mesh == null:
+			continue
+		var height: float = maxf(mesh.get_aabb().size.y, 0.01)
+		var sc: float = rng.randf_range(h_min, maxf(h_min, h_max)) / height
+		var basis: Basis = Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(sc, sc, sc))
+		(groups[k] as Array[Transform3D]).append(Transform3D(basis, spot.origin))
+	for k: int in meshes.size():
+		if meshes[k] != null and not (groups[k] as Array).is_empty():
+			_multimesh("%s%d" % [prefix, k], _faded_mesh(meshes[k]), null, groups[k], Vector3.ZERO)
+
+
+## Copia de la malla con el shader de vegetación (color apagado) en cada superficie.
+func _faded_mesh(mesh: Mesh) -> Mesh:
+	var out: ArrayMesh = (mesh as ArrayMesh).duplicate() as ArrayMesh if mesh is ArrayMesh else null
+	if out == null:
+		return mesh
+	for i: int in out.get_surface_count():
+		var src: BaseMaterial3D = out.surface_get_material(i) as BaseMaterial3D
+		if src == null:
+			continue
+		var mat: ShaderMaterial = ShaderMaterial.new()
+		mat.shader = FOLIAGE_SHADER
+		mat.set_shader_parameter("albedo_tex", src.albedo_texture)
+		mat.set_shader_parameter("saturation", vegetation_saturation)
+		mat.set_shader_parameter("brightness", vegetation_brightness)
+		mat.set_shader_parameter("alpha_cut", src.alpha_scissor_threshold if src.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR else 0.0)
+		out.surface_set_material(i, mat)
+	return out
 
 
 func _multimesh(node_name: String, mesh: Mesh, mat: Material, spots: Array[Transform3D], offset: Vector3) -> void:

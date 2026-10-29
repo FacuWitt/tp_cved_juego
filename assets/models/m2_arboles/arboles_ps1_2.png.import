@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmcvyvefgtws4"
-path.s3tc="res://.godot/imported/m2_sky_night.jpg-780bc4c4676b9f24d18a4736061b8ca6.s3tc.ctex"
+uid="uid://o3q836oi153j"
+path.s3tc="res://.godot/imported/arboles_ps1_2.png-462e4529ecf907548b15bf94fbe56cbf.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "61a97f4eab0c025010c9f762aa49e6a1"
+}
 
 [deps]
 
-source_file="res://assets/textures/skies/m2_sky_night.jpg"
-dest_files=["res://.godot/imported/m2_sky_night.jpg-780bc4c4676b9f24d18a4736061b8ca6.s3tc.ctex"]
+source_file="res://assets/models/m2_arboles/arboles_ps1_2.png"
+dest_files=["res://.godot/imported/arboles_ps1_2.png-462e4529ecf907548b15bf94fbe56cbf.s3tc.ctex"]
 
 [params]
 

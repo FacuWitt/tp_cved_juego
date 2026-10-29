@@ -40,11 +40,17 @@
 [ext_resource type="Shader" path="res://assets/shaders/net.gdshader" id="sh_net"]
 [ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
 [ext_resource type="Resource" path="res://config/character_father_m2.tres" id="r_pose_father"]
-[ext_resource type="Texture2D" path="res://assets/textures/skies/m2_sky_night.jpg" id="tex_sky"]
+[ext_resource type="Shader" path="res://assets/shaders/m2_sky.gdshader" id="sh_sky"]
+[ext_resource type="PackedScene" path="res://scenes/props/canoe.tscn" id="pc_canoe"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbol_1.res" id="veg_arbol_1"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbol_2.res" id="veg_arbol_2"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbol_3.res" id="veg_arbol_3"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_1.res" id="veg_arbusto_1"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_2.res" id="veg_arbusto_2"]
+[ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_3.res" id="veg_arbusto_3"]
 
-[sub_resource type="PanoramaSkyMaterial" id="sky_mat"]
-panorama = ExtResource("tex_sky")
-filter = false
+[sub_resource type="ShaderMaterial" id="sky_mat"]
+shader = ExtResource("sh_sky")
 
 [sub_resource type="Sky" id="sky"]
 sky_material = SubResource("sky_mat")
@@ -62,7 +68,7 @@ glow_intensity = 0.45
 fog_enabled = true
 fog_light_color = Color(0.32, 0.3, 0.36, 1)
 fog_density = 0.012
-fog_sky_affect = 0.15
+fog_sky_affect = 0.35
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.008
 volumetric_fog_albedo = Color(0.8, 0.85, 0.92, 1)
@@ -93,10 +99,6 @@ roughness = 0.9
 
 [sub_resource type="StandardMaterial3D" id="m_wood_dark"]
 albedo_color = Color(0.22, 0.15, 0.1, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="m_wood_father"]
-albedo_color = Color(0.3, 0.22, 0.17, 1)
 roughness = 0.9
 
 [sub_resource type="StandardMaterial3D" id="m_floe"]
@@ -189,10 +191,7 @@ size = Vector2(0.045, 0.045)
 size = Vector2(2.4, 2.4)
 
 [sub_resource type="PlaneMesh" id="pm_water_in"]
-size = Vector2(1.0, 2.5)
-
-[sub_resource type="PrismMesh" id="prism_bow"]
-size = Vector3(1.1, 0.6, 0.5)
+size = Vector2(0.7, 3.0)
 
 [sub_resource type="PrismMesh" id="prism_toy"]
 size = Vector3(0.06, 0.045, 0.17)
@@ -372,6 +371,7 @@ transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 30, 0)
 light_color = Color(0.75, 0.85, 1, 1)
 light_energy = 0.0
 shadow_enabled = true
+sky_mode = 1
 
 [node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
 script = ExtResource("s_light")
@@ -401,6 +401,8 @@ rapids = PackedVector3Array(205.0, 245.0, 2.4, 362.0, 402.0, 2.8)
 
 [node name="Terrain" type="Node3D" parent="." node_paths=PackedStringArray("river")]
 script = ExtResource("s_builder")
+tree_meshes = Array[Mesh]([ExtResource("veg_arbol_1"), ExtResource("veg_arbol_2"), ExtResource("veg_arbol_3")])
+bush_meshes = Array[Mesh]([ExtResource("veg_arbusto_1"), ExtResource("veg_arbusto_2"), ExtResource("veg_arbusto_3")])
 river = NodePath("../River")
 
 [node name="Hazards" type="Node3D" parent="."]
@@ -996,46 +998,13 @@ shape = SubResource("sh_boat")
 
 [node name="Hull" type="Node3D" parent="Boat"]
 
-[node name="Bottom" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
-size = Vector3(1.1, 0.08, 2.8)
-material = SubResource("m_wood_dark")
-
-[node name="SideL" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.08, 0)
-size = Vector3(0.06, 0.5, 2.8)
-material = SubResource("m_wood")
-
-[node name="SideR" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.08, 0)
-size = Vector3(0.06, 0.5, 2.8)
-material = SubResource("m_wood")
-
-[node name="Stern" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 1.42)
-size = Vector3(1.22, 0.5, 0.06)
-material = SubResource("m_wood")
-
-[node name="Bow" type="MeshInstance3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 6.1232e-17, -1, 0, 1, 6.1232e-17, 0, 0.08, -1.69)
-mesh = SubResource("prism_bow")
-material_override = SubResource("m_wood")
-
-[node name="SeatPlank" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.25)
-size = Vector3(1.1, 0.05, 0.32)
-material = SubResource("m_wood")
-
-[node name="FrontPlank" type="CSGBox3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.9)
-size = Vector3(1.1, 0.05, 0.28)
-material = SubResource("m_wood")
+[node name="Canoe" parent="Boat/Hull" instance=ExtResource("pc_canoe")]
 
 [node name="Seat" type="Node3D" parent="Boat/Hull"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.25)
 
 [node name="OarL" type="Node3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.32, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46, 0.32, -0.5)
 
 [node name="Shaft" type="CSGCylinder3D" parent="Boat/Hull/OarL"]
 transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, -0.7, 0, 0)
@@ -1050,7 +1019,7 @@ size = Vector3(0.5, 0.03, 0.16)
 material = SubResource("m_wood")
 
 [node name="OarR" type="Node3D" parent="Boat/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.32, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46, 0.32, -0.5)
 
 [node name="Shaft" type="CSGCylinder3D" parent="Boat/Hull/OarR"]
 transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, 0.7, 0, 0)
@@ -1168,43 +1137,10 @@ follow_target = NodePath("../Boat")
 
 [node name="Hull" type="Node3D" parent="Father"]
 
-[node name="Bottom" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
-size = Vector3(1.1, 0.08, 2.8)
-material = SubResource("m_wood_dark")
-
-[node name="SideL" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.08, 0)
-size = Vector3(0.06, 0.5, 2.8)
-material = SubResource("m_wood_father")
-
-[node name="SideR" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.08, 0)
-size = Vector3(0.06, 0.5, 2.8)
-material = SubResource("m_wood_father")
-
-[node name="Stern" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 1.42)
-size = Vector3(1.22, 0.5, 0.06)
-material = SubResource("m_wood_father")
-
-[node name="Bow" type="MeshInstance3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 6.1232e-17, -1, 0, 1, 6.1232e-17, 0, 0.08, -1.69)
-mesh = SubResource("prism_bow")
-material_override = SubResource("m_wood_father")
-
-[node name="SeatPlank" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.25)
-size = Vector3(1.1, 0.05, 0.32)
-material = SubResource("m_wood_father")
-
-[node name="FrontPlank" type="CSGBox3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.9)
-size = Vector3(1.1, 0.05, 0.28)
-material = SubResource("m_wood_father")
+[node name="Canoe" parent="Father/Hull" instance=ExtResource("pc_canoe")]
 
 [node name="OarL" type="Node3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.32, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46, 0.32, -0.5)
 
 [node name="Shaft" type="CSGCylinder3D" parent="Father/Hull/OarL"]
 transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, -0.7, 0, 0)
@@ -1219,7 +1155,7 @@ size = Vector3(0.5, 0.03, 0.16)
 material = SubResource("m_wood")
 
 [node name="OarR" type="Node3D" parent="Father/Hull"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.32, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46, 0.32, -0.5)
 
 [node name="Shaft" type="CSGCylinder3D" parent="Father/Hull/OarR"]
 transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, 0.7, 0, 0)

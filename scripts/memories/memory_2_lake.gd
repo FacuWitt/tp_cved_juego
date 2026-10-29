@@ -68,6 +68,19 @@ var _dark_warned: Array[int] = []
 var _dark_stopped_lightning: bool = false
 var _lamp_angle: float = 26.0
 var _lamp_range: float = 32.0
+# Final: nadar en la superficie y el rescate.
+var _floating: bool = false        # la cabeza sube y baja con el agua
+var _swimming: bool = false        # además se puede nadar y se hunde cada tanto
+var _float_time: float = 0.0
+var _dip: float = 0.0
+var _dip_timer: float = 0.0
+var _search_timer: float = 0.0
+var _search_yaw: float = 0.0
+var _eye_height: float = 1.6
+var _under_surface: bool = false
+var _rescue_light_on: bool = false
+var _bob_scale: float = 1.0
+var _hand: BoneAttachment3D        # sigue la mano del padre ya posada
 
 
 func _ready() -> void:
@@ -171,6 +184,8 @@ func _process(delta: float) -> void:
 			_check_rapids()
 			_update_darkness(delta)
 			_update_bow_lamp(delta)
+		Stage.ENDING:
+			_update_float(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -257,6 +272,9 @@ func _apply_storm(amount: float) -> void:
 	var sky: float = lerpf(settings.dusk_sky, settings.storm_sky, amount)
 	env.fog_light_color = settings.dusk_fog_color.lerp(settings.storm_fog_color, amount)
 	env.fog_density = lerpf(settings.dusk_fog_density, settings.storm_fog_density, amount)
+	# El cielo (m2_sky.gdshader) se cierra y se oscurece con la tormenta.
+	if env.sky != null and env.sky.sky_material is ShaderMaterial:
+		(env.sky.sky_material as ShaderMaterial).set_shader_parameter("storm", amount)
 	if lightning != null:
 		lightning.set_base_levels(ambient, sky)
 	else:
@@ -446,7 +464,8 @@ func _on_boat_hit(hits: int) -> void:
 		return
 	if lightning != null:
 		lightning.flash_now(0.35)
-	if hits < boat.settings.max_hits and not settings.hit_lines.is_empty():
+	var sinking: bool = boat.settings.sinks_on_hits and hits >= boat.settings.max_hits
+	if not sinking and not settings.hit_lines.is_empty():
 		subtitles.show_line(settings.hit_lines[mini(hits - 1, settings.hit_lines.size() - 1)], settings.line_duration * 0.7)
 
 
@@ -526,54 +545,213 @@ func _play_ending(drowned: bool) -> void:
 		await sink_lamp.finished
 		bow_lamp.visible = false
 
-	# 4. Oscuridad total y los flashbacks del accidente.
-	if lightning != null:
-		lightning.set_base_levels(0.0, 0.0)
-	env.ambient_light_energy = 0.0
-	await get_tree().create_timer(settings.dark_time).timeout
-	await flashback.play(settings.ending_flashbacks, true)
-	flashback.clear()
+	# 4. Sale a la superficie y nada un poco, medio ahogándose. El padre lo busca a lo lejos.
+	await _swim(env)
 
-	# 5. El barquito sube encendido.
+	# 5. Flashbacks: el bote del padre a lo lejos y el pesquero a lo lejos (la misma escena).
+	await flashback.play(settings.ending_flashbacks, true)
+
+	# 6. El padre llega con su linterna desde arriba y lo rescata.
+	await _rescue()
+	await ScreenFade.fade_out(settings.end_fade_time)
+	complete()
+
+
+## Sale a la superficie en la tormenta y nada. Se puede mirar y moverse despacio; la cabeza se le
+## hunde cada tanto. El bote del padre está lejos, barriendo con su luz sin verlo.
+func _swim(env: Environment) -> void:
+	_restore_surface(env)
+	_eye_height = _camera.global_position.y - player.global_position.y
 	var forward: Vector3 = -_camera.global_basis.z
 	forward.y = 0.0
 	forward = forward.normalized() if forward.length() > 0.01 else Vector3.FORWARD
-	if toy_boat != null:
-		toy_boat.visible = true
-		toy_boat.global_position = _camera.global_position + forward * 1.4 + Vector3.DOWN * 1.2
-		var rise: Tween = create_tween().set_parallel(true)
-		rise.tween_property(toy_boat, "global_position", _camera.global_position + forward * 1.3 + Vector3.UP * 0.75, settings.boat_rise_time) \
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		rise.tween_property(toy_boat, "rotation:y", toy_boat.rotation.y + 1.2, settings.boat_rise_time)
-		rise.tween_property(_head, "rotation:x", deg_to_rad(32.0), settings.boat_rise_time)
-		await rise.finished
+	# El bote dado vuelta queda flotando a un costado.
+	var side: Vector3 = Vector3(-forward.z, 0.0, forward.x)
+	boat.global_position = Vector3(player.global_position.x, settings.water_level, player.global_position.z) + side * 2.6 + forward * 0.8
+	boat.visible = true
+	# El padre, lejos, buscando con su luz: armado como el pesquero de la M4 visto desde el agua.
+	father.stop_rowing()
+	father.look_at_son = false
+	father.visible = true
+	var to_father: Vector3 = Basis(Vector3.UP, deg_to_rad(settings.father_far_angle)) * forward
+	father.global_position = Vector3(player.global_position.x, settings.water_level, player.global_position.z) + to_father * settings.father_far_distance
+	# La proa (y la linterna) gira hacia la derecha de la línea de mirada.
+	var bow: Vector3 = Basis(Vector3.UP, -deg_to_rad(settings.father_far_heading)) * to_father
+	_search_yaw = atan2(-bow.x, -bow.z)
+	var lens: Node3D = father.get_node_or_null("Hull/Flashlight/Lens") as Node3D
+	if lens != null:
+		lens.scale = Vector3.ONE * settings.father_far_lens_scale
+	father.rotation.y = _search_yaw
+	_search_timer = settings.search_line_interval * 0.5
+	# Sube a la superficie.
+	_head.rotation.x = deg_to_rad(5.0)
+	var emerge: Tween = create_tween()
+	emerge.tween_property(player, "global_position:y", settings.water_level + settings.eye_above_water - _eye_height, settings.emerge_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await emerge.finished
+	subtitles.show_line(settings.gasp_lines[0] if not settings.gasp_lines.is_empty() else "", settings.line_duration * 0.7)
+	_float_time = 0.0
+	_bob_scale = 1.0
+	_dip = 0.0
+	_dip_timer = randf_range(settings.dip_interval_min, settings.dip_interval_max)
+	_floating = true
+	_swimming = true
+	player.set_process_unhandled_input(true)
+	await get_tree().create_timer(settings.swim_time).timeout
+	_swimming = false
+	player.set_process_unhandled_input(false)
 
-	# 6. La luz del padre desde arriba, su mano y su voz.
+
+## Cada cuadro del final: la cabeza flota, y mientras nada, se mueve y se hunde cada tanto.
+func _update_float(delta: float) -> void:
+	if not _floating:
+		return
+	_float_time += delta
+	if _swimming:
+		var input: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var dir: Vector3 = player.global_basis * Vector3(input.x, 0.0, input.y)
+		dir.y = 0.0
+		player.global_position += dir * settings.swim_speed * delta
+		_dip_timer -= delta
+		if _dip_timer <= 0.0:
+			_dip_timer = randf_range(settings.dip_interval_min, settings.dip_interval_max) + settings.dip_time
+			var dip: Tween = create_tween()
+			dip.tween_property(self, "_dip", 1.0, settings.dip_time * 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			dip.tween_property(self, "_dip", 0.0, settings.dip_time * 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			dip.tween_callback(func() -> void:
+				if _swimming and not settings.gasp_lines.is_empty():
+					subtitles.show_line(settings.gasp_lines[randi() % settings.gasp_lines.size()], settings.line_duration * 0.6))
+		# El padre barre con la luz, lejos, y lo llama.
+		father.rotation.y = _search_yaw + deg_to_rad(settings.father_search_sweep) * sin(_float_time * settings.father_search_rate * TAU)
+		_search_timer -= delta
+		if _search_timer <= 0.0 and not settings.search_lines.is_empty():
+			_search_timer = settings.search_line_interval
+			subtitles.show_line(settings.search_lines[randi() % settings.search_lines.size()], settings.line_duration * 0.8)
+	var bob: float = (sin(_float_time * 1.3) + sin(_float_time * 0.7 + 1.0) * 0.5) * settings.swim_bob * _bob_scale
+	player.global_position.y = settings.water_level + settings.eye_above_water - _eye_height + bob - _dip * settings.dip_depth
+	# Con la cabeza abajo del agua se ve como bajo el agua.
+	var under: bool = _camera.global_position.y < settings.water_level - 0.03
+	if under != _under_surface:
+		_under_surface = under
+		var env: Environment = world_environment.environment
+		if under:
+			env.fog_light_color = settings.underwater_fog_color
+			env.fog_density = settings.underwater_fog_density
+		else:
+			env.fog_light_color = settings.storm_fog_color
+			env.fog_density = settings.storm_fog_density
+	if _rescue_light_on:
+		_aim_rescue_light()
+
+
+## Vuelve la tormenta de la superficie (al salir del agua).
+func _restore_surface(env: Environment) -> void:
+	env.fog_light_color = settings.storm_fog_color
+	env.fog_density = settings.storm_fog_density
+	_under_surface = false
+	if lightning != null:
+		lightning.set_sky_visible(true)
+		lightning.set_base_levels(settings.storm_ambient, settings.storm_sky)
+		lightning.start()
+	else:
+		env.background_energy_multiplier = settings.storm_sky
+		env.ambient_light_energy = settings.storm_ambient
+	for flakes: CPUParticles3D in [snow, snow_storm]:
+		if flakes != null:
+			flakes.visible = true
+
+
+## Después de los flashbacks: en el negro, el bote del padre queda al lado; la luz de su linterna
+## aparece de a poco desde arriba, él inclinado sobre el borde estirándole la mano.
+func _rescue() -> void:
+	_floating = true
+	_swimming = false
+	_dip = 0.0
+	var forward: Vector3 = -_camera.global_basis.z
+	forward.y = 0.0
+	forward = forward.normalized() if forward.length() > 0.01 else Vector3.FORWARD
+	var eye: Vector3 = Vector3(_camera.global_position.x, settings.water_level, _camera.global_position.z)
+	# El bote queda de costado, con su lado derecho (+X) hacia el jugador.
+	var yaw: float = atan2(forward.z, -forward.x)
+	var bow_dir: Vector3 = Vector3(-sin(yaw), 0.0, -cos(yaw))
+	var final_pos: Vector3 = eye + forward * settings.rescue_distance
+	father.stop_rowing()
+	father.look_at_son = true
+	father.rotation = Vector3(0.0, yaw, 0.0)
+	father.global_position = final_pos - bow_dir * 6.0
+	var rig: CharacterRig = father.get_node_or_null("Hull/Character") as CharacterRig
+	if rig != null:
+		rig.look_target = _camera
+		if settings.father_rescue_pose != null:
+			rig.pose = settings.father_rescue_pose
+	var father_flashlight: Node3D = father.get_node_or_null("Hull/Flashlight") as Node3D
+	if father_flashlight != null:
+		father_flashlight.visible = false
+	# El brillo del farol de proa, de cerca, se ve como una luna: la luz es la de su mano.
+	var lantern_glow: Node3D = father.get_node_or_null("Hull/LanternGlow") as Node3D
+	if lantern_glow != null:
+		lantern_glow.visible = false
 	if father_light != null:
-		father_light.global_position = Vector3(_camera.global_position.x, settings.water_level - 0.15, _camera.global_position.z) + forward * 1.2
-		father_light.look_at(_camera.global_position + Vector3.DOWN * 1.0, Vector3.FORWARD)
 		father_light.visible = true
-		var light_in: Tween = create_tween().set_parallel(true)
-		light_in.tween_property(father_light, "light_energy", settings.father_light_energy, settings.father_light_time)
+		father_light.light_energy = 0.0
+	_rescue_light_on = true
+	_aim_rescue_light()
+	flashback.clear()
+	_find_hand(rig)
+	# Llega el bote, la luz crece y él mira hacia arriba, a la cara del padre.
+	var face: Vector3 = final_pos + Vector3.UP * settings.rescue_look_height
+	var to_face: Vector3 = face - _camera.global_position
+	var look_pitch: float = atan2(to_face.y, Vector2(to_face.x, to_face.z).length())
+	var arrive: Tween = create_tween().set_parallel(true)
+	arrive.tween_property(self, "_bob_scale", settings.rescue_bob, settings.rescue_boat_time)
+	arrive.tween_property(father, "global_position", final_pos, settings.rescue_boat_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	arrive.tween_property(_head, "rotation:x", look_pitch, settings.rescue_boat_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	arrive.tween_property(player, "rotation:y", atan2(-forward.x, -forward.z), settings.rescue_boat_time)
+	if father_light != null:
+		arrive.tween_property(father_light, "light_energy", settings.father_light_energy, settings.father_light_time).set_delay(settings.rescue_boat_time * 0.3)
 		var glow_light: OmniLight3D = father_light.get_node_or_null("GlowLight") as OmniLight3D
 		if glow_light != null:
-			light_in.tween_property(glow_light, "light_energy", settings.father_light_energy * 0.4, settings.father_light_time)
+			glow_light.light_energy = 0.0
+			arrive.tween_property(glow_light, "light_energy", settings.father_light_energy * 0.35, settings.father_light_time).set_delay(settings.rescue_boat_time * 0.3)
 		var glow: Node3D = father_light.get_node_or_null("Glow") as Node3D
 		if glow != null:
-			glow.scale = Vector3.ONE * 0.05
-			light_in.tween_property(glow, "scale", Vector3.ONE, settings.father_light_time).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	if father_hand != null:
-		father_hand.visible = true
-		var hand_end: Vector3 = _camera.global_position + forward * 0.95 + Vector3.UP * 0.55
-		father_hand.global_position = hand_end + Vector3.UP * 1.4 + forward * 0.5
-		father_hand.look_at(father_hand.global_position + forward, Vector3.UP)
-		father_hand.rotate_object_local(Vector3.RIGHT, deg_to_rad(-25.0))
-		create_tween().tween_property(father_hand, "global_position", hand_end, settings.father_light_time) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	subtitles.show_line(settings.father_line, settings.father_light_time + settings.end_fade_time + 1.0)
-	await get_tree().create_timer(settings.father_light_time).timeout
-	await ScreenFade.fade_out(settings.end_fade_time)
-	complete()
+			glow.scale = Vector3.ONE * 0.01
+			arrive.tween_property(glow, "scale", Vector3.ONE * settings.rescue_glow_scale, settings.father_light_time).set_delay(settings.rescue_boat_time * 0.3) \
+				.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	await get_tree().create_timer(settings.rescue_boat_time * 0.6).timeout
+	subtitles.show_line(settings.father_line, settings.rescue_boat_time + settings.rescue_hold_time + settings.end_fade_time)
+	await arrive.finished
+	await get_tree().create_timer(settings.rescue_hold_time).timeout
+
+
+## La linterna del padre: en su mano, arriba, apuntando a la cara del jugador.
+func _aim_rescue_light() -> void:
+	if father_light == null:
+		return
+	if _hand != null:
+		father_light.global_position = _hand.global_position + settings.rescue_light_bone_offset
+	else:
+		father_light.global_position = father.global_transform * settings.rescue_light_offset
+	if father_light.global_position.distance_to(_camera.global_position) > 0.2:
+		father_light.look_at(_camera.global_position, Vector3.UP)
+
+
+## Engancha un BoneAttachment3D a la mano que lleva la linterna (por el comienzo del nombre del hueso).
+## Se usa un BoneAttachment3D porque sigue la pose ya aplicada por el CharacterRig.
+func _find_hand(rig: CharacterRig) -> void:
+	if _hand != null or rig == null or settings.rescue_light_bone.is_empty():
+		return
+	var skeletons: Array[Node] = rig.find_children("*", "Skeleton3D", true, false)
+	if skeletons.is_empty():
+		return
+	var skeleton: Skeleton3D = skeletons[0] as Skeleton3D
+	for i: int in skeleton.get_bone_count():
+		if skeleton.get_bone_name(i).begins_with(settings.rescue_light_bone):
+			_hand = BoneAttachment3D.new()
+			_hand.name = "RescueLightHand"
+			skeleton.add_child(_hand)
+			_hand.bone_idx = i
+			return
 
 
 ## Bajo el agua: niebla oscura que se come todo, sin cielo.

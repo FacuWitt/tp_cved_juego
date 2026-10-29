@@ -107,6 +107,69 @@ extends Resource
 @export_range(0.0, 30.0, 0.1) var father_light_energy: float = 7.0
 ## Fundido a negro final.
 @export_range(0.1, 5.0, 0.05, "suffix:s") var end_fade_time: float = 1.4
+@export_subgroup("Nadar")
+## Después de caer, sale a la superficie y nada un poco, medio ahogándose, antes de los flashbacks.
+## Cuánto dura.
+@export_range(2.0, 60.0, 0.5, "suffix:s") var swim_time: float = 12.0
+## Cuánto tarda en salir a la superficie.
+@export_range(0.2, 5.0, 0.05, "suffix:s") var emerge_time: float = 1.6
+## Velocidad nadando (W/A/S/D).
+@export_range(0.0, 4.0, 0.05, "suffix:m/s") var swim_speed: float = 0.7
+## A qué altura quedan los ojos sobre el agua mientras flota (si queda en 0, la cámara corta la superficie).
+@export_range(0.0, 0.5, 0.01, "suffix:m") var eye_above_water: float = 0.16
+## Cuánto sube y baja la cabeza con el agua.
+@export_range(0.0, 1.0, 0.01, "suffix:m") var swim_bob: float = 0.1
+## Cada cuánto se le hunde la cabeza (al azar entre estos valores).
+@export_range(0.5, 20.0, 0.1, "suffix:s") var dip_interval_min: float = 2.2
+@export_range(0.5, 20.0, 0.1, "suffix:s") var dip_interval_max: float = 4.2
+## Cuánto se hunde y cuánto dura cada hundida.
+@export_range(0.0, 3.0, 0.05, "suffix:m") var dip_depth: float = 0.55
+@export_range(0.1, 3.0, 0.05, "suffix:s") var dip_time: float = 0.9
+## Lo que se oye al salir de cada hundida.
+@export var gasp_lines: PackedStringArray = PackedStringArray(["(tose y escupe agua)", "(traga agua)", "(jadea)"])
+## El bote del padre buscándolo queda armado como el pesquero de la M4 visto desde el agua (el
+## flashback "B"): adelante, casi al centro, con la luz cruzando hacia la derecha.
+## A qué distancia está.
+@export_range(5.0, 120.0, 1.0, "suffix:m") var father_far_distance: float = 18.0
+## Hacia qué lado queda respecto de hacia donde mira el jugador al salir (positivo = a la izquierda).
+@export_range(-90.0, 90.0, 1.0, "suffix:°") var father_far_angle: float = 2.0
+## Hacia dónde apunta la proa (y la linterna), medido desde la línea que va del jugador al bote:
+## 90 = cruza de izquierda a derecha, más de 90 = además se aleja.
+@export_range(0.0, 180.0, 1.0, "suffix:°") var father_far_heading: float = 100.0
+## Tamaño del foco de la linterna mientras busca lejos (1 = el real; más grande = se ve como el
+## reflector del pesquero de la M4).
+@export_range(1.0, 10.0, 0.1) var father_far_lens_scale: float = 8.0
+## Cuánto barre con la luz mientras busca (para cada lado), y qué tan rápido.
+@export_range(0.0, 120.0, 1.0, "suffix:°") var father_search_sweep: float = 15.0
+@export_range(0.01, 2.0, 0.01, "suffix:Hz") var father_search_rate: float = 0.12
+## Lo que grita el padre mientras lo busca, y cada cuánto.
+@export var search_lines: PackedStringArray = PackedStringArray(["PADRE: ¡HIJO! ¡¿DÓNDE ESTÁS?!", "PADRE: ¡Contestame, hijo!", "PADRE: ¡HIJOOO!"])
+@export_range(1.0, 20.0, 0.5, "suffix:s") var search_line_interval: float = 3.6
+
+@export_subgroup("Rescate")
+## Después de los flashbacks: el padre llega con su bote y lo alumbra desde arriba.
+## Pose del padre inclinado sobre el borde con el brazo estirado.
+@export var father_rescue_pose: CharacterPose
+## Cuánto tarda el bote del padre en llegar al lado del jugador.
+@export_range(0.5, 10.0, 0.1, "suffix:s") var rescue_boat_time: float = 3.2
+## A qué distancia queda el bote (del centro del bote a los ojos del jugador).
+@export_range(0.5, 4.0, 0.05, "suffix:m") var rescue_distance: float = 1.15
+## Hueso de la mano que sostiene la linterna (alcanza con el comienzo del nombre). Si el modelo no lo
+## tiene, la linterna queda en `rescue_light_offset`.
+@export var rescue_light_bone: String = "hand_left"
+## Corrimiento de la linterna desde ese hueso (en metros, en ejes del mundo; y = arriba).
+@export var rescue_light_bone_offset: Vector3 = Vector3(0.0, 0.08, 0.0)
+## Dónde está la linterna si no se encuentra el hueso, respecto del bote (x hacia el jugador, y arriba, z adelante).
+@export var rescue_light_offset: Vector3 = Vector3(0.45, 1.25, -0.2)
+## Tamaño del brillo de la linterna.
+@export_range(0.02, 2.0, 0.01) var rescue_glow_scale: float = 0.2
+## A qué altura del bote mira el jugador cuando llega el padre (su cara, más o menos).
+@export_range(0.0, 2.5, 0.05, "suffix:m") var rescue_look_height: float = 1.1
+## Cuánto flota la cabeza durante el rescate, en fracción de `swim_bob` (más bajo = cámara más quieta).
+@export_range(0.0, 1.0, 0.05) var rescue_bob: float = 0.3
+## Cuánto se queda alumbrado antes del fundido final.
+@export_range(0.0, 10.0, 0.1, "suffix:s") var rescue_hold_time: float = 2.4
+
 ## Color y densidad de la niebla bajo el agua.
 @export var underwater_fog_color: Color = Color(0.01, 0.03, 0.045)
 @export_range(0.0, 1.0, 0.005) var underwater_fog_density: float = 0.22

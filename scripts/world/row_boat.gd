@@ -144,7 +144,7 @@ func _handle_collisions(before: Vector3) -> void:
 			take_hit()
 
 
-## Un golpe fuerte: se sacude, entra agua y, al último, se hunde.
+## Un golpe fuerte: se sacude y entra agua. Si `sinks_on_hits` está prendido, al último se hunde.
 func take_hit() -> void:
 	if is_sunk:
 		return
@@ -154,9 +154,10 @@ func take_hit() -> void:
 	if _water_inside != null:
 		_water_inside.visible = true
 		var tween: Tween = create_tween()
-		tween.tween_property(_water_inside, "position:y", -0.25 + settings.water_per_hit * float(hits), 0.6)
+		var filled: int = mini(hits, settings.max_hits)
+		tween.tween_property(_water_inside, "position:y", -0.25 + settings.water_per_hit * float(filled), 0.6)
 	hit_taken.emit(hits)
-	if hits >= settings.max_hits:
+	if settings.sinks_on_hits and hits >= settings.max_hits:
 		is_sunk = true
 		controls_enabled = false
 		sunk.emit()

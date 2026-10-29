@@ -123,12 +123,12 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | **Rápidos** (2): corriente más fuerte, el bote se sacude | OBL | Rangos en `RiverFlow.rapids` + espuma |
 | Zona del vuelco (último rápido) | OBL | `Area3D` `CapsizeZone` |
 | **Tramos oscuros** (2): se cierra la niebla y solo se ve lo que alumbra la linterna y la luz del padre | OBL | `RiverEvents` + `config/river_events.tres` (`dark_zones`); la memoria baja niebla, cielo y luz ambiente y frena los rayos |
-| Orillas nevadas, lomas, pinos | AMB | Generado por `RiverBuilder` |
+| Orillas nevadas, lomas, árboles y arbustos | AMB | Generado por `RiverBuilder`; árboles y arbustos PS1 de `assets/models/m2_arboles` (CL-048) |
 
 ### Props e interactivos
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes |
+| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes. **Modelo:** canoa PS1 (`scenes/props/canoe.tscn`, CL-047), la misma que usa el padre |
 | **Caña de pescar** ✅ | OBL | Objeto en mano (`HeldItemView`) + `FishingRod` (boya, línea, pez) |
 | **Red** con su soga ✅ | OBL | Plano con shader de red + `CuttableRope` (la misma soga de M4, más chica) |
 | **Cuchillo** ✅ | OBL | Objeto en mano; corta con el evento rápido de M4 (`TimingQte`) |
@@ -161,12 +161,12 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Rápidos | Amenaza | Tramos del río (3D) |
 
 ### Efectos
-- **Flashbacks:** imágenes de la noche del accidente, de menos de un segundo, en la oscuridad del final. 📝 Las capturas definitivas las hace el equipo, parecidas a lo que se ve fuera de los flashbacks; se cambian en `config/flashbacks_m2.tres` sin tocar código.
+- **Flashbacks:** cuatro fotos sacadas del juego desde el agua, de menos de un segundo, que alternan **A** (el bote del padre a lo lejos con su linterna, M2) y **B** (el pesquero a lo lejos con su reflector, M4, después de caer), con la luz en el mismo lugar de la pantalla: la misma escena en los dos recuerdos. El bote del padre, mientras el protagonista nada, está armado igual que en las fotos. 📝 Los cambios entre A y B los van a marcar los truenos. Se cambian en `config/flashbacks_m2.tres` sin tocar código.
 - Nieve liviana (calma) y nieve de tormenta que el viento inclina.
 - El bote se inclina con el viento y se sacude en los rápidos.
 
 ### Cinemática (sin control) ✅
-El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista cae al agua → **la linterna se hunde apagándose** → oscuridad total → **flashbacks** → el barquito sube encendido → la luz, la mano y la voz del padre (*"agarrate, no te suelto"*) → negro → M3.
+El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no lo hunden: el protagonista cae al agua solo al final) → el protagonista cae al agua → **la linterna se hunde apagándose** → sale a la superficie en la tormenta y **nada medio ahogándose** (se puede mirar y moverse despacio; la cabeza se hunde cada tanto) mientras el padre lo busca a lo lejos con la linterna → **flashbacks** → en el negro, **el bote del padre llega al lado**, su linterna se enciende de a poco desde arriba y él, inclinado sobre la borda, le estira la mano (*"¡Agarrate! No te suelto."*) → negro → M3. ❓ ABIERTO: el barquito ya no aparece en este final.
 
 ### Sistemas que pide
 - `RowBoat` + `RowBoatSettings` (`config/row_boat.tres`).

@@ -15,6 +15,8 @@ signal calling
 @export var water_level: float = 0.0
 
 var is_running: bool = false
+## Si es false, el padre no gira la cabeza hacia el hijo (por ejemplo, mientras lo busca a lo lejos).
+var look_at_son: bool = true
 ## Distancia recorrida por la línea.
 var offset: float = 0.0
 
@@ -35,6 +37,12 @@ func _ready() -> void:
 	_flashlight = get_node_or_null("Hull/Flashlight") as SpotLight3D
 	_oars = [get_node_or_null("Hull/OarL") as Node3D, get_node_or_null("Hull/OarR") as Node3D]
 	_character = get_node_or_null("Hull/Character") as CharacterRig
+
+
+## Deja de remar de golpe (los remos y los brazos quedan quietos).
+func stop_rowing() -> void:
+	is_running = false
+	_speed = 0.0
 
 
 ## Empieza a remar desde el punto de la línea más cercano a donde está.
@@ -96,7 +104,7 @@ func _update_visuals(waiting: bool) -> void:
 	if _character != null:
 		_character.cycle_value = sin(_time * 1.6 * TAU)
 		_character.cycle_amount = rowing
-		_character.look_enabled = waiting or not is_running
+		_character.look_enabled = look_at_son and (waiting or not is_running)
 	# Si espera, alumbra al hijo; si no, el camino.
 	if _flashlight != null and follow_target != null:
 		var forward_point: Vector3 = _flashlight.global_position - global_basis.z * 10.0 + Vector3.DOWN * 1.2
