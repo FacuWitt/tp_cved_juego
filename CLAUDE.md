@@ -47,6 +47,7 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `HospitalLights` + `HospitalLightsSettings` | `scripts/world/hospital_lights.gd` | 6 luces del techo del hospital que se ven en el cielo, en la dirección del rayo, mientras el rayo ilumina (M4) |
 | `AnchorWinch` + `AnchorWinchSettings` | `scripts/world/anchor_winch.gd` | Malacate del ancla de la M4: se sube apretando (E) en la manivela y se resbala si se afloja. Escena: `scenes/props/anchor_winch.tscn` |
 | `CharacterRig` + `CharacterPose` | `scripts/world/character_rig.gd` | Posa por código un modelo con esqueleto sin animaciones (pose base, respiración, remar, gesto al hablar según los subtítulos, mirar a un objetivo). Escena: `scenes/characters/male_character.tscn` |
+| `Passage` + `PassageSettings` + `PassageVoice` | `scripts/memories/passage.gd` | Pasaje entre memorias (hereda de `Memory`): caminar sobre un mar negro hacia una luz mientras suenan voces del hospital; cuando hablan las voces se encienden luces cálidas grandes arriba a los costados, con un brillo que sigue el volumen de la voz. Escena base `scenes/passages/passage.tscn`; cada pasaje la hereda con su `.tres` (hoy `pasaje_m1_m2.tscn`) |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).
 

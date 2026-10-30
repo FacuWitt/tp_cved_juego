@@ -29,6 +29,8 @@ Señales útiles de `GameFlow`: `memory_started(index)`, `memory_finished(index)
 
 `scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `m2_lago/m2_lago.tscn` es la memoria 2 en greybox (el lago helado; raíz `Memory2Lake`). `memory_4.tscn` es la memoria 4 (el barco; raíz `Memory4Accident`). `memory_3.tscn` sigue siendo una sala provisoria; `memory_2.tscn` quedó sin uso. Las salas provisorias son: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
 
+**Pasajes entre memorias** (`scenes/passages/`): entre una memoria y la siguiente el jugador camina sobre un mar quieto y negro hacia una luz lejana, mientras escucha voces del hospital. Para `GameFlow` un pasaje es una escena más de la secuencia (su raíz, `Passage`, hereda de `Memory` y se completa al llegar a la luz), así las memorias siguen sin conocerse entre sí. `passage.tscn` es la escena base; cada pasaje es una escena heredada que solo cambia su `PassageSettings` (voces, distancia, luces). Hoy existe `pasaje_m1_m2.tscn`, entre la memoria 1 y la 2.
+
 F5 arranca desde la memoria 1. El sandbox sigue en `scenes/sandbox/` y se puede abrir y correr con F6.
 
 ## Atajos de debug
@@ -58,5 +60,6 @@ Además, cada memoria tiene un nodo `DebugTools` (teclas fijas, solo para desarr
 ## Qué se toca desde el Inspector
 
 - `config/flow_settings.tres`: duración del fundido de salida, del tiempo en negro, del fundido de entrada y del fundido de reinicio.
-- `config/memory_sequence.tres`: qué escenas forman el juego y en qué orden.
+- `config/memory_sequence.tres`: qué escenas forman el juego y en qué orden (memorias y pasajes).
+- `config/passage_m1_m2.tres`: el pasaje entre M1 y M2 (voces, largo del camino, luz del final, luces cálidas, mar).
 - `MemoryExit.enabled` en cada escena: si la salida está activa o no.

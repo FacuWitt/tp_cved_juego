@@ -1,0 +1,86 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/memories/passage.gd" id="1_pg"]
+[ext_resource type="Resource" path="res://config/passage_m1_m2.tres" id="2_ps"]
+[ext_resource type="Shader" uid="uid://dwrobydbliqie" path="res://assets/shaders/ocean.gdshader" id="3_oc"]
+[ext_resource type="Script" uid="uid://0x1maetp4wet" path="res://scripts/world/ocean_follow.gd" id="4_of"]
+[ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="5_pl"]
+[ext_resource type="Resource" path="res://config/player_settings_passage.tres" id="6_pls"]
+[ext_resource type="Script" uid="uid://c3jjvgqkiiu26" path="res://scripts/fx/post_fx.gd" id="7_fx"]
+[ext_resource type="Resource" path="res://config/postfx_passage.tres" id="8_fxs"]
+[ext_resource type="Script" uid="uid://bs67gb2yivlh5" path="res://scripts/ui/subtitle_display.gd" id="9_sub"]
+
+[sub_resource type="Environment" id="env_passage"]
+background_mode = 1
+background_color = Color(0, 0, 0, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0, 0, 0, 1)
+ambient_light_energy = 0.0
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.05
+fog_enabled = true
+fog_light_color = Color(0, 0, 0, 1)
+fog_light_energy = 0.0
+fog_density = 0.02
+fog_sky_affect = 1.0
+
+[sub_resource type="ShaderMaterial" id="mat_ocean"]
+render_priority = 0
+shader = ExtResource("3_oc")
+
+[sub_resource type="PlaneMesh" id="mesh_ocean"]
+size = Vector2(240, 240)
+subdivide_width = 159
+subdivide_depth = 159
+
+[node name="Passage" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "ocean", "world_environment", "voice_player")]
+script = ExtResource("1_pg")
+settings = ExtResource("2_ps")
+player = NodePath("Player")
+subtitles = NodePath("HUD/Subtitles")
+ocean = NodePath("Ocean")
+world_environment = NodePath("WorldEnvironment")
+voice_player = NodePath("VoicePlayer")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env_passage")
+
+[node name="Ocean" type="MeshInstance3D" parent="."]
+material_override = SubResource("mat_ocean")
+cast_shadow = 0
+custom_aabb = AABB(-200, -5, -200, 400, 10, 400)
+mesh = SubResource("mesh_ocean")
+script = ExtResource("4_of")
+
+[node name="Player" parent="." instance=ExtResource("5_pl")]
+settings = ExtResource("6_pls")
+
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="PostFx" type="CanvasLayer" parent="."]
+layer = 0
+script = ExtResource("7_fx")
+settings = ExtResource("8_fxs")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("9_sub")

@@ -24,7 +24,7 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Ventana con exterior falso** | M1, M3, Final | Plano con color | Plano detrás del vidrio (cielo, luna, lluvia o día) |
 | **Player** | Todas | ✅ existe | Tiene que poder **quedar sin control** durante las cinemáticas |
 | **NPC simple** | Padre, perro, hija, compañero | Cápsula de color + `Label3D` | Posición, mirar al jugador y un punto de donde sale su voz. Sin IA |
-| **Transiciones en negro** | Entre todas las escenas | Pantalla negra + texto con la línea | Voces del hospital, cada vez más cercanas; resplandor rojizo que late |
+| **Pasajes entre memorias** ✅ (reemplaza las transiciones en negro) | Entre memoria y memoria (hoy solo M1 → M2) | `scenes/passages/`: mar quieto (el océano de la M4 casi sin olas), cielo negro absoluto, una luz lejana que no se sabe qué es | Se camina hacia la luz; las voces del hospital suenan a medida que se avanza (📝 textos provisorios, subtítulos) y mientras hablan se encienden dos luces cálidas grandes y tenues arriba a los costados del jugador, que lo acompañan: las luces del presente. Su brillo sigue el volumen de la voz, como la luz de un parlante, y es lo que deja ver el agua. ❓ ABIERTO: si M3 → M4 también tiene pasaje (hoy es negro sin voces) |
 
 ---
 
