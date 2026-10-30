@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-057 · El bote de la M2 sigue las olas que se ven, no un oleaje invisible · 2026-10-29
+- **Rama / commits:** `memories/m2-lago` · sin commitear
+- **Pedido por:** Facu: "cada tanto el barco sube muchísimo o se hunde, pero no sigue la forma del agua visible, es como si siguiera a un grupo de olas invisibles".
+- **Qué se hizo:** `OceanFollow.height_at` (la altura que usa el bote para mecerse) ahora lee del material del agua los mismos valores que usa el shader: altura de olas, radio de calma, escala lejana y mar de fondo. Si el material no los define, usa los valores por defecto de siempre. El bote ya no multiplica por su cuenta.
+- **Por qué (decisión de diseño):** `height_at` tenía copiados a mano los valores del shader del mar de la M4 (con mar de fondo grande y olas que crecen lejos del centro). La M2 tiene el agua más calma (sin mar de fondo ni crecimiento lejano), pero el bote seguía calculando con los valores de la M4: mientras avanzaba por el río el bote seguía olas más grandes y lentas que no existen en pantalla. Leer los valores del propio material evita que se desfasen si se vuelven a ajustar.
+- **Alternativas descartadas:** copiar a mano los valores de la M2 en el código (volvía a desfasarse al tocar el agua); apagar el balanceo del bote (se perdía el efecto).
+- **Problemas encontrados:** quedó este error de diseño al traer el balanceo con las olas en CL-055.
+- **Cómo se probó:** con tormenta al máximo, la altura de ola en 2000 puntos lejanos llega a 0,47 m (máximo posible 0,48 m). La M4 da las mismas alturas que antes (usa los valores por defecto). **A probar jugando:** que el bote suba y baje solo con las olas que se ven.
+- **Archivos y docs:** `scripts/world/ocean_follow.gd`, `scripts/world/row_boat.gd`.
+- **Pendiente / ❓ ABIERTO:** el shader también desplaza las olas de costado (parámetro `chop`) y el bote no lo tiene en cuenta; con olas tan bajas no se nota.
+
 ### CL-056 · Ola y luna con modelos 3D externos; se sacan marea y pescador (en la rama de garigna figuraba como CL-034; se renumeró al integrar porque ese número ya existía) · 2026-10-25
 - **Rama / commits:** `develop` · `sin commitear`
 - **Pedido por:** Facu: "reemplazá los objetos de la ola y la luna que ya están hechos por estos: `wave_sculpture.glb` y `moon_globe.glb`", "la OLA no se ve en el juego. Y quiero que saques el objeto marea y pescador".

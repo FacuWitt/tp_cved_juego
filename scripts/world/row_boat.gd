@@ -259,12 +259,11 @@ func _update_visuals(right: Vector3) -> void:
 		var fwd: Vector3 = -global_basis.z
 		fwd.y = 0.0
 		fwd = fwd.normalized()
-		var scale_h: float = _wave_scale()
-		var h_c: float = waves.height_at(global_position.x, global_position.z) * scale_h
-		var h_bow: float = waves.height_at(global_position.x + fwd.x * 1.9, global_position.z + fwd.z * 1.9) * scale_h
-		var h_stern: float = waves.height_at(global_position.x - fwd.x * 1.6, global_position.z - fwd.z * 1.6) * scale_h
-		var h_r: float = waves.height_at(global_position.x + right.x * 0.7, global_position.z + right.z * 0.7) * scale_h
-		var h_l: float = waves.height_at(global_position.x - right.x * 0.7, global_position.z - right.z * 0.7) * scale_h
+		var h_c: float = waves.height_at(global_position.x, global_position.z)
+		var h_bow: float = waves.height_at(global_position.x + fwd.x * 1.9, global_position.z + fwd.z * 1.9)
+		var h_stern: float = waves.height_at(global_position.x - fwd.x * 1.6, global_position.z - fwd.z * 1.6)
+		var h_r: float = waves.height_at(global_position.x + right.x * 0.7, global_position.z + right.z * 0.7)
+		var h_l: float = waves.height_at(global_position.x - right.x * 0.7, global_position.z - right.z * 0.7)
 		wave_lift = h_c * settings.wave_bob
 		pitch += clampf(atan2(h_bow - h_stern, 3.5) * settings.wave_pitch, -limit, limit)
 		roll -= clampf(atan2(h_r - h_l, 1.4) * settings.wave_roll, -limit, limit)
@@ -314,11 +313,3 @@ func _play_bump(collider: Object, impact: float) -> void:
 	var one: Array[AudioStream] = [sound]
 	_play(one, 3.0 + linear_to_db(clampf(impact / (settings.max_speed * 0.6), 0.2, 1.0)))
 
-
-## Altura real de las olas: `height_at` supone `wave_height` = 1, pero la escena lo baja o sube con la tormenta.
-func _wave_scale() -> float:
-	var mat: ShaderMaterial = waves.material_override as ShaderMaterial
-	if mat == null:
-		return 1.0
-	var value: Variant = mat.get_shader_parameter("wave_height")
-	return float(value) if value != null else 1.0
