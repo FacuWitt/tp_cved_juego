@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PassageSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
+[ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+
+
+[resource]
+script = ExtResource("1_ps")
+voices = Array[ExtResource("2_pv")]([])

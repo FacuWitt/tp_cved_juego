@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="PassageSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
+[ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+
+[sub_resource type="Resource" id="v1"]
+script = ExtResource("2_pv")
+text = "VOZ (enfermera, clara): ¡Doctor! Movió la mano."
+at_progress = 0.12
+duration = 3.5
+
+[sub_resource type="Resource" id="v2"]
+script = ExtResource("2_pv")
+text = "VOZ (doctor, clara): ...la frecuencia sube. Está volviendo. Hablale."
+at_progress = 0.38
+duration = 4.0
+
+[sub_resource type="Resource" id="v3"]
+script = ExtResource("2_pv")
+text = "VOZ (hija, clara): Papá... ¿me escuchás? Estoy acá."
+at_progress = 0.62
+duration = 4.5
+
+[sub_resource type="Resource" id="v4"]
+script = ExtResource("2_pv")
+text = "VOZ (hija, muy cerca): Te traje el barquito."
+at_progress = 0.85
+duration = 3.5
+
+[resource]
+script = ExtResource("1_ps")
+voices = Array[ExtResource("2_pv")]([SubResource("v1"), SubResource("v2"), SubResource("v3"), SubResource("v4")])
+goal_color = Color(1, 0.97, 0.9, 1)
+goal_glow_energy = 2.2
+voice_glow_energy = 0.5
+voice_light_energy = 8.0

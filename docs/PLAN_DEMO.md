@@ -73,7 +73,7 @@ Pesca → red → tormenta → cortar → lleva el bote antes del último rápid
 6. **Sale por la puerta de casa → todo negro → empieza M4** ✅ (ver 3.1).
 
 ### 3.1 Transición M3 → M4 ✅ (era el pendiente ❓ 7)
-- El protagonista **sale por la puerta de su casa** y **todo se pone negro**. Sin voces del hospital en esta transición.
+- El protagonista **sale por la puerta de su casa** y pasa al **pasaje en silencio** (CL-062: antes era solo negro). Sin voces del hospital en esta transición.
 - **M4 empieza con el protagonista levantándose de la cama en el camarote** del barco. Lo despierta la tormenta y lo llaman porque lo necesitan en cubierta (el tripulante grita desde afuera).
 - El jugador **sale corriendo** por el pasillo del barco hasta salir a cubierta.
 - 📝 Cómo se une con lo que ya está hecho (CL-025): la puerta del pasillo sale a la **pasarela de arriba de la escalera**, y recién ahí ocurre el **relámpago largo** que muestra el mar. Es decir, el camarote y el pasillo se agregan **antes** del inicio actual de M4, sin cambiar el resto.

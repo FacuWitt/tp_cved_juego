@@ -24,7 +24,7 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Ventana con exterior falso** | M1, M3, Final | Plano con color | Plano detrás del vidrio (cielo, luna, lluvia o día) |
 | **Player** | Todas | ✅ existe | Tiene que poder **quedar sin control** durante las cinemáticas |
 | **NPC simple** | Padre, perro, hija, compañero | Cápsula de color + `Label3D` | Posición, mirar al jugador y un punto de donde sale su voz. Sin IA |
-| **Pasajes entre memorias** ✅ (reemplaza las transiciones en negro) | Entre memoria y memoria (hoy solo M1 → M2) | `scenes/passages/`: mar quieto (el océano de la M4 casi sin olas), cielo negro absoluto, una luz lejana que no se sabe qué es | Se camina hacia la luz; las voces del hospital suenan a medida que se avanza (📝 textos provisorios, subtítulos) y mientras hablan se encienden dos luces cálidas grandes y tenues arriba a los costados del jugador, que lo acompañan: las luces del presente. Su brillo sigue el volumen de la voz, como la luz de un parlante, y es lo que deja ver el agua. ❓ ABIERTO: si M3 → M4 también tiene pasaje (hoy es negro sin voces) |
+| **Pasajes entre memorias** ✅ (reemplaza las transiciones en negro) | Entre todas las memorias (CL-062): M1 → M2, M2 → M3, M3 → M4 (en silencio) y M4 → despertar | `scenes/passages/`: mar quieto (el océano de la M4 casi sin olas), cielo negro absoluto, una luz lejana que no se sabe qué es | Se camina hacia la luz; las voces del hospital suenan a medida que se avanza (📝 textos provisorios, subtítulos) y mientras hablan se encienden dos luces cálidas grandes y tenues arriba a los costados del jugador, que lo acompañan: las luces del presente. Su brillo sigue el volumen de la voz, como la luz de un parlante, y es lo que deja ver el agua. ❓ ABIERTO: si M3 → M4 también tiene pasaje (hoy es negro sin voces) |
 
 ---
 
@@ -232,7 +232,7 @@ El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no
 | Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) |
 
 ### Cinemática (sin control) 📝
-✅ Sale por la puerta de su casa → **todo se pone negro** (sin voces del hospital) → empieza M4 en el camarote.
+✅ Sale por la puerta de su casa → **pasaje en silencio** (CL-062: el mar negro y la luz, sin voces del hospital, como se había decidido para este corte) → empieza M4 en el camarote.
 
 ### Sistemas que pide
 - Laberinto que se repite: zonas que teletransportan sin que se note y que cambian según el progreso.

@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_seq")
-scene_paths = Array[String](["res://scenes/memories/m1_habitacion/m1_habitacion.tscn", "res://scenes/passages/pasaje_m1_m2.tscn", "res://scenes/memories/m2_lago/m2_lago.tscn", "res://scenes/memories/memory_3.tscn", "res://scenes/memories/memory_4.tscn", "res://scenes/memories/awakening.tscn"])
+scene_paths = Array[String](["res://scenes/memories/m1_habitacion/m1_habitacion.tscn", "res://scenes/passages/pasaje_m1_m2.tscn", "res://scenes/memories/m2_lago/m2_lago.tscn", "res://scenes/passages/pasaje_m2_m3.tscn", "res://scenes/memories/memory_3.tscn", "res://scenes/passages/pasaje_m3_m4.tscn", "res://scenes/memories/memory_4.tscn", "res://scenes/passages/pasaje_m4_despertar.tscn", "res://scenes/memories/awakening.tscn"])

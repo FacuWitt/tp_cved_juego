@@ -41,6 +41,19 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-062 · Pasajes entre todas las memorias (M2 → M3, M3 → M4 y M4 → despertar) · 2026-10-29
+- **Rama / commits:** `claude/pasajes` · sin commitear
+- **Pedido por:** Facu: "hacé el pasaje de memorias entre todas las memorias".
+- **Qué se hizo:** tres pasajes nuevos que heredan `passage.tscn` (CL-052/053), cada uno con su `.tres`, y la secuencia queda M1 → pasaje → M2 → pasaje → M3 → pasaje → M4 → pasaje → despertar. Las voces del hospital van de tapadas a claras a medida que el protagonista se acerca a despertar:
+  - **M2 → M3:** enfermera, hija, doctor y mamá, un poco más claras ("la actividad cerebral subió un poco esta noche"). Las luces del presente brillan un poco más.
+  - **M3 → M4:** **en silencio**: el mar negro y la luz, sin voces. Se respeta lo que ya estaba decidido para ese corte ("sale por la puerta de su casa → negro, sin voces del hospital"); el negro se reemplaza por el pasaje para que todas las transiciones sean iguales.
+  - **M4 → despertar:** las voces más claras y cercanas ("¡Doctor! Movió la mano", "Te traje el barquito"), y la luz del final más blanca, que anticipa el blanco del hospital.
+- **Por qué (decisión de diseño):** que todas las memorias se unan del mismo modo y que la realidad del hospital se filtre cada vez más clara hasta el despertar.
+- **Alternativas descartadas:** poner voces también en M3 → M4 (contradecía la decisión de que ese corte fuera sin voces); dejar el negro en ese corte (rompía la regularidad).
+- **Cómo se probó:** los tres pasajes se recorrieron caminando con física real hasta la luz: cada uno tarda unos 29 s y suenan todas sus voces (4, 0 y 4).
+- **Archivos y docs:** `scenes/passages/pasaje_m2_m3.tscn`, `pasaje_m3_m4.tscn`, `pasaje_m4_despertar.tscn`; `config/passage_m2_m3.tres`, `passage_m3_m4.tres`, `passage_m4_awake.tres`; `config/memory_sequence.tres`; `docs/ELEMENTOS_ESCENAS.md`, `docs/PLAN_DEMO.md`.
+- **Pendiente / ❓ ABIERTO:** los textos de las voces son provisorios (los escribió Claude; faltan los del guion del equipo) y todavía no hay audio grabado; la M3 sigue siendo el placeholder, así que hoy se pasa del pasaje M2 → M3 a una escena vacía.
+
 ### CL-061 · Despertar: la hija usa el modelo de RECURSOS (provisorio, con reparo de derechos) · 2026-10-29
 - **Rama / commits:** `claude/hospital` · sin commitear
 - **Pedido por:** Facu: "¿podés usar el modelo de la niña que está en recursos?"

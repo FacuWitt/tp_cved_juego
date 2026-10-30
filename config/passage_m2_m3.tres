@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="PassageSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
+[ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+
+[sub_resource type="Resource" id="v1"]
+script = ExtResource("2_pv")
+text = "VOZ (enfermera, un poco más clara): ...le cambio el suero y le acomodo la almohada..."
+at_progress = 0.12
+duration = 4.0
+
+[sub_resource type="Resource" id="v2"]
+script = ExtResource("2_pv")
+text = "VOZ (hija): Papá, hoy vine con la abuela. Dice que te parecés al abuelo cuando dormís."
+at_progress = 0.35
+duration = 5.0
+
+[sub_resource type="Resource" id="v3"]
+script = ExtResource("2_pv")
+text = "VOZ (doctor): ...la actividad cerebral subió un poco esta noche. Es una buena señal..."
+at_progress = 0.58
+duration = 4.5
+
+[sub_resource type="Resource" id="v4"]
+script = ExtResource("2_pv")
+text = "VOZ (mamá): ...decíselo vos, nena. A vos te escucha..."
+at_progress = 0.8
+duration = 4.5
+
+[resource]
+script = ExtResource("1_ps")
+voices = Array[ExtResource("2_pv")]([SubResource("v1"), SubResource("v2"), SubResource("v3"), SubResource("v4")])
+voice_glow_energy = 0.42
+voice_light_energy = 7.0
