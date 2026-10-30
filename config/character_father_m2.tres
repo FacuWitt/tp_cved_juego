@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CharacterPose" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/character_pose.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+bones = Dictionary[StringName, Vector3]({
+&"spine_02": Vector3(-8, 0, 0),
+&"thigh_left_020": Vector3(88, 0, -6),
+&"thigh_right_023": Vector3(88, 0, 6),
+&"shin.L_021": Vector3(-80, 0, 0),
+&"shin.R_024": Vector3(-80, 0, 0),
+&"upper_arm_left_07": Vector3(50, 0, 18),
+&"upper_arm_right_014": Vector3(50, 0, -18),
+&"forearm_left_08": Vector3(30, 0, 0),
+&"forearm_right_015": Vector3(30, 0, 0)
+})
+cycle_forward = Dictionary[StringName, Vector3]({
+&"spine_02": Vector3(-12, 0, 0),
+&"upper_arm_left_07": Vector3(22, 0, 0),
+&"upper_arm_right_014": Vector3(22, 0, 0),
+&"forearm_left_08": Vector3(-22, 0, 0),
+&"forearm_right_015": Vector3(-22, 0, 0)
+})
+cycle_back = Dictionary[StringName, Vector3]({
+&"spine_02": Vector3(10, 0, 0),
+&"upper_arm_left_07": Vector3(-28, 0, 0),
+&"upper_arm_right_014": Vector3(-28, 0, 0),
+&"forearm_left_08": Vector3(40, 0, 0),
+&"forearm_right_015": Vector3(40, 0, 0)
+})
+talk_bones = Dictionary[StringName, Vector3]({
+&"chest_03": Vector3(4, 0, 0)
+})
+talk_shake = Dictionary[StringName, Vector3]({
+&"head_05": Vector3(4, 0, 0)
+})
+look_max_yaw = 80.0

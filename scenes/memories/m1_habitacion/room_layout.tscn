@@ -130,6 +130,7 @@ position = Vector3(0.81, 0, 2.1)
 
 [node name="Door" type="AnimatableBody3D" parent="DoorHinge"]
 position = Vector3(0.49, 1.04, 0)
+sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorHinge/Door"]
 mesh = SubResource("BoxMesh_10_s")

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="HeldItemSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/held_item_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+rest_position = Vector3(-0.4, -0.33, -0.55)
+rest_rotation_degrees = Vector3(18, -35, 12)
+shiver = 0.15
+look_lag = 0.6

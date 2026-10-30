@@ -5,6 +5,9 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 > Estados: ✅ definido · 📝 propuesta · ❓ abierto
 > **Etapa 0** = el placeholder genérico que se usa ahora (cubos, cápsulas, `Label3D` con el nombre). **Etapa 3** = el asset final (modelo, textura, sonido).
 > Columna **Rol**: **OBL** = obligatorio para el flujo (sin esto no se puede terminar la escena) · **AMB** = ambientación (se puede sumar después).
+>
+> **Regla de todas las memorias ✅:** siempre hay tormenta y el protagonista **se despierta por la tormenta**. La excepción es el hospital, donde despierta por otra cosa.
+> **Plan de la demo de la próxima clase:** `docs/PLAN_DEMO.md` (recorridos de M2 y M3, sistemas compartidos y teclas de debug).
 
 ---
 
@@ -12,10 +15,10 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 
 | Elemento | Dónde aparece | Etapa 0 | Qué necesita |
 |---|---|---|---|
-| **Barquito de madera** | M1 estante alto · M2 mochila · M3 en las manos · M4 imagen luminosa en el fondo · Final mesita de luz | Prisma marrón | Un solo modelo con dos variantes: normal y **luminosa** (emisión cálida) |
-| **Reloj parado** | M1 despertador · M2 cabaña · M3 varios · M4 camarote · Final reloj de pared | Cilindro con `Label3D` "RELOJ" | Script con modo `parado` (agujas fijas en la hora ❓) o `en marcha` (Final). En ambos modos hace tic-tac al ritmo del bip |
+| **Barquito de madera** | M1 estante alto · M2 sube encendido en el final · M3 en las manos · M4 imagen luminosa en el fondo · Final mesita de luz | Prisma marrón | Un solo modelo con dos variantes: normal y **luminosa** (emisión cálida) |
+| **Reloj parado** | M1 despertador · M2 cabaña · M3 varios · M4 camarote · Final reloj de pared | Cilindro con `Label3D` "RELOJ" | Script con modo `parado` (agujas fijas a las **3:00 am** ✅, hora del accidente)  o `en marcha` (Final). En ambos modos hace tic-tac al ritmo del bip |
 | **Luna** | Ventanas de M1 y M3 · cielo de M2 y M4 | Esfera emisiva | Billboard o esfera lejana; las nubes la tapan y destapan |
-| **Tormenta** | M1 (afuera) · M2 (se acerca) · M4 (encima) | — | Lluvia (partículas), relámpagos (flash de luz fría) y truenos con retardo. Intensidad configurable por escena |
+| **Tormenta** | M1 (afuera) · M2 (se acerca) · M3 (afuera, por las ventanas) · M4 (encima) | — | Lluvia (partículas), relámpagos (flash de luz fría) y truenos con retardo. Intensidad configurable por escena |
 | **Agua / goteo** | M1 techo · M3 charcos, paredes y canilla · M4 cubierta | Esfera chica que cae | Gota con sonido 3D seco (capa amenaza) |
 | **Ritmo del bip** | Tic-tac (M1) · ladridos (M2) · canilla (M3) · bomba de achique (M4) · monitor (Final) | — | **Un único pulso global** (BPM en `config/`) que siguen todos estos sonidos |
 | **Ventana con exterior falso** | M1, M3, Final | Plano con color | Plano detrás del vidrio (cielo, luna, lluvia o día) |
@@ -59,7 +62,16 @@ La abuela le pide que ordene los juguetes y le deja la canción de cuna en un pa
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
 | 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
 
-**Distractores:** barco, marea y pescador. El pescador está nombrado en el poema ("y el pescador fue a tirar"): es la trampa más fuerte; revisar en pruebas con gente si traba de más.
+**Distractor:** barco. ✅ Es el único. El pescador no es un objeto (el poema lo nombra porque es el protagonista) y la marea se descartó por ser difícil de representar como objeto. Total: **6 objetos** agarrables (5 correctos + el barco).
+
+#### El barco: el juguete favorito ✅
+El barco **no** sirve para el orden, pero el nene no se va sin él:
+1. El barco está suelto en el cuarto (Etapa 0: junto a la cama, sobre la mesa de luz).
+2. Al resolver el puzzle la puerta se abre. El jugador, naturalmente, intenta salir.
+3. Un `ItemGate` (barrera física + zona de aviso) en el umbral lo frena y el protagonista dice: *"No me puedo ir sin mi juguete favorito."* (`gate_line` en `memory_1_settings.tres`).
+4. El jugador vuelve a buscar el barco. Al agarrarlo, el paso queda libre para siempre (aunque lo suelte).
+5. Si agarró el barco antes de resolver, no hay aviso: ya lo lleva.
+Intención narrativa: refuerza el vínculo con el barquito (el cable a tierra) desde la primera memoria.
 
 Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
 
@@ -77,74 +89,97 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Tic-tac del despertador | Amenaza, al ritmo del bip | Mesa de luz (3D) |
 | Voz de la mamá al resolver (*"¡Muy bien, mi amor!"*) | Recuerdo | — |
 | Error: golpe grave, crujido, goteo más cerca | Amenaza | Puerta (3D) |
+| Error: agua que se filtra bajo la puerta ✅ (visual, ver tareas) | Amenaza | Puerta |
+
+
+### 🔧 TAREAS TEMPORALES M1 (decididas 2026-10-08) — borrar este bloque cuando estén todas hechas
+> Para Claude Code. Al terminar cada una: tachala (`~~...~~`), sumá la entrada al `CHANGELOG.md` y probá recorriendo el camino del jugador (no teletransportes). Cuando estén todas, borrá el bloque entero.
+
+- [x] ~~**T1. Sacar el pescador.**~~ Hecho: se sacaron también la marea (difícil de representar). Quedan 6 objetos. El poema no cambia.
+- [ ] **T2. Hora del accidente = 3:00 am.** El reloj compartido (`Reloj parado`) toma la hora de un `@export` en un Resource de `config/` (hora y minuto), con 3:00 por defecto. El despertador de M1 la usa. Que M2, M3, M4 reutilicen el mismo valor cuando se arme su reloj. El reloj del Final (en marcha) no la usa.
+- [ ] **T3. Agua bajo la puerta al equivocarse.** En el evento `failed` de `memory_1_room.gd`, un charco finito (placeholder: plano/`CSGBox3D` azul oscuro, semitransparente) crece desde el hueco de la puerta hacia adentro con un tween. 📝 Propuesta (confirmar con Facu si no gusta): cada error lo agranda un poco y al resolver el puzzle se seca o deja de crecer. Valores (tamaño por error, tiempo, color, opacidad) en `memory_1_settings.tres`. Sin colisión y sin castigo. Etapa 2: reemplazar por shader de agua.
+- [ ] **T4. Docs.** Actualizar `docs/ELEMENTOS_ESCENAS.md` si algo de lo anterior cambia al implementarlo, y anotar la decisión en el changelog (ya existe CL-012 con el porqué).
+- [x] **Confirmado, sin cambios:** valores de nene (figuras de 36 cm, cámara a 1,1 m, caminar 3,2, correr 5,0, salto 4,0). "Por el momento está bien así".
 
 ### Sistemas que pide
 - `piece_id` en `PickupObject` + script de puzzle de secuencia que valide qué pieza hay en cada `PlacementSlot`.
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
-- Reacción al error (sin castigo, sube la tensión).
+- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto (el barco) y avisa con la señal `blocked`. ✅ Implementado.
+- Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
 
 ---
 
-## 2. Memoria 2 — El lago helado ✅
+## 2. Memoria 2 — El lago y el río ✅
 
-**Escena:** `scenes/memories/m2_lago/`. Atardecer → noche, frío, viento, nieve. Degradación media (niebla, la orilla parece lejos).
+**Escena:** `scenes/memories/m2_lago/m2_lago.tscn` ✅ greybox jugable (CL-034, reemplaza a la versión de las placas de hielo de CL-031). La genera `gen_m2_rio.py` (en la nube de Claude); se puede editar a mano: las orillas salen solas de la curva del cauce. Atardecer en calma → tormenta de nieve de noche.
+
+**Recorrido ✅:** despierta en el bote por un trueno lejano → pesca 2 peces → tira la red → llega la tormenta → la red se traba → el padre grita "¡CORTÁ LA RED, HIJO!" → evento rápido con cuchillo → huida remando detrás de la luz del padre por el río (ramas, rocas, hielo y troncos flotando, árboles que caen, tramos oscuros, rápidos, viento) → el bote se hunde (3 golpes) o el último rápido lo da vuelta → cae al agua → la linterna se hunde → oscuridad y flashbacks → sube el barquito encendido → la luz, la mano y la voz del padre → negro.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| Orilla con nieve | OBL | Plano blanco |
-| Lago (agua helada) | OBL | Plano gris azulado + `KillZone` (reaparecer) |
-| **Placas de hielo** de distintos tamaños: se mueven, se inclinan, resbalan, se agrietan | OBL | Cajas planas con script |
-| Cabaña de pesca con **farol en la puerta** (única luz cálida) | OBL | Caja + `OmniLight3D` |
-| Muelle de madera | AMB | Cajas en fila |
-| Niebla en los bordes | AMB | `FogVolume` / fog del entorno |
+| Lago (elipse al principio del cauce) | OBL | Shader del océano en calma (`ocean.gdshader`, olas casi nulas) |
+| Río que sale del lago, con curvas | OBL | `RiverFlow` (curva + ancho + corriente + rápidos) y `RiverBuilder` (orillas con colisión, lomas, árboles, espuma) |
+| **Rápidos** (2): corriente más fuerte, el bote se sacude | OBL | Rangos en `RiverFlow.rapids` + espuma |
+| Zona del vuelco (último rápido) | OBL | `Area3D` `CapsizeZone` |
+| **Tramos oscuros** (2): se cierra la niebla y solo se ve lo que alumbra la linterna y la luz del padre | OBL | `RiverEvents` + `config/river_events.tres` (`dark_zones`); la memoria baja niebla, cielo y luz ambiente y frena los rayos |
+| Orillas nevadas, lomas, pinos | AMB | Generado por `RiverBuilder` |
 
-### Props
+### Props e interactivos
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| Bote del padre amarrado, con cadena y ancla | AMB | Caja + cilindros |
-| Redes colgadas, cañas | AMB | Planos / cilindros finos |
-| **Radio a pilas** (alerta de tormenta) | AMB | Cubo chico + fuente de audio |
-| Reloj de la cabaña parado | AMB | Reloj compartido |
-| **Mochila con el barquito adentro** | AMB ❓ (¿se ve? ¿la lleva el jugador?) | Cubo |
-| Luna detrás de las nubes | AMB | Compartido |
+| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes |
+| **Caña de pescar** ✅ | OBL | Objeto en mano (`HeldItemView`) + `FishingRod` (boya, línea, pez) |
+| **Red** con su soga ✅ | OBL | Plano con shader de red + `CuttableRope` (la misma soga de M4, más chica) |
+| **Cuchillo** ✅ | OBL | Objeto en mano; corta con el evento rápido de M4 (`TimingQte`) |
+| **Linterna del protagonista** ✅ | OBL | Atada a la proa del bote (deja las manos libres para remar) y gira hacia donde mira el jugador (hasta 60° por lado). Se prende con la tormenta; en la caída se hunde y se apaga |
+| **Ramas** que salen de las orillas | OBL | Troncos con colisión (grupo `boat_hazard`) |
+| **Rocas** en los rápidos | OBL | Esferas con colisión (`boat_hazard`) |
+| **Hielo flotante** | OBL | `DriftingFloe` (deriva con la corriente, `boat_hazard`) |
+| **Árboles que caen** (4) al acercarse el bote, del lado contrario a la línea del padre | OBL | `RiverEvents` (los arma por código; `tree_offsets`), con relámpago y "¡Cuidado, el árbol!" |
+| **Troncos flotando** que aparecen adelante del bote y bajan con la corriente | OBL | `RiverEvents` (pool de troncos; se corren de costado si el bote los toca) |
+| **Barquito** (aparece encendido en el final) ✅ | OBL | Prisma + mástil + vela + luz |
+| ~~Mochila con el barquito~~ | — | **Se sacó** (no quedaba bien). El barquito solo aparece en el final |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Perro** | Huye hacia el lago y espera sobre una placa lejana, ladrando | Cápsula chica marrón |
-| **Padre** | Con linterna. Aparece en el rescate | Cápsula alta + `SpotLight3D` |
+| **Padre** ✅ | Pesca en su propio bote al lado. En la huida rema adelante por la línea segura (esquiva los obstáculos), espera si el hijo se queda atrás y lo alumbra; llama ("¡Hijo! ¡Por acá!"). En el final lo rescata | `FatherBoat`: bote + farol + linterna, sigue la curva `FatherLine`. **Modelo del hombre** (`male_character`, CL-038) sentado, rema con los remos y mira al hijo (`CharacterRig` + `config/character_father_m2.tres`) |
+| ~~Perro~~ | **Se sacó** con la versión de las placas | — |
 
 ### Luz
-- **Cálida:** farol de la cabaña y linterna del padre.
-- **Fría:** el azul del hielo y del agua (domina).
+- **Atardecer en calma:** sol bajo naranja, cielo violeta, farol del padre.
+- **Tormenta:** casi de noche; solo la linterna de la proa, la linterna y el farol del padre, y los relámpagos.
 
 ### Audio
 | Sonido | Capa | Fuente |
 |---|---|---|
-| Voz del padre, radio | Recuerdo | — |
-| Crujidos del hielo, agua debajo de los pies | Amenaza | **Debajo del jugador** (3D) |
-| Viento | Amenaza | Ambiente |
-| Ladridos del perro, al ritmo del bip | Amenaza | Perro (3D) |
+| Voz del padre | Recuerdo | Bote del padre (3D) |
+| Agua contra el bote, remos, carrete de la caña | Recuerdo | Bote (3D) |
+| Viento, trueno, nieve | Amenaza | Ambiente |
+| Crujido del bote al chocar, agua que entra | Amenaza | Bote (3D) |
+| Rápidos | Amenaza | Tramos del río (3D) |
 
 ### Efectos
-- **Flashbacks:** imágenes de la noche del accidente, de menos de un segundo, a pantalla completa. **Dependen de M4**: se sacan capturas de esa escena. Hace falta una opción para reducirlos (fotosensibilidad).
-- Nieve (partículas).
+- **Flashbacks:** imágenes de la noche del accidente, de menos de un segundo, en la oscuridad del final. 📝 Las capturas definitivas las hace el equipo, parecidas a lo que se ve fuera de los flashbacks; se cambian en `config/flashbacks_m2.tres` sin tocar código.
+- Nieve liviana (calma) y nieve de tormenta que el viento inclina.
+- El bote se inclina con el viento y se sacude en los rápidos.
 
-### Cinemática (sin control) 📝
-El hielo se rompe → el jugador y el perro caen al agua → la mano y la voz del padre los sacan (*"agarrate, no te suelto"*) → negro.
+### Cinemática (sin control) ✅
+El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista cae al agua → **la linterna se hunde apagándose** → oscuridad total → **flashbacks** → el barquito sube encendido → la luz, la mano y la voz del padre (*"agarrate, no te suelto"*) → negro → M3.
 
 ### Sistemas que pide
-- Placas de hielo físicas: inclinación según dónde pisa, deslizamiento y grieta que avanza con un tiempo (todo configurable en `config/`).
-- Control resbaloso sobre hielo (modificador de fricción del player).
-- Overlay de flashbacks.
-- Director de cinemáticas.
+- `RowBoat` + `RowBoatSettings` (`config/row_boat.tres`).
+- `FishingRod` + `FishingBar` + `FishingSettings` (`config/fishing.tres`).
+- `RiverFlow`, `RiverBuilder`, `DriftingFloe`, `FatherBoat`, `CharacterRig` (padre).
+- Reutiliza: `CuttableRope`, `TimingQte`, `HeldItemView`, `WakeUpIntro`, `FlashbackOverlay`, `LightningController`, `DebugTools`.
+- Acciones nuevas del InputMap: `row_left` (Q) y `row_right` (E). A, D y S usan las de caminar.
 
 ---
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar ✅
 
-**Escena:** `scenes/memories/m3_casa/`. Madrugada, silencio, sin tormenta. **La más degradada:** pasillos que se estiran, cocina que se repite.
+**Escena:** `scenes/memories/m3_casa/`. Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno 📝. **La más degradada:** pasillos que se estiran, cocina que se repite.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
@@ -186,7 +221,7 @@ El hielo se rompe → el jugador y el perro caen al agua → la mano y la voz de
 | Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) |
 
 ### Cinemática (sin control) 📝
-Sale por la puerta → todo se oscurece → **sin transición en negro con voces**: corte directo al camarote de M4 ❓.
+✅ Sale por la puerta de su casa → **todo se pone negro** (sin voces del hospital) → empieza M4 en el camarote.
 
 ### Sistemas que pide
 - Laberinto que se repite: zonas que teletransportan sin que se note y que cambian según el progreso.
@@ -196,6 +231,17 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 ---
 
 ## 4. Memoria 4 — El accidente ✅
+
+> ### 🔄 Cambio de diseño (CL-014): cubierta, sogas y ola gigante
+> El prototipo de M4 se armó con **una sola escena de cubierta** (`scenes/memories/memory_4.tscn`) en lugar de camarote + escalera + fondo. Lo que quedó implementado:
+> - **Cortar sogas con hacha:** 3 sogas (izquierda, centro, derecha). Hay que acertar un **quick event** (barra con marcador que va y viene, tecla `interact`) 2 veces por soga. Errar nunca es game over: el barco se inclina un poco más y se vuelve a intentar. Cada soga hace la zona más chica y el marcador más rápido.
+> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, NOMBRE!"* (`protagonist_name` en `config/memory_4_settings.tres`, ❓ falta el nombre).
+> - **La ola gigante** (`GiantWave` + `giant_wave.gdshader`): una malla que se deforma en el shader desde una ola baja, a una pared, a una ola que **rompe hacia el jugador** (`curl`). Avanza acelerando y lo cubre. Todo configurable en `Memory4Settings`.
+> - **Luz:** lo único que ilumina son los **rayos** (`LightningController`) y una luz muy lejana del barco. Entre rayo y rayo, casi negro.
+> - **Después de la ola:** el protagonista emerge, flota; el barco se aleja mirando para otro lado y su reflector barre otras partes del mar sin verlo. Luego se hunde a oscuridad total (talasofobia).
+> - **Final de la memoria:** una luz que crece desde el fondo = **helicóptero** ✅ (reemplaza al barquito luminoso del fondo). ❓ Falta confirmar con el equipo si además aparece el barquito.
+> - **CL-015 — Barco pesquero grande:** unos 39 m, **6 sogas (3 por banda)** sobre huecos de la baranda, **suelo resbaladizo** (el barco cabecea y empuja al jugador, `DeckSlip` + `config/player_settings_deck.tres`) y **costados abiertos**: si cae al agua → negro con sonido de chapuzón (`assets/audio/m4_fall_splash.wav`, placeholder) y vuelve a bordo como un fallo más. El evento rápido (`E`) se achica y acelera con cada soga. Lluvia en manchas borrosas, que cerca del barco se ve apenas y lejos casi no se ve. Mirando hacia abajo en el agua la pantalla se va a negro (`abyss.gdshader`).
+> - **Pendientes ❓:** sonido (capas Amenaza/Afuera), modelos finales, nombre del protagonista, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
 
 **Escena:** `scenes/memories/m4_pesquero/`. Noche, tormenta fuerte. **Sin degradación:** la más nítida y real.
 
@@ -227,10 +273,11 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Compañero** | En el camarote o en la cubierta le pide que tome su turno; grita durante la tormenta | Cápsula |
+| **Compañero** (tripulante) ✅ | Al timón, detrás de las ventanas de popa de la cabina: mira al jugador y grita durante la tormenta (levanta el brazo) | **Modelo del hombre** (`male_character`, CL-038) con `CharacterRig` + `config/character_crew_m4.tres` |
 
 ### Luz
 - Cálida solo en la cabina y el faro lejano. El resto: oscuridad + relámpagos fríos.
+- **Luces del hospital en el cielo** (CL-040, CL-041): con cada rayo, mirando hacia arriba, se ven 6 paneles amarillos grandes (2 columnas x 3 filas) como los del techo del hospital. `HospitalLights` + `config/hospital_lights_m4.tres`.
 - Bajo el agua: todo azul verdoso, salvo la luz del faro.
 
 ### Audio
@@ -242,7 +289,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 | Canción de cuna, muy tenue, al hundirse | Recuerdo | — |
 
 ### Cinemáticas (sin control) 📝
-- Despertar en el camarote (viene de M3).
+- ✅ **Despertar en el camarote** (viene de M3): se levanta de la litera, lo despierta la tormenta y lo llaman porque lo necesitan en cubierta (el tripulante grita desde afuera). El jugador sale corriendo por el pasillo; la puerta da a la pasarela de arriba de la escalera, donde ocurre el relámpago largo de CL-025 📝.
 - La ola y la caída al agua.
 - El descenso: ❓ ¿controlado (hundirse lento hacia la luz) o cinemática?
 
@@ -264,6 +311,7 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 | Cama (el jugador está acostado: solo mira alrededor ❓) | OBL | Caja |
 | **Monitor cardíaco** (el bip real) | OBL | Caja + audio 3D |
 | Ventana con luz de día | OBL | Plano blanco + `DirectionalLight3D` |
+| **6 luces de techo** (2 x 3), las mismas que se ven en el cielo con los rayos de la M4 (CL-040) | OBL | Paneles con el mismo brillo que `HospitalLights` |
 | **Reloj de pared en marcha** | OBL | Reloj compartido en modo "en marcha" |
 | **Hija** al lado de la cama | OBL | Cápsula chica |
 | **Barquito en la mesita de luz** (último plano) | OBL | Prisma |
@@ -280,12 +328,12 @@ Sale por la puerta → todo se oscurece → **sin transición en negro con voces
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 3 distractores (barco, marea, pescador).
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 1 distractor: el barco (sin marea ni pescador). El barco es además el juguete favorito que hay que llevarse para salir.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
 4. ~~M1: quién felicita~~ ✅ la mamá.
-5. La hora del accidente (todos los relojes).
-6. **M2:** ¿la mochila con el barquito se ve en escena?
-7. **M3 → M4:** ¿corte directo o transición en negro con voces?
+5. ~~La hora del accidente~~ ✅ **3:00 am** (todos los relojes).
+6. ~~**M2:** ¿la mochila con el barquito se ve en escena?~~ ✅ Se sacó la mochila (CL-034): el barquito solo aparece encendido en el final.
+7. ~~**M3 → M4:** ¿corte directo o transición en negro con voces?~~ ✅ Sale por la puerta de casa → negro → M4 empieza en el camarote.
 8. **M4:** ¿el descenso es controlado o cinemática? ¿Hay timón?
 9. **Final:** ¿el jugador puede mover la cámara? ¿Qué pasa después del último plano?

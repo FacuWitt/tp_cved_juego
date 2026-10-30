@@ -1,0 +1,1509 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/river_events.gd" id="s_events"]
+[ext_resource type="Resource" path="res://config/river_events.tres" id="r_events"]
+[ext_resource type="Script" path="res://scripts/memories/memory_2_lake.gd" id="s_mem"]
+[ext_resource type="Resource" path="res://config/memory_2_settings.tres" id="r_mem"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="p_player"]
+[ext_resource type="Resource" path="res://config/player_settings.tres" id="r_player"]
+[ext_resource type="Script" path="res://scripts/world/lightning_controller.gd" id="s_light"]
+[ext_resource type="Resource" path="res://config/lightning_m2.tres" id="r_light"]
+[ext_resource type="Script" path="res://scripts/fx/wake_up_intro.gd" id="s_wake"]
+[ext_resource type="Resource" path="res://config/wake_up_m2.tres" id="r_wake"]
+[ext_resource type="Script" path="res://scripts/ui/flashback_overlay.gd" id="s_fb"]
+[ext_resource type="Resource" path="res://config/flashbacks_m2.tres" id="r_fb"]
+[ext_resource type="Script" path="res://scripts/debug/debug_tools.gd" id="s_dbg"]
+[ext_resource type="Script" path="res://scripts/fx/held_item_view.gd" id="s_held"]
+[ext_resource type="Resource" path="res://config/held_rod.tres" id="r_hrod"]
+[ext_resource type="Resource" path="res://config/held_knife.tres" id="r_hknife"]
+[ext_resource type="Script" path="res://scripts/fx/post_fx.gd" id="s_pfx"]
+[ext_resource type="Resource" path="res://config/postfx_m2.tres" id="r_pfx"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="s_sub"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="s_prompt"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="r_prompt"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="s_dot"]
+[ext_resource type="Script" path="res://scripts/ui/timing_qte.gd" id="s_qte"]
+[ext_resource type="Script" path="res://scripts/ui/fishing_bar.gd" id="s_fbar"]
+[ext_resource type="Script" path="res://scripts/world/fishing_rod.gd" id="s_rod"]
+[ext_resource type="Resource" path="res://config/fishing.tres" id="r_fish"]
+[ext_resource type="Script" path="res://scripts/world/row_boat.gd" id="s_boat"]
+[ext_resource type="Resource" path="res://config/row_boat.tres" id="r_boat"]
+[ext_resource type="Script" path="res://scripts/world/father_boat.gd" id="s_father"]
+[ext_resource type="Script" path="res://scripts/world/river_flow.gd" id="s_river"]
+[ext_resource type="Script" path="res://scripts/world/river_builder.gd" id="s_builder"]
+[ext_resource type="Script" path="res://scripts/world/drifting_floe.gd" id="s_floe"]
+[ext_resource type="Script" path="res://scripts/world/cuttable_rope.gd" id="s_rope"]
+[ext_resource type="Resource" path="res://config/rope_m2.tres" id="r_rope"]
+[ext_resource type="Script" path="res://scripts/world/ocean_follow.gd" id="s_ocean"]
+[ext_resource type="Shader" path="res://assets/shaders/ocean.gdshader" id="sh_ocean"]
+[ext_resource type="Shader" path="res://assets/shaders/light_beam.gdshader" id="sh_beam"]
+[ext_resource type="Shader" path="res://assets/shaders/net.gdshader" id="sh_net"]
+[ext_resource type="PackedScene" path="res://scenes/characters/male_character.tscn" id="pc_man"]
+[ext_resource type="Resource" path="res://config/character_father_m2.tres" id="r_pose_father"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.12, 0.13, 0.22, 1)
+sky_horizon_color = Color(0.62, 0.42, 0.36, 1)
+sky_curve = 0.16
+ground_bottom_color = Color(0.03, 0.035, 0.05, 1)
+ground_horizon_color = Color(0.4, 0.32, 0.33, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.5, 0.5, 0.62, 1)
+ambient_light_energy = 0.34
+reflected_light_source = 2
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.45
+fog_enabled = true
+fog_light_color = Color(0.32, 0.3, 0.36, 1)
+fog_density = 0.012
+fog_sky_affect = 0.6
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.008
+volumetric_fog_albedo = Color(0.8, 0.85, 0.92, 1)
+
+[sub_resource type="ShaderMaterial" id="m_ocean"]
+render_priority = 0
+shader = ExtResource("sh_ocean")
+shader_parameter/deep_color = Color(0.01, 0.022, 0.028, 1)
+shader_parameter/wave_height = 0.03
+shader_parameter/chop = 0.3
+shader_parameter/foam_amount = 0.15
+shader_parameter/big_swell_far = 0.0
+shader_parameter/big_swell_near = 0.0
+shader_parameter/far_scale = 1.0
+shader_parameter/calm_radius = 1000.0
+shader_parameter/far_radius = 2000.0
+shader_parameter/under_flash_strength = 0.4
+shader_parameter/look_down_black = 0.5
+
+[sub_resource type="PlaneMesh" id="pm_ocean"]
+size = Vector2(400, 400)
+subdivide_width = 199
+subdivide_depth = 199
+
+[sub_resource type="StandardMaterial3D" id="m_wood"]
+albedo_color = Color(0.4, 0.27, 0.16, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_wood_dark"]
+albedo_color = Color(0.22, 0.15, 0.1, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_wood_father"]
+albedo_color = Color(0.3, 0.22, 0.17, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_floe"]
+albedo_color = Color(0.72, 0.8, 0.86, 1)
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="m_rock"]
+albedo_color = Color(0.2, 0.2, 0.21, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="m_branch"]
+albedo_color = Color(0.17, 0.12, 0.09, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="m_metal"]
+albedo_color = Color(0.12, 0.13, 0.14, 1)
+metallic = 0.7
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="m_blade"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+metallic = 0.9
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="m_lens"]
+shading_mode = 0
+albedo_color = Color(1, 0.95, 0.82, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_float"]
+albedo_color = Color(0.95, 0.45, 0.1, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="m_coat"]
+albedo_color = Color(0.35, 0.12, 0.1, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_skin"]
+albedo_color = Color(0.75, 0.55, 0.45, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_water_in"]
+albedo_color = Color(0.05, 0.12, 0.15, 0.8)
+transparency = 1
+metallic = 0.2
+roughness = 0.05
+
+[sub_resource type="StandardMaterial3D" id="m_toy"]
+albedo_color = Color(0.62, 0.4, 0.22, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.35, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="StandardMaterial3D" id="m_sail"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+emission_enabled = true
+emission = Color(1, 0.85, 0.6, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="m_father_lens"]
+shading_mode = 0
+albedo_color = Color(1, 0.93, 0.78, 1)
+emission_enabled = true
+emission = Color(1, 0.9, 0.7, 1)
+emission_energy_multiplier = 6.0
+
+[sub_resource type="StandardMaterial3D" id="m_snowflake"]
+shading_mode = 0
+albedo_color = Color(0.95, 0.97, 1, 0.9)
+transparency = 1
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+
+[sub_resource type="ShaderMaterial" id="m_net"]
+render_priority = 0
+shader = ExtResource("sh_net")
+
+[sub_resource type="CylinderMesh" id="cm_rod"]
+top_radius = 0.003
+bottom_radius = 0.01
+height = 1.4
+radial_segments = 6
+rings = 1
+
+[sub_resource type="QuadMesh" id="qm_snow"]
+size = Vector2(0.045, 0.045)
+
+[sub_resource type="PlaneMesh" id="pm_net"]
+size = Vector2(2.4, 2.4)
+
+[sub_resource type="PlaneMesh" id="pm_water_in"]
+size = Vector2(1.0, 2.5)
+
+[sub_resource type="PrismMesh" id="prism_bow"]
+size = Vector3(1.1, 0.6, 0.5)
+
+[sub_resource type="PrismMesh" id="prism_toy"]
+size = Vector3(0.06, 0.045, 0.17)
+
+[sub_resource type="BoxShape3D" id="sh_boat"]
+size = Vector3(1.25, 0.8, 3.4)
+
+[sub_resource type="BoxShape3D" id="sh_branch"]
+size = Vector3(1.0, 0.45, 0.45)
+
+[sub_resource type="SphereShape3D" id="sh_rock"]
+radius = 1.0
+
+[sub_resource type="SphereMesh" id="sm_rock"]
+radius = 1.0
+height = 1.6
+radial_segments = 10
+rings = 6
+
+[sub_resource type="CylinderMesh" id="cone_beam"]
+top_radius = 1.0
+bottom_radius = 0.0
+height = 1.0
+radial_segments = 24
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="m_beam"]
+render_priority = 1
+shader = ExtResource("sh_beam")
+shader_parameter/beam_color = Color(1, 0.93, 0.8, 1)
+shader_parameter/strength = 0.35
+shader_parameter/rain_streaks = 0.6
+shader_parameter/rain_dir = Vector3(0.4, -1, 0.15)
+
+[sub_resource type="Curve3D" id="c_river"]
+bake_interval = 0.5
+_data = {
+"points": PackedVector3Array(-0.0000, 0, 10.0000, 0.0000, 0, -10.0000, 0.000, 0, 48.000, -0.0000, 0, 10.0000, 0.0000, 0, -10.0000, 0.000, 0, 18.000, -0.0000, 0, 10.0000, 0.0000, 0, -10.0000, 0.000, 0, -12.000, -1.0000, 0, 9.6667, 1.0000, 0, -9.6667, 0.000, 0, -42.000, -3.0000, 0, 9.3333, 3.0000, 0, -9.3333, 6.000, 0, -70.000, -1.3333, 0, 9.6667, 1.3333, 0, -9.6667, 18.000, 0, -98.000, 4.0000, 0, 9.0000, -4.0000, 0, -9.0000, 14.000, 0, -128.000, 5.6667, 0, 8.6667, -5.6667, 0, -8.6667, -6.000, 0, -152.000, 1.3333, 0, 9.6667, -1.3333, 0, -9.6667, -20.000, 0, -180.000, -4.0000, 0, 9.3333, 4.0000, 0, -9.3333, -14.000, 0, -210.000, -5.3333, 0, 9.0000, 5.3333, 0, -9.0000, 4.000, 0, -236.000, -1.3333, 0, 9.6667, 1.3333, 0, -9.6667, 18.000, 0, -264.000, 3.6667, 0, 9.3333, -3.6667, 0, -9.3333, 12.000, 0, -294.000, 3.6667, 0, 9.3333, -3.6667, 0, -9.3333, -4.000, 0, -320.000, 0.3333, 0, 9.3333, -0.3333, 0, -9.3333, -10.000, 0, -350.000, -1.3333, 0, 8.3333, 1.3333, 0, -8.3333, -6.000, 0, -376.000, -1.3333, 0, 8.0000, 1.3333, 0, -8.0000, -2.000, 0, -400.000),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 17
+
+[sub_resource type="Curve3D" id="c_father"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -4.500, 0, 2.000, 0, 0, 0, 0, 0, 0, -4.050, 0, -1.000, 0, 0, 0, 0, 0, 0, -3.600, 0, -4.000, 0, 0, 0, 0, 0, 0, -3.150, 0, -7.000, 0, 0, 0, 0, 0, 0, -2.700, 0, -10.000, 0, 0, 0, 0, 0, 0, -2.253, 0, -12.986, 0, 0, 0, 0, 0, 0, -1.846, 0, -15.962, 0, 0, 0, 0, 0, 0, -1.473, 0, -18.958, 0, 0, 0, 0, 0, 0, -1.119, 0, -21.968, 0, 0, 0, 0, 0, 0, -0.766, 0, -24.982, 0, 0, 0, 0, 0, 0, -0.395, 0, -27.995, 0, 0, 0, 0, 0, 0, -0.440, 0, -30.994, 0, 0, 0, 0, 0, 0, -0.432, 0, -33.994, 0, 0, 0, 0, 0, 0, -0.352, 0, -36.993, 0, 0, 0, 0, 0, 0, -0.179, 0, -39.988, 0, 0, 0, 0, 0, 0, 0.105, 0, -42.974, 0, 0, 0, 0, 0, 0, 0.473, 0, -45.951, 0, 0, 0, 0, 0, 0, 0.922, 0, -48.917, 0, 0, 0, 0, 0, 0, 1.486, 0, -51.863, 0, 0, 0, 0, 0, 0, 2.249, 0, -54.767, 0, 0, 0, 0, 0, 0, 3.292, 0, -57.599, 0, 0, 0, 0, 0, 0, 4.505, 0, -60.371, 0, 0, 0, 0, 0, 0, 6.119, 0, -63.011, 0, 0, 0, 0, 0, 0, 7.955, 0, -65.552, 0, 0, 0, 0, 0, 0, 9.557, 0, -68.127, 0, 0, 0, 0, 0, 0, 10.468, 0, -70.704, 0, 0, 0, 0, 0, 0, 10.404, 0, -73.775, 0, 0, 0, 0, 0, 0, 10.267, 0, -77.099, 0, 0, 0, 0, 0, 0, 10.217, 0, -80.506, 0, 0, 0, 0, 0, 0, 10.224, 0, -83.907, 0, 0, 0, 0, 0, 0, 10.353, 0, -87.173, 0, 0, 0, 0, 0, 0, 10.902, 0, -90.087, 0, 0, 0, 0, 0, 0, 12.139, 0, -92.554, 0, 0, 0, 0, 0, 0, 13.949, 0, -94.772, 0, 0, 0, 0, 0, 0, 15.819, 0, -97.101, 0, 0, 0, 0, 0, 0, 17.220, 0, -99.791, 0, 0, 0, 0, 0, 0, 18.050, 0, -102.698, 0, 0, 0, 0, 0, 0, 18.425, 0, -105.678, 0, 0, 0, 0, 0, 0, 18.566, 0, -108.684, 0, 0, 0, 0, 0, 0, 18.657, 0, -111.716, 0, 0, 0, 0, 0, 0, 18.821, 0, -114.798, 0, 0, 0, 0, 0, 0, 19.278, 0, -118.007, 0, 0, 0, 0, 0, 0, 19.717, 0, -121.334, 0, 0, 0, 0, 0, 0, 19.516, 0, -124.614, 0, 0, 0, 0, 0, 0, 18.546, 0, -127.717, 0, 0, 0, 0, 0, 0, 16.357, 0, -130.385, 0, 0, 0, 0, 0, 0, 13.656, 0, -132.631, 0, 0, 0, 0, 0, 0, 11.018, 0, -134.580, 0, 0, 0, 0, 0, 0, 8.606, 0, -136.523, 0, 0, 0, 0, 0, 0, 6.358, 0, -138.541, 0, 0, 0, 0, 0, 0, 4.182, 0, -140.610, 0, 0, 0, 0, 0, 0, 2.038, 0, -142.708, 0, 0, 0, 0, 0, 0, -0.066, 0, -144.847, 0, 0, 0, 0, 0, 0, -2.083, 0, -147.066, 0, 0, 0, 0, 0, 0, -3.957, 0, -149.402, 0, 0, 0, 0, 0, 0, -5.664, 0, -151.854, 0, 0, 0, 0, 0, 0, -7.313, 0, -154.358, 0, 0, 0, 0, 0, 0, -8.966, 0, -156.861, 0, 0, 0, 0, 0, 0, -10.590, 0, -159.381, 0, 0, 0, 0, 0, 0, -12.122, 0, -161.955, 0, 0, 0, 0, 0, 0, -13.431, 0, -164.654, 0, 0, 0, 0, 0, 0, -14.576, 0, -167.419, 0, 0, 0, 0, 0, 0, -15.941, 0, -170.043, 0, 0, 0, 0, 0, 0, -17.753, 0, -172.492, 0, 0, 0, 0, 0, 0, -19.850, 0, -174.964, 0, 0, 0, 0, 0, 0, -21.346, 0, -177.806, 0, 0, 0, 0, 0, 0, -21.734, 0, -180.958, 0, 0, 0, 0, 0, 0, -21.278, 0, -184.102, 0, 0, 0, 0, 0, 0, -21.095, 0, -187.169, 0, 0, 0, 0, 0, 0, -21.406, 0, -190.293, 0, 0, 0, 0, 0, 0, -21.953, 0, -193.537, 0, 0, 0, 0, 0, 0, -22.272, 0, -196.830, 0, 0, 0, 0, 0, 0, -21.866, 0, -199.993, 0, 0, 0, 0, 0, 0, -20.537, 0, -202.871, 0, 0, 0, 0, 0, 0, -18.559, 0, -205.467, 0, 0, 0, 0, 0, 0, -16.435, 0, -207.929, 0, 0, 0, 0, 0, 0, -14.494, 0, -210.406, 0, 0, 0, 0, 0, 0, -12.650, 0, -212.872, 0, 0, 0, 0, 0, 0, -10.713, 0, -215.198, 0, 0, 0, 0, 0, 0, -8.634, 0, -217.374, 0, 0, 0, 0, 0, 0, -6.580, 0, -219.540, 0, 0, 0, 0, 0, 0, -4.239, 0, -221.480, 0, 0, 0, 0, 0, 0, -1.723, 0, -223.293, 0, 0, 0, 0, 0, 0, 0.606, 0, -225.301, 0, 0, 0, 0, 0, 0, 2.513, 0, -227.704, 0, 0, 0, 0, 0, 0, 3.472, 0, -230.840, 0, 0, 0, 0, 0, 0, 3.751, 0, -234.352, 0, 0, 0, 0, 0, 0, 3.724, 0, -237.895, 0, 0, 0, 0, 0, 0, 3.987, 0, -241.298, 0, 0, 0, 0, 0, 0, 4.914, 0, -244.278, 0, 0, 0, 0, 0, 0, 6.506, 0, -246.794, 0, 0, 0, 0, 0, 0, 8.738, 0, -248.879, 0, 0, 0, 0, 0, 0, 11.128, 0, -250.882, 0, 0, 0, 0, 0, 0, 13.241, 0, -253.087, 0, 0, 0, 0, 0, 0, 14.865, 0, -255.589, 0, 0, 0, 0, 0, 0, 16.080, 0, -258.293, 0, 0, 0, 0, 0, 0, 17.245, 0, -261.042, 0, 0, 0, 0, 0, 0, 18.467, 0, -263.874, 0, 0, 0, 0, 0, 0, 19.778, 0, -266.869, 0, 0, 0, 0, 0, 0, 20.895, 0, -270.049, 0, 0, 0, 0, 0, 0, 21.322, 0, -273.309, 0, 0, 0, 0, 0, 0, 20.798, 0, -276.464, 0, 0, 0, 0, 0, 0, 19.258, 0, -279.355, 0, 0, 0, 0, 0, 0, 17.522, 0, -282.090, 0, 0, 0, 0, 0, 0, 15.958, 0, -284.793, 0, 0, 0, 0, 0, 0, 14.631, 0, -287.528, 0, 0, 0, 0, 0, 0, 13.419, 0, -290.283, 0, 0, 0, 0, 0, 0, 12.185, 0, -293.022, 0, 0, 0, 0, 0, 0, 10.879, 0, -295.705, 0, 0, 0, 0, 0, 0, 9.506, 0, -298.340, 0, 0, 0, 0, 0, 0, 8.074, 0, -300.962, 0, 0, 0, 0, 0, 0, 6.571, 0, -303.566, 0, 0, 0, 0, 0, 0, 4.899, 0, -306.061, 0, 0, 0, 0, 0, 0, 3.106, 0, -308.466, 0, 0, 0, 0, 0, 0, 1.287, 0, -310.850, 0, 0, 0, 0, 0, 0, -0.438, 0, -313.303, 0, 0, 0, 0, 0, 0, -2.007, 0, -315.859, 0, 0, 0, 0, 0, 0, -3.374, 0, -318.528, 0, 0, 0, 0, 0, 0, -4.498, 0, -321.308, 0, 0, 0, 0, 0, 0, -5.480, 0, -324.143, 0, 0, 0, 0, 0, 0, -6.353, 0, -327.013, 0, 0, 0, 0, 0, 0, -7.126, 0, -329.912, 0, 0, 0, 0, 0, 0, -7.806, 0, -332.833, 0, 0, 0, 0, 0, 0, -8.397, 0, -335.775, 0, 0, 0, 0, 0, 0, -8.901, 0, -338.732, 0, 0, 0, 0, 0, 0, -9.319, 0, -341.702, 0, 0, 0, 0, 0, 0, -9.648, 0, -344.684, 0, 0, 0, 0, 0, 0, -9.885, 0, -347.675, 0, 0, 0, 0, 0, 0, -10.018, 0, -350.672, 0, 0, 0, 0, 0, 0, -9.968, 0, -353.670, 0, 0, 0, 0, 0, 0, -9.722, 0, -356.660, 0, 0, 0, 0, 0, 0, -9.314, 0, -359.632, 0, 0, 0, 0, 0, 0, -8.783, 0, -362.584, 0, 0, 0, 0, 0, 0, -8.171, 0, -365.521, 0, 0, 0, 0, 0, 0, -7.520, 0, -368.450, 0, 0, 0, 0, 0, 0, -6.877, 0, -371.380, 0, 0, 0, 0, 0, 0, -6.290, 0, -374.322, 0, 0, 0, 0, 0, 0, -5.794, 0, -377.280, 0, 0, 0, 0, 0, 0, -5.313, 0, -380.242, 0, 0, 0, 0, 0, 0, -4.824, 0, -383.201, 0, 0, 0, 0, 0, 0, -4.330, 0, -386.161, 0, 0, 0, 0, 0, 0, -3.832, 0, -389.119, 0, 0, 0, 0, 0, 0, -3.333, 0, -392.077),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 143
+
+[sub_resource type="BoxShape3D" id="sh_Branch01"]
+size = Vector3(0.45, 0.45, 9.52)
+
+[sub_resource type="BoxShape3D" id="sh_Branch02"]
+size = Vector3(0.45, 0.45, 9.38)
+
+[sub_resource type="BoxShape3D" id="sh_Branch03"]
+size = Vector3(0.45, 0.45, 9.15)
+
+[sub_resource type="BoxShape3D" id="sh_Branch04"]
+size = Vector3(0.45, 0.45, 8.60)
+
+[sub_resource type="BoxShape3D" id="sh_Branch05"]
+size = Vector3(0.45, 0.45, 8.38)
+
+[sub_resource type="BoxShape3D" id="sh_Branch06"]
+size = Vector3(0.45, 0.45, 8.26)
+
+[sub_resource type="BoxShape3D" id="sh_Branch07"]
+size = Vector3(0.45, 0.45, 8.06)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe01"]
+size = Vector3(3.18, 0.5, 2.53)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe02"]
+size = Vector3(1.41, 0.5, 2.22)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe03"]
+size = Vector3(3.15, 0.5, 1.91)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe04"]
+size = Vector3(3.59, 0.5, 3.03)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe05"]
+size = Vector3(1.47, 0.5, 2.12)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe06"]
+size = Vector3(3.49, 0.5, 2.21)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe07"]
+size = Vector3(1.67, 0.5, 3.44)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe08"]
+size = Vector3(2.15, 0.5, 2.47)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe09"]
+size = Vector3(3.30, 0.5, 1.92)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe10"]
+size = Vector3(3.53, 0.5, 3.37)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe11"]
+size = Vector3(2.68, 0.5, 3.01)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe12"]
+size = Vector3(3.22, 0.5, 1.84)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe13"]
+size = Vector3(2.30, 0.5, 2.20)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe14"]
+size = Vector3(3.59, 0.5, 2.25)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe15"]
+size = Vector3(2.98, 0.5, 3.58)
+
+[sub_resource type="BoxShape3D" id="sh_floe_LakeFloe16"]
+size = Vector3(2.61, 0.5, 3.05)
+
+[sub_resource type="BoxShape3D" id="sh_floe_RiverFloe01"]
+size = Vector3(1.85, 0.5, 1.90)
+
+[sub_resource type="BoxShape3D" id="sh_floe_RiverFloe02"]
+size = Vector3(1.68, 0.5, 2.14)
+
+[sub_resource type="BoxShape3D" id="sh_floe_RiverFloe03"]
+size = Vector3(1.65, 0.5, 1.48)
+
+[sub_resource type="BoxShape3D" id="sh_floe_RiverFloe04"]
+size = Vector3(2.02, 0.5, 1.70)
+
+[sub_resource type="BoxShape3D" id="sh_capsize"]
+size = Vector3(21.1, 4, 4)
+
+[node name="Memory2" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "world_environment", "lightning", "wake_up", "flashback", "debug_tools", "prompt", "qte", "river", "boat", "father", "fishing", "knife_view", "net", "net_rope", "bow_lamp", "capsize_zone", "ocean", "snow", "snow_storm", "toy_boat", "father_light", "father_hand", "sun", "events")]
+script = ExtResource("s_mem")
+settings = ExtResource("r_mem")
+player = NodePath("Player")
+subtitles = NodePath("HUD/Subtitles")
+world_environment = NodePath("WorldEnvironment")
+lightning = NodePath("Lightning")
+wake_up = NodePath("WakeUp")
+flashback = NodePath("Flashback")
+debug_tools = NodePath("DebugTools")
+prompt = NodePath("HUD/Center/Reticle")
+qte = NodePath("HUD/Qte")
+river = NodePath("River")
+boat = NodePath("Boat")
+father = NodePath("Father")
+fishing = NodePath("Fishing")
+knife_view = NodePath("Player/Head/Camera3D/KnifeView")
+net = NodePath("Boat/Net")
+net_rope = NodePath("Boat/NetRope")
+bow_lamp = NodePath("Boat/Hull/BowLamp")
+capsize_zone = NodePath("CapsizeZone")
+ocean = NodePath("Water")
+snow = NodePath("Snow")
+snow_storm = NodePath("SnowStorm")
+toy_boat = NodePath("ToyBoat")
+father_light = NodePath("FatherLight")
+father_hand = NodePath("FatherHand")
+sun = NodePath("Sun")
+events = NodePath("RiverEvents")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.93969, 0, 0.34202, 0.0476, 0.99027, 0.13078, -0.33869, 0.13917, -0.93055, 0, 30, 0)
+light_color = Color(1, 0.62, 0.42, 1)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="LightningLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 30, 0)
+light_color = Color(0.75, 0.85, 1, 1)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("s_light")
+lightning_settings = ExtResource("r_light")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+flash_materials = Array[ShaderMaterial]([SubResource("m_ocean")])
+
+[node name="Water" type="MeshInstance3D" parent="." node_paths=PackedStringArray("target")]
+material_override = SubResource("m_ocean")
+cast_shadow = 0
+custom_aabb = AABB(-250, -5, -250, 500, 10, 500)
+mesh = SubResource("pm_ocean")
+script = ExtResource("s_ocean")
+target = NodePath("../Boat")
+
+[node name="River" type="Path3D" parent="."]
+curve = SubResource("c_river")
+script = ExtResource("s_river")
+lake_length = 90.0
+lake_width = 70.0
+river_width_start = 17.0
+river_width_end = 12.0
+end_taper = 14.0
+current_speed = 1.0
+rapids = PackedVector3Array(205.0, 245.0, 2.4, 362.0, 402.0, 2.8)
+
+[node name="Terrain" type="Node3D" parent="." node_paths=PackedStringArray("river")]
+script = ExtResource("s_builder")
+river = NodePath("../River")
+
+[node name="Hazards" type="Node3D" parent="."]
+
+[node name="Branch01" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(-0.30247, 0, 0.95316, 0, 1, 0, -0.95316, 0, -0.30247, -2.432, 0.42, -71.93)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch01"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.86)
+shape = SubResource("sh_Branch01")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch01"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.86)
+radius = 0.16
+height = 9.52
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch01"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -5.236)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch01"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -7.616)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch02" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.41005, 0, -0.91207, 0, 1, 0, 0.91207, 0, 0.41005, 22.99, 0.42, -85.67)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch02"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.79)
+shape = SubResource("sh_Branch02")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch02"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.79)
+radius = 0.16
+height = 9.38
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch02"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -5.159)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch02"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -7.504)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch03" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.32691, 0, 0.94506, 0, 1, 0, -0.94506, 0, 0.32691, 7.642, 0.42, -121.6)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch03"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.674)
+shape = SubResource("sh_Branch03")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch03"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.674)
+radius = 0.16
+height = 9.15
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch03"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -5.032)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch03"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -7.319)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch04" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.27671, 0, -0.96095, 0, 1, 0, 0.96095, 0, 0.27671, -10.63, 0.42, -196.8)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch04"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.399)
+shape = SubResource("sh_Branch04")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch04"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.399)
+radius = 0.16
+height = 8.60
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch04"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -4.729)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch04"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -6.878)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch05" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(-0.61506, 0, 0.78848, 0, 1, 0, -0.78848, 0, -0.61506, -7.361, 0.42, -232.8)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch05"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.29)
+shape = SubResource("sh_Branch05")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch05"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.29)
+radius = 0.16
+height = 8.38
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch05"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -4.609)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch05"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -6.704)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch06" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.53623, 0, -0.84407, 0, 1, 0, 0.84407, 0, 0.53623, 14.7, 0.42, -239.2)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch06"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.232)
+shape = SubResource("sh_Branch06")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch06"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.232)
+radius = 0.16
+height = 8.26
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch06"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -4.545)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch06"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -6.611)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Branch07" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.11691, 0, 0.99314, 0, 1, 0, -0.99314, 0, 0.11691, 10.88, 0.42, -272.1)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Branch07"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.13)
+shape = SubResource("sh_Branch07")
+
+[node name="Log" type="CSGCylinder3D" parent="Hazards/Branch07"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -3.13)
+radius = 0.16
+height = 8.06
+sides = 7
+material = SubResource("m_branch")
+
+[node name="Twig1" type="CSGCylinder3D" parent="Hazards/Branch07"]
+transform = Transform3D(0.82534, 3.4574e-17, 0.56464, -0.56464, 5.0537e-17, 0.82534, 0, -1, 6.1232e-17, 0.25, 0.35, -4.433)
+radius = 0.05
+height = 1.4
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Twig2" type="CSGCylinder3D" parent="Hazards/Branch07"]
+transform = Transform3D(0.87758, -2.9356e-17, -0.47943, 0.47943, 5.3736e-17, 0.87758, 0, -1, 6.1232e-17, -0.2, 0.25, -6.447)
+radius = 0.04
+height = 1.1
+sides = 5
+material = SubResource("m_branch")
+
+[node name="Rock01" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.49405, 0, -0.75227, 0, 0.9, 0, 0.75227, 0, 0.49405, -9.052, -0.15, -150.8)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock01"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock01"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="Rock02" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(-0.5971, 0, 0.92384, 0, 1.1, 0, -0.92384, 0, -0.5971, -8.794, -0.15, -162.9)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock02"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock02"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="Rock03" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(-0.62785, 0, 0.49579, 0, 0.8, 0, -0.49579, 0, -0.62785, -18.71, -0.15, -168.7)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock03"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock03"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="Rock04" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(-0.86811, 0, -0.23745, 0, 0.9, 0, 0.23745, 0, -0.86811, -18.31, -0.15, -178.4)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock04"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock04"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="Rock05" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.27127, 0, -0.9625, 0, 1, 0, 0.9625, 0, 0.27127, 12.93, -0.15, -299.1)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock05"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock05"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="Rock06" type="StaticBody3D" parent="Hazards" groups=["boat_hazard"]]
+transform = Transform3D(0.047737, 0, 1.099, 0, 1.1, 0, -1.099, 0, 0.047737, 2.19, -0.15, -304.1)
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/Rock06"]
+shape = SubResource("sh_rock")
+
+[node name="Mesh" type="MeshInstance3D" parent="Hazards/Rock06"]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("sm_rock")
+material_override = SubResource("m_rock")
+
+[node name="LakeFloe01" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.99384, 0, -0.11086, 0, 1, 0, 0.11086, 0, -0.99384, -13.74, 0.02, -8.586)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.063
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe01"]
+shape = SubResource("sh_floe_LakeFloe01")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe01"]
+size = Vector3(3.18, 0.35, 2.53)
+material = SubResource("m_floe")
+
+[node name="LakeFloe02" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.93212, 0, 0.36216, 0, 1, 0, -0.36216, 0, -0.93212, -21.83, 0.02, -21.31)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.103
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe02"]
+shape = SubResource("sh_floe_LakeFloe02")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe02"]
+size = Vector3(1.41, 0.35, 2.22)
+material = SubResource("m_floe")
+
+[node name="LakeFloe03" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.17374, 0, -0.98479, 0, 1, 0, 0.98479, 0, 0.17374, -22.13, 0.02, -17.12)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.110
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe03"]
+shape = SubResource("sh_floe_LakeFloe03")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe03"]
+size = Vector3(3.15, 0.35, 1.91)
+material = SubResource("m_floe")
+
+[node name="LakeFloe04" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.51229, 0, 0.85881, 0, 1, 0, -0.85881, 0, 0.51229, 1.285, 0.02, 37.74)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.028
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe04"]
+shape = SubResource("sh_floe_LakeFloe04")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe04"]
+size = Vector3(3.59, 0.35, 3.03)
+material = SubResource("m_floe")
+
+[node name="LakeFloe05" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.98781, 0, -0.15564, 0, 1, 0, 0.15564, 0, -0.98781, -5.538, 0.02, -33.63)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.092
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe05"]
+shape = SubResource("sh_floe_LakeFloe05")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe05"]
+size = Vector3(1.47, 0.35, 2.12)
+material = SubResource("m_floe")
+
+[node name="LakeFloe06" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.59873, 0, -0.80095, 0, 1, 0, 0.80095, 0, 0.59873, 14.88, 0.02, -30.44)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.076
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe06"]
+shape = SubResource("sh_floe_LakeFloe06")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe06"]
+size = Vector3(3.49, 0.35, 2.21)
+material = SubResource("m_floe")
+
+[node name="LakeFloe07" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.91193, 0, -0.41034, 0, 1, 0, 0.41034, 0, -0.91193, 14.9, 0.02, 3.413)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.012
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe07"]
+shape = SubResource("sh_floe_LakeFloe07")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe07"]
+size = Vector3(1.67, 0.35, 3.44)
+material = SubResource("m_floe")
+
+[node name="LakeFloe08" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.43437, 0, -0.90073, 0, 1, 0, 0.90073, 0, 0.43437, -4.316, 0.02, -2.413)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.111
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe08"]
+shape = SubResource("sh_floe_LakeFloe08")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe08"]
+size = Vector3(2.15, 0.35, 2.47)
+material = SubResource("m_floe")
+
+[node name="LakeFloe09" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.030828, 0, 0.99952, 0, 1, 0, -0.99952, 0, -0.030828, 10.01, 0.02, 38.98)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.070
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe09"]
+shape = SubResource("sh_floe_LakeFloe09")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe09"]
+size = Vector3(3.30, 0.35, 1.92)
+material = SubResource("m_floe")
+
+[node name="LakeFloe10" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.1826, 0, 0.98319, 0, 1, 0, -0.98319, 0, -0.1826, -23.04, 0.02, 18.2)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.063
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe10"]
+shape = SubResource("sh_floe_LakeFloe10")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe10"]
+size = Vector3(3.53, 0.35, 3.37)
+material = SubResource("m_floe")
+
+[node name="LakeFloe11" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.74192, 0, -0.67049, 0, 1, 0, 0.67049, 0, 0.74192, 17.12, 0.02, -20.26)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.006
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe11"]
+shape = SubResource("sh_floe_LakeFloe11")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe11"]
+size = Vector3(2.68, 0.35, 3.01)
+material = SubResource("m_floe")
+
+[node name="LakeFloe12" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.73564, 0, 0.67737, 0, 1, 0, -0.67737, 0, 0.73564, 17.37, 0.02, -22.75)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.093
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe12"]
+shape = SubResource("sh_floe_LakeFloe12")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe12"]
+size = Vector3(3.22, 0.35, 1.84)
+material = SubResource("m_floe")
+
+[node name="LakeFloe13" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.90743, 0, -0.4202, 0, 1, 0, 0.4202, 0, -0.90743, 21.26, 0.02, -8.161)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.027
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe13"]
+shape = SubResource("sh_floe_LakeFloe13")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe13"]
+size = Vector3(2.30, 0.35, 2.20)
+material = SubResource("m_floe")
+
+[node name="LakeFloe14" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.98707, 0, -0.16032, 0, 1, 0, 0.16032, 0, 0.98707, -12.53, 0.02, 39.86)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.098
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe14"]
+shape = SubResource("sh_floe_LakeFloe14")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe14"]
+size = Vector3(3.59, 0.35, 2.25)
+material = SubResource("m_floe")
+
+[node name="LakeFloe15" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.98633, 0, -0.16477, 0, 1, 0, 0.16477, 0, -0.98633, 14.86, 0.02, 23.66)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = -0.002
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe15"]
+shape = SubResource("sh_floe_LakeFloe15")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe15"]
+size = Vector3(2.98, 0.35, 3.58)
+material = SubResource("m_floe")
+
+[node name="LakeFloe16" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.23634, 0, -0.97167, 0, 1, 0, 0.97167, 0, 0.23634, -10.73, 0.02, -37.01)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.0
+max_travel = 8.0
+spin = 0.026
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/LakeFloe16"]
+shape = SubResource("sh_floe_LakeFloe16")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/LakeFloe16"]
+size = Vector3(2.61, 0.35, 3.05)
+material = SubResource("m_floe")
+
+[node name="RiverFloe01" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.46774, 0, -0.88387, 0, 1, 0, 0.88387, 0, 0.46774, -0.7533, 0.02, -56.43)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.35
+max_travel = 30.0
+spin = -0.079
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/RiverFloe01"]
+shape = SubResource("sh_floe_RiverFloe01")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/RiverFloe01"]
+size = Vector3(1.85, 0.35, 1.90)
+material = SubResource("m_floe")
+
+[node name="RiverFloe02" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.4872, 0, -0.87329, 0, 1, 0, 0.87329, 0, -0.4872, 21.41, 0.02, -108.8)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.35
+max_travel = 30.0
+spin = 0.023
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/RiverFloe02"]
+shape = SubResource("sh_floe_RiverFloe02")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/RiverFloe02"]
+size = Vector3(1.68, 0.35, 2.14)
+material = SubResource("m_floe")
+
+[node name="RiverFloe03" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(0.92343, 0, -0.38376, 0, 1, 0, 0.38376, 0, 0.92343, -12.56, 0.02, -217.6)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.35
+max_travel = 30.0
+spin = 0.075
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/RiverFloe03"]
+shape = SubResource("sh_floe_RiverFloe03")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/RiverFloe03"]
+size = Vector3(1.65, 0.35, 1.48)
+material = SubResource("m_floe")
+
+[node name="RiverFloe04" type="AnimatableBody3D" parent="Hazards" node_paths=PackedStringArray("river")]
+transform = Transform3D(-0.57473, 0, 0.81834, 0, 1, 0, -0.81834, 0, -0.57473, 18.58, 0.02, -257.4)
+script = ExtResource("s_floe")
+river = NodePath("../../River")
+drift_factor = 0.35
+max_travel = 30.0
+spin = 0.042
+
+[node name="Shape" type="CollisionShape3D" parent="Hazards/RiverFloe04"]
+shape = SubResource("sh_floe_RiverFloe04")
+
+[node name="Mesh" type="CSGBox3D" parent="Hazards/RiverFloe04"]
+size = Vector3(2.02, 0.35, 1.70)
+material = SubResource("m_floe")
+
+[node name="RiverEvents" type="Node3D" parent="." node_paths=PackedStringArray("river", "boat", "father_line")]
+script = ExtResource("s_events")
+settings = ExtResource("r_events")
+river = NodePath("../River")
+boat = NodePath("../Boat")
+father_line = NodePath("../FatherLine")
+
+[node name="CapsizeZone" type="Area3D" parent="."]
+transform = Transform3D(0.84974, 0, -0.5272, 0, 1, 0, 0.5272, 0, 0.84974, -0.9906, 0.5, -314.1)
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="CapsizeZone"]
+shape = SubResource("sh_capsize")
+
+[node name="FatherLine" type="Path3D" parent="."]
+curve = SubResource("c_father")
+
+[node name="Boat" type="CharacterBody3D" parent="." node_paths=PackedStringArray("river")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 8)
+script = ExtResource("s_boat")
+settings = ExtResource("r_boat")
+river = NodePath("../River")
+
+[node name="Shape" type="CollisionShape3D" parent="Boat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -0.15)
+shape = SubResource("sh_boat")
+
+[node name="Hull" type="Node3D" parent="Boat"]
+
+[node name="Bottom" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
+size = Vector3(1.1, 0.08, 2.8)
+material = SubResource("m_wood_dark")
+
+[node name="SideL" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.08, 0)
+size = Vector3(0.06, 0.5, 2.8)
+material = SubResource("m_wood")
+
+[node name="SideR" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.08, 0)
+size = Vector3(0.06, 0.5, 2.8)
+material = SubResource("m_wood")
+
+[node name="Stern" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 1.42)
+size = Vector3(1.22, 0.5, 0.06)
+material = SubResource("m_wood")
+
+[node name="Bow" type="MeshInstance3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, -1, 0, 1, 6.1232e-17, 0, 0.08, -1.69)
+mesh = SubResource("prism_bow")
+material_override = SubResource("m_wood")
+
+[node name="SeatPlank" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.25)
+size = Vector3(1.1, 0.05, 0.32)
+material = SubResource("m_wood")
+
+[node name="FrontPlank" type="CSGBox3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.9)
+size = Vector3(1.1, 0.05, 0.28)
+material = SubResource("m_wood")
+
+[node name="Seat" type="Node3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.25)
+
+[node name="OarL" type="Node3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.32, -0.5)
+
+[node name="Shaft" type="CSGCylinder3D" parent="Boat/Hull/OarL"]
+transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, -0.7, 0, 0)
+radius = 0.025
+height = 2.6
+sides = 6
+material = SubResource("m_wood")
+
+[node name="Blade" type="CSGBox3D" parent="Boat/Hull/OarL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.85, 0, 0)
+size = Vector3(0.5, 0.03, 0.16)
+material = SubResource("m_wood")
+
+[node name="OarR" type="Node3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.32, -0.5)
+
+[node name="Shaft" type="CSGCylinder3D" parent="Boat/Hull/OarR"]
+transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, 0.7, 0, 0)
+radius = 0.025
+height = 2.6
+sides = 6
+material = SubResource("m_wood")
+
+[node name="Blade" type="CSGBox3D" parent="Boat/Hull/OarR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, 0, 0)
+size = Vector3(0.5, 0.03, 0.16)
+material = SubResource("m_wood")
+
+[node name="BowLamp" type="Node3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -1.62)
+
+[node name="Body" type="CSGCylinder3D" parent="Boat/Hull/BowLamp"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0.02)
+radius = 0.035
+height = 0.2
+material = SubResource("m_metal")
+
+[node name="Lens" type="CSGCylinder3D" parent="Boat/Hull/BowLamp"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, -0.12)
+radius = 0.042
+height = 0.02
+material = SubResource("m_lens")
+
+[node name="Light" type="SpotLight3D" parent="Boat/Hull/BowLamp"]
+transform = Transform3D(1, 0, 0, 0, 0.99452, -0.10453, 0, 0.10453, 0.99452, 0, 0, -0.15)
+light_color = Color(1, 0.93, 0.8, 1)
+light_energy = 0.0
+shadow_enabled = true
+spot_range = 32.0
+spot_angle = 26.0
+spot_attenuation = 0.8
+
+[node name="Glow" type="OmniLight3D" parent="Boat/Hull/BowLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.9)
+light_color = Color(1, 0.85, 0.65, 1)
+light_energy = 0.0
+omni_range = 4.5
+omni_attenuation = 1.4
+
+[node name="WaterInside" type="MeshInstance3D" parent="Boat/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+mesh = SubResource("pm_water_in")
+material_override = SubResource("m_water_in")
+
+[node name="Net" type="Node3D" parent="Boat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.02, -0.9)
+
+[node name="Mesh" type="MeshInstance3D" parent="Boat/Net"]
+mesh = SubResource("pm_net")
+material_override = SubResource("m_net")
+cast_shadow = 0
+
+[node name="Float0" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 0.03, 0)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="Float1" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.03, 0.9959)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="Float2" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.575, 0.03, 0.9959)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="Float3" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 0.03, 1.408e-16)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="Float4" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.575, 0.03, -0.9959)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="Float5" type="CSGSphere3D" parent="Boat/Net"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.03, -0.9959)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_float")
+
+[node name="NetRope" type="Node3D" parent="Boat"]
+script = ExtResource("s_rope")
+winch_point = Vector3(0.35, 0.2, -0.45)
+cut_point = Vector3(0.6, 0.36, -0.6)
+water_point = Vector3(2.0, -0.02, -0.9)
+radius = 0.022
+water_level = 0.0
+settings = ExtResource("r_rope")
+
+[node name="Father" type="Node3D" parent="." node_paths=PackedStringArray("line", "follow_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 2)
+script = ExtResource("s_father")
+settings = ExtResource("r_mem")
+line = NodePath("../FatherLine")
+follow_target = NodePath("../Boat")
+
+[node name="Hull" type="Node3D" parent="Father"]
+
+[node name="Bottom" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
+size = Vector3(1.1, 0.08, 2.8)
+material = SubResource("m_wood_dark")
+
+[node name="SideL" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.08, 0)
+size = Vector3(0.06, 0.5, 2.8)
+material = SubResource("m_wood_father")
+
+[node name="SideR" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.08, 0)
+size = Vector3(0.06, 0.5, 2.8)
+material = SubResource("m_wood_father")
+
+[node name="Stern" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 1.42)
+size = Vector3(1.22, 0.5, 0.06)
+material = SubResource("m_wood_father")
+
+[node name="Bow" type="MeshInstance3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 6.1232e-17, -1, 0, 1, 6.1232e-17, 0, 0.08, -1.69)
+mesh = SubResource("prism_bow")
+material_override = SubResource("m_wood_father")
+
+[node name="SeatPlank" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.25)
+size = Vector3(1.1, 0.05, 0.32)
+material = SubResource("m_wood_father")
+
+[node name="FrontPlank" type="CSGBox3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.9)
+size = Vector3(1.1, 0.05, 0.28)
+material = SubResource("m_wood_father")
+
+[node name="OarL" type="Node3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.32, -0.5)
+
+[node name="Shaft" type="CSGCylinder3D" parent="Father/Hull/OarL"]
+transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, -0.7, 0, 0)
+radius = 0.025
+height = 2.6
+sides = 6
+material = SubResource("m_wood")
+
+[node name="Blade" type="CSGBox3D" parent="Father/Hull/OarL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.85, 0, 0)
+size = Vector3(0.5, 0.03, 0.16)
+material = SubResource("m_wood")
+
+[node name="OarR" type="Node3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.32, -0.5)
+
+[node name="Shaft" type="CSGCylinder3D" parent="Father/Hull/OarR"]
+transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, 0.7, 0, 0)
+radius = 0.025
+height = 2.6
+sides = 6
+material = SubResource("m_wood")
+
+[node name="Blade" type="CSGBox3D" parent="Father/Hull/OarR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, 0, 0)
+size = Vector3(0.5, 0.03, 0.16)
+material = SubResource("m_wood")
+
+[node name="Character" parent="Father/Hull" node_paths=PackedStringArray("subtitles", "look_target") instance=ExtResource("pc_man")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.92, 0.25)
+pose = ExtResource("r_pose_father")
+subtitles = NodePath("../../../HUD/Subtitles")
+speaker_prefix = "PADRE"
+look_target = NodePath("../../../Player")
+
+[node name="Lantern" type="OmniLight3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -1.0)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.8
+omni_range = 9.0
+
+[node name="LanternGlow" type="CSGSphere3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -1.0)
+radius = 0.07
+radial_segments = 8
+rings = 4
+material = SubResource("m_father_lens")
+
+[node name="Flashlight" type="SpotLight3D" parent="Father/Hull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1, -0.1)
+light_color = Color(1, 0.93, 0.8, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 34.0
+spot_angle = 24.0
+spot_attenuation = 0.8
+
+[node name="Lens" type="CSGSphere3D" parent="Father/Hull/Flashlight"]
+radius = 0.05
+radial_segments = 8
+rings = 4
+material = SubResource("m_father_lens")
+
+[node name="BeamCone" type="MeshInstance3D" parent="Father/Hull/Flashlight"]
+transform = Transform3D(1.6, 0, 0, 0, 0, 1.6, 0, -8.0, 0, 0, 0, -4.0)
+cast_shadow = 0
+mesh = SubResource("cone_beam")
+material_override = SubResource("m_beam")
+
+[node name="Player" parent="." instance=ExtResource("p_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.2, 8)
+settings = ExtResource("r_player")
+
+[node name="RodView" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("s_held")
+settings = ExtResource("r_hrod")
+player = NodePath("../../..")
+
+[node name="Bend" type="Node3D" parent="Player/Head/Camera3D/RodView"]
+
+[node name="Rod" type="MeshInstance3D" parent="Player/Head/Camera3D/RodView/Bend"]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 0.35, -0.6062)
+mesh = SubResource("cm_rod")
+material_override = SubResource("m_wood_dark")
+
+[node name="Handle" type="CSGCylinder3D" parent="Player/Head/Camera3D/RodView/Bend"]
+transform = Transform3D(1, 0, 0, 0, 0.34202, -0.93969, 0, 0.93969, 0.34202, 0, 0, 0)
+radius = 0.022
+height = 0.3
+sides = 8
+material = SubResource("m_coat")
+
+[node name="Reel" type="CSGCylinder3D" parent="Player/Head/Camera3D/RodView/Bend"]
+transform = Transform3D(6.1232e-17, 1, 0, -1, 6.1232e-17, 0, 0, 0, 1, 0.04, 0.05, -0.08)
+radius = 0.04
+height = 0.03
+sides = 10
+material = SubResource("m_metal")
+
+[node name="Tip" type="Marker3D" parent="Player/Head/Camera3D/RodView/Bend"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -1.212)
+
+[node name="KnifeView" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("s_held")
+settings = ExtResource("r_hknife")
+player = NodePath("../../..")
+
+[node name="Pivot" type="Node3D" parent="Player/Head/Camera3D/KnifeView"]
+
+[node name="Handle" type="CSGBox3D" parent="Player/Head/Camera3D/KnifeView/Pivot"]
+size = Vector3(0.03, 0.035, 0.12)
+material = SubResource("m_wood_dark")
+
+[node name="Blade" type="CSGBox3D" parent="Player/Head/Camera3D/KnifeView/Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.005, -0.14)
+size = Vector3(0.008, 0.035, 0.17)
+material = SubResource("m_blade")
+
+[node name="Fishing" type="Node3D" parent="." node_paths=PackedStringArray("player", "rod_view", "bar", "subtitles", "prompt")]
+script = ExtResource("s_rod")
+settings = ExtResource("r_fish")
+player = NodePath("../Player")
+rod_view = NodePath("../Player/Head/Camera3D/RodView")
+bar = NodePath("../HUD/FishingBar")
+subtitles = NodePath("../HUD/Subtitles")
+prompt = NodePath("../HUD/Center/Reticle")
+water_level = 0.0
+
+[node name="ToyBoat" type="Node3D" parent="."]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, -20, 0)
+
+[node name="Hull" type="MeshInstance3D" parent="ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
+mesh = SubResource("prism_toy")
+material_override = SubResource("m_toy")
+
+[node name="Mast" type="CSGCylinder3D" parent="ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+radius = 0.004
+height = 0.11
+material = SubResource("m_toy")
+
+[node name="Sail" type="CSGBox3D" parent="ToyBoat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.065, 0.02)
+size = Vector3(0.003, 0.075, 0.045)
+material = SubResource("m_sail")
+
+[node name="Glow" type="OmniLight3D" parent="ToyBoat"]
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 3.0
+omni_range = 2.5
+
+[node name="FatherLight" type="SpotLight3D" parent="."]
+light_color = Color(1, 0.88, 0.68, 1)
+light_energy = 0.0
+spot_range = 14.0
+spot_angle = 28.0
+
+[node name="Glow" type="CSGSphere3D" parent="FatherLight"]
+radius = 0.28
+radial_segments = 16
+rings = 8
+material = SubResource("m_father_lens")
+
+[node name="GlowLight" type="OmniLight3D" parent="FatherLight"]
+light_color = Color(1, 0.86, 0.65, 1)
+light_energy = 0.0
+omni_range = 4.0
+
+[node name="FatherHand" type="Node3D" parent="."]
+
+[node name="Arm" type="CSGCylinder3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+radius = 0.06
+height = 0.7
+material = SubResource("m_skin")
+
+[node name="Palm" type="CSGBox3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+size = Vector3(0.17, 0.2, 0.07)
+material = SubResource("m_skin")
+
+[node name="Fingers" type="CSGBox3D" parent="FatherHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0.02)
+size = Vector3(0.16, 0.14, 0.05)
+material = SubResource("m_skin")
+
+[node name="Snow" type="CPUParticles3D" parent="."]
+material_override = SubResource("m_snowflake")
+cast_shadow = 0
+amount = 1800
+lifetime = 4.0
+preprocess = 4.0
+mesh = SubResource("qm_snow")
+emission_shape = 3
+emission_box_extents = Vector3(20, 0.5, 20)
+direction = Vector3(0.2, -1, 0.1)
+spread = 25.0
+gravity = Vector3(0.3, -2.5, 0.1)
+initial_velocity_min = 0.4
+initial_velocity_max = 1.1
+
+[node name="SnowStorm" type="CPUParticles3D" parent="."]
+material_override = SubResource("m_snowflake")
+cast_shadow = 0
+amount = 900
+lifetime = 2.5
+preprocess = 2.0
+mesh = SubResource("qm_snow")
+emission_shape = 3
+emission_box_extents = Vector3(16, 0.5, 16)
+direction = Vector3(0.5, -1, 0.2)
+spread = 20.0
+gravity = Vector3(1.0, -4.0, 0.3)
+initial_velocity_min = 1.5
+initial_velocity_max = 3.0
+
+[node name="WakeUp" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("s_wake")
+settings = ExtResource("r_wake")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="Flashback" type="CanvasLayer" parent="."]
+script = ExtResource("s_fb")
+settings = ExtResource("r_fb")
+
+[node name="DebugTools" type="Node" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("s_dbg")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="PostFx" type="CanvasLayer" parent="."]
+layer = 0
+script = ExtResource("s_pfx")
+settings = ExtResource("r_pfx")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Center" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("s_prompt")
+player = NodePath("../../../Player")
+settings = ExtResource("r_prompt")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("s_dot")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+
+[node name="Qte" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("s_qte")
+
+[node name="FishingBar" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("s_fbar")
+settings = ExtResource("r_fish")
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("s_sub")

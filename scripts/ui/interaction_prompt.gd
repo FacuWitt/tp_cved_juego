@@ -11,6 +11,10 @@ extends VBoxContainer
 @onready var _dot: ReticleDot = $Dot
 @onready var _label: Label = $Label
 
+## Si no está vacío, la mira muestra este texto resaltado (lo usa una escena para avisos propios,
+## por ejemplo "(E) Cortar" al apuntar a una soga). Vacío = comportamiento normal.
+var override_text: String = ""
+
 var _highlighted: bool = false
 var _aimed_slot: PlacementSlot = null
 
@@ -24,6 +28,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if override_text != "":
+		_update_aimed_slot(null)
+		_set_highlighted(true)
+		_label.text = override_text
+		return
 	var held: PickupObject = player.get_held_object()
 	var target: PickupObject = player.get_interactable_under_crosshair()
 	var aimed_slot: PlacementSlot = player.get_aimed_slot()

@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/m4_hacha_ps1/fire_axe_ps1.glb" id="1_axe"]
+
+[node name="AxeModel" type="Node3D"]
+
+[node name="Mesh" parent="." instance=ExtResource("1_axe")]
+transform = Transform3D(0, 0, -1.52, 0, 1.52, 0, 1.52, 0, 0, 0, -0.433, 0)

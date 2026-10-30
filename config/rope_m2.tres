@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RopeSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/rope_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+sides = 6
+texture_pitch = 0.2
+sea_points = 14
+winch_points = 4
+sag = 0.15
+belly = 0.1
+edge_tangent = 0.5
+water_tangent = 0.6
+hit_tremor = 0.03
+sea_whip_speed = 7.0
+winch_whip_speed = 5.0
+whip_lift = 2.0
+whip_side = 1.5
+sim_time = 2.5
+aim_radius = 0.18
+aim_length = 1.6

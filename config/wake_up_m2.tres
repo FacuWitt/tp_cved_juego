@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="WakeUpSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/wake_up_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+lying_pitch = -38.0
+lying_drop = 0.18
+lying_roll = 14.0
+thunder_strength = 0.45

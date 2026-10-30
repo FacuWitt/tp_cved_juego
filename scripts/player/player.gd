@@ -52,6 +52,8 @@ func teleport_to(target: Transform3D) -> void:
 ## Si al soltar está apuntando a un casillero libre, el objeto va a ese casillero.
 func _toggle_pickup() -> void:
 	if _held_object != null:
+		if not _held_object.can_release:
+			return
 		var slot: PlacementSlot = get_aimed_slot()
 		var object: PickupObject = _held_object
 		_held_object = null
@@ -67,6 +69,11 @@ func _toggle_pickup() -> void:
 	if collider is PickupObject:
 		_held_object = collider as PickupObject
 		_held_object.pickup(_camera, self)
+
+
+## Se queda sin nada en la mano (algo se lo sacó, como la ola con el hacha).
+func clear_held_object() -> void:
+	_held_object = null
 
 
 ## El objeto que tiene agarrado ahora mismo, o null si no tiene nada. Para que la UI
