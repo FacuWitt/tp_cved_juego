@@ -41,6 +41,13 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-064 · SDD: se narran las etapas 7 a 10 (Memoria 2, Memoria 4, integración y pasajes con el despertar) · 2026-10-30
+- **Rama / commits:** `claude/sdd` · sin commitear
+- **Pedido por:** Facu: "¿te puedo pedir que actualices el SDD en Google Docs?"
+- **Qué se hizo:** en el Google Doc del SDD se agregaron cuatro etapas narradas, con sus marcadores de captura: **Etapa 7** (la Memoria 2 se vuelve más exigente, primeros modelos, cielo propio y el final nadando con flashbacks de igual encuadre que el accidente), **Etapa 8** (Memoria 4: luces del hospital en el cielo, guiar la mirada, la manivela del ancla y la lluvia de costado), **Etapa 9** (las dos versiones paralelas de la Memoria 2 y la híbrida, olas visibles y rápidos) y **Etapa 10** (pasajes entre memorias, el descenso final y el despertar en el hospital). Además: un párrafo en la Etapa 3 sobre los modelos de la ola y la luna, Gemini y Piper en las herramientas de IA, 13 filas nuevas en el Registro de decisiones, la tabla de Estado actual y su párrafo de pendientes, los controles de remo (A/D por toque, S hacia atrás), la Síntesis (agencia y transformación), la tabla de la Introducción y la fecha (30 de octubre).
+- **Por qué:** el SDD estaba atrasado desde las decisiones del 26 de octubre.
+- **Pendiente / ❓ ABIERTO:** las capturas marcadas como pendientes; la interpretación sobre el blanco del despertar está marcada "a validar por el equipo"; la fila "Diseño sonoro" de la tabla de la Introducción sigue diciendo "Etapa 1" (ahora también se trata en las etapas 9 y 10).
+
 ### CL-063 · Pasaje M4 → despertar: en vez de caminar, se baja por el agua hacia la luz · 2026-10-30
 - **Rama / commits:** `claude/pasajes` · sin commitear
 - **Pedido por:** Facu: "en la última memoria no hay una caminata hacia la luz, descendés a la luz, tardás un tiempo, se tiene que notar que estamos bajando por el agua".
