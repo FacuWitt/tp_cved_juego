@@ -3,7 +3,12 @@
 [ext_resource type="Script" path="res://scripts/world/placement_slot.gd" id="1_e"]
 [ext_resource type="Script" path="res://scripts/puzzles/sequence_puzzle.gd" id="2_e"]
 [ext_resource type="Resource" path="res://config/memory_1_puzzle.tres" id="3_e"]
-[ext_resource type="PackedScene" path="res://scenes/interaction/puzzle_piece.tscn" id="4_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/luna.tscn" id="4_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/red.tscn" id="5_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/ola.tscn" id="6_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/ancla.tscn" id="7_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/faro.tscn" id="8_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/barco.tscn" id="9_e"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
 albedo_color = Color(0.48, 0.32, 0.2, 1)
@@ -228,30 +233,18 @@ slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"),
 
 [node name="Luna" parent="Pieces" instance=ExtResource("4_e")]
 position = Vector3(-1.9, 1.19, 0.2)
-piece_id = &"luna"
-label_text = "LUNA"
 
-[node name="Red" parent="Pieces" instance=ExtResource("4_e")]
+[node name="Red" parent="Pieces" instance=ExtResource("5_e")]
 position = Vector3(-1.6, 0.59, 1.68)
-piece_id = &"red"
-label_text = "RED"
 
-[node name="Ola" parent="Pieces" instance=ExtResource("4_e")]
+[node name="Ola" parent="Pieces" instance=ExtResource("6_e")]
 position = Vector3(-1.2, 0.19, -0.55)
-piece_id = &"ola"
-label_text = "OLA"
 
-[node name="Ancla" parent="Pieces" instance=ExtResource("4_e")]
+[node name="Ancla" parent="Pieces" instance=ExtResource("7_e")]
 position = Vector3(-0.7, 0.19, 0.6)
-piece_id = &"ancla"
-label_text = "ANCLA"
 
-[node name="Faro" parent="Pieces" instance=ExtResource("4_e")]
+[node name="Faro" parent="Pieces" instance=ExtResource("8_e")]
 position = Vector3(0.8, 0.19, -0.75)
-piece_id = &"faro"
-label_text = "FARO"
 
-[node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
+[node name="Barco" parent="Pieces" instance=ExtResource("9_e")]
 position = Vector3(1.45, 0.7, 0.15)
-piece_id = &"barco"
-label_text = "BARCO"

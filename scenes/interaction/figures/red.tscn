@@ -1,0 +1,108 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+
+[sub_resource type="StandardMaterial3D" id="mat_madera"]
+albedo_color = Color(0.78, 0.6, 0.38, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_madera_oscura"]
+albedo_color = Color(0.46, 0.31, 0.19, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="col_box"]
+size = Vector3(0.36, 0.36, 0.36)
+
+[sub_resource type="CylinderMesh" id="m1"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.02
+radial_segments = 24
+
+[sub_resource type="CylinderMesh" id="m2"]
+top_radius = 0.014
+bottom_radius = 0.014
+height = 0.14
+radial_segments = 24
+
+[sub_resource type="TorusMesh" id="m3"]
+inner_radius = 0.095
+outer_radius = 0.12
+rings = 32
+ring_segments = 12
+
+[sub_resource type="BoxMesh" id="m4"]
+size = Vector3(0.17, 0.004, 0.004)
+
+[node name="Red" type="RigidBody3D" node_paths=PackedStringArray("visual")]
+script = ExtResource("1_e")
+settings = ExtResource("2_e")
+piece_id = &"red"
+label_text = "RED"
+visual = NodePath("Visual")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Base" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, -0.17, 0)
+mesh = SubResource("m1")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="Mango" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, -0.09, 0)
+mesh = SubResource("m2")
+material_override = SubResource("mat_madera")
+
+[node name="Aro" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.04, 0)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("m3")
+material_override = SubResource("mat_madera")
+
+[node name="HiloA1" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.0198, 0.0202, 0)
+rotation_degrees = Vector3(0, 0, 45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="HiloB1" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.0198, 0.0598, 0)
+rotation_degrees = Vector3(0, 0, -45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="HiloA2" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.04, 0)
+rotation_degrees = Vector3(0, 0, 45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="HiloB2" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 0.04, 0)
+rotation_degrees = Vector3(0, 0, -45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="HiloA3" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.0198, 0.0598, 0)
+rotation_degrees = Vector3(0, 0, 45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="HiloB3" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.0198, 0.0202, 0)
+rotation_degrees = Vector3(0, 0, -45)
+mesh = SubResource("m4")
+material_override = SubResource("mat_madera_oscura")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("col_box")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 0.32, 0)
+pixel_size = 0.003
+text = "RED"
+font_size = 28
+billboard = 1
+outline_size = 6
