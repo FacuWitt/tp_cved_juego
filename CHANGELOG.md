@@ -41,6 +41,21 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-058 · Rápidos de la M2: espuma que corre con el agua, nubes de agua pulverizada y salpicaduras · 2026-10-29
+- **Rama / commits:** `memories/m2-lago` · sin commitear
+- **Pedido por:** Facu: "arreglar la parte de los rápidos, usá más 'nubes' o salpicaduras del agua, más texturas en esas zonas, no quedan bien los cuadrados blancos, si podés usar nubes blancas porque son rápidos".
+- **Qué se hizo:**
+  1. **Espuma en el agua:** los rápidos ya no son cuadrados blancos apoyados en el agua. `RiverBuilder` arma al empezar un mapa de los rápidos visto desde arriba (dónde hay rápido, con bordes suaves, y hacia dónde corre el agua) y se lo pasa al agua. El shader del agua dibuja ahí espuma en vetas que corren río abajo a la velocidad de la corriente, con el agua más picada, y la espuma sube y baja con las olas.
+  2. **Nubes blancas de agua pulverizada:** partículas grandes con bordes de nube que nacen sobre los rápidos, crecen, suben un poco y se van con la corriente. Se iluminan con las linternas y los rayos y tienen un brillo propio leve para verse de noche.
+  3. **Salpicaduras:** gotas que saltan del agua revuelta y caen.
+  4. Todo se ajusta en `config/rapids_m2.tres` (`RapidsSettings`).
+- **Por qué (decisión de diseño):** los cuadrados planos no seguían el agua ni se movían, y se notaba que eran cuadrados. Dibujar la espuma dentro del propio shader del agua hace que siga las olas y corra con la corriente sin piezas sueltas que floten o se hundan. Las nubes y las gotas son partículas porque tienen que verse encima del agua.
+- **Alternativas descartadas:** mejorar los cuadrados con una textura (seguían sin acompañar las olas); niebla volumétrica de Godot en los rápidos (cambia la iluminación de toda la escena y es más pesada).
+- **Problemas encontrados:** la primera versión del mapa tenía huecos y la espuma salía en bloques; se arregló pintando cada muestra con un disco que alcanza a las vecinas. De noche la espuma casi no se veía: se le dio brillo propio (`foam_glow`, `mist_glow`).
+- **Cómo se probó:** capturas dentro de los dos rápidos, con y sin rayo. **A probar jugando:** cuánta espuma y cuántas nubes se quieren, y el rendimiento.
+- **Archivos y docs:** `assets/shaders/ocean.gdshader` (compartido con la M4 y el pasaje: lo nuevo viene apagado por defecto), `scripts/world/river_builder.gd`, `scripts/config/rapids_settings.gd`, `config/rapids_m2.tres`, `scenes/memories/m2_lago/m2_lago.tscn`.
+- **Pendiente / ❓ ABIERTO:** el mapa de rápidos se arma solo al jugar (en el editor no se ve la espuma, para no guardar la imagen dentro de la escena).
+
 ### CL-057 · El bote de la M2 sigue las olas que se ven, no un oleaje invisible · 2026-10-29
 - **Rama / commits:** `memories/m2-lago` · sin commitear
 - **Pedido por:** Facu: "cada tanto el barco sube muchísimo o se hunde, pero no sigue la forma del agua visible, es como si siguiera a un grupo de olas invisibles".

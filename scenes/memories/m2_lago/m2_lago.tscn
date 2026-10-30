@@ -43,6 +43,7 @@
 [ext_resource type="Script" path="res://scripts/world/father_boat.gd" id="s_father"]
 [ext_resource type="Script" path="res://scripts/world/river_flow.gd" id="s_river"]
 [ext_resource type="Script" path="res://scripts/world/river_builder.gd" id="s_builder"]
+[ext_resource type="Resource" path="res://config/rapids_m2.tres" id="r_rapids"]
 [ext_resource type="Script" path="res://scripts/world/drifting_floe.gd" id="s_floe"]
 [ext_resource type="Script" path="res://scripts/world/cuttable_rope.gd" id="s_rope"]
 [ext_resource type="Resource" path="res://config/rope_m2.tres" id="r_rope"]
@@ -422,11 +423,13 @@ end_taper = 14.0
 current_speed = 1.0
 rapids = PackedVector3Array(205.0, 245.0, 2.4, 362.0, 402.0, 2.8)
 
-[node name="Terrain" type="Node3D" parent="." node_paths=PackedStringArray("river")]
+[node name="Terrain" type="Node3D" parent="." node_paths=PackedStringArray("river", "water")]
 script = ExtResource("s_builder")
 tree_meshes = Array[Mesh]([ExtResource("veg_arbol_1"), ExtResource("veg_arbol_2"), ExtResource("veg_arbol_3")])
 bush_meshes = Array[Mesh]([ExtResource("veg_arbusto_1"), ExtResource("veg_arbusto_2"), ExtResource("veg_arbusto_3")])
 river = NodePath("../River")
+rapids_settings = ExtResource("r_rapids")
+water = NodePath("../Water")
 
 [node name="Hazards" type="Node3D" parent="."]
 

@@ -41,6 +41,14 @@ extends Node3D
 @export_range(0.0, 1.5, 0.01) var vegetation_saturation: float = 0.45
 ## Brillo de la vegetación (1 = el del modelo).
 @export_range(0.0, 2.0, 0.01) var vegetation_brightness: float = 0.8
+@export_group("Rápidos")
+## Cómo se ven los rápidos (espuma, nubes de agua pulverizada, salpicaduras).
+@export var rapids_settings: RapidsSettings:
+	set(value):
+		rapids_settings = value
+		_queue_build()
+## El agua (con ocean.gdshader): se le pasa el mapa de los rápidos para dibujar la espuma.
+@export var water: GeometryInstance3D
 @export_group("")
 @export var rebuild: bool = false:
 	set(value):
@@ -74,7 +82,7 @@ func _build() -> void:
 		return
 	_build_banks()
 	_build_trees()
-	_build_foam()
+	_build_rapids()
 
 
 ## Corte de la orilla de un lado: puntos (distancia al centro, altura) de adentro hacia afuera.
@@ -302,31 +310,217 @@ func _multimesh(node_name: String, mesh: Mesh, mat: Material, spots: Array[Trans
 	add_child(inst)
 
 
-## Manchas de espuma blanca sobre el agua de los rápidos.
-func _build_foam() -> void:
-	if river.rapids.is_empty():
+## Los rápidos: un mapa visto desde arriba para que el agua dibuje la espuma que corre, y encima
+## nubes blancas de agua pulverizada y salpicaduras que saltan río abajo.
+func _build_rapids() -> void:
+	if river.rapids.is_empty() or rapids_settings == null:
 		return
+	var rs: RapidsSettings = rapids_settings
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = tree_seed + 5
-	var spots: Array[Transform3D] = []
+	# Puntos de cada rápido: posición, dirección de la corriente y fuerza (0..1, suave en los bordes).
+	var mist_points: PackedVector3Array = PackedVector3Array()
+	var mist_dirs: PackedVector3Array = PackedVector3Array()
+	var spray_points: PackedVector3Array = PackedVector3Array()
+	var spray_dirs: PackedVector3Array = PackedVector3Array()
+	var samples: Array[Vector4] = []      # x, z, fuerza, ángulo de la corriente
+	var lo: Vector2 = Vector2(INF, INF)
+	var hi: Vector2 = Vector2(-INF, -INF)
+	var total_length: float = 0.0
 	for r: Vector3 in river.rapids:
+		total_length += maxf(r.y - r.x, 0.0)
 		var s: float = r.x
-		while s < r.y:
+		while s <= r.y:
 			var center: Vector3 = river.to_local(river.point_at(s))
 			var t: Vector3 = river.tangent_at(s)
+			t.y = 0.0
+			t = t.normalized()
 			var left: Vector3 = Vector3(-t.z, 0.0, t.x)
 			var half: float = river.width_at(s) * 0.5
-			for k: int in 3:
-				var pos: Vector3 = center + left * rng.randf_range(-half * 0.9, half * 0.9)
-				pos.y = 0.06
-				var sc: float = rng.randf_range(0.6, 1.8)
-				var basis: Basis = Basis(Vector3.UP, atan2(-t.x, -t.z) + rng.randf_range(-0.4, 0.4)).scaled(Vector3(sc, 1.0, sc * 2.0))
-				spots.append(Transform3D(basis, pos))
-			s += 1.5
-	var quad: PlaneMesh = PlaneMesh.new()
-	quad.size = Vector2(0.9, 0.9)
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(0.85, 0.9, 0.95, 0.55)
-	_multimesh("_GFoam", quad, mat, spots, Vector3.ZERO)
+			var along: float = minf(smoothstep(r.x, r.x + rs.edge_fade * 1.5, s), 1.0 - smoothstep(r.y - rs.edge_fade * 1.5, r.y, s))
+			var w: float = -half
+			while w <= half:
+				var across: float = 1.0 - smoothstep(half - rs.edge_fade, half, absf(w))
+				var k: float = along * across
+				if k > 0.0:
+					var p: Vector3 = center + left * w
+					samples.append(Vector4(p.x, p.z, k, atan2(t.z, t.x)))
+					lo = Vector2(minf(lo.x, p.x), minf(lo.y, p.z))
+					hi = Vector2(maxf(hi.x, p.x), maxf(hi.y, p.z))
+					if k > 0.5:
+						mist_points.append(Vector3(p.x, rs.mist_height, p.z))
+						mist_dirs.append((t * 1.0 + Vector3.UP * 0.25).normalized())
+						spray_points.append(Vector3(p.x, 0.05, p.z))
+						spray_dirs.append((t * 0.6 + Vector3.UP).normalized())
+				w += 0.5
+			s += 0.5
+	if samples.is_empty():
+		return
+	_bake_rapids_mask(samples, lo - Vector2.ONE * 2.0, hi + Vector2.ONE * 2.0)
+	var flow_speed: float = river.current_speed * _mean_rapids_factor()
+	var mist_amount: int = int(total_length / 10.0 * rs.mist_per_10m)
+	if mist_amount > 0 and not mist_points.is_empty():
+		_add_mist(mist_points, mist_dirs, mist_amount, flow_speed)
+	var spray_amount: int = int(total_length / 10.0 * rs.spray_per_10m)
+	if spray_amount > 0 and not spray_points.is_empty():
+		_add_spray(spray_points, spray_dirs, spray_amount, flow_speed)
+
+
+func _mean_rapids_factor() -> float:
+	var sum: float = 0.0
+	for r: Vector3 in river.rapids:
+		sum += r.z
+	return sum / float(river.rapids.size())
+
+
+## Arma el mapa de los rápidos (R = fuerza, G y B = dirección de la corriente) y se lo pasa al agua.
+## Solo al jugar: en el editor no, para que la imagen no termine guardada dentro de la escena.
+func _bake_rapids_mask(samples: Array[Vector4], lo: Vector2, hi: Vector2) -> void:
+	if water == null or Engine.is_editor_hint():
+		return
+	var mat: ShaderMaterial = water.material_override as ShaderMaterial
+	if mat == null:
+		return
+	var rs: RapidsSettings = rapids_settings
+	var size: Vector2 = hi - lo
+	var res_x: int = clampi(ceili(size.x / rs.mask_texel), 8, 2048)
+	var res_y: int = clampi(ceili(size.y / rs.mask_texel), 8, 2048)
+	var img: Image = Image.create(res_x, res_y, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.0, 0.5, 0.5, 1.0))
+	# Cada muestra (cada 0,5 m) pinta un disco que alcanza a las vecinas: sin huecos entre ellas.
+	var reach: float = 0.45
+	var rx: int = ceili(reach / (size.x / float(res_x)))
+	var ry: int = ceili(reach / (size.y / float(res_y)))
+	for sp: Vector4 in samples:
+		var px: int = int((sp.x - lo.x) / size.x * float(res_x - 1))
+		var py: int = int((sp.y - lo.y) / size.y * float(res_y - 1))
+		var dir: Vector2 = Vector2(cos(sp.w), sin(sp.w))
+		var col: Color = Color(sp.z, dir.x * 0.5 + 0.5, dir.y * 0.5 + 0.5, 1.0)
+		for y: int in range(maxi(py - ry, 0), mini(py + ry + 1, res_y)):
+			for x: int in range(maxi(px - rx, 0), mini(px + rx + 1, res_x)):
+				if sp.z > img.get_pixel(x, y).r:
+					img.set_pixel(x, y, col)
+	mat.set_shader_parameter("rapids_mask", ImageTexture.create_from_image(img))
+	mat.set_shader_parameter("rapids_rect", Vector4(lo.x, lo.y, size.x, size.y))
+	mat.set_shader_parameter("rapids_strength", rs.foam_strength)
+	mat.set_shader_parameter("rapids_coverage", rs.foam_coverage)
+	mat.set_shader_parameter("rapids_scale", rs.foam_scale)
+	mat.set_shader_parameter("rapids_stretch", rs.foam_stretch)
+	mat.set_shader_parameter("rapids_speed", river.current_speed * _mean_rapids_factor() * rs.foam_flow)
+	mat.set_shader_parameter("rapids_turbulence", rs.turbulence)
+	mat.set_shader_parameter("rapids_glow", rs.foam_glow)
+
+
+## Nubes blancas de agua pulverizada que flotan sobre los rápidos y se van río abajo.
+func _add_mist(points: PackedVector3Array, dirs: PackedVector3Array, amount: int, flow_speed: float) -> void:
+	var rs: RapidsSettings = rapids_settings
+	var p: CPUParticles3D = CPUParticles3D.new()
+	p.name = "_GRapidsMist"
+	p.amount = amount
+	p.lifetime = rs.mist_lifetime
+	p.preprocess = rs.mist_lifetime
+	p.randomness = 0.5
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_DIRECTED_POINTS
+	p.emission_points = points
+	p.emission_normals = dirs
+	p.spread = 25.0
+	p.gravity = Vector3(0.0, rs.mist_rise * 0.4, 0.0)
+	p.initial_velocity_min = flow_speed * 0.6
+	p.initial_velocity_max = flow_speed * 1.1
+	p.damping_min = 0.3
+	p.damping_max = 0.6
+	p.angle_min = -180.0
+	p.angle_max = 180.0
+	p.angular_velocity_min = -12.0
+	p.angular_velocity_max = 12.0
+	p.scale_amount_min = 0.8
+	p.scale_amount_max = 1.2
+	var grow: Curve = Curve.new()
+	grow.add_point(Vector2(0.0, rs.mist_size_start / rs.mist_size_end))
+	grow.add_point(Vector2(1.0, 1.0))
+	p.scale_amount_curve = grow
+	var ramp: Gradient = Gradient.new()
+	var c0: Color = rs.mist_color
+	ramp.offsets = PackedFloat32Array([0.0, 0.25, 0.7, 1.0])
+	ramp.colors = PackedColorArray([Color(c0, 0.0), Color(c0, rs.mist_opacity), Color(c0, rs.mist_opacity * 0.6), Color(c0, 0.0)])
+	p.color_ramp = ramp
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2.ONE * rs.mist_size_end
+	p.mesh = quad
+	p.material_override = _puff_material(true)
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(p)
+
+
+## Gotas que saltan del agua revuelta.
+func _add_spray(points: PackedVector3Array, dirs: PackedVector3Array, amount: int, flow_speed: float) -> void:
+	var rs: RapidsSettings = rapids_settings
+	var p: CPUParticles3D = CPUParticles3D.new()
+	p.name = "_GRapidsSpray"
+	p.amount = amount
+	p.lifetime = rs.spray_lifetime
+	p.preprocess = rs.spray_lifetime
+	p.randomness = 0.6
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_DIRECTED_POINTS
+	p.emission_points = points
+	p.emission_normals = dirs
+	p.spread = 30.0
+	p.gravity = Vector3(0.0, -9.8, 0.0)
+	p.initial_velocity_min = rs.spray_speed * 0.5 + flow_speed * 0.3
+	p.initial_velocity_max = rs.spray_speed + flow_speed * 0.5
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.4
+	var ramp: Gradient = Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.15, 1.0])
+	ramp.colors = PackedColorArray([Color(1, 1, 1, 0.0), Color(1, 1, 1, rs.spray_opacity), Color(1, 1, 1, 0.0)])
+	p.color_ramp = ramp
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2.ONE * rs.spray_size
+	p.mesh = quad
+	p.material_override = _puff_material(false)
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(p)
+
+
+## Material de las nubes y las gotas: una mancha blanda que mira a la cámara y se ilumina con las
+## luces de la escena (linternas, rayos). Las nubes tienen bordes de nube y se funden con el agua.
+func _puff_material(cloud: bool) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.vertex_color_use_as_albedo = true
+	m.albedo_texture = _puff_texture(cloud)
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+	m.disable_receive_shadows = true
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	m.emission_enabled = true
+	m.emission = rapids_settings.mist_color
+	m.emission_energy_multiplier = rapids_settings.mist_glow
+	if cloud:
+		m.proximity_fade_enabled = true
+		m.proximity_fade_distance = 1.2
+	return m
+
+
+## Textura de una nube (bordes deshilachados con ruido) o de una gota (redonda y blanda).
+func _puff_texture(cloud: bool) -> ImageTexture:
+	var size: int = 128 if cloud else 32
+	var img: Image = Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var noise: FastNoiseLite = FastNoiseLite.new()
+	noise.seed = tree_seed + 9
+	noise.frequency = 0.045
+	noise.fractal_octaves = 4
+	var c: float = float(size - 1) * 0.5
+	for y: int in size:
+		for x: int in size:
+			var d: float = Vector2(float(x) - c, float(y) - c).length() / c
+			var a: float = 1.0 - smoothstep(0.25, 1.0, d)
+			if cloud:
+				var n: float = noise.get_noise_2d(float(x), float(y)) * 0.5 + 0.5
+				a = clampf(a * (0.35 + n * 1.1) - (1.0 - a) * 0.3, 0.0, 1.0)
+				a = smoothstep(0.05, 0.9, a)
+			img.set_pixel(x, y, Color(1.0, 1.0, 1.0, a))
+	return ImageTexture.create_from_image(img)
