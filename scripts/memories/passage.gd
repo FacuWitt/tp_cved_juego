@@ -8,6 +8,8 @@ extends Memory
 ## Se arma casi todo por código desde su PassageSettings, así cada pasaje es la misma escena
 ## con otro .tres (otras voces, otra distancia, otra luz).
 ## El camino va desde donde empieza el jugador hacia adonde mira (su -Z).
+## Con `descend` prendido es un descenso: el jugador baja solo por el agua hacia la luz, que está
+## abajo; las partículas del agua y las burbujas suben a su lado, y la superficie se aleja arriba.
 
 ## Sonó una voz del hospital (índice dentro de `settings.voices`).
 signal voice_heard(index: int)
@@ -48,6 +50,10 @@ var _speech_noise: FastNoiseLite
 var _word_noise: FastNoiseLite
 var _bus_index: int = -1
 var _time: float = 0.0
+var _descend_t: float = 0.0
+var _surface_glow: MeshInstance3D
+var _surface_material: ShaderMaterial
+var _ambience: AudioStreamPlayer
 
 const VOICE_BUS: StringName = &"PassageVoices"
 
@@ -63,25 +69,33 @@ func _ready() -> void:
 	_forward = _forward.normalized() if _forward.length() > 0.01 else Vector3.FORWARD
 	_apply_environment()
 	_apply_ocean()
-	_build_floor()
-	_build_walls()
+	if settings.descend:
+		_setup_descent()
+	else:
+		_build_floor()
+		_build_walls()
 	_setup_voice_bus()
 	_build_voice_lights()
 	_build_goal()
+	_start_ambience()
 	_update_lights(0.0)
 
 
 func _process(delta: float) -> void:
 	_time += delta
-	var walked: float = (player.global_position - _start).dot(_forward)
-	progress = clampf(walked / settings.path_length, 0.0, 1.0)
+	if settings.descend:
+		_update_descent(delta)
+	else:
+		var walked: float = (player.global_position - _start).dot(_forward)
+		progress = clampf(walked / settings.path_length, 0.0, 1.0)
 	while voices_heard < settings.voices.size() and progress >= settings.voices[voices_heard].at_progress:
 		_play_voice(voices_heard)
 	_update_lights(delta)
 	if not is_completed:
 		var to_goal: Vector3 = _goal.global_position - player.global_position
-		to_goal.y = 0.0
-		if to_goal.length() <= settings.end_radius:
+		if not settings.descend:
+			to_goal.y = 0.0
+		if (settings.descend and progress >= 1.0) or (not settings.descend and to_goal.length() <= settings.end_radius):
 			goal_reached.emit()
 			complete()
 
@@ -143,7 +157,8 @@ func _place_voice_lights() -> void:
 	if _voice_root == null:
 		return
 	var base: Vector3 = player.global_position
-	base.y = settings.water_level
+	if not settings.descend:
+		base.y = settings.water_level
 	_voice_root.global_transform = Transform3D(Basis.looking_at(_forward, Vector3.UP), base)
 
 
@@ -271,7 +286,10 @@ func _build_goal() -> void:
 	_goal = Node3D.new()
 	_goal.name = "Goal"
 	add_child(_goal)
-	_goal.global_position = _start + _forward * settings.path_length + Vector3.UP * settings.goal_height
+	if settings.descend:
+		_goal.global_position = _start + Vector3.DOWN * (settings.descend_start_depth + settings.descend_depth + settings.goal_height)
+	else:
+		_goal.global_position = _start + _forward * settings.path_length + Vector3.UP * settings.goal_height
 	_goal_light = OmniLight3D.new()
 	_goal_light.light_color = settings.goal_color
 	_goal_light.omni_range = settings.goal_light_range
@@ -299,3 +317,157 @@ func _make_glow(color: Color, size: float) -> MeshInstance3D:
 	mesh.material_override = mat
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mesh
+
+
+# ---------- Descenso bajo el agua ----------
+
+## El jugador queda flotando bajo la superficie, sin física (no camina ni cae): baja solo.
+func _setup_descent() -> void:
+	player.set_physics_process(false)
+	player.velocity = Vector3.ZERO
+	player.global_position = _start + Vector3.DOWN * (settings.descend_start_depth + _eye_height())
+	var head: Node3D = player.get_node_or_null("Head") as Node3D
+	if head != null:
+		head.rotation.x = deg_to_rad(settings.descend_start_pitch)
+	var env: Environment = world_environment.environment
+	env.fog_enabled = true
+	env.fog_light_color = settings.water_color_top
+	env.fog_light_energy = 1.0
+	env.fog_density = settings.underwater_fog
+	env.fog_sky_affect = 1.0
+	env.background_color = settings.water_color_top
+	_build_surface_glow()
+	_build_water_particles()
+	_build_bubbles()
+
+
+func _eye_height() -> float:
+	var camera: Camera3D = player.get_node_or_null("Head/Camera3D") as Camera3D
+	return camera.global_position.y - player.global_position.y if camera != null else 1.6
+
+
+func _update_descent(delta: float) -> void:
+	_descend_t = minf(_descend_t + delta, settings.descend_time)
+	var k: float = _descend_t / settings.descend_time
+	# Arranca y termina suave, como si se dejara caer.
+	var eased: float = smoothstep(0.0, 1.0, k) * 0.35 + k * 0.65
+	progress = k
+	var side: Vector3 = _forward.cross(Vector3.UP).normalized()
+	var sway: Vector3 = side * sin(_time * settings.descend_sway_rate * TAU) * settings.descend_sway
+	var eye_y: float = settings.water_level - settings.descend_start_depth - settings.descend_depth * eased
+	player.global_position = Vector3(_start.x, eye_y - _eye_height(), _start.z) + sway
+	var env: Environment = world_environment.environment
+	var color: Color = settings.water_color_top.lerp(settings.water_color_deep, smoothstep(0.0, 0.6, k))
+	env.fog_light_color = color
+	env.background_color = color
+	if _surface_material != null:
+		_surface_material.set_shader_parameter("energy", settings.surface_glow_energy * (1.0 - smoothstep(0.0, 0.5, k)))
+
+
+## Un resplandor ancho arriba: la superficie, que se va quedando atrás.
+func _build_surface_glow() -> void:
+	_surface_glow = _make_glow(settings.surface_glow_color, settings.surface_glow_size)
+	_surface_glow.name = "SurfaceGlow"
+	add_child(_surface_glow)
+	_surface_glow.global_position = _start + Vector3.UP * 0.5
+	_surface_material = _surface_glow.material_override as ShaderMaterial
+	_surface_material.set_shader_parameter("energy", settings.surface_glow_energy)
+
+
+## Motas suspendidas en el agua, alrededor del jugador. Quedan quietas en el mundo: al bajar se
+## las ve subir, y eso es lo que hace sentir el descenso.
+func _build_water_particles() -> void:
+	if settings.particle_amount <= 0:
+		return
+	var p: CPUParticles3D = CPUParticles3D.new()
+	p.name = "WaterParticles"
+	p.amount = settings.particle_amount
+	p.lifetime = 5.0
+	p.preprocess = 5.0
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(7.0, 7.0, 7.0)
+	p.direction = Vector3.UP
+	p.spread = 180.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 0.0
+	p.initial_velocity_max = 0.08
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.5
+	var ramp: Gradient = Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.2, 0.8, 1.0])
+	ramp.colors = PackedColorArray([Color(1, 1, 1, 0), Color(1, 1, 1, settings.particle_opacity), Color(1, 1, 1, settings.particle_opacity), Color(1, 1, 1, 0)])
+	p.color_ramp = ramp
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2.ONE * settings.particle_size
+	p.mesh = quad
+	p.material_override = _speck_material(Color(0.7, 0.8, 0.82), 0.6)
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	player.add_child(p)
+	p.position = Vector3(0.0, _eye_height(), 0.0)
+
+
+## Burbujas que se le escapan y suben delante de la cara.
+func _build_bubbles() -> void:
+	if settings.bubble_amount <= 0:
+		return
+	var p: CPUParticles3D = CPUParticles3D.new()
+	p.name = "Bubbles"
+	p.amount = settings.bubble_amount
+	p.lifetime = 3.0
+	p.randomness = 0.6
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = 0.5
+	p.direction = Vector3.UP
+	p.spread = 12.0
+	p.gravity = Vector3(0.0, settings.bubble_rise, 0.0)
+	p.initial_velocity_min = settings.bubble_rise * 0.5
+	p.initial_velocity_max = settings.bubble_rise
+	p.scale_amount_min = 0.4
+	p.scale_amount_max = 1.2
+	var ramp: Gradient = Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.1, 0.85, 1.0])
+	ramp.colors = PackedColorArray([Color(1, 1, 1, 0), Color(1, 1, 1, 0.4), Color(1, 1, 1, 0.3), Color(1, 1, 1, 0)])
+	p.color_ramp = ramp
+	var quad: QuadMesh = QuadMesh.new()
+	quad.size = Vector2.ONE * settings.bubble_size
+	p.mesh = quad
+	p.material_override = _speck_material(Color(0.8, 0.92, 0.95), 0.4)
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var head: Node3D = player.get_node_or_null("Head") as Node3D
+	(head if head != null else player).add_child(p)
+	p.position = Vector3(0.0, -0.3, -0.9)
+
+
+## Material de motas y burbujas: redondas, blandas, mirando a la cámara, iluminadas por las luces
+## (las de las voces y la del final) con un brillo propio leve.
+func _speck_material(color: Color, glow: float) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.vertex_color_use_as_albedo = true
+	m.albedo_texture = SoftPuff.texture(false)
+	m.albedo_color = color
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+	m.emission_enabled = true
+	m.emission = color
+	m.emission_energy_multiplier = glow
+	m.disable_receive_shadows = true
+	return m
+
+
+## Sonido de fondo en bucle (si el pasaje tiene uno).
+func _start_ambience() -> void:
+	if settings.ambience == null:
+		return
+	_ambience = AudioStreamPlayer.new()
+	_ambience.name = "Ambience"
+	var looped: AudioStream = settings.ambience.duplicate() as AudioStream
+	if looped is AudioStreamOggVorbis:
+		(looped as AudioStreamOggVorbis).loop = true
+	_ambience.stream = looped
+	_ambience.volume_db = settings.ambience_db
+	add_child(_ambience)
+	_ambience.play()

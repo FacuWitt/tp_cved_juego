@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
 [ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/underwater_loop.ogg" id="3_amb"]
 
 [sub_resource type="Resource" id="v1"]
 script = ExtResource("2_pv")
@@ -34,3 +35,10 @@ goal_color = Color(1, 0.97, 0.9, 1)
 goal_glow_energy = 2.2
 voice_glow_energy = 0.5
 voice_light_energy = 8.0
+ambience = ExtResource("3_amb")
+ambience_db = -6.0
+descend = true
+goal_glow_size = 5.0
+goal_light_energy = 6.0
+goal_light_range = 40.0
+voice_light_offsets = PackedVector3Array(-9, 6, 2, 9, 6, 2)

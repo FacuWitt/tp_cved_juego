@@ -78,6 +78,42 @@ extends Resource
 ## Cuánto se oscurece el agua al mirar hacia abajo (1 = negro total).
 @export_range(0.0, 1.0, 0.01) var water_look_down_black: float = 0.6
 
+@export_group("Sonido de fondo")
+## Un sonido en bucle durante todo el pasaje (opcional), por ejemplo el agua ahogada al bajar.
+@export var ambience: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var ambience_db: float = -10.0
+
+@export_group("Descenso (bajo el agua)")
+## Si está prendido, en vez de caminar sobre el mar el jugador baja por el agua hacia la luz,
+## que está abajo. Baja solo; se puede mirar alrededor.
+@export var descend: bool = false
+## Cuánto baja y cuánto tarda en llegar a la luz.
+@export_range(5.0, 300.0, 1.0, "suffix:m") var descend_depth: float = 55.0
+@export_range(5.0, 180.0, 1.0, "suffix:s") var descend_time: float = 40.0
+## A qué profundidad empieza (los ojos), justo debajo de la superficie.
+@export_range(0.2, 10.0, 0.1, "suffix:m") var descend_start_depth: float = 1.5
+## Hacia dónde mira al empezar (negativo = hacia abajo, hacia la luz).
+@export_range(-89.0, 0.0, 1.0, "suffix:°") var descend_start_pitch: float = -68.0
+## Vaivén suave del cuerpo mientras baja (de costado), y qué tan rápido.
+@export_range(0.0, 2.0, 0.01, "suffix:m") var descend_sway: float = 0.35
+@export_range(0.01, 1.0, 0.01, "suffix:Hz") var descend_sway_rate: float = 0.12
+## Color del agua (la niebla) cerca de la superficie y en lo hondo, y qué tan espesa.
+@export var water_color_top: Color = Color(0.03, 0.08, 0.1)
+@export var water_color_deep: Color = Color(0.0, 0.01, 0.015)
+@export_range(0.0, 0.5, 0.001) var underwater_fog: float = 0.07
+## Resplandor de la superficie arriba (se aleja y se apaga al bajar).
+@export var surface_glow_color: Color = Color(0.3, 0.42, 0.48)
+@export_range(0.0, 4.0, 0.05) var surface_glow_energy: float = 0.8
+@export_range(1.0, 200.0, 1.0, "suffix:m") var surface_glow_size: float = 60.0
+## Partículas suspendidas en el agua: suben al pasar a medida que se baja (se nota el descenso).
+@export_range(0, 3000, 10) var particle_amount: int = 900
+@export_range(0.005, 0.2, 0.005, "suffix:m") var particle_size: float = 0.06
+@export_range(0.0, 1.0, 0.01) var particle_opacity: float = 0.75
+## Burbujas que salen de la boca y suben.
+@export_range(0, 400, 1) var bubble_amount: int = 40
+@export_range(0.1, 6.0, 0.05, "suffix:m/s") var bubble_rise: float = 1.6
+@export_range(0.005, 0.2, 0.005, "suffix:m") var bubble_size: float = 0.03
+
 @export_group("Oscuridad")
 ## Niebla negra que se come el mar a lo lejos (0 = sin niebla).
 @export_range(0.0, 0.2, 0.001) var fog_density: float = 0.02

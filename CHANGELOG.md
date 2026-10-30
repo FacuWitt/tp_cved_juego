@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-063 · Pasaje M4 → despertar: en vez de caminar, se baja por el agua hacia la luz · 2026-10-30
+- **Rama / commits:** `claude/pasajes` · sin commitear
+- **Pedido por:** Facu: "en la última memoria no hay una caminata hacia la luz, descendés a la luz, tardás un tiempo, se tiene que notar que estamos bajando por el agua".
+- **Qué se hizo:** `Passage` tiene un modo descenso (`descend` en `PassageSettings`). El jugador empieza bajo la superficie mirando hacia abajo, donde está la luz, y baja solo (55 m en 40 s, con un vaivén suave); puede mirar alrededor. Para que se note el descenso: motas suspendidas en el agua que quedan quietas y se ven subir al pasar, burbujas que se le escapan y suben, el resplandor de la superficie que se aleja arriba, el agua que pasa de verde azulado oscuro a casi negra, y el sonido del agua ahogada (`underwater_loop.ogg`, de la M2 de Mica; los pasajes ahora pueden tener un sonido de fondo). Las voces del hospital suenan durante la bajada y la luz de abajo crece hasta llenar la pantalla de blanco, que encadena con el blanco del despertar. Los otros pasajes siguen siendo caminatas.
+- **Por qué (decisión de diseño):** la M4 termina con el protagonista hundiéndose en el mar; seguir bajando hacia la luz continúa ese movimiento en lugar de cortarlo con una caminata.
+- **Alternativas descartadas:** ninguna registrada.
+- **Problemas encontrados:** en la primera versión las burbujas se veían como bolas grises grandes delante de la cara y las motas casi no se veían; se achicaron y alejaron las burbujas y se agrandaron y aclararon las motas.
+- **Cómo se probó:** recorrido automático completo (llega a la luz a los 40 s con las 4 voces) y capturas al empezar y a la mitad. Los otros pasajes siguen llegando bien caminando.
+- **Qué podés ajustar en el Inspector:** `config/passage_m4_awake.tres`, grupo "Descenso": `descend_depth`, `descend_time`, `descend_start_pitch`, `descend_sway`, `water_color_top` / `water_color_deep`, `underwater_fog`, `surface_glow_*`, `particle_*`, `bubble_*`; y "Sonido de fondo": `ambience`, `ambience_db`.
+- **Archivos y docs:** `scripts/memories/passage.gd`, `scripts/config/passage_settings.gd`, `config/passage_m4_awake.tres`.
+
 ### CL-062 · Pasajes entre todas las memorias (M2 → M3, M3 → M4 y M4 → despertar) · 2026-10-29
 - **Rama / commits:** `claude/pasajes` · sin commitear
 - **Pedido por:** Facu: "hacé el pasaje de memorias entre todas las memorias".
