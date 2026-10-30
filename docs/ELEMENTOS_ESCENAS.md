@@ -315,7 +315,7 @@ El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no
 
 ## 5. Despertar ✅
 
-**Escena:** `scenes/memories/final_hospital/`. Día, **blanco**, calma total, sin agua. Todo suena seco.
+**Escena:** `scenes/memories/awakening.tscn` ✅ greybox (CL-060). Día, **blanco**, calma total, sin agua. Todo suena seco.
 
 | Elemento | Rol | Etapa 0 |
 |---|---|---|

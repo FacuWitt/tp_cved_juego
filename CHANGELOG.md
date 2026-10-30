@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-060 · Despertar: primera versión de la escena del hospital (reemplaza el cartel "FIN") · 2026-10-29
+- **Rama / commits:** `claude/hospital` · sin commitear
+- **Pedido por:** Facu: "si te digo que crees la escena del hospital (para que no diga simplemente fin), ¿podés hacer una rápido, y después la detallamos?"
+- **Qué se hizo:** `awakening.tscn` pasa de un cartel "FIN" a la habitación del hospital en greybox, siguiendo lo que ya estaba definido en `ELEMENTOS_ESCENAS.md` (sección 5): cama, monitor cardíaco con su bip (el de los sonidos de Mica), ventana con luz de día, reloj de pared en marcha (`WallClockHands`, con la hora real), mesita de luz con el barquito y la hija (cápsula). Secuencia (`Awakening`, con `AwakeningSettings`): blanco que se aclara con dos parpadeos, acostado mirando el techo; gira la cabeza hacia la hija, que dice *"Papá... te traje esto. Lo cuidé como me dijiste antes de irte."*; la mirada baja al barquito (último plano) y todo se funde a blanco con el título "Cable a Tierra". Entre los momentos guiados se puede mirar con el mouse, sin moverse.
+- **Por qué (decisión de diseño):** las 6 luces del techo se arman con los mismos datos que las luces del hospital que se ven en el cielo con los rayos de la M4 (`hospital_lights_m4.tres`, CL-040), achicados a la altura real del techo: desde la cama ocupan el mismo lugar en la vista que en el cielo, así el jugador reconoce que eran estas luces.
+- **Alternativas descartadas:** ninguna registrada.
+- **Problemas encontrados:** la primera versión quedaba casi quemada (todo blanco) y las luces del techo se perdían; se bajaron la luz ambiente, la del día, el brillo y la luz de los paneles, y se oscurecieron el techo y las sábanas.
+- **Qué podés ajustar en el Inspector:** `config/awakening_settings.tres`: tiempos de cada momento, texto y voz de la hija, intervalo y volumen del bip, sensibilidad y topes de la mirada, brillo de los paneles y de la luz de la habitación.
+- **Archivos y docs:** `scenes/memories/awakening.tscn`, `scripts/memories/awakening.gd`, `scripts/config/awakening_settings.gd`, `scripts/world/wall_clock_hands.gd`, `config/awakening_settings.tres`, `config/postfx_hospital.tres`.
+- **Pendiente / ❓ ABIERTO:** qué pasa después del título (créditos, menú o nada; hoy queda el título); el modelo de la hija; la voz de la hija; ruidos de hospital de ambiente; arte de la habitación.
+
 ### CL-059 · Memoria 4: lluvia más de costado, como la de la M2 (se probaron y se descartaron las ráfagas de lluvia) · 2026-10-29
 - **Rama / commits:** `memories/m4-barco` · sin commitear
 - **Pedido por:** Facu: "mejorá la lluvia como la de la memoria 2, con una pequeña diferencia, lluvia más lateral, y en forma de conglomerados (como pasa con la lluvia y el viento)". Después de verla: "es demasiado exagerada la ráfaga, mejor quedémonos con la lluvia lateralizada".
