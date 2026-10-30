@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="RemosBoatSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/remos_boat_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")

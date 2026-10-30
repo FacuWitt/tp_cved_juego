@@ -40,7 +40,10 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `HeldItemView` + `HeldItemSettings` | `scripts/fx/held_item_view.gd` | Objeto en la mano en primera persona (linterna, barquito) |
 | `EquipPickup` | `scripts/world/equip_pickup.gd` | Objeto que se agarra con E y pasa a llevarse puesto (no se suelta) |
 | `FlashbackOverlay` + `FlashbackSettings` | `scripts/ui/flashback_overlay.gd` | Flashbacks de menos de un segundo, con opción de fotosensibilidad |
-| `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 (el lago helado): cabaña, placas, perro, final bajo el hielo |
+| `Memory2Boats` | `scripts/memories/memory_2_boats.gd` | M2 de Mica (`m2_remos`, CL-054): remar en el lago escapando de la tormenta, con ola, vuelco y rescate. Convive con la M2 del río; no está en la secuencia, es fuente de sonido y clima |
+| `RemosBoat` / `RemosFatherBoat` / `RowCourse` | `scripts/world/remos_boat.gd`, `remos_father_boat.gd`, `row_course.gd` | Bote del jugador (un remo por tecla), bote del padre que guía y camino con obstáculos de la M2 de Mica |
+| `LakeWater` / `StormAudio` / `RowHud` | `scripts/world/lake_water.gd`, `scripts/fx/storm_audio.gd`, `scripts/ui/row_hud.gd` | Agua con olas y tormenta, mezcla de audio de tormenta, teclas en pantalla |
+| `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 vigente (el río y el lago de noche): pesca, red, huida remando, final nadando y rescate del padre |
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |

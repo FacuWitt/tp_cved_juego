@@ -20,6 +20,8 @@ signal flashed(strength: float)
 var is_running: bool = false
 ## Verdadero mientras dura un relámpago largo (`long_flash`).
 var in_long_flash: bool = false
+## Multiplica la espera entre rayos: 1 = tal cual el Resource, menos de 1 = más rayos, más de 1 = menos.
+var interval_scale: float = 1.0
 ## SOLO PARA PRUEBAS: mientras es verdadero la luz del rayo queda fija encendida y los rayos no la cambian.
 var is_held: bool = false
 var _held_level: float = 0.85
@@ -100,7 +102,7 @@ func long_flash(duration: float, strength: float = 1.0) -> void:
 
 func _loop(id: int) -> void:
 	while is_running and id == _loop_id:
-		var wait: float = randf_range(_cfg("lightning_min_interval"), _cfg("lightning_max_interval"))
+		var wait: float = randf_range(_cfg("lightning_min_interval"), _cfg("lightning_max_interval")) * interval_scale
 		await get_tree().create_timer(wait).timeout
 		if not is_running or id != _loop_id:
 			return

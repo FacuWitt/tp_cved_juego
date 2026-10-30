@@ -109,6 +109,20 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 
 ---
 
+## 2c. Memoria 2 de Mica — El lago de noche: remar tras el padre ✅ (CL-054)
+
+**Escena:** `scenes/memories/m2_remos/m2_remos.tscn` ✅. Atardecer que pasa a tormenta. Convive con la M2 del río (sección 2): no está en la secuencia, se usa de referencia y de fuente de sonido y clima para la M2 híbrida. Sus scripts se llaman `remos_*` / `Remos…`.
+
+- **Jugador:** bote propio, un remo por tecla (A/D), HUD con las teclas, cámara a la altura de los ojos, balanceo con las olas.
+- **Padre:** bote adelante con farol y resplandor visible de lejos; espera si te alejás, acelera si lo alcanzás; habla con subtítulos (voz provisoria).
+- **Camino:** 12 puntos, rocas, troncos, palos, boyas con luz, bancos de niebla, cabaña con muelle al final.
+- **Tormenta:** olas, cielo, niebla, lluvia, rayos y audio suben con el avance. Ola gigante al ~84 %, vuelco, buceo con audio apagado y latido, rescate con luz y mano del padre, barquito de juguete.
+- **Audio:** 37 OGG en `assets/audio/m2_remos/` (remos, agua, viento, lluvia, truenos, ola, vuelco, latido, voces provisorias).
+- **Sistemas:** `Memory2Boats`, `RemosBoat`, `RemosFatherBoat`, `RowCourse`, `RowObstacle`, `LakeWater`, `LakeScenery`, `StormAudio`, `RowHud`, `WakeUpIntro`, `FlashbackOverlay`, `LightningController`, `DebugTools`.
+- ❓ Voz real del padre, sentido de giro, texto final de diálogos.
+
+---
+
 ## 2. Memoria 2 — El lago y el río ✅
 
 **Escena:** `scenes/memories/m2_lago/m2_lago.tscn` ✅ greybox jugable (CL-034, reemplaza a la versión de las placas de hielo de CL-031). La genera `gen_m2_rio.py` (en la nube de Claude); se puede editar a mano: las orillas salen solas de la curva del cauce. Atardecer en calma → tormenta de nieve de noche.
