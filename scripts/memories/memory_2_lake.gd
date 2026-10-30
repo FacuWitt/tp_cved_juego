@@ -40,6 +40,11 @@ enum Stage { WAKE, FISHING, NET, STORM, CUT, CHASE, ENDING }
 @export var snow: CPUParticles3D
 @export var snow_storm: CPUParticles3D
 @export var toy_boat: Node3D
+## Sonido de la tormenta (lluvia, viento, agua, música, truenos, bajo el agua), de la M2 de Mica.
+@export var storm_audio: StormAudio
+## Lluvia que acompaña a la cámara; cae con la tormenta (se suma a la nieve).
+@export var rain: CPUParticles3D
+@export var post_fx: PostFx
 @export var father_light: SpotLight3D
 @export var father_hand: Node3D
 ## El sol del atardecer: se apaga con la tormenta.
@@ -81,6 +86,10 @@ var _under_surface: bool = false
 var _rescue_light_on: bool = false
 var _bob_scale: float = 1.0
 var _hand: BoneAttachment3D        # sigue la mano del padre ya posada
+var _voice: AudioStreamPlayer
+var _rain_material: StandardMaterial3D
+var _heartbeat: AudioStreamPlayer
+var _lullaby: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -147,6 +156,14 @@ func _ready() -> void:
 		debug_tools.fly_toggled.connect(func(on: bool) -> void:
 			if not on and stage != Stage.ENDING:
 				_sit_player())
+	_voice = AudioStreamPlayer.new()
+	_voice.name = "Voice"
+	add_child(_voice)
+	if rain != null:
+		rain.top_level = true
+		_rain_material = rain.material_override as StandardMaterial3D
+	if storm_audio != null and lightning != null:
+		lightning.flashed.connect(storm_audio.on_flash)
 	_apply_storm(0.0)
 	_begin.call_deferred()
 
@@ -176,6 +193,9 @@ func _process(delta: float) -> void:
 	for flakes: CPUParticles3D in [snow, snow_storm]:
 		if flakes != null:
 			flakes.global_position = _camera.global_position + Vector3(0.0, 6.0, 0.0)
+	if rain != null:
+		# La lluvia acompaña a la cámara pero siempre cae derecha, aunque el bote se incline.
+		rain.global_position = _camera.global_position + Vector3(0.0, 9.0, 0.0)
 	match stage:
 		Stage.CUT:
 			_update_rope_aim()
@@ -286,6 +306,14 @@ func _apply_storm(amount: float) -> void:
 		(ocean.material_override as ShaderMaterial).set_shader_parameter("wave_height", lerpf(settings.calm_waves, settings.storm_waves, amount))
 	if snow_storm != null:
 		snow_storm.emitting = amount > 0.35
+	if storm_audio != null:
+		storm_audio.set_storm(amount)
+	if _rain_material != null:
+		var c: Color = _rain_material.albedo_color
+		c.a = lerpf(0.0, 0.4, lerpf(settings.rain_calm, settings.rain_storm, amount))
+		_rain_material.albedo_color = c
+	if post_fx != null:
+		post_fx.set_lens_wet(settings.lens_wet_storm * amount)
 
 
 # ---------- Cortar la red ----------
@@ -471,7 +499,54 @@ func _on_boat_hit(hits: int) -> void:
 
 func _on_father_calling() -> void:
 	if stage == Stage.CHASE and not settings.call_lines.is_empty():
-		subtitles.show_line(settings.call_lines[randi() % settings.call_lines.size()], settings.line_duration * 0.8)
+		var index: int = randi() % settings.call_lines.size()
+		subtitles.show_line(settings.call_lines[index], settings.line_duration * 0.8)
+		if index < settings.call_voices.size():
+			_say_voice(settings.call_voices[index])
+
+
+## Suena una voz del padre (si hay audio).
+func _say_voice(stream: AudioStream) -> void:
+	if stream == null or _voice == null:
+		return
+	_voice.stream = stream
+	_voice.volume_db = settings.voice_db
+	_voice.play()
+
+
+## Un efecto suelto (sin posición) con el volumen general de efectos.
+func _play_sfx(stream: AudioStream, offset_db: float = 0.0) -> void:
+	if stream == null:
+		return
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.stream = stream
+	p.volume_db = settings.sfx_db + offset_db
+	add_child(p)
+	p.finished.connect(p.queue_free)
+	p.play()
+
+
+## Un sonido en bucle que se puede apagar (latido, caja de música).
+func _start_loop(stream: AudioStream, db: float) -> AudioStreamPlayer:
+	if stream == null:
+		return null
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	var looped: AudioStream = stream.duplicate() as AudioStream
+	if looped is AudioStreamOggVorbis:
+		(looped as AudioStreamOggVorbis).loop = true
+	p.stream = looped
+	p.volume_db = db
+	add_child(p)
+	p.play()
+	return p
+
+
+func _stop_loop(p: AudioStreamPlayer, fade: float) -> void:
+	if p == null:
+		return
+	var tween: Tween = create_tween()
+	tween.tween_property(p, "volume_db", -60.0, fade)
+	tween.tween_callback(p.queue_free)
 
 
 # ---------- Final: cae al agua ----------
@@ -506,6 +581,7 @@ func _play_ending(drowned: bool) -> void:
 		await sink.finished
 	else:
 		subtitles.show_line(settings.capsize_line, settings.capsize_time + 1.5)
+		_play_sfx(settings.capsize_roar_sound)
 		var flip: Tween = create_tween()
 		flip.tween_property(hull, "rotation:z", PI * 0.85, settings.capsize_time).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 		await flip.finished
@@ -518,6 +594,9 @@ func _play_ending(drowned: bool) -> void:
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	fall.tween_property(_head, "rotation:x", deg_to_rad(-25.0), settings.fall_time)
 	await get_tree().create_timer(settings.fall_time * 0.4).timeout
+	_play_sfx(settings.capsize_splash_sound)
+	if storm_audio != null:
+		storm_audio.set_underwater(true)
 	_set_underwater(env)
 	# Bajo el agua los botes quedan arriba, fuera de la vista: el rescate es la luz y la mano.
 	boat.visible = false
@@ -590,6 +669,10 @@ func _swim(env: Environment) -> void:
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await emerge.finished
 	subtitles.show_line(settings.gasp_lines[0] if not settings.gasp_lines.is_empty() else "", settings.line_duration * 0.7)
+	_play_sfx(settings.gasp_sound)
+	if storm_audio != null:
+		storm_audio.set_underwater(false)
+	_heartbeat = _start_loop(settings.heartbeat_sound, settings.heartbeat_db)
 	_float_time = 0.0
 	_bob_scale = 1.0
 	_dip = 0.0
@@ -619,6 +702,8 @@ func _update_float(delta: float) -> void:
 			dip.tween_property(self, "_dip", 1.0, settings.dip_time * 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 			dip.tween_property(self, "_dip", 0.0, settings.dip_time * 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 			dip.tween_callback(func() -> void:
+				if _swimming:
+					_play_sfx(settings.gasp_sound, -3.0)
 				if _swimming and not settings.gasp_lines.is_empty():
 					subtitles.show_line(settings.gasp_lines[randi() % settings.gasp_lines.size()], settings.line_duration * 0.6))
 		# El padre barre con la luz, lejos, y lo llama.
@@ -633,6 +718,8 @@ func _update_float(delta: float) -> void:
 	var under: bool = _camera.global_position.y < settings.water_level - 0.03
 	if under != _under_surface:
 		_under_surface = under
+		if storm_audio != null:
+			storm_audio.set_underwater(under)
 		var env: Environment = world_environment.environment
 		if under:
 			env.fog_light_color = settings.underwater_fog_color
@@ -656,7 +743,7 @@ func _restore_surface(env: Environment) -> void:
 	else:
 		env.background_energy_multiplier = settings.storm_sky
 		env.ambient_light_energy = settings.storm_ambient
-	for flakes: CPUParticles3D in [snow, snow_storm]:
+	for flakes: CPUParticles3D in [snow, snow_storm, rain]:
 		if flakes != null:
 			flakes.visible = true
 
@@ -720,6 +807,12 @@ func _rescue() -> void:
 				.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(settings.rescue_boat_time * 0.6).timeout
 	subtitles.show_line(settings.father_line, settings.rescue_boat_time + settings.rescue_hold_time + settings.end_fade_time)
+	_say_voice(settings.rescue_voice)
+	_play_sfx(settings.hand_grab_sound)
+	_stop_loop(_heartbeat, 2.0)
+	_lullaby = _start_loop(settings.lullaby_sound, settings.lullaby_db)
+	if storm_audio != null:
+		storm_audio.set_muted(true)
 	await arrive.finished
 	await get_tree().create_timer(settings.rescue_hold_time).timeout
 
@@ -766,7 +859,7 @@ func _set_underwater(env: Environment) -> void:
 		lightning.set_base_levels(0.02, 0.0)
 	env.background_energy_multiplier = 0.0
 	env.ambient_light_energy = 0.02
-	for flakes: CPUParticles3D in [snow, snow_storm]:
+	for flakes: CPUParticles3D in [snow, snow_storm, rain]:
 		if flakes != null:
 			flakes.visible = false
 

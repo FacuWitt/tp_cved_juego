@@ -39,7 +39,7 @@ Plan para la próxima clase. **No es el diseño final de cada memoria:** es qué
 3. **La red.** (E) tirar la red. Mientras flota llega la tormenta: el cielo se cierra, nieva fuerte, se prende la linterna de la proa.
 4. **Cortar la red.** La red se traba. Padre: "¡CORTÁ LA RED, HIJO! ¡VOLVAMOS, QUE VIENE LA TORMENTA!". Aparece el cuchillo: se apunta a la soga y se corta con el mismo evento rápido del hacha de M4 (3 golpes).
 5. **La huida.** "¡Rápido, hijo, seguime!". Se rema detrás de la luz del padre por el río:
-   - **Remos:** Q / E remo izquierdo / derecho hacia adelante (solo uno = gira), A / D hacia atrás por lado, S los dos hacia atrás.
+   - **Remos:** A / D tocar para remar con el remo izquierdo / derecho (solo uno = gira, alternar rinde más), S los dos hacia atrás. Sonido de tormenta, lluvia y voces del padre de la M2 de Mica (CL-055).
    - **Obstáculos:** ramas que salen de las orillas, rocas en los rápidos, hielo flotante.
    - **Viento:** ráfagas de costado que empujan e inclinan el bote; se compensa remando del otro lado.
    - **Golpes:** el bote aguanta 3; con cada uno cruje y entra agua. Al tercero se hunde.

@@ -13,8 +13,8 @@ extends Resource
 @export var cut_prompt: String = "(E) Cortar"
 @export var urge_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Dale, cortala!", "PADRE: ¡Rápido, hijo!"])
 @export var follow_line: String = "PADRE: ¡Rápido, hijo, seguime! ¡No te separes de la luz!"
-@export var row_hint: String = "Q / E: remar con el remo izquierdo / derecho · A / D: remo atrás · S: frenar"
-@export var call_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Hijo! ¡Por acá!", "PADRE: ¡Seguí mi luz!", "PADRE: ¡No te quedes atrás!"])
+@export var row_hint: String = "A / D: remo izquierdo / derecho (tocá la tecla, alterná para ir derecho) · S: los dos remos atrás"
+@export var call_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Por acá, hijo! ¡Seguí la luz!", "PADRE: ¡No te quedes atrás! ¡Seguí mi luz!", "PADRE: ¡Seguime, hijo! ¡No me pierdas de vista!"])
 @export var hit_lines: PackedStringArray = PackedStringArray(["(el bote cruje: entra agua)", "(otro golpe: el agua sube)"])
 @export var gust_line: String = "PADRE: ¡Cuidado con el viento! ¡Remá del otro lado!"
 @export var rapids_line: String = "PADRE: ¡Rápidos! ¡Agarrate fuerte!"
@@ -53,7 +53,7 @@ extends Resource
 @export_range(0.0, 0.2, 0.001) var storm_fog_density: float = 0.03
 ## Olas del lago en calma y con tormenta (altura del shader del agua).
 @export_range(0.0, 1.0, 0.01) var calm_waves: float = 0.03
-@export_range(0.0, 1.0, 0.01) var storm_waves: float = 0.09
+@export_range(0.0, 1.0, 0.01) var storm_waves: float = 0.22
 ## Copos de la nieve liviana y de la nieve de tormenta.
 @export_range(0, 4000, 10) var calm_snow: int = 250
 @export_range(0, 4000, 10) var storm_snow: int = 900
@@ -173,3 +173,29 @@ extends Resource
 ## Color y densidad de la niebla bajo el agua.
 @export var underwater_fog_color: Color = Color(0.01, 0.03, 0.045)
 @export_range(0.0, 1.0, 0.005) var underwater_fog_density: float = 0.22
+
+@export_group("Sonido y clima (mezcla con la M2 de Mica)")
+## Voz del padre para cada frase de `call_lines` (mismo orden). Voces provisorias.
+@export var call_voices: Array[AudioStream] = []
+## Voz del padre en el rescate (frase `father_line`).
+@export var rescue_voice: AudioStream
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var voice_db: float = -3.0
+## Rugido de la ola que da vuelta el bote, y chapuzón al caer al agua.
+@export var capsize_roar_sound: AudioStream
+@export var capsize_splash_sound: AudioStream
+## Jadeo al salir a la superficie y cada vez que la cabeza se hunde.
+@export var gasp_sound: AudioStream
+## Latido mientras nada medio ahogado (se apaga en el rescate).
+@export var heartbeat_sound: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var heartbeat_db: float = -14.0
+## Música de caja que suena cuando llega el padre.
+@export var lullaby_sound: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var lullaby_db: float = -16.0
+## Sonido de la mano del padre agarrándolo.
+@export var hand_grab_sound: AudioStream
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -2.0
+## Cuánta lluvia hay en calma y con la tormenta al máximo (0 = nada, 1 = la lluvia entera).
+@export_range(0.0, 1.0, 0.01) var rain_calm: float = 0.0
+@export_range(0.0, 1.0, 0.01) var rain_storm: float = 1.0
+## Cuánta agua hay en la lente de la cámara con la tormenta al máximo (gotas en la pantalla).
+@export_range(0.0, 1.0, 0.01) var lens_wet_storm: float = 0.5

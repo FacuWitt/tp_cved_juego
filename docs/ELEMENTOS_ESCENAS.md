@@ -142,7 +142,7 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 ### Props e interactivos
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes. **Modelo:** canoa PS1 (`scenes/props/canoe.tscn`, CL-047), la misma que usa el padre |
+| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: cada toque de tecla es una remada (mecánica de Mica, CL-055): A remo izquierdo, D remo derecho (alternar rinde más, un solo remo gira), S los dos hacia atrás. Responde rápido (la pala empuja al entrar al agua) y tiene buena velocidad máxima (inercia). Sube y baja con las olas. Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes. **Modelo:** canoa PS1 (`scenes/props/canoe.tscn`, CL-047), la misma que usa el padre |
 | **Caña de pescar** ✅ | OBL | Objeto en mano (`HeldItemView`) + `FishingRod` (boya, línea, pez) |
 | **Red** con su soga ✅ | OBL | Plano con shader de red + `CuttableRope` (la misma soga de M4, más chica) |
 | **Cuchillo** ✅ | OBL | Objeto en mano; corta con el evento rápido de M4 (`TimingQte`) |

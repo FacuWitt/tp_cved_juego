@@ -18,7 +18,7 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 - Todo el equipo usa **la misma versión exacta** de Godot.
 - Escena principal actual: `res://scenes/memories/m1_habitacion/m1_habitacion.tscn` (memoria 1 en greybox). El sandbox de prueba sigue en `scenes/sandbox/` (F6).
 - Autoloads: `GameFlow` (encadena las memorias) y `ScreenFade` (fundido a negro). Falta `EventBus`, `AudioManager`, etc.
-- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`, y los de debug `debug_next_memory` (F9) y `debug_restart_memory` (F10).
+- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`, `row_left` (A), `row_right` (D) para remar, y los de debug `debug_next_memory` (F9) y `debug_restart_memory` (F10).
 
 ## Qué existe hoy
 | Clase | Archivo | Qué hace |
@@ -44,6 +44,7 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `RemosBoat` / `RemosFatherBoat` / `RowCourse` | `scripts/world/remos_boat.gd`, `remos_father_boat.gd`, `row_course.gd` | Bote del jugador (un remo por tecla), bote del padre que guía y camino con obstáculos de la M2 de Mica |
 | `LakeWater` / `StormAudio` / `RowHud` | `scripts/world/lake_water.gd`, `scripts/fx/storm_audio.gd`, `scripts/ui/row_hud.gd` | Agua con olas y tormenta, mezcla de audio de tormenta, teclas en pantalla |
 | `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 vigente (el río y el lago de noche): pesca, red, huida remando, final nadando y rescate del padre |
+| `RowBoat` + `RowBoatSettings` | `scripts/world/row_boat.gd` → `config/row_boat.tres` | Bote del jugador en la M2 del río: cada toque de tecla es una remada (A remo izquierdo, D derecho, S los dos atrás), con empuje al entrar la pala, sonidos de remos y golpes, y balanceo con las olas |
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |

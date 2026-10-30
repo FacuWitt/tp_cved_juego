@@ -4,6 +4,25 @@
 
 [ext_resource type="Resource" path="res://config/character_father_rescue_m2.tres" id="2_rescue"]
 
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_por_aca.ogg" id="v_call_por_aca"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_no_pares.ogg" id="v_call_no_pares"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_seguime.ogg" id="v_call_seguime"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_agarrate.ogg" id="v_rescue_voice"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/wave_roar.ogg" id="v_roar"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/capsize_splash.ogg" id="v_splash"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/gasp.ogg" id="v_gasp"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/heartbeat.ogg" id="v_heart"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lullaby_musicbox.ogg" id="v_lull"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/hand_grab.ogg" id="v_grab"]
+
 [resource]
 script = ExtResource("1")
 father_rescue_pose = ExtResource("2_rescue")
+call_voices = Array[AudioStream]([ExtResource("v_call_por_aca"), ExtResource("v_call_no_pares"), ExtResource("v_call_seguime")])
+rescue_voice = ExtResource("v_rescue_voice")
+capsize_roar_sound = ExtResource("v_roar")
+capsize_splash_sound = ExtResource("v_splash")
+gasp_sound = ExtResource("v_gasp")
+heartbeat_sound = ExtResource("v_heart")
+lullaby_sound = ExtResource("v_lull")
+hand_grab_sound = ExtResource("v_grab")
