@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/fx/post_fx.gd" id="s_pfx"]
 [ext_resource type="Resource" path="res://config/postfx_hospital.tres" id="r_pfx"]
 [ext_resource type="Script" path="res://scripts/world/wall_clock_hands.gd" id="s_clock"]
+[ext_resource type="PackedScene" path="res://assets/models/personajes/hija_ps1.glb" id="pc_hija"]
 
 [sub_resource type="Environment" id="env"]
 background_mode = 1
@@ -71,10 +72,6 @@ emission_energy_multiplier = 2.2
 albedo_color = Color(0.78, 0.5, 0.48, 1)
 roughness = 0.9
 
-[sub_resource type="StandardMaterial3D" id="m_skin"]
-albedo_color = Color(0.86, 0.68, 0.58, 1)
-roughness = 0.9
-
 [sub_resource type="StandardMaterial3D" id="m_clock"]
 albedo_color = Color(0.95, 0.95, 0.92, 1)
 roughness = 0.6
@@ -90,14 +87,6 @@ height = 0.26
 [sub_resource type="PrismMesh" id="pm_sail"]
 size = Vector3(0.16, 0.2, 0.01)
 
-[sub_resource type="CapsuleMesh" id="cap_body"]
-radius = 0.2
-height = 1.0
-
-[sub_resource type="SphereMesh" id="sph_head"]
-radius = 0.13
-height = 0.26
-
 [sub_resource type="CylinderMesh" id="cm_clock"]
 top_radius = 0.22
 bottom_radius = 0.22
@@ -112,13 +101,14 @@ size = Vector3(0.018, 0.18, 0.01)
 [sub_resource type="BoxMesh" id="bm_hand_s"]
 size = Vector3(0.006, 0.19, 0.01)
 
-[node name="Awakening" type="Node3D" node_paths=PackedStringArray("head", "camera", "subtitles", "daughter_look", "toy_boat", "white_overlay", "title_label", "monitor_speaker")]
+[node name="Awakening" type="Node3D" node_paths=PackedStringArray("head", "camera", "subtitles", "daughter_look", "daughter_model", "toy_boat", "white_overlay", "title_label", "monitor_speaker")]
 script = ExtResource("s_awake")
 settings = ExtResource("r_awake")
 head = NodePath("Patient/Head")
 camera = NodePath("Patient/Head/Camera3D")
 subtitles = NodePath("HUD/Subtitles")
 daughter_look = NodePath("Daughter/LookAt")
+daughter_model = NodePath("Daughter")
 toy_boat = NodePath("Nightstand/Barquito")
 white_overlay = NodePath("HUD/White")
 title_label = NodePath("HUD/Title")
@@ -272,18 +262,10 @@ material_override = SubResource("m_sail")
 [node name="Daughter" type="Node3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.05, 0, 1.05)
 
-[node name="Body" type="MeshInstance3D" parent="Daughter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
-mesh = SubResource("cap_body")
-material_override = SubResource("m_daughter")
-
-[node name="Head" type="MeshInstance3D" parent="Daughter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18, 0)
-mesh = SubResource("sph_head")
-material_override = SubResource("m_skin")
+[node name="Model" parent="Daughter" instance=ExtResource("pc_hija")]
 
 [node name="LookAt" type="Marker3D" parent="Daughter"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="Clock" type="Node3D" parent="." node_paths=PackedStringArray("hour_hand", "minute_hand", "second_hand")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -2.53)

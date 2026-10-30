@@ -13,6 +13,8 @@ extends Memory
 @export var subtitles: SubtitleDisplay
 ## Dónde mirar a la hija (su cara) y al barquito.
 @export var daughter_look: Node3D
+## La hija: se la gira para que mire hacia la cama (el modelo mira hacia su +Z).
+@export var daughter_model: Node3D
 @export var toy_boat: Node3D
 ## Blanco que tapa la pantalla al principio y al final, y el título.
 @export var white_overlay: ColorRect
@@ -41,6 +43,9 @@ func _ready() -> void:
 	_voice = AudioStreamPlayer.new()
 	add_child(_voice)
 	_build_ceiling()
+	if daughter_model != null:
+		var face: Vector3 = Vector3(camera.global_position.x, daughter_model.global_position.y, camera.global_position.z)
+		daughter_model.look_at(face, Vector3.UP, true)
 	_pitch = deg_to_rad(settings.max_pitch)
 	_apply_look()
 	_play.call_deferred()

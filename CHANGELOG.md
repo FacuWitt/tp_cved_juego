@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-061 · Despertar: la hija usa el modelo de RECURSOS (provisorio, con reparo de derechos) · 2026-10-29
+- **Rama / commits:** `claude/hospital` · sin commitear
+- **Pedido por:** Facu: "¿podés usar el modelo de la niña que está en recursos?"
+- **Qué se hizo:** la cápsula de la hija se reemplazó por `RECURSOS/MODELOS 3D/child_character_ps1-style.glb`, copiado como `assets/models/personajes/hija_ps1.glb` (1,34 m, de pie, sin esqueleto). Al empezar la escena gira para mirar hacia la cama.
+- **Por qué (decisión de diseño):** era el modelo de la niña que el equipo ya tenía elegido, y su estilo PS1 coincide con el del juego.
+- **Alternativas descartadas:** seguir con la cápsula hasta tener un modelo definitivo.
+- **Problemas encontrados / reparo:** según los datos del propio archivo, el modelo es **Sherry Birkin, de Resident Evil 2 (1998)**, subido a Sketchfab por *cauabutnotreally* con licencia CC-BY-4.0 (https://sketchfab.com/3d-models/sherry-birkin-resident-evil-2-1998-ce127b81c00c479481bc9bcef820f75a). Esa licencia cubre el trabajo de quien lo subió, pero el personaje es de Capcom: sirve para el prototipo de la materia, y conviene reemplazarlo por un modelo propio o libre si el juego se muestra o publica fuera de la cátedra. Mientras se use, hay que acreditar al autor del modelo (CC-BY).
+- **Archivos y docs:** `assets/models/personajes/hija_ps1.glb` (+ textura extraída), `scenes/memories/awakening.tscn`, `scripts/memories/awakening.gd`.
+- **Pendiente / ❓ ABIERTO:** modelo definitivo de la hija; créditos del juego (no existe `CREDITS.md`); la hija no tiene animaciones (está quieta).
+
 ### CL-060 · Despertar: primera versión de la escena del hospital (reemplaza el cartel "FIN") · 2026-10-29
 - **Rama / commits:** `claude/hospital` · sin commitear
 - **Pedido por:** Facu: "si te digo que crees la escena del hospital (para que no diga simplemente fin), ¿podés hacer una rápido, y después la detallamos?"
