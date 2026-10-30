@@ -109,7 +109,21 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 
 ---
 
-## 2. Memoria 2 — El lago helado ✅
+## 2. Memoria 2 — El lago de noche: remar tras el padre ✅ (CL-034)
+
+**Escena:** `scenes/memories/m2_remos/m2_remos.tscn` ✅. Atardecer que pasa a tormenta. Reemplaza al lago helado (queda abajo como referencia vieja).
+
+- **Jugador:** bote propio, un remo por tecla (A/D), HUD con las teclas, cámara a la altura de los ojos, balanceo con las olas.
+- **Padre:** bote adelante con farol y resplandor visible de lejos; espera si te alejás, acelera si lo alcanzás; habla con subtítulos (voz provisoria).
+- **Camino:** 12 puntos, rocas, troncos, palos, boyas con luz, bancos de niebla, cabaña con muelle al final.
+- **Tormenta:** olas, cielo, niebla, lluvia, rayos y audio suben con el avance. Ola gigante al ~84 %, vuelco, buceo con audio apagado y latido, rescate con luz y mano del padre, barquito de juguete.
+- **Audio:** 37 OGG en `assets/audio/m2_remos/` (remos, agua, viento, lluvia, truenos, ola, vuelco, latido, voces provisorias).
+- **Sistemas:** `Memory2Boats`, `RowBoat`, `FatherBoat`, `RowCourse`, `RowObstacle`, `LakeWater`, `LakeScenery`, `StormAudio`, `RowHud`, `WakeUpIntro`, `FlashbackOverlay`, `LightningController`, `DebugTools`.
+- ❓ Voz real del padre, sentido de giro, texto final de diálogos.
+
+---
+
+## 2b. (Versión anterior, reemplazada) Memoria 2 — El lago helado
 
 **Escena:** `scenes/memories/m2_lago/m2_lago.tscn` ✅ greybox jugable (CL-031). Atardecer → noche, frío, viento, nieve. Degradación media (niebla, la orilla parece lejos).
 

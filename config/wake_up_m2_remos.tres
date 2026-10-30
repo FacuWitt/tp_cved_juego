@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WakeUpSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/wake_up_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+closed_time = 0.8
+lying_drop = 0.5
+lying_pitch = 58.0
+lying_roll = 14.0
+getup_time = 0.9
+thunder_strength = 0.0
+startle_open = 0.0
+startle_time = 0.05
+after_startle_time = 0.1
+open_time = 1.4

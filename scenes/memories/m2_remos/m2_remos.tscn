@@ -1,0 +1,268 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/memories/memory_2_boats.gd" id="e_mem"]
+[ext_resource type="Resource" path="res://config/memory_2_boats.tres" id="e_mem_cfg"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="e_player"]
+[ext_resource type="Resource" path="res://config/player_settings_boat.tres" id="e_player_cfg"]
+[ext_resource type="Script" path="res://scripts/world/lightning_controller.gd" id="e_light_s"]
+[ext_resource type="Resource" path="res://config/lightning_m2_remos.tres" id="e_light_cfg"]
+[ext_resource type="Script" path="res://scripts/world/lake_water.gd" id="e_water_s"]
+[ext_resource type="Resource" path="res://config/lake_settings.tres" id="e_water_cfg"]
+[ext_resource type="Shader" path="res://assets/shaders/lake_water.gdshader" id="e_water_sh"]
+[ext_resource type="Script" path="res://scripts/world/row_course.gd" id="e_course_s"]
+[ext_resource type="Resource" path="res://config/row_course_settings.tres" id="e_course_cfg"]
+[ext_resource type="Script" path="res://scripts/world/lake_scenery.gd" id="e_scen_s"]
+[ext_resource type="Script" path="res://scripts/world/row_boat.gd" id="e_boat_s"]
+[ext_resource type="Resource" path="res://config/row_boat_settings.tres" id="e_boat_cfg"]
+[ext_resource type="Script" path="res://scripts/world/father_boat.gd" id="e_father_s"]
+[ext_resource type="Resource" path="res://config/father_boat_settings.tres" id="e_father_cfg"]
+[ext_resource type="Script" path="res://scripts/fx/storm_audio.gd" id="e_audio_s"]
+[ext_resource type="Resource" path="res://config/storm_audio_m2.tres" id="e_audio_cfg"]
+[ext_resource type="Script" path="res://scripts/debug/debug_tools.gd" id="e_dbg_s"]
+[ext_resource type="Script" path="res://scripts/fx/wake_up_intro.gd" id="e_wake_s"]
+[ext_resource type="Resource" path="res://config/wake_up_m2_remos.tres" id="e_wake_cfg"]
+[ext_resource type="Script" path="res://scripts/ui/flashback_overlay.gd" id="e_fb_s"]
+[ext_resource type="Resource" path="res://config/flashbacks_m2.tres" id="e_fb_cfg"]
+[ext_resource type="Script" path="res://scripts/fx/post_fx.gd" id="e_pfx_s"]
+[ext_resource type="Resource" path="res://config/postfx_m2_remos.tres" id="e_pfx_cfg"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="e_sub_s"]
+[ext_resource type="Script" path="res://scripts/ui/row_hud.gd" id="e_hud_s"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_dip_1.ogg" id="e_oar_dip_1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_dip_2.ogg" id="e_oar_dip_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_dip_3.ogg" id="e_oar_dip_3"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_pull_1.ogg" id="e_oar_pull_1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_pull_2.ogg" id="e_oar_pull_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_creak_1.ogg" id="e_oar_creak_1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_creak_2.ogg" id="e_oar_creak_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/oar_creak_3.ogg" id="e_oar_creak_3"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/bump_rock.ogg" id="e_bump_rock"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/bump_log.ogg" id="e_bump_log"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lantern_creak.ogg" id="e_lantern_creak"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.17, 0.2, 0.36, 1)
+sky_horizon_color = Color(0.95, 0.52, 0.34, 1)
+sky_curve = 0.18
+ground_bottom_color = Color(0.02, 0.02, 0.03, 1)
+ground_horizon_color = Color(0.7, 0.4, 0.3, 1)
+ground_curve = 0.05
+sun_angle_max = 5.0
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 3
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.55
+glow_bloom = 0.04
+fog_enabled = true
+fog_light_color = Color(0.5, 0.36, 0.34, 1)
+fog_density = 0.004
+fog_sky_affect = 0.85
+
+[sub_resource type="ShaderMaterial" id="WaterMat"]
+render_priority = 0
+shader = ExtResource("e_water_sh")
+
+[sub_resource type="PlaneMesh" id="WaterMesh"]
+size = Vector2(500, 500)
+subdivide_width = 249
+subdivide_depth = 249
+
+[sub_resource type="BoxMesh" id="RainMesh"]
+size = Vector3(0.012, 0.55, 0.012)
+
+[sub_resource type="StandardMaterial3D" id="RainMat"]
+shading_mode = 0
+transparency = 1
+albedo_color = Color(0.72, 0.8, 0.9, 0.12)
+
+
+[node name="Memory2Boats" type="Node3D" node_paths=PackedStringArray("player", "boat", "father", "course", "water", "subtitles", "world_environment", "lightning", "sunset_light", "wake_up", "flashback", "debug_tools", "storm_audio", "rain", "post_fx", "slam_overlay", "water_overlay")]
+script = ExtResource("e_mem")
+settings = ExtResource("e_mem_cfg")
+player = NodePath("Boat/Seat/Player")
+boat = NodePath("Boat")
+father = NodePath("FatherBoat")
+course = NodePath("Course")
+water = NodePath("Water")
+subtitles = NodePath("HUD/Subtitles")
+world_environment = NodePath("WorldEnvironment")
+lightning = NodePath("Lightning")
+sunset_light = NodePath("SunsetLight")
+wake_up = NodePath("WakeUp")
+flashback = NodePath("Flashback")
+debug_tools = NodePath("DebugTools")
+storm_audio = NodePath("StormAudio")
+rain = NodePath("Rain")
+post_fx = NodePath("PostFx")
+slam_overlay = NodePath("HUD/SlamOverlay")
+water_overlay = NodePath("HUD/WaterOverlay")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_1")
+
+[node name="SunsetLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.94, 0.0, 0.34, 0.1, 0.956, -0.276, -0.325, 0.29, 0.9, 0, 0, 0)
+light_color = Color(1, 0.62, 0.36, 1)
+light_energy = 0.9
+
+[node name="LightningLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.76604444, -0.45451945, 0.45451945, 0, 0.70710677, 0.70710677, -0.6427876, -0.5416752, 0.5416752, 0, 0, 0)
+light_color = Color(0.72, 0.82, 1, 1)
+light_energy = 0.0
+shadow_enabled = true
+directional_shadow_max_distance = 90.0
+
+[node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("e_light_s")
+lightning_settings = ExtResource("e_light_cfg")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+flash_materials = Array[ShaderMaterial]([SubResource("WaterMat")])
+
+[node name="Water" type="MeshInstance3D" parent="." node_paths=PackedStringArray("target")]
+material_override = SubResource("WaterMat")
+cast_shadow = 0
+custom_aabb = AABB(-300, -20, -300, 600, 40, 600)
+mesh = SubResource("WaterMesh")
+script = ExtResource("e_water_s")
+settings = ExtResource("e_water_cfg")
+target = NodePath("../Boat")
+
+[node name="Course" type="Node3D" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("e_course_s")
+settings = ExtResource("e_course_cfg")
+water = NodePath("../Water")
+
+[node name="Scenery" type="Node3D" parent="." node_paths=PackedStringArray("course", "target")]
+script = ExtResource("e_scen_s")
+course = NodePath("../Course")
+target = NodePath("../Boat")
+
+[node name="Boat" type="Node3D" parent="." node_paths=PackedStringArray("water", "course", "seat")]
+script = ExtResource("e_boat_s")
+settings = ExtResource("e_boat_cfg")
+water = NodePath("../Water")
+course = NodePath("../Course")
+seat = NodePath("Seat")
+dip_sounds = Array[AudioStream]([ExtResource("e_oar_dip_1"), ExtResource("e_oar_dip_2"), ExtResource("e_oar_dip_3")])
+pull_sounds = Array[AudioStream]([ExtResource("e_oar_pull_1"), ExtResource("e_oar_pull_2")])
+creak_sounds = Array[AudioStream]([ExtResource("e_oar_creak_1"), ExtResource("e_oar_creak_2"), ExtResource("e_oar_creak_3")])
+bump_rock_sound = ExtResource("e_bump_rock")
+bump_log_sound = ExtResource("e_bump_log")
+lantern_creak_sound = ExtResource("e_lantern_creak")
+
+[node name="Seat" type="Node3D" parent="Boat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.3)
+
+[node name="Player" parent="Boat/Seat" instance=ExtResource("e_player")]
+settings = ExtResource("e_player_cfg")
+
+[node name="FatherBoat" type="Node3D" parent="." node_paths=PackedStringArray("course", "water", "follow_target")]
+script = ExtResource("e_father_s")
+settings = ExtResource("e_father_cfg")
+course = NodePath("../Course")
+water = NodePath("../Water")
+follow_target = NodePath("../Boat")
+dip_sounds = Array[AudioStream]([ExtResource("e_oar_dip_1"), ExtResource("e_oar_dip_2"), ExtResource("e_oar_dip_3")])
+pull_sounds = Array[AudioStream]([ExtResource("e_oar_pull_1"), ExtResource("e_oar_pull_2")])
+creak_sounds = Array[AudioStream]([ExtResource("e_oar_creak_1"), ExtResource("e_oar_creak_2"), ExtResource("e_oar_creak_3")])
+
+[node name="Rain" type="CPUParticles3D" parent="."]
+top_level = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
+material_override = SubResource("RainMat")
+cast_shadow = 0
+amount = 2200
+lifetime = 0.42
+preprocess = 0.6
+randomness = 0.05
+mesh = SubResource("RainMesh")
+emission_shape = 3
+emission_box_extents = Vector3(15, 0.1, 15)
+particle_flag_align_y = true
+direction = Vector3(0.5, -1, 0.05)
+spread = 0.0
+gravity = Vector3(0, -12, 0)
+initial_velocity_min = 22.0
+initial_velocity_max = 26.0
+
+[node name="StormAudio" type="Node" parent="."]
+script = ExtResource("e_audio_s")
+settings = ExtResource("e_audio_cfg")
+
+[node name="DebugTools" type="Node" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("e_dbg_s")
+player = NodePath("../Boat/Seat/Player")
+lightning = NodePath("../Lightning")
+
+[node name="WakeUp" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("e_wake_s")
+settings = ExtResource("e_wake_cfg")
+player = NodePath("../Boat/Seat/Player")
+lightning = NodePath("../Lightning")
+
+[node name="Flashback" type="CanvasLayer" parent="."]
+script = ExtResource("e_fb_s")
+settings = ExtResource("e_fb_cfg")
+
+[node name="PostFx" type="CanvasLayer" parent="."]
+layer = 0
+script = ExtResource("e_pfx_s")
+settings = ExtResource("e_pfx_cfg")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="RowHud" type="Control" parent="HUD" node_paths=PackedStringArray("boat")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("e_hud_s")
+boat = NodePath("../../Boat")
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -250.0
+offset_right = -80.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("e_sub_s")
+
+[node name="WaterOverlay" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.045, 0.06, 1)
+
+[node name="SlamOverlay" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.72, 0.86, 0.94, 1)

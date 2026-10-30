@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="Memory2BoatsSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/memory_2_boats_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/config/father_line.gd" id="2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/wave_roar.ogg" id="s_sfx_wave_roar"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/capsize_splash.ogg" id="s_sfx_capsize"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/gasp.ogg" id="s_sfx_gasp"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/hand_grab.ogg" id="s_sfx_hand"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/heartbeat.ogg" id="s_sfx_heartbeat"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lullaby_musicbox.ogg" id="s_music_lullaby"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_seguime.ogg" id="v_father_seguime"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_rema_parejo.ogg" id="v_father_rema_parejo"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_rocas.ogg" id="v_father_rocas"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_luces.ogg" id="v_father_luces"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_calma.ogg" id="v_father_calma"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_paciencia.ogg" id="v_father_paciencia"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_recoge.ogg" id="v_father_recoge"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_no_pares.ogg" id="v_father_no_pares"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_por_aca.ogg" id="v_father_por_aca"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_bien.ogg" id="v_father_bien"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_ola.ogg" id="v_father_ola"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/father_agarrate.ogg" id="v_father_agarrate"]
+
+[sub_resource type="Resource" id="FatherLine_0"]
+script = ExtResource("2")
+at_progress = 0.0
+text = "PADRE: ¡Seguime, hijo! ¡No me pierdas de vista!"
+voice = ExtResource("v_father_seguime")
+
+[sub_resource type="Resource" id="FatherLine_1"]
+script = ExtResource("2")
+at_progress = 0.07
+text = "PADRE: ¡Remá parejo, hijo! ¡Uno y después el otro!"
+voice = ExtResource("v_father_rema_parejo")
+
+[sub_resource type="Resource" id="FatherLine_2"]
+script = ExtResource("2")
+at_progress = 0.2
+text = "PADRE: ¡Cuidado con las rocas!"
+voice = ExtResource("v_father_rocas")
+
+[sub_resource type="Resource" id="FatherLine_3"]
+script = ExtResource("2")
+at_progress = 0.6
+text = "PADRE: ¡Falta poco! ¡Ya veo las luces de la cabaña!"
+voice = ExtResource("v_father_luces")
+
+[sub_resource type="Resource" id="FishLine_0"]
+script = ExtResource("2")
+at_progress = 1.2
+text = "PADRE: Mirá qué calmo está el lago hoy."
+voice = ExtResource("v_father_calma")
+
+[sub_resource type="Resource" id="FishLine_1"]
+script = ExtResource("2")
+at_progress = 5.0
+text = "PADRE: Con este atardecer seguro pica algo. Paciencia, hijo."
+voice = ExtResource("v_father_paciencia")
+
+[resource]
+script = ExtResource("1")
+father_lines = Array[ExtResource("2")]([SubResource("FatherLine_0"), SubResource("FatherLine_1"), SubResource("FatherLine_2"), SubResource("FatherLine_3")])
+voice_behind = ExtResource("v_father_no_pares")
+voice_off_course = ExtResource("v_father_por_aca")
+voice_bump = ExtResource("v_father_bien")
+voice_tutorial = ExtResource("v_father_rema_parejo")
+voice_wave = ExtResource("v_father_ola")
+voice_rescue = ExtResource("v_father_agarrate")
+fishing_lines = Array[ExtResource("2")]([SubResource("FishLine_0"), SubResource("FishLine_1")])
+voice_onset = ExtResource("v_father_recoge")
+sfx_wave_roar = ExtResource("s_sfx_wave_roar")
+sfx_capsize = ExtResource("s_sfx_capsize")
+sfx_gasp = ExtResource("s_sfx_gasp")
+sfx_hand = ExtResource("s_sfx_hand")
+sfx_heartbeat = ExtResource("s_sfx_heartbeat")
+music_lullaby = ExtResource("s_music_lullaby")

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="StormAudioSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/storm_audio_settings.gd" id="1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/rain_loop.ogg" id="2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/wind_loop.ogg" id="3"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lap_loop.ogg" id="4"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/pad_calm.ogg" id="5"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/pad_storm.ogg" id="6"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/underwater_loop.ogg" id="7"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/thunder_near.ogg" id="8"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/thunder_mid.ogg" id="9"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/thunder_far.ogg" id="10"]
+
+[resource]
+script = ExtResource("1")
+rain = ExtResource("2")
+wind = ExtResource("3")
+water_lap = ExtResource("4")
+pad_calm = ExtResource("5")
+pad_storm = ExtResource("6")
+underwater = ExtResource("7")
+thunder_near = ExtResource("8")
+thunder_mid = ExtResource("9")
+thunder_far = ExtResource("10")

@@ -29,7 +29,9 @@ Plan para la próxima clase. **No es el diseño final de cada memoria:** es qué
 
 ---
 
-## 2. Memoria 2 — El lago helado (demo)
+> ⚠️ **Reemplazada por CL-034:** la M2 ahora es remar en dos botes escapando de la tormenta (`m2_remos.tscn`). Lo de abajo es la idea anterior (lago helado con perro).
+
+## 2. Memoria 2 — El lago helado (demo, versión anterior)
 
 ### Recorrido de la demo 📝
 1. **Despertar por la tormenta** (regla de todas las memorias ✅). El protagonista, adolescente, se despierta en la **cabaña de pesca** con un trueno. Afuera atardece y la tormenta se acerca por el horizonte. La radio a pilas avisa de la tormenta.
