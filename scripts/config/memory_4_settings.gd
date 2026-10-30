@@ -128,6 +128,16 @@ extends Resource
 @export_range(0.2, 3.0, 0.05, "suffix:m") var rain_length: float = 0.55
 ## Grosor de cada raya de lluvia.
 @export_range(0.004, 0.1, 0.002, "suffix:m") var rain_width: float = 0.014
+## Hacia dónde sopla el viento que inclina la lluvia (0° = +X del mundo, 90° = +Z).
+@export_range(-180.0, 180.0, 1.0, "suffix:°") var rain_wind_heading: float = 6.0
+## Velocidad de costado de las gotas (más alto = lluvia más inclinada) y velocidad de caída.
+@export_range(0.0, 40.0, 0.5, "suffix:m/s") var rain_slant: float = 14.0
+@export_range(2.0, 50.0, 0.5, "suffix:m/s") var rain_fall: float = 21.0
+## Área alrededor del jugador donde llueve (la mitad del ancho de cada lado, en X y en Z).
+@export var rain_area: Vector2 = Vector2(16.0, 16.0)
+## Altura desde la que caen y cuánto dura cada gota.
+@export_range(2.0, 30.0, 0.5, "suffix:m") var rain_height: float = 9.0
+@export_range(0.1, 2.0, 0.01, "suffix:s") var rain_lifetime: float = 0.45
 
 @export_group("Hacha")
 ## Cartel cuando está junto a una soga sin el hacha en la mano.

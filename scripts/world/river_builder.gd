@@ -491,7 +491,7 @@ func _puff_material(cloud: bool) -> StandardMaterial3D:
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	m.vertex_color_use_as_albedo = true
-	m.albedo_texture = _puff_texture(cloud)
+	m.albedo_texture = SoftPuff.texture(cloud, tree_seed + 9)
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
 	m.disable_receive_shadows = true
@@ -504,23 +504,3 @@ func _puff_material(cloud: bool) -> StandardMaterial3D:
 		m.proximity_fade_distance = 1.2
 	return m
 
-
-## Textura de una nube (bordes deshilachados con ruido) o de una gota (redonda y blanda).
-func _puff_texture(cloud: bool) -> ImageTexture:
-	var size: int = 128 if cloud else 32
-	var img: Image = Image.create(size, size, false, Image.FORMAT_RGBA8)
-	var noise: FastNoiseLite = FastNoiseLite.new()
-	noise.seed = tree_seed + 9
-	noise.frequency = 0.045
-	noise.fractal_octaves = 4
-	var c: float = float(size - 1) * 0.5
-	for y: int in size:
-		for x: int in size:
-			var d: float = Vector2(float(x) - c, float(y) - c).length() / c
-			var a: float = 1.0 - smoothstep(0.25, 1.0, d)
-			if cloud:
-				var n: float = noise.get_noise_2d(float(x), float(y)) * 0.5 + 0.5
-				a = clampf(a * (0.35 + n * 1.1) - (1.0 - a) * 0.3, 0.0, 1.0)
-				a = smoothstep(0.05, 0.9, a)
-			img.set_pixel(x, y, Color(1.0, 1.0, 1.0, a))
-	return ImageTexture.create_from_image(img)

@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-059 · Memoria 4: lluvia más de costado, como la de la M2 (se probaron y se descartaron las ráfagas de lluvia) · 2026-10-29
+- **Rama / commits:** `memories/m4-barco` · sin commitear
+- **Pedido por:** Facu: "mejorá la lluvia como la de la memoria 2, con una pequeña diferencia, lluvia más lateral, y en forma de conglomerados (como pasa con la lluvia y el viento)". Después de verla: "es demasiado exagerada la ráfaga, mejor quedémonos con la lluvia lateralizada".
+- **Qué se hizo:** la lluvia de la M4 se arma igual que la de la M2: un área alrededor del jugador (32 × 32 m) que lo acompaña, rayas que caen inclinadas por el viento, ahora más de costado (14 m/s de costado contra 21 m/s de caída). Nace viento arriba para que, ya inclinada, caiga sobre el jugador. Las rayas dentro del haz del reflector caen con la misma inclinación. La textura blanda de las nubes de los rápidos de la M2 pasó a `SoftPuff`, para poder reusarla.
+- **Por qué (decisión de diseño):** con viento fuerte la lluvia cae de costado y transmite mejor la tormenta en alta mar.
+- **Alternativas descartadas:** ráfagas de lluvia (cortinas densas con un velo de agua que cruzaban de costado cada pocos segundos): se implementaron y se probaron, pero quedaban demasiado exageradas y se sacaron.
+- **Problemas encontrados:** el nodo de la lluvia estaba escalado en la escena (9 × 7,7), lo que agrandaba el área a más de 200 × 100 m y deformaba las direcciones; ahora el código lo deja sin escala y el área sale de `rain_area`.
+- **Qué podés ajustar en el Inspector:** `config/memory_4_settings.tres`, grupo "Rayos y lluvia": `rain_slant` (de costado), `rain_fall` (caída), `rain_wind_heading` (hacia dónde sopla), `rain_area`, `rain_height`, `rain_lifetime`, además de los que ya estaban (`rain_amount`, opacidades, largo y grosor).
+- **Archivos y docs:** `scripts/memories/memory_4_accident.gd`, `scripts/config/memory_4_settings.gd`, `scripts/fx/soft_puff.gd` (nuevo), `scripts/world/river_builder.gd`.
+- **Pendiente / ❓ ABIERTO:** probar jugando que la densidad se sienta bien con el área más chica.
+
 ### CL-058 · Rápidos de la M2: espuma que corre con el agua, nubes de agua pulverizada y salpicaduras · 2026-10-29
 - **Rama / commits:** `memories/m2-lago` · sin commitear
 - **Pedido por:** Facu: "arreglar la parte de los rápidos, usá más 'nubes' o salpicaduras del agua, más texturas en esas zonas, no quedan bien los cuadrados blancos, si podés usar nubes blancas porque son rápidos".

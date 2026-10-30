@@ -111,9 +111,7 @@ func _ready() -> void:
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
 	reticle.override_text = ""
-	rain.amount = settings.rain_amount
-	rain.top_level = true
-	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
+	_setup_rain()
 	_setup_wet_fx()
 	deck_slip.strength = settings.slip_strength
 	deck_slip.enabled = true
@@ -848,6 +846,40 @@ func _update_wet_fx() -> void:
 		_post_fx.set_lens_wet(_lens_wet)
 
 
+## La lluvia cae inclinada por el viento, como en la M2 pero más de costado.
+func _setup_rain() -> void:
+	rain.amount = settings.rain_amount
+	rain.top_level = true
+	rain.global_transform = Transform3D(Basis.IDENTITY, rain.global_position)
+	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
+	rain.emission_box_extents = Vector3(settings.rain_area.x, 0.1, settings.rain_area.y)
+	rain.lifetime = settings.rain_lifetime
+	rain.preprocess = settings.rain_lifetime * 2.0
+	rain.speed_scale = 1.0
+	var vel: Vector3 = _wind_dir() * settings.rain_slant + Vector3.DOWN * settings.rain_fall
+	rain.direction = vel.normalized()
+	rain.spread = 2.0
+	rain.gravity = Vector3(0.0, -6.0, 0.0)
+	rain.initial_velocity_min = vel.length() * 0.92
+	rain.initial_velocity_max = vel.length() * 1.08
+	# Las rayas de lluvia dentro del haz del reflector (light_beam.gdshader) caen con la misma inclinación.
+	for node: Node in find_children("*", "GeometryInstance3D", true, false):
+		var mat: ShaderMaterial = (node as GeometryInstance3D).material_override as ShaderMaterial
+		if mat != null and mat.get_shader_parameter("rain_dir") != null:
+			mat.set_shader_parameter("rain_dir", vel.normalized())
+
+
+func _wind_dir() -> Vector3:
+	var a: float = deg_to_rad(settings.rain_wind_heading)
+	return Vector3(cos(a), 0.0, sin(a))
+
+
+## Dónde nace la lluvia para que, ya inclinada, caiga sobre el punto `over`.
+func _rain_origin(over: Vector3) -> Vector3:
+	var drift: float = settings.rain_slant * settings.rain_height / maxf(settings.rain_fall, 0.1)
+	return over + Vector3.UP * settings.rain_height - _wind_dir() * drift * 0.6
+
+
 func _update_rain() -> void:
 	_update_wet_fx()
 	var material: StandardMaterial3D = rain.material_override as StandardMaterial3D
@@ -855,10 +887,10 @@ func _update_rain() -> void:
 	var alpha: float
 	if stage >= Stage.SURFACE:
 		# Lejos del barco solo se ve la lluvia que cae donde están sus luces, y apenas.
-		rain.global_position = ship.global_position + ship.global_transform.basis * Vector3(0.0, 9.0, -6.0)
+		rain.global_position = _rain_origin(ship.global_position + ship.global_transform.basis * Vector3(0.0, 0.0, -6.0))
 		alpha = settings.rain_alpha_far * (1.0 + level * 1.2)
 	else:
-		rain.global_position = player.global_position + Vector3(0.0, 9.0, 0.0)
+		rain.global_position = _rain_origin(player.global_position)
 		alpha = settings.rain_alpha_lit + level * settings.rain_alpha_flash
 	var color: Color = material.albedo_color
 	color.a = alpha
