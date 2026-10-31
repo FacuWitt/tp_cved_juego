@@ -27,7 +27,7 @@ Señales útiles de `GameFlow`: `memory_started(index)`, `memory_finished(index)
 
 ## Escenas actuales
 
-`scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `m2_lago/m2_lago.tscn` es la memoria 2 en greybox (el lago helado; raíz `Memory2Lake`). `memory_4.tscn` es la memoria 4 (el barco; raíz `Memory4Accident`). `memory_3.tscn` sigue siendo una sala provisoria; `memory_2.tscn` quedó sin uso. Las salas provisorias son: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
+`scenes/memories/m1_habitacion/m1_habitacion.tscn` es la memoria 1 real en greybox (la habitación de la abuela con el puzzle de la canción de cuna; su raíz es `Memory1Room`, que hereda de `Memory`). `m2_lago/m2_lago.tscn` es la memoria 2 en greybox (el lago helado; raíz `Memory2Lake`). `m3_casa/m3_casa.tscn` es la memoria 3 en greybox (la casa que se repite; raíz `Memory3House`). `memory_4.tscn` es la memoria 4 (el barco; raíz `Memory4Accident`). `memory_2.tscn` y `memory_3.tscn` (salas provisorias) quedaron sin uso. Las salas provisorias son: piso, jugador, un cartel con el nombre de la memoria y una caja "SALIDA". `awakening.tscn` es el final: cámara fija, el texto "FIN" y el mouse liberado.
 
 **Pasajes entre memorias** (`scenes/passages/`): entre una memoria y la siguiente el jugador camina sobre un mar quieto y negro hacia una luz lejana, mientras escucha voces del hospital. Para `GameFlow` un pasaje es una escena más de la secuencia (su raíz, `Passage`, hereda de `Memory` y se completa al llegar a la luz), así las memorias siguen sin conocerse entre sí. `passage.tscn` es la escena base; cada pasaje es una escena heredada que solo cambia su `PassageSettings` (voces, distancia, luces). Hoy existe `pasaje_m1_m2.tscn`, entre la memoria 1 y la 2.
 
@@ -48,7 +48,7 @@ Además, cada memoria tiene un nodo `DebugTools` (teclas fijas, solo para desarr
 |---|---|
 | 8 | Cámara libre: WASD hacia donde se mira, Espacio sube, Shift baja, Ctrl acelera |
 | 9 | Luz de rayo fija (si la escena tiene rayos) |
-| 0 | Saltar el evento principal (M2: ir al perro y disparar el final; M4: cortar todas las sogas) |
+| 0 | Saltar el evento principal (M2: ir al perro y disparar el final; M3: pasar al tramo siguiente / entregar el barquito / salir; M4: cortar todas las sogas) |
 | 7 | Disparar un flashback (M2) |
 
 ## Cómo agregar o reordenar una memoria

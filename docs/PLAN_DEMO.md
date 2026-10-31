@@ -12,7 +12,7 @@ Plan para la próxima clase. **No es el diseño final de cada memoria:** es qué
 - **Rama `demo`** (nace de `develop`). Ahí se juntan las 4 memorias para la clase. Después de la clase, `demo` vuelve a `develop`.
 - **La presentación habla de avances por aspecto:** técnicos, visuales, narrativos, estructurales, de modelado, de mecánicas, de desarrollo de personajes y de sonido. Si un aspecto no avanzó en una memoria, no pasa nada: se dice.
 - **Las teclas de debug se quedan** hasta que el juego llegue a `main`. Sirven para mostrar la escena desde otros puntos de vista: luz de rayo fija, cámara libre, saltar un evento. **Todas las memorias tienen las mismas** (ver sección 5).
-- Estado de partida: **M1 y M4 están bien.** Faltan **M2 y M3** (hoy son salas provisorias con un cartel y una caja "SALIDA").
+- Estado de partida: **M1 y M4 están bien.** Faltan **M2 y M3** (hoy son salas provisorias con un cartel y una caja "SALIDA"). *(Actualización: M2 hecha en CL-034; M3 en greybox jugable en CL-065.)*
 
 ### Aspectos que vamos a poder mostrar (meta)
 
@@ -61,13 +61,13 @@ Pesca → red → tormenta → cortar → lleva el bote antes del último rápid
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar (demo)
 
-### Recorrido de la demo 📝
+### Recorrido de la demo ✅ (greybox jugable, CL-065)
 1. **Despertar por la tormenta** ✅. Son casi las 3:00. El protagonista, adulto, se despierta **en la mesa de la cocina** (se quedó dormido con el café) por un trueno. Llueve contra las ventanas. *(Cambia el doc: decía "sin tormenta"; la regla de todas las memorias es que siempre hay tormenta.)*
 2. **El barquito en la mano** desde el comienzo (objeto en mano, como el hacha de M4). No se puede soltar.
 3. **La casa que se repite.** Hay que llegar al **cuarto de la hija** para despedirse. El pasillo y las puertas llevan de vuelta a la cocina si se elige mal.
    - Guía: la **voz de la hija** y la **luz cálida del velador** bajo una puerta. Si se va bien, la voz se oye más cerca; si se va mal, más lejos.
    - Cada vez que el jugador vuelve a la cocina, la casa está **más degradada:** el pasillo es más largo, hay más agua en el piso, las fotos más borrosas.
-   - 📝 Regla concreta: 3 tramos de pasillo; en cada uno, una sola puerta es la buena (la del velador). Elegir mal te devuelve a la cocina, pero se conserva el tramo ganado.
+   - ✅ Regla concreta (implementada en CL-065): 3 tramos de pasillo; en cada uno, una sola puerta es la buena (la del velador). Elegir mal te devuelve a la cocina, pero se conserva el tramo ganado. Las puertas se abren con (E) y detrás hay un tramo oscuro con el umbral invisible.
 4. **El cuarto de la hija** = la habitación de M1 redecorada (mismo layout), con el **estante alto vacío** donde estaba el barquito. Se le entrega el barquito: *"Cuidámelo hasta que vuelva."*
 5. **La casa se estabiliza:** se apagan los loops, el pasillo vuelve a su largo, se abre el camino a la entrada (bolso de viaje, campera y botas).
 6. **Sale por la puerta de casa → todo negro → empieza M4** ✅ (ver 3.1).

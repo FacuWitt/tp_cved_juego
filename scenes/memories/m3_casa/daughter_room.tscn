@@ -1,0 +1,606 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/room_layout.tscn" id="1_layout"]
+[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="2_grid"]
+[ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="3_exit"]
+
+[sub_resource type="ShaderMaterial" id="m_hall"]
+render_priority = 0
+shader = ExtResource("2_grid")
+shader_parameter/base_color = Color(0.3, 0.36, 0.36, 1)
+shader_parameter/line_color = Color(0.22, 0.27, 0.27, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="m_entrance_floor"]
+render_priority = 0
+shader = ExtResource("2_grid")
+shader_parameter/base_color = Color(0.34, 0.33, 0.3, 1)
+shader_parameter/line_color = Color(0.25, 0.25, 0.23, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="m_entrance_wall"]
+render_priority = 0
+shader = ExtResource("2_grid")
+shader_parameter/base_color = Color(0.5, 0.54, 0.5, 1)
+shader_parameter/line_color = Color(0.4, 0.44, 0.41, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="StandardMaterial3D" id="m_black"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_wood"]
+albedo_color = Color(0.36, 0.23, 0.14, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_wood_light"]
+albedo_color = Color(0.55, 0.38, 0.24, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_sheet"]
+albedo_color = Color(0.85, 0.82, 0.74, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_blanket"]
+albedo_color = Color(0.85, 0.52, 0.66, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_lamp_base"]
+albedo_color = Color(0.16, 0.14, 0.12, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_lamp_shade"]
+albedo_color = Color(0.95, 0.8, 0.55, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(1, 0.7, 0.4, 1)
+emission_energy_multiplier = 1.0
+
+[sub_resource type="StandardMaterial3D" id="m_clock"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_toy_pink"]
+albedo_color = Color(0.9, 0.45, 0.6, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_toy_yellow"]
+albedo_color = Color(0.9, 0.75, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_toy_lilac"]
+albedo_color = Color(0.65, 0.55, 0.85, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_paper"]
+albedo_color = Color(0.95, 0.93, 0.86, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_rug"]
+albedo_color = Color(0.5, 0.42, 0.55, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="m_girl"]
+albedo_color = Color(0.75, 0.62, 0.8, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_skin"]
+albedo_color = Color(0.9, 0.75, 0.65, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_blur"]
+transparency = 1
+albedo_color = Color(0.9, 0.78, 0.7, 0.35)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="m_boat_wood"]
+albedo_color = Color(0.55, 0.36, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_sail"]
+albedo_color = Color(0.92, 0.9, 0.84, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_glow"]
+albedo_color = Color(1, 0.75, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.4, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="m_water"]
+transparency = 1
+albedo_color = Color(0.05, 0.12, 0.15, 0.75)
+metallic = 0.4
+roughness = 0.05
+
+[sub_resource type="StandardMaterial3D" id="m_bag"]
+albedo_color = Color(0.15, 0.2, 0.35, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_jacket"]
+albedo_color = Color(0.9, 0.7, 0.1, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="m_boots"]
+albedo_color = Color(0.12, 0.12, 0.12, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="m_door"]
+albedo_color = Color(0.36, 0.26, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="mesh_lamp_base"]
+top_radius = 0.05
+bottom_radius = 0.07
+height = 0.28
+
+[sub_resource type="CylinderMesh" id="mesh_lamp_shade"]
+top_radius = 0.09
+bottom_radius = 0.15
+height = 0.18
+
+[sub_resource type="BoxMesh" id="mesh_clock"]
+size = Vector3(0.14, 0.12, 0.06)
+
+[sub_resource type="CapsuleMesh" id="mesh_body"]
+radius = 0.17
+height = 0.85
+
+[sub_resource type="SphereMesh" id="mesh_head"]
+radius = 0.12
+height = 0.24
+
+[sub_resource type="SphereMesh" id="mesh_blur"]
+radius = 0.16
+height = 0.32
+
+[sub_resource type="CapsuleShape3D" id="shape_girl"]
+radius = 0.22
+height = 1.15
+
+[sub_resource type="BoxMesh" id="mesh_hull"]
+size = Vector3(0.34, 0.08, 0.12)
+
+[sub_resource type="CylinderMesh" id="mesh_mast"]
+top_radius = 0.01
+bottom_radius = 0.01
+height = 0.22
+
+[sub_resource type="PrismMesh" id="mesh_sail"]
+size = Vector3(0.14, 0.16, 0.01)
+
+[sub_resource type="BoxMesh" id="mesh_strip"]
+size = Vector3(0.9, 0.015, 0.12)
+
+[sub_resource type="BoxMesh" id="mesh_puddle"]
+size = Vector3(0.8, 0.01, 0.9)
+
+[sub_resource type="BoxMesh" id="mesh_door"]
+size = Vector3(0.98, 2.08, 0.06)
+
+[sub_resource type="BoxShape3D" id="shape_door"]
+size = Vector3(0.98, 2.08, 0.06)
+
+[sub_resource type="BoxShape3D" id="shape_exit"]
+size = Vector3(1.6, 2.0, 0.8)
+
+[node name="DaughterRoom" type="Node3D"]
+
+[node name="RoomLayout" parent="." instance=ExtResource("1_layout")]
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="BedFrame" type="CSGBox3D" parent="Props"]
+position = Vector3(1.55, 0.15, -0.55)
+size = Vector3(0.85, 0.3, 1.7)
+material = SubResource("m_wood_light")
+use_collision = true
+
+[node name="Mattress" type="CSGBox3D" parent="Props"]
+position = Vector3(1.55, 0.36, -0.55)
+size = Vector3(0.8, 0.12, 1.65)
+material = SubResource("m_sheet")
+use_collision = true
+
+[node name="Blanket" type="CSGBox3D" parent="Props"]
+position = Vector3(1.55, 0.43, -0.25)
+size = Vector3(0.82, 0.04, 1.05)
+material = SubResource("m_blanket")
+use_collision = true
+
+[node name="Pillow" type="CSGBox3D" parent="Props"]
+position = Vector3(1.55, 0.46, -1.25)
+size = Vector3(0.55, 0.1, 0.28)
+material = SubResource("m_sheet")
+use_collision = true
+
+[node name="Headboard" type="CSGBox3D" parent="Props"]
+position = Vector3(1.55, 0.55, -1.42)
+size = Vector3(0.85, 0.5, 0.06)
+material = SubResource("m_wood_light")
+use_collision = true
+
+[node name="BedLabel" type="Label3D" parent="Props"]
+position = Vector3(1.55, 0.8, 0.2)
+pixel_size = 0.0025
+billboard = 1
+text = "CAMA CHICA (frazada con dibujos)"
+font_size = 18
+outline_size = 6
+
+[node name="Nightstand" type="CSGBox3D" parent="Props"]
+position = Vector3(1.75, 0.25, -1.75)
+size = Vector3(0.4, 0.5, 0.4)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="LampBase" type="MeshInstance3D" parent="Props"]
+position = Vector3(1.83, 0.64, -1.82)
+mesh = SubResource("mesh_lamp_base")
+material_override = SubResource("m_lamp_base")
+
+[node name="LampShade" type="MeshInstance3D" parent="Props"]
+position = Vector3(1.83, 0.86, -1.82)
+mesh = SubResource("mesh_lamp_shade")
+material_override = SubResource("m_lamp_shade")
+
+[node name="VeladorLight" type="OmniLight3D" parent="Props"]
+position = Vector3(1.83, 0.92, -1.72)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 1.6
+shadow_enabled = true
+omni_range = 6.5
+
+[node name="AlarmClock" type="MeshInstance3D" parent="Props"]
+position = Vector3(1.63, 0.56, -1.66)
+rotation_degrees = Vector3(0, 20, 0)
+mesh = SubResource("mesh_clock")
+material_override = SubResource("m_clock")
+
+[node name="NightstandLabel" type="Label3D" parent="Props"]
+position = Vector3(1.7, 1.12, -1.6)
+pixel_size = 0.0025
+billboard = 1
+text = "VELADOR (única luz cálida) + RELOJ PARADO (3:00)"
+font_size = 18
+outline_size = 6
+
+[node name="ShelfBoard" type="CSGBox3D" parent="Props"]
+position = Vector3(0, 2.1, -1.85)
+size = Vector3(1.0, 0.05, 0.3)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="ShelfBracketL" type="CSGBox3D" parent="Props"]
+position = Vector3(-0.4, 1.99, -1.87)
+size = Vector3(0.04, 0.18, 0.25)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="ShelfBracketR" type="CSGBox3D" parent="Props"]
+position = Vector3(0.4, 1.99, -1.87)
+size = Vector3(0.04, 0.18, 0.25)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="ShelfLabel" type="Label3D" parent="Props"]
+position = Vector3(0, 2.32, -1.8)
+pixel_size = 0.0025
+billboard = 1
+text = "ESTANTE ALTO (vacío: el barquito ya no está)"
+font_size = 18
+outline_size = 6
+
+[node name="Rug" type="CSGBox3D" parent="Props"]
+position = Vector3(-0.3, 0.005, 0.1)
+size = Vector3(1.6, 0.01, 1.2)
+material = SubResource("m_rug")
+
+[node name="Toy1" type="CSGBox3D" parent="Props"]
+position = Vector3(-1.5, 0.12, 0.9)
+size = Vector3(0.25, 0.24, 0.25)
+material = SubResource("m_toy_pink")
+use_collision = true
+
+[node name="Toy2" type="CSGBox3D" parent="Props"]
+position = Vector3(-1.2, 0.08, 1.25)
+size = Vector3(0.18, 0.16, 0.3)
+material = SubResource("m_toy_yellow")
+use_collision = true
+
+[node name="Toy3" type="CSGBox3D" parent="Props"]
+position = Vector3(-1.65, 0.1, 1.4)
+size = Vector3(0.2, 0.2, 0.2)
+material = SubResource("m_toy_lilac")
+use_collision = true
+
+[node name="ToysLabel" type="Label3D" parent="Props"]
+position = Vector3(-1.4, 0.55, 1.1)
+pixel_size = 0.0025
+billboard = 1
+text = "JUGUETES DE NENA"
+font_size = 18
+outline_size = 6
+
+[node name="Drawing1" type="CSGBox3D" parent="Props"]
+position = Vector3(-1.0, 1.4, -1.99)
+size = Vector3(0.3, 0.22, 0.01)
+material = SubResource("m_paper")
+
+[node name="Drawing2" type="CSGBox3D" parent="Props"]
+position = Vector3(-0.6, 1.5, -1.99)
+size = Vector3(0.24, 0.3, 0.01)
+material = SubResource("m_paper")
+
+[node name="DrawingsLabel" type="Label3D" parent="Props"]
+position = Vector3(-0.8, 1.8, -1.9)
+pixel_size = 0.0025
+billboard = 1
+text = "DIBUJOS DE LA HIJA"
+font_size = 18
+outline_size = 6
+
+[node name="Daughter" type="StaticBody3D" parent="."]
+position = Vector3(0.85, 0, -0.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Daughter"]
+position = Vector3(0, 0.575, 0)
+shape = SubResource("shape_girl")
+
+[node name="Body" type="MeshInstance3D" parent="Daughter"]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("mesh_body")
+material_override = SubResource("m_girl")
+
+[node name="Head" type="MeshInstance3D" parent="Daughter"]
+position = Vector3(0, 1.0, 0)
+mesh = SubResource("mesh_head")
+material_override = SubResource("m_skin")
+
+[node name="FaceBlur" type="MeshInstance3D" parent="Daughter"]
+position = Vector3(0, 1.0, 0)
+mesh = SubResource("mesh_blur")
+material_override = SubResource("m_blur")
+
+[node name="Label3D" type="Label3D" parent="Daughter"]
+position = Vector3(0, 1.4, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "HIJA (~7 años, cara borrosa)"
+font_size = 18
+outline_size = 6
+
+[node name="GivenBoat" type="Node3D" parent="Daughter"]
+position = Vector3(0, 0.62, 0.22)
+
+[node name="Hull" type="MeshInstance3D" parent="Daughter/GivenBoat"]
+mesh = SubResource("mesh_hull")
+material_override = SubResource("m_boat_wood")
+
+[node name="Mast" type="MeshInstance3D" parent="Daughter/GivenBoat"]
+position = Vector3(0, 0.15, 0)
+mesh = SubResource("mesh_mast")
+material_override = SubResource("m_boat_wood")
+
+[node name="Sail" type="MeshInstance3D" parent="Daughter/GivenBoat"]
+position = Vector3(0.06, 0.17, 0)
+mesh = SubResource("mesh_sail")
+material_override = SubResource("m_sail")
+
+[node name="BoatLight" type="OmniLight3D" parent="Daughter/GivenBoat"]
+position = Vector3(0, 0.2, 0.15)
+light_color = Color(1, 0.78, 0.45, 1)
+light_energy = 0.6
+omni_range = 1.5
+
+[node name="DoorGlow" type="Node3D" parent="."]
+position = Vector3(1.3, 0, 2.1)
+
+[node name="Strip" type="MeshInstance3D" parent="DoorGlow"]
+position = Vector3(0, 0.008, 0.17)
+mesh = SubResource("mesh_strip")
+material_override = SubResource("m_glow")
+
+[node name="Light" type="OmniLight3D" parent="DoorGlow"]
+position = Vector3(0, 0.12, 0.35)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 0.8
+omni_range = 1.4
+
+[node name="CorridorLight" type="OmniLight3D" parent="."]
+position = Vector3(1.3, 2.0, 3.8)
+light_color = Color(0.45, 0.7, 0.65, 1)
+light_energy = 0.3
+omni_range = 3.0
+
+[node name="Water" type="Node3D" parent="."]
+
+[node name="PuddleCorridor" type="MeshInstance3D" parent="Water"]
+position = Vector3(1.3, 0.006, 3.4)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleWindow" type="MeshInstance3D" parent="Water"]
+position = Vector3(-1.4, 0.012, 0.3)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleRoom" type="MeshInstance3D" parent="Water"]
+position = Vector3(0.1, 0.012, 1.3)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="Anchors" type="Node3D" parent="."]
+
+[node name="RoomArrival" type="Marker3D" parent="Anchors"]
+position = Vector3(1.3, 0, 4.6)
+
+[node name="Entrance" type="Node3D" parent="."]
+
+[node name="CorridorFloor" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, -0.1, 6.2)
+size = Vector3(1.4, 0.2, 2.0)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="CorridorCeiling" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, 2.3, 6.2)
+size = Vector3(1.4, 0.2, 2.0)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="CorridorWallLeft" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0.7, 1.1, 6.2)
+size = Vector3(0.2, 2.4, 2.0)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="CorridorWallRight" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.9, 1.1, 6.2)
+size = Vector3(0.2, 2.4, 2.0)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="Floor" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, -0.1, 8.75)
+size = Vector3(3.8, 0.2, 3.1)
+material = SubResource("m_entrance_floor")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, 2.7, 8.75)
+size = Vector3(3.8, 0.2, 3.1)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="WallWest" type="CSGBox3D" parent="Entrance"]
+position = Vector3(-0.5, 1.3, 8.75)
+size = Vector3(0.2, 2.8, 3.1)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="WallEast" type="CSGBox3D" parent="Entrance"]
+position = Vector3(3.1, 1.3, 8.75)
+size = Vector3(0.2, 2.8, 3.1)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="NorthLeft" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0.05, 1.3, 7.1)
+size = Vector3(1.1, 2.8, 0.2)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="NorthRight" type="CSGBox3D" parent="Entrance"]
+position = Vector3(2.55, 1.3, 7.1)
+size = Vector3(1.1, 2.8, 0.2)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="NorthTop" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, 2.5, 7.1)
+size = Vector3(1.4, 0.4, 0.2)
+material = SubResource("m_entrance_wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGCombiner3D" parent="Entrance"]
+position = Vector3(1.3, 1.3, 10.3)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="Entrance/SouthWall"]
+size = Vector3(3.8, 2.8, 0.2)
+material = SubResource("m_entrance_wall")
+
+[node name="DoorHole" type="CSGBox3D" parent="Entrance/SouthWall"]
+operation = 2
+position = Vector3(0, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="FrontDoorHinge" type="Node3D" parent="Entrance"]
+position = Vector3(0.81, 0, 10.3)
+
+[node name="Door" type="AnimatableBody3D" parent="Entrance/FrontDoorHinge"]
+position = Vector3(0.49, 1.04, 0)
+sync_to_physics = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Entrance/FrontDoorHinge/Door"]
+mesh = SubResource("mesh_door")
+material_override = SubResource("m_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Entrance/FrontDoorHinge/Door"]
+shape = SubResource("shape_door")
+
+[node name="Label3D" type="Label3D" parent="Entrance/FrontDoorHinge/Door"]
+position = Vector3(0, 0.5, -0.05)
+pixel_size = 0.0025
+billboard = 1
+text = "PUERTA DE CASA"
+font_size = 22
+outline_size = 6
+
+[node name="EntranceLight" type="OmniLight3D" parent="Entrance"]
+position = Vector3(1.3, 2.3, 8.7)
+light_color = Color(0.45, 0.7, 0.65, 1)
+light_energy = 0.35
+omni_range = 4.0
+
+[node name="Bag" type="CSGBox3D" parent="Entrance"]
+position = Vector3(2.5, 0.2, 9.5)
+size = Vector3(0.6, 0.4, 0.35)
+material = SubResource("m_bag")
+use_collision = true
+
+[node name="BagLabel" type="Label3D" parent="Entrance"]
+position = Vector3(2.5, 0.65, 9.5)
+pixel_size = 0.0025
+billboard = 1
+text = "BOLSO DE VIAJE (listo)"
+font_size = 18
+outline_size = 6
+
+[node name="Jacket" type="CSGBox3D" parent="Entrance"]
+position = Vector3(-0.35, 1.4, 8.6)
+size = Vector3(0.08, 0.8, 0.5)
+material = SubResource("m_jacket")
+
+[node name="JacketLabel" type="Label3D" parent="Entrance"]
+position = Vector3(-0.2, 1.95, 8.6)
+pixel_size = 0.0025
+billboard = 1
+text = "CAMPERA DE PESCA"
+font_size = 18
+outline_size = 6
+
+[node name="BootLeft" type="CSGBox3D" parent="Entrance"]
+position = Vector3(-0.15, 0.12, 9.55)
+size = Vector3(0.12, 0.24, 0.26)
+material = SubResource("m_boots")
+
+[node name="BootRight" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0.02, 0.12, 9.6)
+size = Vector3(0.12, 0.24, 0.26)
+material = SubResource("m_boots")
+
+[node name="BootsLabel" type="Label3D" parent="Entrance"]
+position = Vector3(-0.05, 0.5, 9.6)
+pixel_size = 0.0025
+billboard = 1
+text = "BOTAS"
+font_size = 18
+outline_size = 6
+
+[node name="PorchFloor" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, -0.1, 11.5)
+size = Vector3(1.6, 0.2, 2.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Exit" type="Area3D" parent="Entrance"]
+position = Vector3(1.3, 1.0, 11.1)
+script = ExtResource("3_exit")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Entrance/Exit"]
+shape = SubResource("shape_exit")
