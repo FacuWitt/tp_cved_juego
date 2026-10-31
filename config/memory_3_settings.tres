@@ -1,6 +1,10 @@
 [gd_resource type="Resource" script_class="Memory3Settings" format=3]
 
 [ext_resource type="Script" path="res://scripts/config/memory_3_settings.gd" id="1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lullaby_musicbox.ogg" id="2"]
 
 [resource]
 script = ExtResource("1")
+voice_stream = ExtResource("2")
+hallway_creep_speed = 2.5
+hallway_creep_max = 12.0

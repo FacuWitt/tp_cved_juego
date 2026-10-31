@@ -208,11 +208,32 @@ Subescenas: `house_layout.tscn` (cocina, pasillito oscuro del fondo, pasillo que
 
 Tecla **0**: en el laberinto pasa al tramo siguiente; en el cuarto abre la puerta y entrega el barquito; con la casa estable completa la memoria.
 
+### Pasillos distintos y piernas que no responden 🧪 (CL-068)
+- **Cada tramo tiene otra forma** (`segment_shapes` en `memory_3_settings.tres`): por defecto el 1.º es recto (8 m), el 2.º dobla a la izquierda y después a la derecha (`4 L 3 R 4`) y el 3.º hace zigzag (`3 R 2 L 3 L 2 R 3`). Además **cada tramo es más angosto y más bajo** (1,6 → 1,35 → 1,1 m de ancho; 2,6 → 2,4 → 2,15 m de alto): la casa se va cerrando. El último tramo recto es el que se estira.
+- **Piernas que no responden** (`DreamSettings`, grupo "Piernas que no responden"): pasada una parte del pasillo, mientras empuja hacia adelante, a veces las piernas se traban: el personaje se frena en seco, la cámara tiembla y, si sigue empujando, el pasillo lo arrastra despacio hacia atrás. Aparece una línea ("Quiere avanzar y no puede.").
+
+### Guía por el oído y fotos que se repiten 🧪 (CL-067)
+- Las tres puertas del rellano están **más separadas** (2,5 m entre sí) y **la voz de la hija suena detrás de la puerta buena** (`AudioStreamPlayer3D`), así se puede elegir también por el oído. Con la casa más degradada se oye más bajo. Hoy suena un placeholder (la cajita musical de la M2): falta grabar la voz (`voice_stream` en `memory_3_settings.tres`).
+- ❓ ABIERTO: la regla de audio dice que la capa recuerdo "no viene de ningún lugar"; esta voz sí viene de un lugar (la puerta). Confirmar con el equipo si es la excepción de la M3.
+- **Fotos del pasillo:** la misma foto se repite a lo largo de las dos paredes; cuanto más adentro, más borrosa (desenfoque, doble exposición, sin contraste) y más torcida. Como el pasillo se estira, aparecen más fotos, cada vez más borradas.
+
+### Efectos de sueño 🧪 (experimento, CL-066)
+Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la casa (más errores = más sueño) y **se apagan cuando la casa se estabiliza** (la despedida es lo real). Cada uno se prende y apaga por separado en `config/dream_m3.tres` para compararlos:
+- **Imagen:** ondula, los bordes se desenfocan y separan sus colores, doble imagen tenue, esquinas oscuras, colores apagados y fríos (`dream_haze.gdshader`).
+- **Cámara:** se mece de un lado al otro y el campo de visión "respira". Al acercarse al fondo del pasillo el campo de visión se abre (efecto vértigo): el fondo se ve más lejos.
+- **Piernas pesadas:** cuanto más cerca del fondo del pasillo, más lento camina; correr no sirve. Sumado al fondo que se aleja, es "querer avanzar y no poder".
+- **Parpadeos:** cada tanto la pantalla se va a negro un instante; en ese negro las cosas cambian de lugar aunque se las esté mirando.
+- **Cosas que cambian cuando no se las mira:** la taza y los juguetes se corren o giran (las fotos del pasillo se tuercen solas con el borroso, ver CL-067). Al volver a la cocina por una puerta mala, algo ya no está donde estaba.
+- **El pasillo cambia a tus espaldas** (CL-070): si pasa un rato sin mirar hacia atrás, el camino recorrido aparece cerrado por una pared a unos metros de su espalda; cuando deja de mirarla, desaparece (y puede volver a aparecer en otro lugar). Nunca se cierra delante ni cerca de una esquina (`HallwayDeadEnd`).
+- **Bajo el agua (sonido)** (CL-070): todo se oye cada vez más apagado (sin agudos) y con eco, como con la cabeza sumergida. Se pone en el bus Master solo mientras sueña y se saca al terminar. ❓ Pasos con eco: no hay sonido de pasos todavía.
+- **Estela al girar** (CL-070): al girar la cámara la imagen deja un rastro que tarda en alcanzarlo (`dream_haze.gdshader`).
+- **Agua que sube** (CL-070): una lámina de agua oscura sobre el piso de la cocina, el pasillito del fondo y el pasillo; sube despacio con la degradación, se mece sola y baja cuando la casa se estabiliza (`RisingWater`, `dream_water.gdshader`). Los charcos siguen como antes.
+
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
 | **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | ✅ Se reutiliza `room_layout.tscn` de M1 (su salida queda apagada) |
-| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `StretchingHallway` + 4 fotos (cajas + `Label3D`) |
+| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `BendingHallway` (CL-068) + `RepeatingPhotos`: la misma foto repetida en las dos paredes, cada vez más borrosa y torcida hacia el fondo (CL-067). Foto genérica por shader hasta tener la real (`photo_texture`) |
 | Cocina (se repite) | OBL | ✅ Caja con mesa, mesada, heladera; las puertas malas vuelven acá |
 | Puertas que llevan siempre al mismo lugar | OBL | ✅ 3 puertas + `LoopPortal` en tramos oscuros |
 | Entrada con la puerta de salida | OBL | ✅ Detrás del pasillo del cuarto; se abre al estabilizarse |
@@ -252,7 +273,7 @@ Tecla **0**: en el laberinto pasa al tramo siguiente; en el cuarto abre la puert
 ✅ Sale por la puerta de su casa → **pasaje en silencio** (CL-062: el mar negro y la luz, sin voces del hospital, como se había decidido para este corte) → empieza M4 en el camarote.
 
 ### Sistemas que pide
-- ✅ Laberinto que se repite: `LoopPortal` (umbral que lleva al jugador conservando posición y orientación) + `StretchingHallway` (pasillo de largo variable).
+- ✅ Laberinto que se repite: `LoopPortal` (umbral que lleva al jugador conservando posición y orientación) + `BendingHallway` (pasillo que dobla y se estira, con una forma distinta por tramo).
 - ✅ Objeto sostenido (el barquito en la mano) y "entregar" al interactuar con la hija.
 - ✅ Al entregar: la casa se estabiliza y se habilita la salida.
 
