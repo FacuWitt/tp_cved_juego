@@ -17,6 +17,11 @@
 [ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="15_prompt"]
 [ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="16_dot"]
 [ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="17_sub"]
+[ext_resource type="Script" path="res://scripts/fx/dream_effects.gd" id="18_dream"]
+[ext_resource type="Resource" path="res://config/dream_m3.tres" id="19_dream"]
+[ext_resource type="Script" path="res://scripts/fx/dream_shifter.gd" id="20_shift"]
+[ext_resource type="Script" path="res://scripts/fx/hallway_dead_end.gd" id="21_dead"]
+[ext_resource type="Script" path="res://scripts/fx/rising_water.gd" id="22_water"]
 
 [sub_resource type="Environment" id="Environment_m3"]
 background_mode = 1
@@ -45,7 +50,7 @@ height = 0.22
 [sub_resource type="PrismMesh" id="mesh_sail"]
 size = Vector3(0.14, 0.16, 0.01)
 
-[node name="M3Casa" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "water", "photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
+[node name="M3Casa" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "dream", "shifter", "dead_end", "rising_water", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "daughter_voice", "water", "repeating_photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
 script = ExtResource("1_mem")
 settings = ExtResource("2_mem")
 player = NodePath("Player")
@@ -55,6 +60,10 @@ lightning = NodePath("Lightning")
 wake_up = NodePath("WakeUp")
 debug_tools = NodePath("DebugTools")
 boat_view = NodePath("Player/Head/Camera3D/BoatView")
+dream = NodePath("Dream")
+shifter = NodePath("DreamShifter")
+dead_end = NodePath("HallwayDeadEnd")
+rising_water = NodePath("RisingWater")
 hallway = NodePath("HouseLayout/Hallway")
 portals = [NodePath("HouseLayout/Hallway/FarEnd/Portal0"), NodePath("HouseLayout/Hallway/FarEnd/Portal1"), NodePath("HouseLayout/Hallway/FarEnd/Portal2")]
 landing_doors = [NodePath("HouseLayout/Hallway/FarEnd/Door0Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door1Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door2Hinge")]
@@ -62,9 +71,10 @@ door_glows = [NodePath("HouseLayout/Hallway/FarEnd/Glow0"), NodePath("HouseLayou
 hallway_start = NodePath("HouseLayout/Anchors/HallwayStart")
 kitchen_back = NodePath("HouseLayout/Anchors/KitchenBack")
 room_arrival = NodePath("DaughterRoom/Anchors/RoomArrival")
+daughter_voice = NodePath("HouseLayout/Hallway/FarEnd/DaughterVoice")
 water = [NodePath("HouseLayout/Water"), NodePath("DaughterRoom/Water")]
-photos = [NodePath("HouseLayout/Hallway/Photos/Photo1"), NodePath("HouseLayout/Hallway/Photos/Photo2"), NodePath("HouseLayout/Hallway/Photos/Photo3"), NodePath("HouseLayout/Hallway/Photos/Photo4")]
-cold_lights = [NodePath("HouseLayout/Kitchen/KitchenLight"), NodePath("HouseLayout/Hallway/HallLight1"), NodePath("HouseLayout/Hallway/HallLight2"), NodePath("HouseLayout/Hallway/FarEnd/LandingLight"), NodePath("DaughterRoom/CorridorLight"), NodePath("DaughterRoom/Entrance/EntranceLight")]
+repeating_photos = NodePath("HouseLayout/Hallway/Photos")
+cold_lights = [NodePath("HouseLayout/Kitchen/KitchenLight"), NodePath("HouseLayout/Hallway/FarEnd/LandingLight"), NodePath("DaughterRoom/CorridorLight"), NodePath("DaughterRoom/Entrance/EntranceLight")]
 room_door = NodePath("DaughterRoom/RoomLayout/DoorHinge")
 daughter = NodePath("DaughterRoom/Daughter")
 given_boat = NodePath("DaughterRoom/Daughter/GivenBoat")
@@ -126,6 +136,29 @@ lightning = NodePath("../Lightning")
 script = ExtResource("13_dbg")
 player = NodePath("../Player")
 lightning = NodePath("../Lightning")
+
+[node name="Dream" type="CanvasLayer" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("18_dream")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+
+[node name="DreamShifter" type="Node" parent="." node_paths=PackedStringArray("player", "loose_props")]
+script = ExtResource("20_shift")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+loose_props = [NodePath("../HouseLayout/Kitchen/Cup"), NodePath("../DaughterRoom/Props/Toy1"), NodePath("../DaughterRoom/Props/Toy2"), NodePath("../DaughterRoom/Props/Toy3")]
+
+
+[node name="HallwayDeadEnd" type="Node" parent="." node_paths=PackedStringArray("player", "hallway")]
+script = ExtResource("21_dead")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+hallway = NodePath("../HouseLayout/Hallway")
+
+[node name="RisingWater" type="Node3D" parent="."]
+script = ExtResource("22_water")
+settings = ExtResource("19_dream")
+areas = Array[AABB]([AABB(-3.3, 0, -2.7, 6.6, 0, 5.4), AABB(-0.8, 0, 2.7, 1.6, 0, 2.45), AABB(-12.9, 0, -46.6, 25.8, 0, 43.9)])
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

@@ -48,8 +48,13 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
 | `Memory3House` | `scripts/memories/memory_3_house.gd` | Memoria 3 (la casa que se repite): laberinto de puertas, degradación, entrega del barquito a la hija y salida por la puerta de casa |
-| `StretchingHallway` | `scripts/world/stretching_hallway.gd` | Pasillo de largo variable: estira piso, techo y paredes y corre el fondo (M3) |
+| `BendingHallway` | `scripts/world/bending_hallway.gd` | Pasillo de la M3 que dobla y se estira: se arma "cavando" en un bloque CSG según una forma de texto ("4 L 3 R 5"), con ancho y alto por tramo; al final pone el rellano y sus tramos oscuros (reemplaza a `StretchingHallway`, CL-068) |
 | `LoopPortal` | `scripts/world/loop_portal.gd` | Umbral invisible: avisa con `crossed` y lleva al jugador a otro punto conservando posición, orientación y velocidad (M3) |
+| `DreamEffects` + `DreamSettings` | `scripts/fx/dream_effects.gd` → `config/dream_m3.tres` | Efectos de sueño que siguen a un nivel 0..1: imagen que ondula y se desenfoca en los bordes (`dream_haze.gdshader`), cámara que se mece, piernas pesadas al avanzar, piernas que se traban (se frena y lo arrastra para atrás), parpadeos, estela al girar y sonido "bajo el agua" (efectos en el bus Master solo mientras sueña) (M3) |
+| `HallwayDeadEnd` | `scripts/fx/hallway_dead_end.gd` | El pasillo de la M3 se cierra a espaldas del jugador si no mira atrás un rato (usa `DreamSettings`) |
+| `RisingWater` | `scripts/fx/rising_water.gd` | Lámina de agua (`dream_water.gdshader`) que sube con el sueño sobre el piso de unas áreas y se mece sola (M3; usa `DreamSettings`) |
+| `DreamShifter` | `scripts/fx/dream_shifter.gd` | Objetos que cambian de lugar cuando no se los mira (o en un parpadeo); cuadros que se tuercen (M3) |
+| `RepeatingPhotos` | `scripts/world/repeating_photos.gd` | La misma foto repetida a lo largo del pasillo de la M3, cada vez más borrosa y torcida (`memory_photo.gdshader`); acompaña al `BendingHallway` |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
 | `HospitalLights` + `HospitalLightsSettings` | `scripts/world/hospital_lights.gd` | 6 luces del techo del hospital que se ven en el cielo, en la dirección del rayo, mientras el rayo ilumina (M4) |
 | `AnchorWinch` + `AnchorWinchSettings` | `scripts/world/anchor_winch.gd` | Malacate del ancla de la M4: se sube apretando (E) en la manivela y se resbala si se afloja. Escena: `scenes/props/anchor_winch.tscn` |
