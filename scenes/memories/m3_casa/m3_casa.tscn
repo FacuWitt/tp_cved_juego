@@ -1,0 +1,179 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/memories/memory_3_house.gd" id="1_mem"]
+[ext_resource type="Resource" path="res://config/memory_3_settings.tres" id="2_mem"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/house_layout.tscn" id="3_house"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/daughter_room.tscn" id="4_room"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="5_player"]
+[ext_resource type="Resource" path="res://config/player_settings.tres" id="6_player"]
+[ext_resource type="Script" path="res://scripts/fx/held_item_view.gd" id="7_held"]
+[ext_resource type="Resource" path="res://config/held_boat.tres" id="8_held"]
+[ext_resource type="Script" path="res://scripts/world/lightning_controller.gd" id="9_light"]
+[ext_resource type="Resource" path="res://config/lightning_m3.tres" id="10_light"]
+[ext_resource type="Script" path="res://scripts/fx/wake_up_intro.gd" id="11_wake"]
+[ext_resource type="Resource" path="res://config/wake_up_m3.tres" id="12_wake"]
+[ext_resource type="Script" path="res://scripts/debug/debug_tools.gd" id="13_dbg"]
+[ext_resource type="Script" path="res://scripts/ui/interaction_prompt.gd" id="14_prompt"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="15_prompt"]
+[ext_resource type="Script" path="res://scripts/ui/reticle_dot.gd" id="16_dot"]
+[ext_resource type="Script" path="res://scripts/ui/subtitle_display.gd" id="17_sub"]
+
+[sub_resource type="Environment" id="Environment_m3"]
+background_mode = 1
+background_color = Color(0.01, 0.015, 0.02, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.35, 0.36, 1)
+ambient_light_energy = 0.35
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="m_boat_wood"]
+albedo_color = Color(0.55, 0.36, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_sail"]
+albedo_color = Color(0.92, 0.9, 0.84, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="mesh_hull"]
+size = Vector3(0.34, 0.08, 0.12)
+
+[sub_resource type="CylinderMesh" id="mesh_mast"]
+top_radius = 0.01
+bottom_radius = 0.01
+height = 0.22
+
+[sub_resource type="PrismMesh" id="mesh_sail"]
+size = Vector3(0.14, 0.16, 0.01)
+
+[node name="M3Casa" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "water", "photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
+script = ExtResource("1_mem")
+settings = ExtResource("2_mem")
+player = NodePath("Player")
+subtitles = NodePath("HUD/Subtitles")
+prompt = NodePath("HUD/Center/Reticle")
+lightning = NodePath("Lightning")
+wake_up = NodePath("WakeUp")
+debug_tools = NodePath("DebugTools")
+boat_view = NodePath("Player/Head/Camera3D/BoatView")
+hallway = NodePath("HouseLayout/Hallway")
+portals = [NodePath("HouseLayout/Hallway/FarEnd/Portal0"), NodePath("HouseLayout/Hallway/FarEnd/Portal1"), NodePath("HouseLayout/Hallway/FarEnd/Portal2")]
+landing_doors = [NodePath("HouseLayout/Hallway/FarEnd/Door0Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door1Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door2Hinge")]
+door_glows = [NodePath("HouseLayout/Hallway/FarEnd/Glow0"), NodePath("HouseLayout/Hallway/FarEnd/Glow1"), NodePath("HouseLayout/Hallway/FarEnd/Glow2")]
+hallway_start = NodePath("HouseLayout/Anchors/HallwayStart")
+kitchen_back = NodePath("HouseLayout/Anchors/KitchenBack")
+room_arrival = NodePath("DaughterRoom/Anchors/RoomArrival")
+water = [NodePath("HouseLayout/Water"), NodePath("DaughterRoom/Water")]
+photos = [NodePath("HouseLayout/Hallway/Photos/Photo1"), NodePath("HouseLayout/Hallway/Photos/Photo2"), NodePath("HouseLayout/Hallway/Photos/Photo3"), NodePath("HouseLayout/Hallway/Photos/Photo4")]
+cold_lights = [NodePath("HouseLayout/Kitchen/KitchenLight"), NodePath("HouseLayout/Hallway/HallLight1"), NodePath("HouseLayout/Hallway/HallLight2"), NodePath("HouseLayout/Hallway/FarEnd/LandingLight"), NodePath("DaughterRoom/CorridorLight"), NodePath("DaughterRoom/Entrance/EntranceLight")]
+room_door = NodePath("DaughterRoom/RoomLayout/DoorHinge")
+daughter = NodePath("DaughterRoom/Daughter")
+given_boat = NodePath("DaughterRoom/Daughter/GivenBoat")
+room_end_wall = NodePath("DaughterRoom/RoomLayout/Corridor/WallEnd")
+room_layout_exit = NodePath("DaughterRoom/RoomLayout/Exit")
+front_door = NodePath("DaughterRoom/Entrance/FrontDoorHinge")
+exit = NodePath("DaughterRoom/Entrance/Exit")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m3")
+
+[node name="HouseLayout" parent="." instance=ExtResource("3_house")]
+
+[node name="DaughterRoom" parent="." instance=ExtResource("4_room")]
+position = Vector3(40, 0, 0)
+
+[node name="LightningLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 30, 0)
+light_color = Color(0.75, 0.85, 1, 1)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="Lightning" type="Node" parent="." node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("9_light")
+lightning_settings = ExtResource("10_light")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+position = Vector3(0, 0, 0.85)
+settings = ExtResource("6_player")
+
+[node name="BoatView" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("7_held")
+settings = ExtResource("8_held")
+player = NodePath("../../..")
+
+[node name="Hull" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
+mesh = SubResource("mesh_hull")
+material_override = SubResource("m_boat_wood")
+
+[node name="Mast" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
+position = Vector3(0, 0.15, 0)
+mesh = SubResource("mesh_mast")
+material_override = SubResource("m_boat_wood")
+
+[node name="Sail" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
+position = Vector3(0.06, 0.17, 0)
+mesh = SubResource("mesh_sail")
+material_override = SubResource("m_sail")
+
+[node name="WakeUp" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("11_wake")
+settings = ExtResource("12_wake")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="DebugTools" type="Node" parent="." node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("13_dbg")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Center" type="CenterContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("14_prompt")
+player = NodePath("../../../Player")
+settings = ExtResource("15_prompt")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("16_dot")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+
+[node name="Subtitles" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("17_sub")

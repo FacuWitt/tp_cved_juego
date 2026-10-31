@@ -1,0 +1,747 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_grid"]
+[ext_resource type="Script" path="res://scripts/world/stretching_hallway.gd" id="2_hall"]
+[ext_resource type="Script" path="res://scripts/world/loop_portal.gd" id="3_portal"]
+
+[sub_resource type="ShaderMaterial" id="m_floor"]
+render_priority = 0
+shader = ExtResource("1_grid")
+shader_parameter/base_color = Color(0.34, 0.33, 0.3, 1)
+shader_parameter/line_color = Color(0.25, 0.25, 0.23, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="m_wall"]
+render_priority = 0
+shader = ExtResource("1_grid")
+shader_parameter/base_color = Color(0.5, 0.54, 0.5, 1)
+shader_parameter/line_color = Color(0.4, 0.44, 0.41, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="m_ceiling"]
+render_priority = 0
+shader = ExtResource("1_grid")
+shader_parameter/base_color = Color(0.42, 0.44, 0.42, 1)
+shader_parameter/line_color = Color(0.34, 0.36, 0.34, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="ShaderMaterial" id="m_hall"]
+render_priority = 0
+shader = ExtResource("1_grid")
+shader_parameter/base_color = Color(0.3, 0.36, 0.36, 1)
+shader_parameter/line_color = Color(0.22, 0.27, 0.27, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
+
+[sub_resource type="StandardMaterial3D" id="m_black"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_wood"]
+albedo_color = Color(0.4, 0.27, 0.17, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_door"]
+albedo_color = Color(0.36, 0.26, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_white"]
+albedo_color = Color(0.85, 0.85, 0.82, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="m_metal"]
+albedo_color = Color(0.6, 0.62, 0.64, 1)
+metallic = 0.7
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="m_frame"]
+albedo_color = Color(0.2, 0.14, 0.1, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="m_photo"]
+albedo_color = Color(0.62, 0.52, 0.4, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="m_water"]
+transparency = 1
+albedo_color = Color(0.05, 0.12, 0.15, 0.75)
+metallic = 0.4
+roughness = 0.05
+
+[sub_resource type="StandardMaterial3D" id="m_glow"]
+albedo_color = Color(1, 0.75, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.4, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="m_sky"]
+shading_mode = 0
+albedo_color = Color(0.03, 0.05, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_moon"]
+shading_mode = 0
+albedo_color = Color(0.85, 0.88, 0.95, 1)
+
+[sub_resource type="BoxMesh" id="mesh_door"]
+size = Vector3(0.98, 2.08, 0.06)
+
+[sub_resource type="BoxShape3D" id="shape_door"]
+size = Vector3(0.98, 2.08, 0.06)
+
+[sub_resource type="BoxShape3D" id="shape_portal"]
+size = Vector3(1.1, 2.0, 0.8)
+
+[sub_resource type="BoxMesh" id="mesh_strip"]
+size = Vector3(0.9, 0.015, 0.12)
+
+[sub_resource type="BoxMesh" id="mesh_puddle"]
+size = Vector3(1.0, 0.01, 0.7)
+
+[sub_resource type="BoxMesh" id="mesh_frame"]
+size = Vector3(0.03, 0.42, 0.34)
+
+[sub_resource type="BoxMesh" id="mesh_picture"]
+size = Vector3(0.036, 0.34, 0.26)
+
+[sub_resource type="CylinderMesh" id="mesh_cup"]
+top_radius = 0.045
+bottom_radius = 0.04
+height = 0.1
+
+[sub_resource type="CylinderMesh" id="mesh_faucet"]
+top_radius = 0.025
+bottom_radius = 0.025
+height = 0.3
+
+[sub_resource type="CylinderMesh" id="mesh_clock"]
+top_radius = 0.16
+bottom_radius = 0.16
+height = 0.04
+
+[sub_resource type="BoxMesh" id="mesh_sky"]
+size = Vector3(0.2, 14, 26)
+
+[sub_resource type="SphereMesh" id="mesh_moon"]
+radius = 0.6
+height = 1.2
+
+[node name="HouseLayout" type="Node3D"]
+
+[node name="Kitchen" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(0, -0.1, 0)
+size = Vector3(6.4, 0.2, 5.4)
+material = SubResource("m_floor")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(0, 2.7, 0)
+size = Vector3(6.4, 0.2, 5.4)
+material = SubResource("m_ceiling")
+use_collision = true
+
+[node name="NorthWall" type="CSGCombiner3D" parent="Kitchen"]
+position = Vector3(0, 1.3, -2.6)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="Kitchen/NorthWall"]
+size = Vector3(6.4, 2.8, 0.2)
+material = SubResource("m_wall")
+
+[node name="DoorHole" type="CSGBox3D" parent="Kitchen/NorthWall"]
+operation = 2
+position = Vector3(0, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="SouthWall" type="CSGCombiner3D" parent="Kitchen"]
+position = Vector3(0, 1.3, 2.6)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="Kitchen/SouthWall"]
+size = Vector3(6.4, 2.8, 0.2)
+material = SubResource("m_wall")
+
+[node name="DoorHole" type="CSGBox3D" parent="Kitchen/SouthWall"]
+operation = 2
+position = Vector3(0, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="EastWall" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(3.1, 1.3, 0)
+size = Vector3(0.2, 2.8, 5.4)
+material = SubResource("m_wall")
+use_collision = true
+
+[node name="WestWall" type="CSGCombiner3D" parent="Kitchen"]
+position = Vector3(-3.1, 1.3, 0)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="Kitchen/WestWall"]
+size = Vector3(0.2, 2.8, 5.4)
+material = SubResource("m_wall")
+
+[node name="WindowHole" type="CSGBox3D" parent="Kitchen/WestWall"]
+operation = 2
+position = Vector3(0, 0.3, 0)
+size = Vector3(0.4, 1.0, 1.2)
+
+[node name="KitchenLight" type="OmniLight3D" parent="Kitchen"]
+position = Vector3(0, 2.35, 0)
+light_color = Color(0.45, 0.68, 0.66, 1)
+light_energy = 0.55
+shadow_enabled = true
+omni_range = 6.0
+
+[node name="Table" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(0, 0.375, -0.3)
+size = Vector3(1.4, 0.75, 0.9)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="Cup" type="MeshInstance3D" parent="Kitchen"]
+position = Vector3(0.2, 0.8, 0.0)
+mesh = SubResource("mesh_cup")
+material_override = SubResource("m_white")
+
+[node name="CupLabel" type="Label3D" parent="Kitchen"]
+position = Vector3(0.2, 1.0, 0.0)
+pixel_size = 0.0025
+billboard = 1
+text = "TAZA DE CAFÉ (frío)"
+font_size = 18
+outline_size = 6
+
+[node name="Counter" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(2.75, 0.45, 0.2)
+size = Vector3(0.6, 0.9, 2.2)
+material = SubResource("m_wood")
+use_collision = true
+
+[node name="Faucet" type="MeshInstance3D" parent="Kitchen"]
+position = Vector3(2.9, 1.05, 0.4)
+mesh = SubResource("mesh_faucet")
+material_override = SubResource("m_metal")
+
+[node name="FaucetLabel" type="Label3D" parent="Kitchen"]
+position = Vector3(2.75, 1.4, 0.4)
+pixel_size = 0.0025
+billboard = 1
+text = "CANILLA (gotea al ritmo del bip)"
+font_size = 18
+outline_size = 6
+
+[node name="Fridge" type="CSGBox3D" parent="Kitchen"]
+position = Vector3(2.65, 0.9, -1.95)
+size = Vector3(0.7, 1.8, 0.7)
+material = SubResource("m_white")
+use_collision = true
+
+[node name="WallClock" type="MeshInstance3D" parent="Kitchen"]
+position = Vector3(-1.4, 2.0, -2.48)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("mesh_clock")
+material_override = SubResource("m_white")
+
+[node name="ClockLabel" type="Label3D" parent="Kitchen"]
+position = Vector3(-1.4, 2.32, -2.4)
+pixel_size = 0.0025
+billboard = 1
+text = "RELOJ PARADO (3:00)"
+font_size = 18
+outline_size = 6
+
+[node name="WindowLabel" type="Label3D" parent="Kitchen"]
+position = Vector3(-2.9, 2.25, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "VENTANA: tormenta (lluvia en etapa 2)"
+font_size = 18
+outline_size = 6
+
+[node name="BackStub" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="BackStub"]
+position = Vector3(0, -0.1, 3.9)
+size = Vector3(1.5, 0.2, 2.4)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="BackStub"]
+position = Vector3(0, 2.4, 3.9)
+size = Vector3(1.5, 0.2, 2.4)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallLeft" type="CSGBox3D" parent="BackStub"]
+position = Vector3(-0.65, 1.2, 3.9)
+size = Vector3(0.2, 2.6, 2.4)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallRight" type="CSGBox3D" parent="BackStub"]
+position = Vector3(0.65, 1.2, 3.9)
+size = Vector3(0.2, 2.6, 2.4)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallEnd" type="CSGBox3D" parent="BackStub"]
+position = Vector3(0, 1.2, 5.0)
+size = Vector3(1.5, 2.6, 0.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Hallway" type="Node3D" parent="." node_paths=PackedStringArray("floor_box", "ceiling_box", "wall_left", "wall_right", "far_end")]
+position = Vector3(0, 0, -2.7)
+script = ExtResource("2_hall")
+floor_box = NodePath("Floor")
+ceiling_box = NodePath("Ceiling")
+wall_left = NodePath("WallLeft")
+wall_right = NodePath("WallRight")
+far_end = NodePath("FarEnd")
+
+[node name="Floor" type="CSGBox3D" parent="Hallway"]
+position = Vector3(0, -0.1, -4)
+size = Vector3(1.8, 0.2, 8)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Hallway"]
+position = Vector3(0, 2.6, -4)
+size = Vector3(1.8, 0.2, 8)
+material = SubResource("m_ceiling")
+use_collision = true
+
+[node name="WallLeft" type="CSGBox3D" parent="Hallway"]
+position = Vector3(-0.9, 1.3, -4)
+size = Vector3(0.2, 2.8, 8)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="WallRight" type="CSGBox3D" parent="Hallway"]
+position = Vector3(0.9, 1.3, -4)
+size = Vector3(0.2, 2.8, 8)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="HallLight1" type="OmniLight3D" parent="Hallway"]
+position = Vector3(0, 2.3, -1.5)
+light_color = Color(0.45, 0.7, 0.65, 1)
+light_energy = 0.5
+omni_range = 4.5
+
+[node name="HallLight2" type="OmniLight3D" parent="Hallway"]
+position = Vector3(0, 2.3, -5.5)
+light_color = Color(0.45, 0.7, 0.65, 1)
+light_energy = 0.5
+omni_range = 4.5
+
+[node name="Photos" type="Node3D" parent="Hallway"]
+
+[node name="Photo1" type="Node3D" parent="Hallway/Photos"]
+position = Vector3(-0.79, 1.5, -2.0)
+
+[node name="Frame" type="MeshInstance3D" parent="Hallway/Photos/Photo1"]
+mesh = SubResource("mesh_frame")
+material_override = SubResource("m_frame")
+
+[node name="Picture" type="MeshInstance3D" parent="Hallway/Photos/Photo1"]
+mesh = SubResource("mesh_picture")
+material_override = SubResource("m_photo")
+
+[node name="Label3D" type="Label3D" parent="Hallway/Photos/Photo1"]
+position = Vector3(0.15, 0.32, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "FOTO: la abuela"
+font_size = 18
+outline_size = 6
+
+[node name="Photo2" type="Node3D" parent="Hallway/Photos"]
+position = Vector3(0.79, 1.5, -3.5)
+
+[node name="Frame" type="MeshInstance3D" parent="Hallway/Photos/Photo2"]
+mesh = SubResource("mesh_frame")
+material_override = SubResource("m_frame")
+
+[node name="Picture" type="MeshInstance3D" parent="Hallway/Photos/Photo2"]
+mesh = SubResource("mesh_picture")
+material_override = SubResource("m_photo")
+
+[node name="Label3D" type="Label3D" parent="Hallway/Photos/Photo2"]
+position = Vector3(-0.15, 0.32, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "FOTO: el padre"
+font_size = 18
+outline_size = 6
+
+[node name="Photo3" type="Node3D" parent="Hallway/Photos"]
+position = Vector3(-0.79, 1.5, -5.0)
+
+[node name="Frame" type="MeshInstance3D" parent="Hallway/Photos/Photo3"]
+mesh = SubResource("mesh_frame")
+material_override = SubResource("m_frame")
+
+[node name="Picture" type="MeshInstance3D" parent="Hallway/Photos/Photo3"]
+mesh = SubResource("mesh_picture")
+material_override = SubResource("m_photo")
+
+[node name="Label3D" type="Label3D" parent="Hallway/Photos/Photo3"]
+position = Vector3(0.15, 0.32, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "FOTO: la abuela"
+font_size = 18
+outline_size = 6
+
+[node name="Photo4" type="Node3D" parent="Hallway/Photos"]
+position = Vector3(0.79, 1.5, -6.5)
+
+[node name="Frame" type="MeshInstance3D" parent="Hallway/Photos/Photo4"]
+mesh = SubResource("mesh_frame")
+material_override = SubResource("m_frame")
+
+[node name="Picture" type="MeshInstance3D" parent="Hallway/Photos/Photo4"]
+mesh = SubResource("mesh_picture")
+material_override = SubResource("m_photo")
+
+[node name="Label3D" type="Label3D" parent="Hallway/Photos/Photo4"]
+position = Vector3(-0.15, 0.32, 0)
+pixel_size = 0.0025
+billboard = 1
+text = "FOTO: el padre"
+font_size = 18
+outline_size = 6
+
+[node name="FarEnd" type="Node3D" parent="Hallway"]
+position = Vector3(0, 0, -8)
+
+[node name="Floor" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(0, -0.1, -1.3)
+size = Vector3(4.8, 0.2, 2.6)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(0, 2.6, -1.3)
+size = Vector3(4.8, 0.2, 2.6)
+material = SubResource("m_ceiling")
+use_collision = true
+
+[node name="WallWest" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(-2.3, 1.3, -1.3)
+size = Vector3(0.2, 2.8, 2.6)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="WallEast" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(2.3, 1.3, -1.3)
+size = Vector3(0.2, 2.8, 2.6)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="SouthLeft" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(-1.55, 1.3, 0.1)
+size = Vector3(1.3, 2.8, 0.2)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="SouthRight" type="CSGBox3D" parent="Hallway/FarEnd"]
+position = Vector3(1.55, 1.3, 0.1)
+size = Vector3(1.3, 2.8, 0.2)
+material = SubResource("m_hall")
+use_collision = true
+
+[node name="NorthWall" type="CSGCombiner3D" parent="Hallway/FarEnd"]
+position = Vector3(0, 1.3, -2.5)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="Hallway/FarEnd/NorthWall"]
+size = Vector3(4.8, 2.8, 0.2)
+material = SubResource("m_hall")
+
+[node name="Hole0" type="CSGBox3D" parent="Hallway/FarEnd/NorthWall"]
+operation = 2
+position = Vector3(-1.5, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="Hole1" type="CSGBox3D" parent="Hallway/FarEnd/NorthWall"]
+operation = 2
+position = Vector3(0, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="Hole2" type="CSGBox3D" parent="Hallway/FarEnd/NorthWall"]
+operation = 2
+position = Vector3(1.5, -0.25, 0)
+size = Vector3(1.0, 2.1, 0.4)
+
+[node name="LandingLight" type="OmniLight3D" parent="Hallway/FarEnd"]
+position = Vector3(0, 2.3, -1.0)
+light_color = Color(0.45, 0.7, 0.65, 1)
+light_energy = 0.45
+omni_range = 4.0
+
+[node name="Door0Hinge" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(-1.99, 0, -2.5)
+
+[node name="Door" type="AnimatableBody3D" parent="Hallway/FarEnd/Door0Hinge"]
+position = Vector3(0.49, 1.04, 0)
+sync_to_physics = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
+mesh = SubResource("mesh_door")
+material_override = SubResource("m_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
+shape = SubResource("shape_door")
+
+[node name="Door1Hinge" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(-0.49, 0, -2.5)
+
+[node name="Door" type="AnimatableBody3D" parent="Hallway/FarEnd/Door1Hinge"]
+position = Vector3(0.49, 1.04, 0)
+sync_to_physics = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
+mesh = SubResource("mesh_door")
+material_override = SubResource("m_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
+shape = SubResource("shape_door")
+
+[node name="Door2Hinge" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(1.01, 0, -2.5)
+
+[node name="Door" type="AnimatableBody3D" parent="Hallway/FarEnd/Door2Hinge"]
+position = Vector3(0.49, 1.04, 0)
+sync_to_physics = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
+mesh = SubResource("mesh_door")
+material_override = SubResource("m_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
+shape = SubResource("shape_door")
+
+[node name="Glow0" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(-1.5, 0, -2.5)
+
+[node name="Strip" type="MeshInstance3D" parent="Hallway/FarEnd/Glow0"]
+position = Vector3(0, 0.008, 0.17)
+mesh = SubResource("mesh_strip")
+material_override = SubResource("m_glow")
+
+[node name="Light" type="OmniLight3D" parent="Hallway/FarEnd/Glow0"]
+position = Vector3(0, 0.12, 0.35)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 0.6
+omni_range = 1.4
+
+[node name="Glow1" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(0, 0, -2.5)
+
+[node name="Strip" type="MeshInstance3D" parent="Hallway/FarEnd/Glow1"]
+position = Vector3(0, 0.008, 0.17)
+mesh = SubResource("mesh_strip")
+material_override = SubResource("m_glow")
+
+[node name="Light" type="OmniLight3D" parent="Hallway/FarEnd/Glow1"]
+position = Vector3(0, 0.12, 0.35)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 0.6
+omni_range = 1.4
+
+[node name="Glow2" type="Node3D" parent="Hallway/FarEnd"]
+position = Vector3(1.5, 0, -2.5)
+
+[node name="Strip" type="MeshInstance3D" parent="Hallway/FarEnd/Glow2"]
+position = Vector3(0, 0.008, 0.17)
+mesh = SubResource("mesh_strip")
+material_override = SubResource("m_glow")
+
+[node name="Light" type="OmniLight3D" parent="Hallway/FarEnd/Glow2"]
+position = Vector3(0, 0.12, 0.35)
+light_color = Color(1, 0.72, 0.42, 1)
+light_energy = 0.6
+omni_range = 1.4
+
+[node name="Vestibules" type="Node3D" parent="Hallway/FarEnd"]
+
+[node name="Floor0" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-1.5, -0.1, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Ceiling0" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-1.5, 2.4, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallA0" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-2.15, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallB0" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-0.85, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="End0" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-1.5, 1.2, -5.6)
+size = Vector3(1.3, 2.6, 0.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Floor1" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(0, -0.1, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Ceiling1" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(0, 2.4, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallA1" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(-0.65, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallB1" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(0.65, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="End1" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(0, 1.2, -5.6)
+size = Vector3(1.3, 2.6, 0.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Floor2" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(1.5, -0.1, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Ceiling2" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(1.5, 2.4, -4.1)
+size = Vector3(1.3, 0.2, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallA2" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(0.85, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="WallB2" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(2.15, 1.2, -4.1)
+size = Vector3(0.2, 2.6, 3.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="End2" type="CSGBox3D" parent="Hallway/FarEnd/Vestibules"]
+position = Vector3(1.5, 1.2, -5.6)
+size = Vector3(1.3, 2.6, 0.2)
+material = SubResource("m_black")
+use_collision = true
+
+[node name="Portal0" type="Area3D" parent="Hallway/FarEnd"]
+position = Vector3(-1.5, 0, -2.5)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("3_portal")
+index = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Portal0"]
+position = Vector3(0, 1.0, -1.2)
+shape = SubResource("shape_portal")
+
+[node name="Portal1" type="Area3D" parent="Hallway/FarEnd"]
+position = Vector3(0, 0, -2.5)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("3_portal")
+index = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Portal1"]
+position = Vector3(0, 1.0, -1.2)
+shape = SubResource("shape_portal")
+
+[node name="Portal2" type="Area3D" parent="Hallway/FarEnd"]
+position = Vector3(1.5, 0, -2.5)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("3_portal")
+index = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Portal2"]
+position = Vector3(0, 1.0, -1.2)
+shape = SubResource("shape_portal")
+
+[node name="Water" type="Node3D" parent="."]
+
+[node name="PuddleSink" type="MeshInstance3D" parent="Water"]
+position = Vector3(2.2, 0.006, 0.9)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleHall1" type="MeshInstance3D" parent="Water"]
+position = Vector3(0.1, 0.006, -4.6)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleKitchen1" type="MeshInstance3D" parent="Water"]
+position = Vector3(-1.8, 0.006, -1.2)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleHall2" type="MeshInstance3D" parent="Water"]
+position = Vector3(-0.3, 0.006, -7.6)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleKitchen2" type="MeshInstance3D" parent="Water"]
+position = Vector3(-0.9, 0.006, 1.6)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="PuddleHall3" type="MeshInstance3D" parent="Water"]
+position = Vector3(0.3, 0.006, -9.9)
+mesh = SubResource("mesh_puddle")
+material_override = SubResource("m_water")
+
+[node name="Anchors" type="Node3D" parent="."]
+
+[node name="HallwayStart" type="Marker3D" parent="Anchors"]
+position = Vector3(0, 0, -2.5)
+
+[node name="KitchenBack" type="Marker3D" parent="Anchors"]
+position = Vector3(0, 0, 4.6)
+
+[node name="Exterior" type="Node3D" parent="."]
+
+[node name="NightSky" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-12, 1.5, 0)
+mesh = SubResource("mesh_sky")
+material_override = SubResource("m_sky")
+
+[node name="Moon" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-11, 3.6, 1.0)
+mesh = SubResource("mesh_moon")
+material_override = SubResource("m_moon")

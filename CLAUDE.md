@@ -47,6 +47,9 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 | `RowBoat` + `RowBoatSettings` | `scripts/world/row_boat.gd` → `config/row_boat.tres` | Bote del jugador en la M2 del río: cada toque de tecla es una remada (A remo izquierdo, D derecho, S los dos atrás), con empuje al entrar la pala, sonidos de remos y golpes, y balanceo con las olas |
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
+| `Memory3House` | `scripts/memories/memory_3_house.gd` | Memoria 3 (la casa que se repite): laberinto de puertas, degradación, entrega del barquito a la hija y salida por la puerta de casa |
+| `StretchingHallway` | `scripts/world/stretching_hallway.gd` | Pasillo de largo variable: estira piso, techo y paredes y corre el fondo (M3) |
+| `LoopPortal` | `scripts/world/loop_portal.gd` | Umbral invisible: avisa con `crossed` y lleva al jugador a otro punto conservando posición, orientación y velocidad (M3) |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
 | `HospitalLights` + `HospitalLightsSettings` | `scripts/world/hospital_lights.gd` | 6 luces del techo del hospital que se ven en el cielo, en la dirección del rayo, mientras el rayo ilumina (M4) |
 | `AnchorWinch` + `AnchorWinchSettings` | `scripts/world/anchor_winch.gd` | Malacate del ancla de la M4: se sube apretando (E) en la manivela y se resbala si se afloja. Escena: `scenes/props/anchor_winch.tscn` |

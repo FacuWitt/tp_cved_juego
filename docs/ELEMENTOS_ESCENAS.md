@@ -190,54 +190,76 @@ El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar ✅
 
-**Escena:** `scenes/memories/m3_casa/`. Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno 📝. **La más degradada:** pasillos que se estiran, cocina que se repite.
+**Escena:** `scenes/memories/m3_casa/m3_casa.tscn` ✅ greybox jugable (CL-065). Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno. **La más degradada:** pasillos que se estiran, cocina que se repite.
+
+Subescenas: `house_layout.tscn` (cocina, pasillito oscuro del fondo, pasillo que se estira, rellano con tres puertas y sus umbrales) y `daughter_room.tscn` (el `room_layout.tscn` de M1 + cuarto de la hija + entrada de la casa). Raíz: `Memory3House` (`scripts/memories/memory_3_house.gd`). Valores y textos: `config/memory_3_settings.tres`.
+
+### Recorrido implementado
+1. Despierta dormido sobre la mesa de la cocina (`WakeUpIntro`, `config/wake_up_m3.tres`), con un rayo por la ventana. Aparece el barquito en la mano (`HeldItemView`, `config/held_boat.tres`); no se puede soltar.
+2. La hija lo llama de lejos. Sale de la cocina al pasillo; al fondo hay un **rellano con tres puertas cerradas** ((E) Abrir). Detrás de cada una hay un tramo oscuro con un umbral invisible (`LoopPortal`).
+3. **Regla del laberinto** (📝 era propuesta de PLAN_DEMO, ahora implementada así): hay 3 tramos (`good_doors`, por defecto centro → izquierda → derecha). La puerta buena tiene abajo la **luz cálida del velador**, cada tramo un poco más fuerte.
+   - **Puerta buena:** aparece de nuevo al comienzo del pasillo (tramo siguiente) y la voz de la hija se oye más cerca. En el último tramo aparece en el pasillo del cuarto de la hija.
+   - **Puerta mala:** aparece en el pasillito oscuro del fondo de la cocina, la voz se oye más lejos y la casa se degrada un escalón. **Se conserva el tramo ganado.**
+   - El paso por el umbral conserva posición, orientación y velocidad (no hay corte ni fundido): sale de la oscuridad caminando.
+4. **Degradación** (0 a 1, arranca en 0,25 y sube 0,25 por error): pasillo más largo (8 m + hasta 8 m), más charcos visibles, fotos del pasillo más borradas, luz fría más fuerte. Con la casa degradada, **el fondo del pasillo se aleja mientras se camina hacia él**.
+5. El cuarto de la hija: la puerta (la de M1) tiene la luz del velador abajo; al abrirla la hija dice que no quiere que se vaya. Apuntándola: (E) Darle el barquito → *"Cuidámelo hasta que vuelva."* El barquito pasa a sus manos.
+6. **La casa se estabiliza:** se seca el agua, baja la luz fría y desaparece la pared del fondo del pasillo del cuarto: se abre el camino a la entrada (bolso, campera, botas).
+7. (E) Abrir la puerta de casa → sale → `MemoryExit` completa la memoria → pasaje M3 → M4 en silencio (CL-062) → M4.
+
+Tecla **0**: en el laberinto pasa al tramo siguiente; en el cuarto abre la puerta y entrega el barquito; con la casa estable completa la memoria.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | **Se reutiliza el layout de M1** |
-| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | Pasillo de cajas + planos |
-| Cocina (se repite) | OBL | Caja con mesa |
-| Puertas que llevan siempre al mismo lugar | OBL | Triggers que teletransportan |
-| Entrada con la puerta de salida | OBL | Caja + trigger final |
-| Charcos en el piso, paredes húmedas | AMB | Planos oscuros |
+| **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | ✅ Se reutiliza `room_layout.tscn` de M1 (su salida queda apagada) |
+| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `StretchingHallway` + 4 fotos (cajas + `Label3D`) |
+| Cocina (se repite) | OBL | ✅ Caja con mesa, mesada, heladera; las puertas malas vuelven acá |
+| Puertas que llevan siempre al mismo lugar | OBL | ✅ 3 puertas + `LoopPortal` en tramos oscuros |
+| Entrada con la puerta de salida | OBL | ✅ Detrás del pasillo del cuarto; se abre al estabilizarse |
+| Charcos en el piso, paredes húmedas | AMB | ✅ Charcos (planos oscuros) según la degradación · paredes húmedas ❓ etapa 2 |
 
 ### Props
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Barquito en las manos del protagonista** | OBL | Prisma pegado a la cámara |
-| Cama chica con dibujos, juguetes de nena | AMB | Cajas |
-| El mismo estante alto, ahora **vacío** | AMB | Reutilizado de M1 |
-| Bolso de viaje listo en la entrada | AMB | Caja |
-| Campera de pesca y botas | AMB | Cajas |
-| Taza de café en la cocina | AMB | Cilindro |
-| Ventana con la luna | AMB | Compartido |
-| Relojes parados | AMB | Compartido |
-| Canilla que gotea al ritmo del bip | AMB | Gota + audio |
-| Velador del cuarto de la hija (**única luz cálida**) | OBL | `OmniLight3D` cálida |
+| **Barquito en las manos del protagonista** | OBL | ✅ Prisma + mástil + vela en `HeldItemView` |
+| Cama chica con dibujos, juguetes de nena | AMB | ✅ Cajas |
+| El mismo estante alto, ahora **vacío** | AMB | ✅ Mismas medidas que en M1 |
+| Bolso de viaje listo en la entrada | AMB | ✅ Caja |
+| Campera de pesca y botas | AMB | ✅ Cajas |
+| Taza de café en la cocina | AMB | ✅ Cilindro |
+| Ventana con la luna | AMB | ✅ Cocina y cuarto (el del layout de M1) |
+| Relojes parados | AMB | ✅ Cocina y mesa de luz, con `Label3D` "3:00" (falta el reloj compartido, T2 de M1) |
+| Canilla que gotea al ritmo del bip | AMB | Cilindro con cartel; gota y audio ❓ etapa 2 |
+| Velador del cuarto de la hija (**única luz cálida**) | OBL | ✅ `OmniLight3D` cálida (y su luz bajo las puertas buenas) |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | Cápsula chica |
+| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | ✅ Cápsula chica + esfera semitransparente sobre la cara (`StaticBody3D` para apuntarla) |
 
 ### Luz
-- Cálida solo en el velador. El resto, luz fría azul verdosa (más fuerte que en M1 y M2).
+- Cálida solo en el velador (y en la franja bajo la puerta buena, que es "su" luz). El resto, luz fría azul verdosa (más fuerte que en M1 y M2, y sube con la degradación).
+- Rayos por las ventanas (`LightningController`, `config/lightning_m3.tres`).
 
 ### Audio
 | Sonido | Capa | Fuente |
 |---|---|---|
-| Voz de la hija (más lejana cuando el jugador se pierde) | Recuerdo | — |
-| *"Cuidámelo hasta que vuelva."* | Recuerdo | — |
-| Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) |
+| Voz de la hija (más lejana cuando el jugador se pierde) | Recuerdo | Subtítulos de etapa 0 (`closer_lines` / `farther_lines`) |
+| *"Cuidámelo hasta que vuelva."* | Recuerdo | Subtítulo de etapa 0 (lo dice el protagonista) |
+| Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) · ❓ etapa 2 |
 
 ### Cinemática (sin control) 📝
 ✅ Sale por la puerta de su casa → **pasaje en silencio** (CL-062: el mar negro y la luz, sin voces del hospital, como se había decidido para este corte) → empieza M4 en el camarote.
 
 ### Sistemas que pide
-- Laberinto que se repite: zonas que teletransportan sin que se note y que cambian según el progreso.
-- Objeto sostenido (el barquito en la mano) y "entregar" al interactuar con la hija.
-- Al entregar: la casa se estabiliza (se apagan los loops) y se habilita la salida.
+- ✅ Laberinto que se repite: `LoopPortal` (umbral que lleva al jugador conservando posición y orientación) + `StretchingHallway` (pasillo de largo variable).
+- ✅ Objeto sostenido (el barquito en la mano) y "entregar" al interactuar con la hija.
+- ✅ Al entregar: la casa se estabiliza y se habilita la salida.
+
+### Pendiente ❓
+- Textos de la hija y del protagonista: son **provisorios** (📝), salvo *"Cuidámelo hasta que vuelva."*. Confirmarlos con el equipo.
+- Voz real de la hija con `AudioStreamPlayer3D` (más fuerte/cerca según el tramo), goteo de la canilla al ritmo del bip.
+- Probar a mano el largo del pasillo, la velocidad a la que se aleja y la cantidad de tramos.
 
 ---
 
