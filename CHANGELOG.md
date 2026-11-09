@@ -41,6 +41,20 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-076 · Memoria 3: el cuarto de la hija tiene su propia copia de la habitación (no se podía salir) · 2026-11-09
+- **Rama / commits:** `claude/pasajes-cortos` · sin commitear
+- **Pedido por:** Facu: "está bugueado al tener que irte del nivel 3" (con una captura del pasillo de salida).
+- **Qué se hizo:** la M3 armaba el cuarto de la hija instanciando la habitación de la M1 (`scenes/memories/m1_habitacion/room_layout.tscn`). Ahora usa su propia copia, `scenes/memories/m3_casa/daughter_room_layout.tscn`, que es la habitación tal como estaba antes de CL-072: 4 × 4 m, con el pasillo donde empalma la entrada de la casa.
+- **Por qué (decisión de diseño):**
+  - Al agrandar la habitación de la M1 en CL-072 (7 × 6 m, la puerta y el pasillo corridos, el mar en la ventana), el cuarto de la hija cambió también sin que nadie lo tocara.
+  - Su pasillo dejó de coincidir con la entrada de la casa: después de entregar el barquito, el jugador quedaba trabado contra el pasillo nuevo y no podía llegar a la puerta.
+  - Cada memoria tiene que poder cambiar por dentro sin romper a las otras (regla del proyecto), así que no conviene que compartan la escena del cuarto.
+- **Alternativas descartadas:** mover la entrada de la M3 para que empalme con el pasillo nuevo. El cuarto de la hija igual habría heredado la habitación grande y el mar de la ventana de la M1, que son de esa memoria, y cualquier cambio futuro en la M1 lo volvería a romper.
+- **Problemas encontrados:** el problema era de CL-072: se probó la M1 y que la M3 cargara sin errores, pero no se recorrió la salida de la M3. Desde ahora, al tocar una escena se buscan las otras escenas que la instancian.
+- **Cómo se probó:** se recorrió la M3 hasta entregar el barquito y después, caminando, del cuarto de la hija a la entrada. Aparece "(E) Abrir", la puerta de casa se abre, se sale y la memoria se completa.
+- **Archivos y docs:** `scenes/memories/m3_casa/daughter_room_layout.tscn` (nueva), `scenes/memories/m3_casa/daughter_room.tscn`.
+- **Pendiente / ❓ ABIERTO:** ninguno.
+
 ### CL-075 · Pasajes entre memorias más cortos y voces que no se pisan ni se cortan · 2026-11-09
 - **Rama / commits:** `claude/pasajes-cortos` · sin commitear
 - **Pedido por:** Facu: "voy a necesitar que recortes la distancia a recorrer en las transiciones de memoria, hacelo más corto".

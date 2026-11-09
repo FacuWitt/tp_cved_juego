@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/memories/m1_habitacion/room_layout.tscn" id="1_layout"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/daughter_room_layout.tscn" id="1_layout"]
 [ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="2_grid"]
 [ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="3_exit"]
 
