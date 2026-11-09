@@ -12,6 +12,8 @@
 [ext_resource type="Script" uid="uid://bgkai17h72nrl" path="res://scripts/ui/reticle_dot.gd" id="10_e"]
 [ext_resource type="Script" uid="uid://bs67gb2yivlh5" path="res://scripts/ui/subtitle_display.gd" id="11_e"]
 [ext_resource type="Material" path="res://config/m1_cielo_ventana.tres" id="12_e"]
+[ext_resource type="Script" path="res://scripts/ui/inspect_view.gd" id="13_e"]
+[ext_resource type="Resource" path="res://config/inspect_settings.tres" id="14_e"]
 
 [sub_resource type="Sky" id="Sky_dream"]
 sky_material = ExtResource("12_e")
@@ -129,3 +131,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 script = ExtResource("11_e")
+
+[node name="InspectView" type="CanvasLayer" parent="."]
+script = ExtResource("13_e")
+settings = ExtResource("14_e")

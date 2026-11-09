@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/interaction/pickup_object.gd" id="1_e"]
-[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings_banquito.tres" id="2_e"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="3_e"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="4_e"]
 

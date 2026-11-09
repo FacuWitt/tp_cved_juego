@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvheyj1vuq6vi"
-path="res://.godot/imported/sirena_0.png-00c63bcc3dd48c756639aa3e66e15583.ctex"
+path.s3tc="res://.godot/imported/sirena_0.png-00c63bcc3dd48c756639aa3e66e15583.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "489ec4c9f678bc5541c1e3cf759a759f"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/m1_juguetes/sirena_0.png"
-dest_files=["res://.godot/imported/sirena_0.png-00c63bcc3dd48c756639aa3e66e15583.ctex"]
+dest_files=["res://.godot/imported/sirena_0.png-00c63bcc3dd48c756639aa3e66e15583.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

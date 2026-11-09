@@ -5,6 +5,9 @@ extends Resource
 
 ## Distancia a la que se sostiene el objeto frente a la cámara.
 @export_range(0.3, 3.0, 0.05, "suffix:m") var hold_distance: float = 1.5
+## Cuánto más abajo que la mirada se sostiene (0 = en el centro de la vista). Bajo, se lleva
+## "en las manos" y no tapa lo que hay adelante.
+@export_range(0.0, 1.5, 0.01, "suffix:m") var hold_drop: float = 0.0
 ## Qué tan fuerte "tira" el objeto hacia el punto de sostén. Más alto = más rígido y menos física.
 @export_range(1.0, 40.0, 0.5, "suffix:1/s") var hold_follow_speed: float = 12.0
 ## Velocidad máxima mientras se sostiene, para que no acelere sin control.

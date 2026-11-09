@@ -53,12 +53,15 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Estantería alta** (pared norte) ✅ CL-072 | OBL | Mueble bajo cerrado (0,9 m) y estantes abiertos a 1,35 y 1,8 m con libros; la **luna** está en el de 1,8 m |
 | **Banquito** ✅ CL-072 | OBL | `scenes/props/banquito.tscn`: `PickupObject` de 0,4 m que se arrastra con E y queda siempre parado (rotación bloqueada en X y Z). Arranca en la esquina sudoeste, al lado del ropero |
 | **Alfombra del mar** (casilleros del puzzle) ✅ CL-072 | OBL | Alfombra semicircular con un océano, una luna y los números 1 a 5 (`assets/textures/m1/alfombra_oceano.png`), en la esquina noroeste: la curva hacia la esquina y el lado recto hacia la pieza, para leer los números de frente. Un `PlacementSlot` sobre cada número (`only_puzzle_pieces`: el banquito no ocupa casilleros). Reemplaza a la repisa de los juguetes. La ilumina la luz de luna que entra por la ventana |
-| **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama, en la pared este (`Label3D`) |
+| ~~Papel de la abuela con la canción~~ | — | Se sacó en CL-074: la canción ahora está en el libro del cajón |
+| **Cómoda con cajón y el libro de cuentos** ✅ CL-074 | OBL | `scenes/props/comoda.tscn`, en la pared norte junto a la mesa de luz. El cajón de arriba se abre con E (`Drawer`); adentro está el libro (`InspectableItem`). Con "(E) Leer" se inspecciona estilo Silent Hill (`InspectView`): el fondo se desenfoca y se oscurece, el libro viene a la cara girando, se abre la tapa y aparece la página con la canción (`assets/textures/m1/libro_puzzle_poema.png`). Con E se cierra y vuelve al cajón |
 
 ### Objetos del acertijo (agarrables, `PuzzlePiece`) ✅
 **Modelos 3D ✅ CL-073:** los seis juguetes (y el barquito del estante) usan modelos generados por el equipo y reducidos a estilo PS1 (`assets/models/m1_juguetes/`, ver `docs/FIGURAS_M1.md`). Ya no tienen cartel.
 
-La abuela le pide que ponga los juguetes en la alfombra del mar, cada uno en su número, y le deja la canción de cuna en un papel para recordar el orden.
+La abuela le pide que ponga los juguetes en la alfombra del mar, cada uno en su número; la canción de cuna que dice el orden está en el libro de cuentos del cajón de la cómoda (CL-074; antes era un papel en la pared).
+
+**Agarre (CL-074):** los juguetes se sostienen cerca, a la altura del pecho (`config/pickup_settings_m1.tres`), y el banquito bajo, para que no tape la vista (`config/pickup_settings_banquito.tres`).
 
 **Dónde están (CL-072): repartidos por toda la pieza.** Luna: estantería alta (hay que subirse al banquito) · Red: arriba del baúl · Ola: en el alféizar de la ventana, frente al mar · Ancla: en el piso, al pie de la cama · Sirena: sobre la cama · Barco (distractor): en el piso, cerca del ropero.
 
@@ -114,6 +117,7 @@ Figuras (36 cm, escala de nene): están en `scenes/interaction/figures/` (ver `d
 - `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto y avisa con la señal `blocked`. ✅ Implementado (M1 ya no lo usa: se mantiene para M2).
 - Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
 - Objetos en alto ✅ (CL-072): `ReachSettings` en `PickupObject.reach`; `Player.can_reach()`; la mira muestra "No llego"; `PickupObject.reach_failed` → pista del nene en `Memory1Room`.
+- Interactuar con cosas fijas ✅ (CL-074): `Interactable` (cajón, libro), `Drawer`, `InspectableItem` e `InspectView` (inspección con fondo borroso, `InspectSettings`).
 - Casilleros que solo aceptan piezas ✅ (CL-072): `PlacementSlot.only_puzzle_pieces`, para que el banquito no ocupe un número de la alfombra.
 
 ---

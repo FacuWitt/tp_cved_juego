@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://p3nxoigeqsfo"
-path="res://.godot/imported/luna_0.png-5837893e752a6e30aa54c546c7b71243.ctex"
+path.s3tc="res://.godot/imported/luna_0.png-5837893e752a6e30aa54c546c7b71243.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "3b90d9db6add2f2484ac3c6b7b42c47b"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/m1_juguetes/luna_0.png"
-dest_files=["res://.godot/imported/luna_0.png-5837893e752a6e30aa54c546c7b71243.ctex"]
+dest_files=["res://.godot/imported/luna_0.png-5837893e752a6e30aa54c546c7b71243.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

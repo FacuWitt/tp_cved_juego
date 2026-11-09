@@ -66,6 +66,10 @@ func _toggle_pickup() -> void:
 		return
 
 	var collider: Object = _interaction_ray.get_collider()
+	if collider is Interactable:
+		if (collider as Interactable).enabled:
+			(collider as Interactable).interact(self)
+		return
 	if collider is PickupObject:
 		var object: PickupObject = collider as PickupObject
 		if not can_reach(object):
@@ -115,6 +119,24 @@ func get_interactable_under_crosshair() -> PickupObject:
 	if collider is PickupObject and not (collider as PickupObject).is_locked:
 		return collider as PickupObject
 	return null
+
+
+## Sin nada en la mano: el Interactable (cajón, libro...) al que apunta la mira, o null.
+func get_aimed_interactable() -> Interactable:
+	if _held_object != null or not _interaction_ray.is_colliding():
+		return null
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is Interactable and (collider as Interactable).enabled:
+		return collider as Interactable
+	return null
+
+
+## Deja al jugador quieto y sin control (inspeccionar un objeto, una cinemática) o se lo devuelve.
+func set_controls_enabled(enabled: bool) -> void:
+	set_physics_process(enabled)
+	set_process_unhandled_input(enabled)
+	if not enabled:
+		velocity = Vector3.ZERO
 
 
 ## true si el jugador alcanza ese objeto ahora (los puestos en alto piden estar subido a algo).

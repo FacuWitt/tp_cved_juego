@@ -5,7 +5,7 @@ extends Resource
 
 @export_group("Al empezar")
 ## Texto provisorio de la abuela pidiendo que ordene (en la etapa 2: su voz con eco, desde otra habitación).
-@export_multiline var intro_line: String = "VOZ (abuela, desde otra habitación): Antes de dormir poné los juguetes en la alfombra del mar, mi amor, cada uno en su número. Si no te acordás el orden, cantá la canción del papel."
+@export_multiline var intro_line: String = "VOZ (abuela, desde otra habitación): Antes de dormir poné los juguetes en la alfombra del mar, mi amor, cada uno en su número. Si no te acordás el orden, la canción está en el libro de cuentos."
 ## Pausa entre que empieza la memoria y habla la abuela.
 @export_range(0.0, 10.0, 0.1, "suffix:s") var intro_line_delay: float = 1.5
 ## Cuánto tiempo queda en pantalla el texto de la abuela.

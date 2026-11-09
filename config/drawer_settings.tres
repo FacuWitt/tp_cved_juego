@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="DrawerSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/drawer_settings.gd" id="1_d"]
+
+[resource]
+script = ExtResource("1_d")

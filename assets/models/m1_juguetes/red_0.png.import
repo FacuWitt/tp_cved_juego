@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cptgodod6wnmh"
-path="res://.godot/imported/red_0.png-bf8e548817dbabb58cf7c097baf49ed5.ctex"
+path.s3tc="res://.godot/imported/red_0.png-bf8e548817dbabb58cf7c097baf49ed5.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "8084a1d842a4f64bd29aeb7e7024ec1b"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/m1_juguetes/red_0.png"
-dest_files=["res://.godot/imported/red_0.png-bf8e548817dbabb58cf7c097baf49ed5.ctex"]
+dest_files=["res://.godot/imported/red_0.png-bf8e548817dbabb58cf7c097baf49ed5.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

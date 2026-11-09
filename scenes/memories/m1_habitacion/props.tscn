@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/props/banquito.tscn" id="1_ban"]
+[ext_resource type="PackedScene" path="res://scenes/props/comoda.tscn" id="10_com"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="2_mad"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="3_mos"]
 [ext_resource type="Material" path="res://assets/materials/m1/frazada.tres" id="4_fra"]
@@ -308,7 +309,7 @@ use_collision = true
 rotation_degrees = Vector3(0, -15, 0)
 
 [node name="Toy3" type="CSGBox3D" parent="Toys"]
-position = Vector3(2.1, 0.07, -2.3)
+position = Vector3(1.9, 0.07, -1.8)
 size = Vector3(0.14, 0.14, 0.14)
 material = SubResource("StandardMaterial3D_13_s")
 use_collision = true
@@ -373,36 +374,9 @@ font_size = 18
 billboard = 1
 outline_size = 6
 
-[node name="LullabyNote" type="Node3D" parent="."]
-
-[node name="Paper" type="CSGBox3D" parent="LullabyNote"]
-position = Vector3(3.49, 1.62, 0.5)
-size = Vector3(0.01, 0.95, 0.8)
-material = SubResource("StandardMaterial3D_9_s")
-
-[node name="PoemText" type="Label3D" parent="LullabyNote"]
-position = Vector3(3.475, 1.62, 0.5)
-rotation_degrees = Vector3(0, -90, 0)
-pixel_size = 0.00135
-text = "Para acordarte dónde va cada juguete,
-cantá la canción.  — la abuela
-
-Cuando el espejo del sol
-se asomó a mirar el mar,
-los hilos volvieron llenos
-y se negaron a soltar.
-Un muro de espuma blanca
-se levantó a saludar;
-y el hierro que nunca flota
-le enseñó a descansar.
-Y una pequeña sirena
-lo esperaba junto al mar;
-su amuleto de madera
-lo llamaba a regresar."
-font_size = 30
-modulate = Color(0.12, 0.12, 0.2, 1)
-outline_size = 0
-
 [node name="Banquito" parent="." instance=ExtResource("1_ban")]
 position = Vector3(-2.9, 0.21, 2.5)
 rotation_degrees = Vector3(0, 20, 0)
+
+[node name="Comoda" parent="." instance=ExtResource("10_com")]
+position = Vector3(2.6, 0, -2.765)

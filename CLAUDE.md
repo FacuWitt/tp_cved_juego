@@ -23,18 +23,21 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 ## Qué existe hoy
 | Clase | Archivo | Qué hace |
 |---|---|---|
-| `Player` | `scripts/player/player.gd` | CharacterBody3D en primera persona: salto variable, coyote time, agarra y suelta `PickupObject` con `interact` |
+| `Player` | `scripts/player/player.gd` | CharacterBody3D en primera persona: salto variable, coyote time, agarra y suelta `PickupObject` con `interact`, usa `Interactable`. `set_controls_enabled(false)` lo deja quieto y sin control |
 | `PlayerSettings` | `scripts/config/player_settings.gd` → `config/player_settings.tres` | Valores de feel del jugador |
 | `PickupObject` | `scripts/interaction/pickup_object.gd` | RigidBody3D que se agarra y se arrastra con física; se puede bloquear (`lock()`). Con `reach` (`ReachSettings`) solo se alcanza con los ojos cerca de su altura y apoyado en algo (la luna de la M1, con el banquito); si no llega emite `reach_failed` |
 | `ReachSettings` | `scripts/config/reach_settings.gd` → `config/reach_estante_alto.tres` | Hasta cuánto más abajo que un objeto en alto pueden estar los ojos para agarrarlo, y si hay que estar apoyado |
-| `PickupSettings` | `scripts/config/pickup_settings.gd` → `config/pickup_settings.tres` | Valores de feel del agarre |
+| `PickupSettings` | `scripts/config/pickup_settings.gd` → `config/pickup_settings.tres` | Valores de feel del agarre (distancia, `hold_drop` para sostener más abajo). La M1 usa `pickup_settings_m1.tres` y `pickup_settings_banquito.tres` |
 | `PlacementSlot` | `scripts/world/placement_slot.gd` | Area3D donde un `PickupObject` encastra. Emite `object_placed` y `object_removed`. Con `only_puzzle_pieces` ignora lo que no sea `PuzzlePiece` (el banquito) |
 | `KillZone` | `scripts/world/kill_zone.gd` | Devuelve al jugador a un punto de reaparición |
 | `Memory` | `scripts/memories/memory.gd` | Clase base de la raíz de cada memoria: se registra en `GameFlow`; `complete()` y `fail()` |
 | `MemoryExit` | `scripts/world/memory_exit.gd` | Salida de una memoria: emite `reached` y completa la `Memory` que la contiene (`enabled` la abre o cierra) |
 | `Memory1Room` | `scripts/memories/memory_1_room.gd` | Memoria 1 (habitación de la abuela, 7 × 6 m): juguetes repartidos que van a la alfombra del mar; la luna está en alto y se alcanza con el banquito (`scenes/props/banquito.tscn`); por la ventana se ve un mar de sueño (`dream_sea.gdshader`, `dream_night_sky.gdshader`). Une el puzzle con la puerta, el barquito y la salida |
 | `SequencePuzzle` | `scripts/puzzles/sequence_puzzle.gd` | Puzzle genérico de ordenar piezas (`PuzzlePiece`) en casilleros |
-| `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" / "No llego" |
+| `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" / "No llego" / el texto de un `Interactable`. Sin control del jugador no muestra nada |
+| `Interactable` | `scripts/interaction/interactable.gd` | StaticBody3D fijo con el que se interactúa con E (no se agarra); la mira muestra su `prompt_text`. Base de `Drawer` e `InspectableItem` |
+| `Drawer` + `DrawerSettings` | `scripts/world/drawer.gd` → `config/drawer_settings.tres` | Cajón que se abre y cierra con E; lo que cuelga de él sale con él. Escena: `scenes/props/comoda.tscn` (M1) |
+| `InspectableItem` + `InspectView` + `InspectSettings` | `scripts/interaction/inspectable_item.gd`, `scripts/ui/inspect_view.gd` → `config/inspect_settings.tres` | Inspección estilo Silent Hill: "(E) Leer", el fondo se desenfoca y oscurece (`inspect_blur.gdshader`), una copia del objeto viene a la cara en su propio SubViewport, se abre la tapa (`CoverHinge`) y aparece la página. Una `InspectView` por escena |
 | `DebugTools` | `scripts/debug/debug_tools.gd` | Teclas de prueba comunes a todas las memorias: 8 cámara libre, 9 luz de rayo fija, 0 saltar el evento principal, 7 flashback (se apagan con `debug_keys` de cada memoria) |
 | `LightningController` + `LightningSettings` | `scripts/world/lightning_controller.gd` | Rayos de tormenta (luz, ambiente, cielo, materiales con `flash`) |
 | `WakeUpIntro` + `WakeUpSettings` | `scripts/fx/wake_up_intro.gd` | Despertar por la tormenta al empezar una memoria (ojos, trueno, se levanta) |

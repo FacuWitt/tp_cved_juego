@@ -131,7 +131,7 @@ func _physics_process(_delta: float) -> void:
 		return
 
 	var forward: Vector3 = -_holder.global_transform.basis.z
-	var hold_point: Vector3 = _holder.global_position + forward * settings.hold_distance
+	var hold_point: Vector3 = _holder.global_position + forward * settings.hold_distance + Vector3.DOWN * settings.hold_drop
 	var offset: Vector3 = hold_point - global_position
 
 	if offset.length() > settings.auto_release_distance:

@@ -41,6 +41,53 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-074 · Memoria 1: agarre más cerca, cómoda con cajón y la canción en un libro que se inspecciona estilo Silent Hill · 2026-11-09
+- **Rama / commits:** `claude/m1-habitacion` · sin commitear
+- **Pedido por:** Facu:
+  - "hacé que los objetos que se agarren, se agarren más cerca del personaje, es tosco como está porque se chocan los muebles".
+  - "Agregá un mueble con cajón, dentro de él colocá un libro [...] El cuento estará dentro de este libro [...] cuando presiones LEER verás la imagen libro_puzzle_poema [...] La idea es hacer como el Silent Hill, que ves las notas e inspeccionás el objeto [...] el fondo mientras inspeccionás se ve borroso y un poquito más oscuro nomás. Agregá una animación si es posible, cuando lo agarrás y leés".
+  - Pasó la tapa del libro (`libro_puzzle.png`) y la página (`libro_puzzle_poema.png`).
+- **Qué se hizo:**
+  - **Agarre:** `PickupSettings` suma `hold_drop` (cuánto más abajo que la mirada se sostiene). En la M1 los juguetes se llevan a 0,65 m y un poco abajo, como en las manos (`pickup_settings_m1.tres`). El banquito se lleva a 0,8 m y bajo, para que no tape la vista (`pickup_settings_banquito.tres`). La M4 y el sandbox siguen con los valores de antes.
+  - **Cómoda** (`scenes/props/comoda.tscn`): en la pared norte, con tres cajones. El de arriba se abre y se cierra con E (`Drawer`, con un rebote chico al abrir) y adentro tiene el libro con la tapa de Facu.
+  - **Lectura:** apuntando al libro la mira dice "(E) Leer". Al leer:
+    1. El jugador queda quieto y el fondo se desenfoca y se oscurece un poco.
+    2. Una copia del libro viaja desde el cajón hasta la cara, girando como cuando se agarra algo.
+    3. Se abre la tapa y aparece la página con la canción, que crece un poco al aparecer.
+    4. Abajo dice "(E) Cerrar". Al cerrar se hace todo al revés y el libro vuelve al cajón.
+  - **Piezas reutilizables:** `Interactable` (cosas fijas que se usan con E y le dicen a la mira qué hacer), `Drawer`, `InspectableItem`, `InspectView` e `InspectSettings`, más el shader `inspect_blur.gdshader`. El jugador suma `set_controls_enabled()` y la mira se oculta mientras el jugador no tiene control.
+  - **La canción ya no está en la pared:** se sacó el papel. La abuela ahora dice "Si no te acordás el orden, la canción está en el libro de cuentos".
+- **Por qué (decisión de diseño):**
+  - Sostener el objeto cerca evita que choque con los muebles y se siente como tenerlo en la mano.
+  - Que la canción esté guardada en un cajón suma exploración: hay que buscar la pista, igual que los juguetes.
+  - La inspección del estilo Silent Hill frena el juego para leer, con el mundo desenfocado detrás, y deja la lectura en primer plano.
+  - La copia del libro se dibuja en su propio mundo (SubViewport) encima del fondo desenfocado: si se desenfocara la pantalla entera, el libro también saldría borroso.
+  - 📝 *Propuesta, a validar:* sacar el papel de la pared (si no, el libro no hace falta) y el texto nuevo de la abuela.
+- **Alternativas descartadas:**
+  - Desenfocar con el desenfoque de profundidad de la cámara: la cámara del jugador es compartida y habría que tocar `player.tscn`.
+  - Mover el libro real hasta la cara: habría quedado borroso con el fondo.
+  - Mostrar solo la imagen sin el libro en 3D: se perdía la animación de agarrarlo y abrirlo que pidió Facu.
+- **Problemas encontrados:**
+  - Desde la altura del nene, el frente del cajón abierto tapaba el libro y la mira tomaba el frente en vez del libro. Se bajó el frente que sale, se achicó su parte que choca y el libro se corrió hacia el fondo del cajón.
+  - Dentro del cajón el libro quedaba muy oscuro por la sombra de la cómoda: la tapa tiene un brillo muy suave.
+  - La cómoda mide 0,95 m, más que el salto del nene (0,82 m), para que no sirva de atajo a la luna sin el banquito.
+- **Cómo se probó:**
+  - Se abre el cajón ("(E) Abrir cajón" → "(E) Cerrar cajón") y se lee el libro: durante la lectura el jugador no tiene control y la mira no se ve.
+  - Al cerrar vuelve el control, el libro está en su lugar y se puede volver a leer.
+  - Capturas de cada paso: cajón, libro en el cajón, viaje, apertura, lectura y cierre.
+  - El acertijo y el banquito siguen funcionando.
+- **Archivos y docs:**
+  - Scripts nuevos: `scripts/interaction/interactable.gd` e `inspectable_item.gd`, `scripts/world/drawer.gd`, `scripts/ui/inspect_view.gd`, `scripts/config/drawer_settings.gd` e `inspect_settings.gd`.
+  - Scripts compartidos (con aviso): `scripts/player/player.gd`, `scripts/ui/interaction_prompt.gd`, `scripts/interaction/pickup_object.gd` y `scripts/config/pickup_settings.gd`.
+  - Shader y config: `assets/shaders/inspect_blur.gdshader`; `config/inspect_settings.tres`, `drawer_settings.tres`, `pickup_settings_m1.tres`, `pickup_settings_banquito.tres`.
+  - Escenas: `scenes/props/comoda.tscn`; `scenes/memories/m1_habitacion/props.tscn` y `m1_habitacion.tscn`; las seis figuras y el banquito.
+  - Texturas: `assets/textures/m1/libro_puzzle.png`, `libro_puzzle_poema.png`.
+  - Docs: `docs/ELEMENTOS_ESCENAS.md`, `CLAUDE.md`. SDD: párrafo en la etapa 11 y registro de decisiones.
+- **Pendiente / ❓ ABIERTO:**
+  - Sonidos de cajón y de hoja (`DrawerSettings` ya tiene dónde ponerlos).
+  - Si el papel de la pared vuelve.
+  - Si otras notas del juego (M3, M4) usan la misma inspección.
+
 ### CL-073 · Memoria 1: texturas PS1 en la habitación y modelos 3D en los seis juguetes · 2026-11-09
 - **Rama / commits:** `claude/m1-habitacion` · sin commitear
 - **Pedido por:** Facu armó las texturas con Gemini siguiendo una lista acordada (64 a 128 px, sin luz pintada, que se repitan) y los modelos de los juguetes y del barco a partir de imágenes de referencia: "deje algunas de todas las texturas en las carpetas, el barco de juguete lo deje en la carpeta de modelos 3d [...] en m1 habitacion deje los modelos de los otros juguetes".

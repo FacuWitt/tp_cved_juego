@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
-[ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+[ext_resource type="Resource" path="res://config/pickup_settings_m1.tres" id="2_e"]
 [ext_resource type="PackedScene" path="res://assets/models/m1_juguetes/barco_de_juguete.glb" id="3_model"]
 
 [sub_resource type="BoxShape3D" id="col_box"]
