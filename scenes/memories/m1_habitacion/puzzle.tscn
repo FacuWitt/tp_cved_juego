@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/interaction/figures/red.tscn" id="5_e"]
 [ext_resource type="PackedScene" path="res://scenes/interaction/figures/ola.tscn" id="6_e"]
 [ext_resource type="PackedScene" path="res://scenes/interaction/figures/ancla.tscn" id="7_e"]
-[ext_resource type="PackedScene" path="res://scenes/interaction/figures/faro.tscn" id="8_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/sirena.tscn" id="8_e"]
 [ext_resource type="PackedScene" path="res://scenes/interaction/figures/barco.tscn" id="9_e"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
@@ -243,7 +243,7 @@ position = Vector3(-1.2, 0.19, -0.55)
 [node name="Ancla" parent="Pieces" instance=ExtResource("7_e")]
 position = Vector3(-0.7, 0.19, 0.6)
 
-[node name="Faro" parent="Pieces" instance=ExtResource("8_e")]
+[node name="Sirena" parent="Pieces" instance=ExtResource("8_e")]
 position = Vector3(0.8, 0.19, -0.75)
 
 [node name="Barco" parent="Pieces" instance=ExtResource("9_e")]

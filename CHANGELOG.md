@@ -41,6 +41,19 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-071 · Canción de cuna nueva: la red se traba y una sirena con su amuleto de madera reemplaza al faro (también en el acertijo) · 2026-11-09
+- **Rama / commits:** `claude/cancion` · sin commitear
+- **Pedido por:** Facu: "lo de los hilos volvieron llenos está bien, pero tenemos que aclarar que está atascado de alguna forma. Otra cosa, lo del faro no tiene sentido, deberíamos hacer referencia a la niña como la sirena con el objeto, o simplemente el objeto". Eligió esta versión ("me encantó esta versión, usemos esta") y que el quinto juguete sea una sirena nueva.
+- **Qué se hizo:** el papel de la abuela dice ahora:
+  > Cuando el espejo del sol / se asomó a mirar el mar, / los hilos volvieron llenos / y se negaron a soltar. / Un muro de espuma blanca / se levantó a saludar; / y el hierro que nunca flota / le enseñó a descansar. / Y una pequeña sirena / lo esperaba junto al mar; / su amuleto de madera / lo llamaba a regresar.
+  
+  El quinto casillero del acertijo pasa de `faro` a `sirena` (`config/memory_1_puzzle.tres`), con una figura nueva de formas simples (`scenes/interaction/figures/sirena.tscn`: base, cola verde azulada, torso, pelo rojo y un barquito en la mano). El faro queda en el repo sin usar. El barquito sigue siendo el juguete favorito que no va en la repisa.
+- **Por qué (decisión de diseño):** que el segundo verso anticipe la red atascada que provoca el accidente en la M4, y que el cierre hable de la hija con el barquito (la que lo espera y se lo devuelve en el despertar) en lugar de un faro sin relación con la historia. La última estrofa conserva los octosílabos y la rima en "-ar" del resto.
+- **Alternativas descartadas:** "los hilos volvieron llenos, trabados, y fue a cortar"; "Solo el barco de madera lo puede hacer regresar"; poner el barquito en el quinto casillero (chocaba con que sea el juguete que el niño se lleva).
+- **Cómo se probó:** la M1 carga sin errores, las piezas son luna, red, ola, ancla, sirena y barco, el orden correcto termina en sirena y el papel muestra el texto nuevo; captura de la figura.
+- **Archivos y docs:** `scenes/memories/m1_habitacion/props.tscn`, `scenes/memories/m1_habitacion/puzzle.tscn`, `config/memory_1_puzzle.tres`, `scenes/interaction/figures/sirena.tscn`, `docs/ELEMENTOS_ESCENAS.md`, `docs/FIGURAS_M1.md`. SDD: párrafo en la Etapa 3, canción y tabla del acertijo en los anexos, fila nueva en Simbología y en el Registro de decisiones.
+- **Pendiente / ❓ ABIERTO:** modelo 3D de la sirena; la voz de la abuela si se graba la canción. Pendiente aparte (pedido de Facu): corregir en el SDD el mapa de empatía del equipo (nota en "Qué dice y hace", esfuerzos como frustraciones, M4 y pasajes) y unirlo con el mapa del jugador modelo.
+
 ### CL-070 · Memoria 3: el pasillo se cierra a tus espaldas, el sonido se ahoga, la imagen deja estela y el agua sube · 2026-10-31
 - **Rama / commits:** `claude/m3-sueno` · sin commitear
 - **Pedido por:** el integrante a cargo de la M3, al preguntar "¿qué más le podemos agregar para que dé la apariencia de que es un sueño?". De ocho propuestas eligió cuatro: "la 2, 3, 4 y 8".

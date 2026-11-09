@@ -57,10 +57,10 @@ La abuela le pide que ordene los juguetes y le deja la canción de cuna en un pa
 | Orden | Verso | Objeto |
 |---|---|---|
 | 1 | Cuando el espejo del sol se asomó a mirar el mar | Luna |
-| 2 | los hilos volvieron llenos | Red |
+| 2 | los hilos volvieron llenos y se negaron a soltar | Red |
 | 3 | Un muro de espuma blanca se levantó a saludar | Ola |
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
-| 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
+| 5 | Y una pequeña sirena lo esperaba junto al mar; su amuleto de madera lo llamaba a regresar | Sirena (CL-071) |
 
 **Distractor:** barco. Total: **6 objetos** agarrables (5 correctos + 1 distractor). El pescador aparece nombrado en el poema pero no es un juguete: es el propio protagonista (decisión CL-012; marea y pescador fueron sacados del puzzle).
 
@@ -190,7 +190,7 @@ El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar ✅
 
-**Escena:** `scenes/memories/m3_casa/m3_casa.tscn` ✅ greybox jugable (CL-065). Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno. **La más degradada:** pasillos que se estiran, cocina que se repite.
+**Escena:** `scenes/memories/m3_casa/m3_casa.tscn` ✅ greybox jugable (CL-071). Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno. **La más degradada:** pasillos que se estiran, cocina que se repite.
 
 Subescenas: `house_layout.tscn` (cocina, pasillito oscuro del fondo, pasillo que se estira, rellano con tres puertas y sus umbrales) y `daughter_room.tscn` (el `room_layout.tscn` de M1 + cuarto de la hija + entrada de la casa). Raíz: `Memory3House` (`scripts/memories/memory_3_house.gd`). Valores y textos: `config/memory_3_settings.tres`.
 
@@ -383,7 +383,7 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro), 1 distractor (barco) y el papel de la abuela con la canción. Total: 6 objetos agarrables. La `ola` y la `luna` usan modelos 3D externos.
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, sirena; la sirena reemplaza al faro en CL-071), 1 distractor (barco) y el papel de la abuela con la canción. Total: 6 objetos agarrables. La `ola` y la `luna` usan modelos 3D externos.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
 3. ~~**M1:** ¿cómo sale el jugador?~~ ✅ Al resolver se abre la puerta y se sale sin condiciones (sin `ItemGate`). El barquito del estante se enciende pero queda fuera de alcance.
 4. ~~M1: quién felicita~~ ✅ la mamá.

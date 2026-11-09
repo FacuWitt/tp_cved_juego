@@ -17,7 +17,8 @@ con primitivas de Godot; la `ola` y la `luna` usan modelos externos (.glb).
 | `red` | `figures/red.tscn` | Red de pesca: aro, mango e hilos cruzados |
 | `ola` | `figures/ola.tscn` | Ola tallada (modelo `wave_sculpture.glb`) |
 | `ancla` | `figures/ancla.tscn` | Ancla con anillo, travesaño y uñas |
-| `faro` | `figures/faro.tscn` | Faro con franjas rojas y linterna |
+| `faro` | `figures/faro.tscn` | Faro con franjas rojas y linterna (ya no se usa en el acertijo desde CL-071) |
+| `sirena` | `figures/sirena.tscn` | Sirena de madera con cola verde azulada, pelo rojo y un barquito en la mano |
 | `barco` | `figures/barco.tscn` | Barquito de juguete sobre base (distractor) |
 
 > Antes había 8 figuras con dos distractores más (`marea` y `pescador`); se sacaron
