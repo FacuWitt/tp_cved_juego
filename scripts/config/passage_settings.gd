@@ -6,7 +6,7 @@ extends Resource
 
 @export_group("Camino")
 ## A qué distancia está la luz del final, adelante del jugador.
-@export_range(10.0, 300.0, 1.0, "suffix:m") var path_length: float = 70.0
+@export_range(10.0, 300.0, 1.0, "suffix:m") var path_length: float = 36.0
 ## Qué tan cerca de la luz hay que llegar para terminar el pasaje.
 @export_range(0.5, 10.0, 0.1, "suffix:m") var end_radius: float = 2.5
 ## Hasta dónde se puede alejar de la línea del camino para cada lado (paredes invisibles).
@@ -30,8 +30,11 @@ extends Resource
 @export_range(0.05, 3.0, 0.05, "suffix:Hz") var goal_pulse_rate: float = 0.35
 
 @export_group("Voces")
-## Las voces del hospital, en el orden en que suenan.
+## Las voces del hospital, en el orden en que suenan. Nunca se pisan: si el camino llega a la
+## siguiente mientras otra suena, espera; y el pasaje no termina hasta que la última se terminó.
 @export var voices: Array[PassageVoice] = []
+## Silencio mínimo entre una voz y la siguiente.
+@export_range(0.0, 3.0, 0.05, "suffix:s") var voice_gap: float = 0.3
 
 @export_group("Luz de las voces")
 ## Las luces del presente: grandes y tenues, arriba del jugador a los costados. Se encienden solo
@@ -88,8 +91,8 @@ extends Resource
 ## que está abajo. Baja solo; se puede mirar alrededor.
 @export var descend: bool = false
 ## Cuánto baja y cuánto tarda en llegar a la luz.
-@export_range(5.0, 300.0, 1.0, "suffix:m") var descend_depth: float = 55.0
-@export_range(5.0, 180.0, 1.0, "suffix:s") var descend_time: float = 40.0
+@export_range(5.0, 300.0, 1.0, "suffix:m") var descend_depth: float = 32.0
+@export_range(5.0, 180.0, 1.0, "suffix:s") var descend_time: float = 22.0
 ## A qué profundidad empieza (los ojos), justo debajo de la superficie.
 @export_range(0.2, 10.0, 0.1, "suffix:m") var descend_start_depth: float = 1.5
 ## Hacia dónde mira al empezar (negativo = hacia abajo, hacia la luz).

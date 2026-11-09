@@ -41,6 +41,29 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-075 · Pasajes entre memorias más cortos y voces que no se pisan ni se cortan · 2026-11-09
+- **Rama / commits:** `claude/pasajes-cortos` · sin commitear
+- **Pedido por:** Facu: "voy a necesitar que recortes la distancia a recorrer en las transiciones de memoria, hacelo más corto".
+- **Qué se hizo:**
+  - **Pasajes caminando:** el camino pasa de 70 m a 36 m (`PassageSettings.path_length`). A la velocidad del pasaje (2,4 m/s, sin correr) se tarda unos 15 s en vez de unos 29 s.
+  - **Descenso final:** pasa de 40 s a 22 s y de 55 m a 32 m de profundidad, con una velocidad de bajada parecida.
+  - **Voces:** en los pasajes M1 → M2 y M2 → M3 se reacomodaron las cuatro voces para el camino nuevo, y sus subtítulos duran de 3,2 a 3,6 s.
+  - **Resguardo en `Passage`:**
+    - Las voces suenan una por vez, con un silencio mínimo entre ellas (`voice_gap`, 0,3 s).
+    - Al llegar a la luz, el pasaje espera a que termine la voz que está sonando.
+- **Por qué (decisión de diseño):** el pasaje es un respiro entre memorias, no un desafío; a 29 s se volvía largo y cortaba el ritmo del prototipo de 3 a 5 minutos. Con el camino más corto las voces quedaban encimadas, por eso se agregó la espera.
+- **Alternativas descartadas:**
+  - Hacer caminar más rápido al jugador en los pasajes: el paso lento es parte del clima.
+  - Sacar voces: se pierde la progresión de las voces de tapadas a claras.
+- **Cómo se probó:** se recorrieron los cuatro pasajes caminando.
+  - M1 → M2: 14,6 s, voces a los 0,3, 3,9, 7,4 y 10,9 s.
+  - M2 → M3: 15,0 s.
+  - M3 → M4: 14,0 s, sin voces.
+  - M4 → despertar: 22,5 s, voces a los 2,6, 8,4, 13,7 y 18,7 s.
+  - Todas las voces suenan completas.
+- **Archivos y docs:** `scripts/config/passage_settings.gd`, `scripts/memories/passage.gd`, `config/passage_m1_m2.tres`, `config/passage_m2_m3.tres`, `docs/ELEMENTOS_ESCENAS.md`. SDD: una línea en la etapa de los pasajes y una fila en el registro de decisiones.
+- **Pendiente / ❓ ABIERTO:** cuando las voces tengan audio real, ajustar la duración de cada subtítulo a la del audio.
+
 ### CL-074 · Memoria 1: agarre más cerca, cómoda con cajón y la canción en un libro que se inspecciona estilo Silent Hill · 2026-11-09
 - **Rama / commits:** `claude/m1-habitacion` · sin commitear
 - **Pedido por:** Facu:

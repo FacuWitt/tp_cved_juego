@@ -6,26 +6,26 @@
 [sub_resource type="Resource" id="v1"]
 script = ExtResource("2_pv")
 text = "VOZ (doctor, tapada, como a través de una pared): ...está estable. Por ahora..."
-at_progress = 0.12
-duration = 4.0
+at_progress = 0.02
+duration = 3.2
 
 [sub_resource type="Resource" id="v2"]
 script = ExtResource("2_pv")
 text = "VOZ (mamá, tapada): ...hijo, ¿me escuchás?..."
-at_progress = 0.35
-duration = 4.0
+at_progress = 0.25
+duration = 3.2
 
 [sub_resource type="Resource" id="v3"]
 script = ExtResource("2_pv")
 text = "VOZ (doctor, tapada): ...dicen que oyen. Háblenle..."
-at_progress = 0.58
-duration = 4.0
+at_progress = 0.48
+duration = 3.2
 
 [sub_resource type="Resource" id="v4"]
 script = ExtResource("2_pv")
 text = "VOZ (mamá, tapada): ...acá estoy. No me voy a ir..."
-at_progress = 0.8
-duration = 4.5
+at_progress = 0.71
+duration = 3.4
 
 [resource]
 script = ExtResource("1_ps")

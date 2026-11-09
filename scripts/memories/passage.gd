@@ -39,6 +39,7 @@ var _goal_glow: MeshInstance3D
 var _goal_material: ShaderMaterial
 var _goal_quad: QuadMesh
 var _voice_root: Node3D
+var _voice_busy_until: float = 0.0
 var _voice_lights: Array[OmniLight3D] = []
 var _voice_materials: Array[ShaderMaterial] = []
 ## 0 a 1: el brillo de las luces de las voces (sigue al volumen con subida y caída).
@@ -88,14 +89,18 @@ func _process(delta: float) -> void:
 	else:
 		var walked: float = (player.global_position - _start).dot(_forward)
 		progress = clampf(walked / settings.path_length, 0.0, 1.0)
-	while voices_heard < settings.voices.size() and progress >= settings.voices[voices_heard].at_progress:
+	# Una voz por vez: si el camino ya pasó la siguiente, espera a que termine la que suena.
+	if voices_heard < settings.voices.size() and progress >= settings.voices[voices_heard].at_progress \
+			and _time >= _voice_busy_until:
 		_play_voice(voices_heard)
 	_update_lights(delta)
 	if not is_completed:
 		var to_goal: Vector3 = _goal.global_position - player.global_position
 		if not settings.descend:
 			to_goal.y = 0.0
-		if (settings.descend and progress >= 1.0) or (not settings.descend and to_goal.length() <= settings.end_radius):
+		var arrived: bool = (settings.descend and progress >= 1.0) or (not settings.descend and to_goal.length() <= settings.end_radius)
+		# No se corta una voz a la mitad: al llegar, espera a que termine la que está sonando.
+		if arrived and _time >= _voice_busy_until:
 			goal_reached.emit()
 			complete()
 
@@ -105,6 +110,7 @@ func _play_voice(index: int) -> void:
 	var voice: PassageVoice = settings.voices[index]
 	voices_heard = index + 1
 	if voice != null:
+		_voice_busy_until = _time + voice.duration + settings.voice_gap
 		subtitles.show_line(voice.text, voice.duration)
 		if voice.stream != null and voice_player != null:
 			voice_player.stream = voice.stream
