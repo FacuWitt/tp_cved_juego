@@ -8,11 +8,16 @@ signal dropped
 signal locked
 signal unlocked
 signal settled
+## Se intentó agarrarlo pero el jugador no llega (está muy abajo o saltando; ver reach).
+signal reach_failed
 
 @export var settings: PickupSettings
 ## Nodo visual (normalmente el MeshInstance3D) al que se le aplica el aplastamiento sutil
 ## al aterrizar en un PlacementSlot. Opcional: si queda sin asignar, se salta ese efecto.
 @export var visual: Node3D
+## Opcional: para objetos puestos en alto. Si está asignado, solo se agarra con los ojos cerca de
+## su altura (p. ej. subido a un banquito). Vacío = se agarra desde cualquier altura.
+@export var reach: ReachSettings
 
 var is_held: bool = false
 ## Si está en true, pickup() no hace nada: quedó fijo para siempre (p. ej. una soga ya atada).
@@ -28,6 +33,16 @@ var _settle_tween: Tween = null
 
 func _ready() -> void:
 	assert(settings != null, "PickupObject: falta asignar un PickupSettings en el Inspector")
+
+
+## true si quien lo quiere agarrar lo alcanza: sin reach siempre; con reach, si los ojos (holder)
+## están lo bastante alto y el cuerpo (holder_body) está apoyado. No mira is_locked.
+func can_be_picked_by(holder: Node3D, holder_body: PhysicsBody3D = null) -> bool:
+	if reach == null or holder == null:
+		return true
+	if reach.must_stand and holder_body is CharacterBody3D and not (holder_body as CharacterBody3D).is_on_floor():
+		return false
+	return global_position.y - holder.global_position.y <= reach.max_eye_drop
 
 
 ## Lo toma un holder (normalmente la cámara del jugador) y empieza a seguirlo.

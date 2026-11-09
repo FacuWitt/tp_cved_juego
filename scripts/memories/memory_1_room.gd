@@ -1,7 +1,8 @@
 class_name Memory1Room
 extends Memory
-## Memoria 1: la habitación de la abuela (etapa 0, greybox).
-## La abuela le pide que ordene los juguetes; la canción de cuna dice el orden.
+## Memoria 1: la habitación de la abuela.
+## La abuela le pide que ponga los juguetes en la alfombra del mar; la canción de cuna dice el orden.
+## Los juguetes están repartidos por la pieza y la luna está en alto: hay que subirse al banquito.
 ## Conecta el puzzle con sus consecuencias: barquito que se enciende, voz, puerta y salida.
 ## Hereda de Memory: la salida (MemoryExit) la completa y GameFlow carga la siguiente.
 ## No sabe cuál es la memoria siguiente.
@@ -14,6 +15,7 @@ extends Memory
 @export var subtitles: SubtitleDisplay
 
 var _door_closed_rotation: float = 0.0
+var _last_reach_hint: float = -INF
 
 
 func _ready() -> void:
@@ -27,6 +29,8 @@ func _ready() -> void:
 	puzzle.solved.connect(_on_puzzle_solved)
 	puzzle.failed.connect(_on_puzzle_failed)
 	exit.reached.connect(_on_exit_reached)
+	for node: Node in find_children("*", "PickupObject", true, false):
+		(node as PickupObject).reach_failed.connect(_on_reach_failed)
 	_play_intro()
 
 
@@ -35,6 +39,15 @@ func _play_intro() -> void:
 	# Si el jugador ya resolvió algo en la pausa, no pisar ese texto.
 	if not puzzle.is_solved and subtitles.text == "":
 		subtitles.show_line(settings.intro_line, settings.intro_line_duration)
+
+
+## Quiso agarrar algo que está en alto (la luna del estante): la pista es subirse al banquito.
+func _on_reach_failed() -> void:
+	var now: float = Time.get_ticks_msec() / 1000.0
+	if now - _last_reach_hint < settings.reach_hint_cooldown:
+		return
+	_last_reach_hint = now
+	subtitles.show_line(settings.reach_hint_line, settings.reach_hint_duration)
 
 
 func _on_puzzle_solved() -> void:

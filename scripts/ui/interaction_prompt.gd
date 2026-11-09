@@ -7,6 +7,8 @@ extends VBoxContainer
 @export var settings: InteractionPromptSettings
 @export var pickup_label_text: String = "(E) Agarrar"
 @export var place_label_text: String = "(E) Colocar"
+## Se muestra (sin resaltar la mira) al apuntar a algo puesto en alto que todavía no se alcanza.
+@export var out_of_reach_label_text: String = "No llego"
 
 @onready var _dot: ReticleDot = $Dot
 @onready var _label: Label = $Label
@@ -42,12 +44,15 @@ func _process(_delta: float) -> void:
 	# porque la mira apunta a uno libre, o porque el objeto ya está encima de uno.
 	var can_place: bool = held != null and (aimed_slot != null or _is_over_free_slot(held))
 
-	_set_highlighted(can_place or (held == null and target != null))
+	var reachable: bool = target != null and player.can_reach(target)
+	_set_highlighted(can_place or (held == null and reachable))
 
 	if can_place:
 		_label.text = place_label_text
-	elif held == null and target != null:
+	elif held == null and reachable:
 		_label.text = pickup_label_text
+	elif held == null and target != null:
+		_label.text = out_of_reach_label_text
 	else:
 		_label.text = ""
 

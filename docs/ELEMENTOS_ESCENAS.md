@@ -30,29 +30,35 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 
 ## 1. Memoria 1 — La habitación de la abuela ✅
 
-**Escena:** `scenes/memories/m1_habitacion/`. Noche, tormenta afuera, cálido. Degradación mínima.
+**Escena:** `scenes/memories/m1_habitacion/`. Noche, cálido adentro; afuera de la ventana, un mar de sueño (CL-072). Degradación mínima.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| Habitación de madera, chica (📝 4 × 4 m, techo de 2,6 m) | OBL | Caja de `CSGBox3D` |
-| Puerta de salida | OBL | Caja; se abre o desaparece al resolver ❓ |
-| Ventana (luna + tormenta afuera) | AMB | Hueco con plano azul oscuro y esfera de luna |
+| Habitación de madera, grande para un nene (✅ 7 × 6 m, techo de 3 m, CL-072; antes 4 × 4 m) | OBL | Caja de `CSGBox3D` |
+| Puerta de salida (pared sur) | OBL | Caja que se abre al resolver; da a un pasillo con la salida |
+| **Ventana al mar de sueño** (pared oeste, 1,8 × 1,4 m) ✅ CL-072 | AMB | Afuera hay mar abierto, quieto y oscuro, con el nivel del agua **más alto que el piso de la pieza** (justo debajo del alféizar), y un cielo despejado con estrellas y una luna creciente enorme, como la de la alfombra. Shaders `dream_sea.gdshader` y `dream_night_sky.gdshader`; valores en `config/m1_mar_ventana.tres` y `config/m1_cielo_ventana.tres`. Vidrio invisible (no se sale por la ventana). ❓ ABIERTO: la regla de "siempre hay tormenta" en la M1 (hoy el mar está calmo; el oleaje se puede subir desde el material) |
 | Mancha de humedad en el techo + goteo | AMB | Decal o plano oscuro + gota |
 
 ### Muebles y props
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
 | Cama con frazada tejida | AMB | Caja |
-| **Estante alto con el barquito** (fuera de alcance: **no** es agarrable) | OBL | Caja a 📝 2,1 m + prisma |
+| **Estante alto con el barquito** (fuera de alcance: **no** es agarrable) | OBL | Repisa a 2,45 m en la pared este, arriba del papel de la canción |
 | Mesa de luz con **despertador parado** | AMB | Caja + reloj compartido |
 | Lámpara de mesa (fuente de luz cálida principal) | OBL | Cilindro + `OmniLight3D` |
-| Juguetes de chico | AMB | 3–4 cubos chicos |
-| **Repisa de los juguetes** (casilleros del puzzle) | OBL | ✅ Repisa con 5 `PlacementSlot` numerados |
-| **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama (`Label3D`) |
+| Juguetes de chico | AMB | 3–4 cubos chicos repartidos por el piso |
+| **Estantería alta** (pared norte) ✅ CL-072 | OBL | Mueble bajo cerrado (0,9 m) y estantes abiertos a 1,35 y 1,8 m con libros; la **luna** está en el de 1,8 m |
+| **Banquito** ✅ CL-072 | OBL | `scenes/props/banquito.tscn`: `PickupObject` de 0,4 m que se arrastra con E y queda siempre parado (rotación bloqueada en X y Z). Arranca en la esquina sudoeste, al lado del ropero |
+| **Alfombra del mar** (casilleros del puzzle) ✅ CL-072 | OBL | Alfombra semicircular con un océano, una luna y los números 1 a 5 (`assets/textures/m1/alfombra_oceano.png`), en la esquina noroeste: la curva hacia la esquina y el lado recto hacia la pieza, para leer los números de frente. Un `PlacementSlot` sobre cada número (`only_puzzle_pieces`: el banquito no ocupa casilleros). Reemplaza a la repisa de los juguetes. La ilumina la luz de luna que entra por la ventana |
+| **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama, en la pared este (`Label3D`) |
 
 ### Objetos del acertijo (agarrables, `PuzzlePiece`) ✅
-La abuela le pide que ordene los juguetes y le deja la canción de cuna en un papel para recordar el orden.
+La abuela le pide que ponga los juguetes en la alfombra del mar, cada uno en su número, y le deja la canción de cuna en un papel para recordar el orden.
+
+**Dónde están (CL-072): repartidos por toda la pieza.** Luna: estantería alta (hay que subirse al banquito) · Red: arriba del baúl · Ola: en el alféizar de la ventana, frente al mar · Ancla: en el piso, al pie de la cama · Sirena: sobre la cama · Barco (distractor): en el piso, cerca del ropero.
+
+**La luna en alto ✅ CL-072:** desde el piso la mira dice *"No llego"* y, si aprieta E, el nene piensa *"No llego... ¿y si me subo a algo?"* (`Memory1Settings`). Subido al banquito la alcanza; saltando no (hay que estar apoyado). Regla en `ReachSettings` (`config/reach_estante_alto.tres`): cuánto más abajo que el objeto pueden estar los ojos (0,65 m).
 
 | Orden | Verso | Objeto |
 |---|---|---|
@@ -74,7 +80,7 @@ Figuras (36 cm, escala de nene): están en `scenes/interaction/figures/` (ver `d
 
 ### Luz
 - **Cálida:** la lámpara de mesa (dominante).
-- **Fría:** relámpagos y el reflejo de la ventana.
+- **Fría:** la luna. Una luz direccional (la luna que se ve en el cielo, con sombras de la ventana) y un foco que entra por la ventana sobre la alfombra (CL-072). Relámpagos ❓ (ver la ventana).
 - **Al resolver:** el barquito se enciende (luz cálida propia).
 
 ### Audio
@@ -103,6 +109,8 @@ Figuras (36 cm, escala de nene): están en `scenes/interaction/figures/` (ver `d
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
 - `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto y avisa con la señal `blocked`. ✅ Implementado (M1 ya no lo usa: se mantiene para M2).
 - Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
+- Objetos en alto ✅ (CL-072): `ReachSettings` en `PickupObject.reach`; `Player.can_reach()`; la mira muestra "No llego"; `PickupObject.reach_failed` → pista del nene en `Memory1Room`.
+- Casilleros que solo aceptan piezas ✅ (CL-072): `PlacementSlot.only_puzzle_pieces`, para que el banquito no ocupe un número de la alfombra.
 
 ---
 

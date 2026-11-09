@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ReachSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/reach_settings.gd" id="1_reach"]
+
+[resource]
+script = ExtResource("1_reach")
+max_eye_drop = 0.65
+must_stand = true

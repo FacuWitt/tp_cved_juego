@@ -41,6 +41,53 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-072 · Memoria 1: pieza más grande, juguetes repartidos, alfombra del mar como acertijo, banquito para alcanzar la luna y mar de sueño por la ventana · 2026-11-09
+- **Rama / commits:** `claude/m1-habitacion` · sin commitear
+- **Pedido por:** Facu: "Pieza más grande. Objetos distribuidos en toda la pieza. Tener que mover un pequeño banquito para alcanzar un objeto encima de una repisa. Los objetos se disponen en una alfombra [...] La alfombra es básicamente un océano, con números 1 2 3 4 5. [...] Coloca esa alfombra a una esquina del nivel, la idea es disponer los objetos en los números según el orden. Además, agrega el océano que se vea por la ventana, recordemos que tenemos que generar la sensación de que estamos en un sueño". Pasó la imagen de la alfombra.
+- **Qué se hizo:**
+  - **Pieza:** pasa de 4 × 4 m con techo de 2,6 m a **7 × 6 m con techo de 3 m**. La puerta queda en la pared sur, con el pasillo y la salida atrás; la ventana, más grande (1,8 × 1,4 m), en la pared oeste.
+  - **Juguetes repartidos:** luna en la estantería alta (pared norte), red arriba del baúl, ola en el alféizar frente al mar, ancla al pie de la cama, sirena sobre la cama y el barco (distractor) en el piso.
+  - **Alfombra del mar:** la imagen de Facu (`assets/textures/m1/alfombra_oceano.png`) va en la **esquina noroeste**, con la curva hacia la esquina y el lado recto hacia la pieza, así los números se leen de frente. Hay un casillero (`PlacementSlot`) exactamente sobre cada número y reemplaza a la repisa de los juguetes. La abuela ahora dice que los juguetes van "en la alfombra del mar, cada uno en su número".
+  - **Banquito:** `scenes/props/banquito.tscn`, un `PickupObject` que se arrastra con E y queda siempre parado (rotación bloqueada en X y Z).
+  - **Regla de alcance:** `ReachSettings` (`config/reach_estante_alto.tres`) en `PickupObject.reach`. Desde el piso la mira dice "No llego" y, si aprieta E, aparece la pista del nene: "No llego... ¿y si me subo a algo?" (con espera entre avisos). Subido al banquito llega; saltando, no.
+  - **Casilleros solo para piezas:** `PlacementSlot.only_puzzle_pieces`, para que el banquito no ocupe un número.
+  - **Mar de sueño por la ventana:** mar abierto, quieto y oscuro, que respira con un oleaje largo, con el nivel del agua **más alto que el piso de la pieza** (justo debajo del alféizar). Arriba, cielo despejado con estrellas y una luna creciente enorme, como la de la alfombra, que deja un camino de luz en el agua. Shaders `dream_sea.gdshader` y `dream_night_sky.gdshader`, con sus valores en `config/m1_mar_ventana.tres` y `config/m1_cielo_ventana.tres`. La luz de la luna entra por la ventana con la sombra del marco y un foco cae sobre la alfombra. El vidrio es invisible y tiene colisión, para no salir al mar.
+- **Por qué (decisión de diseño):**
+  - La pieza más grande y los juguetes repartidos convierten el orden en **exploración**: hay que recorrer la pieza para encontrarlos.
+  - El banquito suma un paso de **agencia física**, mover algo para llegar, con la escala de nene que ya existía: cámara a 1,1 m, salto de 0,8 m.
+  - La alfombra con el océano y los números une el acertijo con el mar de la historia.
+  - El mar por la ventana, más alto que el piso y en calma bajo una luna desmedida, es la primera señal de que es un sueño: no podría estar ahí. También anticipa el agua sin amenazar, porque la M1 es el punto de máxima calma.
+  - Partes que son 📝 *propuesta de Claude, a validar*: que la luna sea el objeto en alto ("el espejo del sol" en el cielo), el nivel del agua sobre el piso, el mar calmo, la pista del banquito y la luz de luna sobre la alfombra.
+- **Alternativas descartadas:**
+  - Alfombra con el lado recto contra la pared: los números quedaban al revés para quien la mira desde la pieza.
+  - Ocultar la luna detrás del borde del estante para que no se alcance: desde abajo no se veía y no aparecía la pista. Se adelantó en el estante y la altura la controla `ReachSettings`.
+  - Bajar el alcance del rayo de interacción del jugador: tocaba `player.tscn`, que es compartido, y no impedía alcanzarla saltando.
+  - Usar el shader de océano de la M4: está pensado para la tormenta y el barco.
+  - Usar la luna direccional para iluminar la alfombra: obligaba a sacarla de la vista de la ventana; se sumó un foco aparte.
+- **Problemas encontrados:**
+  - Desde el piso, el borde del estante tapaba la luna: la mira no la detectaba y no aparecía la pista. Se adelantó la luna en el estante.
+  - Al principio el foco de la alfombra pegaba en la pared al lado de la ventana; se lo alineó para que pase por el hueco.
+  - La entrada de la canción se había numerado CL-065, pero ese número ya lo usaba la M3 que entró a develop: se renumeró a CL-071 antes de subirla.
+- **Cómo se probó:**
+  - Desde el piso no se alcanza la luna y aparece la pista; saltando tampoco se alcanza.
+  - Caminando y saltando, el nene sube al banquito: queda estable con los ojos a 1,5 m y desde ahí agarra la luna.
+  - El banquito llevado con E llega parado al estante, y apoyado sobre un número no ocupa el casillero.
+  - En la alfombra, el orden equivocado falla; al sacar el barco y poner luna, red, ola, ancla y sirena se resuelve y se abre la puerta.
+  - La M2, la M3 y la M4 cargan sin errores con los scripts compartidos tocados.
+  - Capturas desde el inicio, la alfombra, la ventana, la estantería, la cama y la planta.
+- **Archivos y docs:**
+  - Escenas: `scenes/memories/m1_habitacion/room_layout.tscn`, `props.tscn`, `puzzle.tscn` y `m1_habitacion.tscn`; `scenes/props/banquito.tscn`.
+  - Scripts: `scripts/config/reach_settings.gd` y `memory_1_settings.gd`, `scripts/memories/memory_1_room.gd`.
+  - Scripts compartidos (con aviso): `scripts/interaction/pickup_object.gd`, `scripts/player/player.gd`, `scripts/ui/interaction_prompt.gd` y `scripts/world/placement_slot.gd`. Lo que ya existía se comporta igual.
+  - Shaders y config: `assets/shaders/dream_sea.gdshader`, `dream_night_sky.gdshader`; `config/m1_mar_ventana.tres`, `m1_cielo_ventana.tres`, `reach_estante_alto.tres`.
+  - Docs: `docs/ELEMENTOS_ESCENAS.md` y `CLAUDE.md`. SDD: párrafo nuevo en la etapa de la Memoria 1 y en el Registro de decisiones.
+  - Se sacó un corrimiento chico (1,7 cm) que tenía la habitación en la escena raíz, para que el piso quede en 0.
+- **Pendiente / ❓ ABIERTO:**
+  - Si la regla de "siempre hay tormenta" vale para la M1. Hoy el mar está calmo; se puede subir el oleaje desde `m1_mar_ventana.tres` y sumar rayos.
+  - Modelos y texturas finales de los muebles: siguen en greybox con carteles.
+  - Sonido del mar por la ventana.
+  - Tareas temporales T2 y T3 de la M1: reloj a las 3:00 y agua bajo la puerta.
+
 ### CL-071 · Canción de cuna nueva: la red se traba y una sirena con su amuleto de madera reemplaza al faro (también en el acertijo) · 2026-11-09
 - **Rama / commits:** `claude/cancion` · sin commitear
 - **Pedido por:** Facu: "lo de los hilos volvieron llenos está bien, pero tenemos que aclarar que está atascado de alguna forma. Otra cosa, lo del faro no tiene sentido, deberíamos hacer referencia a la niña como la sirena con el objeto, o simplemente el objeto". Eligió esta versión ("me encantó esta versión, usemos esta") y que el quinto juguete sea una sirena nueva.

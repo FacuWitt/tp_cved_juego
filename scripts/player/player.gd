@@ -67,7 +67,11 @@ func _toggle_pickup() -> void:
 
 	var collider: Object = _interaction_ray.get_collider()
 	if collider is PickupObject:
-		_held_object = collider as PickupObject
+		var object: PickupObject = collider as PickupObject
+		if not can_reach(object):
+			object.reach_failed.emit()
+			return
+		_held_object = object
 		_held_object.pickup(_camera, self)
 
 
@@ -98,7 +102,7 @@ func get_aimed_slot() -> PlacementSlot:
 	if hit.is_empty():
 		return null
 	var slot: PlacementSlot = hit.collider as PlacementSlot
-	if slot == null or not slot.is_free():
+	if slot == null or not slot.is_free() or not slot.accepts(_held_object):
 		return null
 	return slot
 
@@ -111,6 +115,11 @@ func get_interactable_under_crosshair() -> PickupObject:
 	if collider is PickupObject and not (collider as PickupObject).is_locked:
 		return collider as PickupObject
 	return null
+
+
+## true si el jugador alcanza ese objeto ahora (los puestos en alto piden estar subido a algo).
+func can_reach(object: PickupObject) -> bool:
+	return object != null and object.can_be_picked_by(_camera, self)
 
 
 func _apply_camera_settings() -> void:

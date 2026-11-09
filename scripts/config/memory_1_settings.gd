@@ -5,11 +5,18 @@ extends Resource
 
 @export_group("Al empezar")
 ## Texto provisorio de la abuela pidiendo que ordene (en la etapa 2: su voz con eco, desde otra habitación).
-@export_multiline var intro_line: String = "VOZ (abuela, desde otra habitación): Antes de dormir ordená los juguetes, mi amor. Si no te acordás dónde va cada uno, cantá la canción del papel."
+@export_multiline var intro_line: String = "VOZ (abuela, desde otra habitación): Antes de dormir poné los juguetes en la alfombra del mar, mi amor, cada uno en su número. Si no te acordás el orden, cantá la canción del papel."
 ## Pausa entre que empieza la memoria y habla la abuela.
 @export_range(0.0, 10.0, 0.1, "suffix:s") var intro_line_delay: float = 1.5
 ## Cuánto tiempo queda en pantalla el texto de la abuela.
 @export_range(0.5, 15.0, 0.1, "suffix:s") var intro_line_duration: float = 7.0
+
+@export_group("Objetos en alto")
+## Lo que piensa el nene cuando quiere agarrar algo que está muy alto (la luna del estante).
+@export_multiline var reach_hint_line: String = "No llego... ¿y si me subo a algo?"
+@export_range(0.5, 10.0, 0.1, "suffix:s") var reach_hint_duration: float = 3.0
+## Tiempo mínimo entre un aviso y el siguiente si sigue intentando.
+@export_range(0.0, 30.0, 0.5, "suffix:s") var reach_hint_cooldown: float = 6.0
 
 @export_group("Al resolver el puzzle")
 ## Texto provisorio de la voz que felicita (en la etapa 2 se reemplaza por audio con eco).
