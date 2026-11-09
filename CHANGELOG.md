@@ -41,6 +41,41 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-073 · Memoria 1: texturas PS1 en la habitación y modelos 3D en los seis juguetes · 2026-11-09
+- **Rama / commits:** `claude/m1-habitacion` · sin commitear
+- **Pedido por:** Facu armó las texturas con Gemini siguiendo una lista acordada (64 a 128 px, sin luz pintada, que se repitan) y los modelos de los juguetes y del barco a partir de imágenes de referencia: "deje algunas de todas las texturas en las carpetas, el barco de juguete lo deje en la carpeta de modelos 3d [...] en m1 habitacion deje los modelos de los otros juguetes".
+- **Qué se hizo:**
+  - **Texturas** en `assets/textures/m1/`: piso de tablas, empapelado, techo de yeso, madera de muebles y madera oscura, frazada, almohadón tejido, frente del ropero, puerta, lomos de libros y el reloj marcando las 3:00.
+  - **Materiales** en `assets/materials/m1/`. Las superficies grandes usan proyección triplanar en coordenadas de mundo, así no se estiran sobre las cajas; todo con filtro de píxeles (*nearest*) para el aspecto PS1.
+  - **Piezas con imagen propia:** el frente del ropero, las dos caras de la puerta, la esfera del reloj y las dos hileras de libros (reemplazan a las cajitas) van como planos con su textura.
+  - **Juguetes:** los seis (luna, red, ola, ancla, sirena y barco) usan los modelos nuevos (`assets/models/m1_juguetes/`). El mismo pesquero rojo es el barquito del estante que se enciende al resolver. La ola se giró para que se vea la curva de perfil.
+  - **Herramienta nueva `tools/ps1ify`:** reduce cada modelo de 45.000–81.000 triángulos y tres texturas de 2048 a unos 2.000 triángulos y una sola textura de color de 256 px. Los seis juguetes pasaron de unos 40 MB a 1,3 MB.
+  - **Carteles:** se sacaron los de los muebles con textura, los de los juguetes, el de la puerta y el de la alfombra. Quedan los de lo que sigue en greybox: dibujos, mancha y salida.
+- **Por qué (decisión de diseño):**
+  - Estilo "PS1 con esteroides": texturas chicas y crudas con la luz moderna que ya tenía la escena, como se definió desde el comienzo.
+  - Los modelos generados venían con un detalle y un peso pensados para otra cosa: sin reducirlos, cada juguete pesaba más que toda la escena y desentonaba con las texturas de 64 px.
+  - Los carteles servían en el greybox; con los objetos reales se reconocen solos y rompen la inmersión.
+- **Alternativas descartadas:**
+  - Usar los modelos tal como venían: pesados y con un detalle que no es PS1.
+  - Mapear las texturas con las coordenadas propias de cada caja: se estiraban distinto en cada mueble.
+  - Dejar los carteles de los juguetes: el acertijo ya los nombra en la canción. ❓ Si en la prueba con jugadores cuesta reconocer alguno (por ejemplo la red), se puede volver a mostrar el nombre al apuntarle.
+- **Problemas encontrados:**
+  - Las dos maderas mostraban la costura al repetirse: se rehicieron para que se repitan sin corte.
+  - Al probar la orientación de la sirena se la giró de más; una prueba de cada modelo en las cuatro direcciones mostró que ya miraba de frente.
+- **Cómo se probó:**
+  - El acertijo se resuelve igual y la puerta se abre.
+  - El banquito sigue funcionando con la luna (la caja de colisión de la luna cambió de tamaño).
+  - Capturas desde el inicio, la cama, la estantería, la ventana, el banquito y la alfombra con los cinco juguetes puestos.
+- **Archivos y docs:**
+  - Arte: `assets/textures/m1/`, `assets/materials/m1/`, `assets/models/m1_juguetes/`.
+  - Escenas: `scenes/interaction/figures/*.tscn`; `scenes/memories/m1_habitacion/room_layout.tscn`, `props.tscn` y `puzzle.tscn`; `scenes/props/banquito.tscn`.
+  - Herramienta: `tools/ps1ify/` (con `.gdignore` para que Godot no la importe; `node_modules/` en `.gitignore`).
+  - Docs: `docs/FIGURAS_M1.md`, `docs/ELEMENTOS_ESCENAS.md`. SDD: párrafo en la etapa 11 y herramientas de IA.
+- **Pendiente / ❓ ABIERTO:**
+  - Texturas que faltan: baúl, dibujos, mancha de humedad, pared del pasillo y banquito (hoy usa las maderas).
+  - Los juguetes sueltos del piso siguen siendo cubos.
+  - Qué herramienta se usó para pasar las imágenes a 3D (para la tabla de IA del SDD).
+
 ### CL-072 · Memoria 1: pieza más grande, juguetes repartidos, alfombra del mar como acertijo, banquito para alcanzar la luna y mar de sueño por la ventana · 2026-11-09
 - **Rama / commits:** `claude/m1-habitacion` · sin commitear
 - **Pedido por:** Facu: "Pieza más grande. Objetos distribuidos en toda la pieza. Tener que mover un pequeño banquito para alcanzar un objeto encima de una repisa. Los objetos se disponen en una alfombra [...] La alfombra es básicamente un océano, con números 1 2 3 4 5. [...] Coloca esa alfombra a una esquina del nivel, la idea es disponer los objetos en los números según el orden. Además, agrega el océano que se vea por la ventana, recordemos que tenemos que generar la sensación de que estamos en un sueño". Pasó la imagen de la alfombra.

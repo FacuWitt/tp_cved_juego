@@ -2,65 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/puzzles/puzzle_piece.gd" id="1_e"]
 [ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
-
-[sub_resource type="StandardMaterial3D" id="mat_madera_oscura"]
-albedo_color = Color(0.46, 0.31, 0.19, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="mat_madera_clara"]
-albedo_color = Color(0.87, 0.72, 0.51, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="mat_cola"]
-albedo_color = Color(0.2, 0.47, 0.46, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="mat_pelo"]
-albedo_color = Color(0.63, 0.17, 0.15, 1)
-roughness = 0.7
+[ext_resource type="PackedScene" path="res://assets/models/m1_juguetes/sirena.glb" id="3_model"]
 
 [sub_resource type="BoxShape3D" id="col_box"]
-size = Vector3(0.36, 0.36, 0.36)
-
-[sub_resource type="CylinderMesh" id="m_base"]
-top_radius = 0.085
-bottom_radius = 0.085
-height = 0.02
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="m_cola"]
-top_radius = 0.038
-bottom_radius = 0.022
-height = 0.13
-radial_segments = 16
-
-[sub_resource type="PrismMesh" id="m_aleta"]
-size = Vector3(0.11, 0.05, 0.02)
-
-[sub_resource type="CapsuleMesh" id="m_torso"]
-radius = 0.036
-height = 0.12
-
-[sub_resource type="SphereMesh" id="m_cabeza"]
-radius = 0.036
-height = 0.072
-radial_segments = 16
-rings = 8
-
-[sub_resource type="SphereMesh" id="m_pelo"]
-radius = 0.04
-height = 0.06
-radial_segments = 16
-rings = 8
-
-[sub_resource type="BoxMesh" id="m_barco"]
-size = Vector3(0.07, 0.022, 0.03)
-
-[sub_resource type="CylinderMesh" id="m_mastil"]
-top_radius = 0.003
-bottom_radius = 0.003
-height = 0.05
-radial_segments = 8
+size = Vector3(0.244, 0.360, 0.188)
 
 [node name="Sirena" type="RigidBody3D" node_paths=PackedStringArray("visual")]
 script = ExtResource("1_e")
@@ -71,53 +16,9 @@ visual = NodePath("Visual")
 
 [node name="Visual" type="Node3D" parent="."]
 
-[node name="Base" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0, -0.17, 0)
-mesh = SubResource("m_base")
-material_override = SubResource("mat_madera_oscura")
-
-[node name="Aleta" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, -0.135, 0)
-mesh = SubResource("m_aleta")
-material_override = SubResource("mat_cola")
-
-[node name="Cola" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 0.995, -0.1, 0, 0.1, 0.995, 0, -0.06, 0)
-mesh = SubResource("m_cola")
-material_override = SubResource("mat_cola")
-
-[node name="Torso" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0, 0.04, 0)
-mesh = SubResource("m_torso")
-material_override = SubResource("mat_madera_clara")
-
-[node name="Cabeza" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0, 0.13, 0)
-mesh = SubResource("m_cabeza")
-material_override = SubResource("mat_madera_clara")
-
-[node name="Pelo" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0, 0.14, 0.012)
-mesh = SubResource("m_pelo")
-material_override = SubResource("mat_pelo")
-
-[node name="Barquito" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0.04, 0.05, -0.045)
-mesh = SubResource("m_barco")
-material_override = SubResource("mat_madera_oscura")
-
-[node name="Mastil" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0.04, 0.085, -0.045)
-mesh = SubResource("m_mastil")
-material_override = SubResource("mat_madera_oscura")
+[node name="Modelo" parent="Visual" instance=ExtResource("3_model")]
+position = Vector3(0.0002, 0.0003, 0.0003)
+scale = Vector3(0.18976, 0.18976, 0.18976)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("col_box")
-
-[node name="Label3D" type="Label3D" parent="."]
-position = Vector3(0, 0.32, 0)
-pixel_size = 0.003
-text = "SIRENA"
-font_size = 28
-billboard = 1
-outline_size = 6

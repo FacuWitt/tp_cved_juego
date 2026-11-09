@@ -2,18 +2,12 @@
 
 [ext_resource type="Script" path="res://scripts/interaction/pickup_object.gd" id="1_e"]
 [ext_resource type="Resource" path="res://config/pickup_settings.tres" id="2_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="3_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="4_e"]
 
 [sub_resource type="PhysicsMaterial" id="phys_banquito"]
 friction = 1.0
 rough = true
-
-[sub_resource type="StandardMaterial3D" id="mat_asiento"]
-albedo_color = Color(0.62, 0.3, 0.22, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="mat_patas"]
-albedo_color = Color(0.45, 0.3, 0.19, 1)
-roughness = 0.85
 
 [sub_resource type="BoxMesh" id="m_asiento"]
 size = Vector3(0.55, 0.06, 0.55)
@@ -45,45 +39,37 @@ position = Vector3(0, -0.2, 0)
 [node name="Asiento" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 0.37, 0)
 mesh = SubResource("m_asiento")
-material_override = SubResource("mat_asiento")
+material_override = ExtResource("3_e")
 
 [node name="Pata1" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0.22, 0.17, 0.22)
 mesh = SubResource("m_pata")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="Pata2" type="MeshInstance3D" parent="Visual"]
 position = Vector3(-0.22, 0.17, 0.22)
 mesh = SubResource("m_pata")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="Pata3" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0.22, 0.17, -0.22)
 mesh = SubResource("m_pata")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="Pata4" type="MeshInstance3D" parent="Visual"]
 position = Vector3(-0.22, 0.17, -0.22)
 mesh = SubResource("m_pata")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="TravesanoA" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 0.1, 0.22)
 mesh = SubResource("m_travesano")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="TravesanoB" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 0.1, -0.22)
 mesh = SubResource("m_travesano")
-material_override = SubResource("mat_patas")
+material_override = ExtResource("4_e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("col_banquito")
-
-[node name="Label3D" type="Label3D" parent="."]
-position = Vector3(0, 0.38, 0)
-pixel_size = 0.0025
-text = "BANQUITO"
-font_size = 22
-billboard = 1
-outline_size = 6

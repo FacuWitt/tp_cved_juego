@@ -1,6 +1,14 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/props/banquito.tscn" id="1_ban"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="2_mad"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="3_mos"]
+[ext_resource type="Material" path="res://assets/materials/m1/frazada.tres" id="4_fra"]
+[ext_resource type="Material" path="res://assets/materials/m1/almohadon.tres" id="5_alm"]
+[ext_resource type="Material" path="res://assets/materials/m1/ropero_frente.tres" id="6_rop"]
+[ext_resource type="Material" path="res://assets/materials/m1/reloj.tres" id="7_rel"]
+[ext_resource type="Material" path="res://assets/materials/m1/lomos_libros.tres" id="8_lib"]
+[ext_resource type="PackedScene" path="res://assets/models/m1_juguetes/barco_de_juguete.glb" id="9_bar"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1_s"]
 albedo_color = Color(0.36, 0.23, 0.14, 1)
@@ -75,6 +83,15 @@ top_radius = 0.09
 bottom_radius = 0.15
 height = 0.18
 
+[sub_resource type="QuadMesh" id="QuadMesh_libros"]
+size = Vector2(0.84, 0.42)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ropero"]
+size = Vector2(1.0, 1.8)
+
+[sub_resource type="QuadMesh" id="QuadMesh_reloj"]
+size = Vector2(0.11, 0.11)
+
 [sub_resource type="BoxMesh" id="BoxMesh_18_s"]
 size = Vector3(0.14, 0.12, 0.06)
 
@@ -104,47 +121,39 @@ roughness = 0.9
 [node name="Frame" type="CSGBox3D" parent="Bed"]
 position = Vector3(2.97, 0.175, 0.5)
 size = Vector3(0.95, 0.35, 2.0)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
 [node name="Mattress" type="CSGBox3D" parent="Bed"]
 position = Vector3(2.97, 0.41, 0.5)
 size = Vector3(0.9, 0.12, 1.95)
-material = SubResource("StandardMaterial3D_3_s")
+material = ExtResource("4_fra")
 use_collision = true
 
 [node name="Blanket" type="CSGBox3D" parent="Bed"]
 position = Vector3(2.97, 0.49, 0.85)
 size = Vector3(0.92, 0.04, 1.3)
-material = SubResource("StandardMaterial3D_4_s")
+material = ExtResource("4_fra")
 use_collision = true
 
 [node name="Pillow" type="CSGBox3D" parent="Bed"]
 position = Vector3(2.97, 0.52, -0.27)
 size = Vector3(0.6, 0.1, 0.3)
-material = SubResource("StandardMaterial3D_3_s")
+material = ExtResource("5_alm")
 use_collision = true
 
 [node name="Headboard" type="CSGBox3D" parent="Bed"]
 position = Vector3(2.97, 0.62, -0.52)
 size = Vector3(0.95, 0.55, 0.06)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("3_mos")
 use_collision = true
-
-[node name="Label3D" type="Label3D" parent="Bed"]
-position = Vector3(2.35, 0.8, 1.3)
-pixel_size = 0.0025
-text = "CAMA (frazada tejida)"
-font_size = 20
-billboard = 1
-outline_size = 6
 
 [node name="Nightstand" type="Node3D" parent="."]
 
 [node name="Table" type="CSGBox3D" parent="Nightstand"]
 position = Vector3(3.2, 0.25, -1.0)
 size = Vector3(0.4, 0.5, 0.4)
-material = SubResource("StandardMaterial3D_2_s")
+material = ExtResource("2_mad")
 use_collision = true
 
 [node name="LampBase" type="MeshInstance3D" parent="Nightstand"]
@@ -170,133 +179,92 @@ rotation_degrees = Vector3(0, -70, 0)
 mesh = SubResource("BoxMesh_18_s")
 material_override = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label3D" type="Label3D" parent="Nightstand"]
-position = Vector3(3.1, 1.15, -0.85)
-pixel_size = 0.0025
-text = "MESA DE LUZ: lámpara + RELOJ PARADO (tic-tac)"
-font_size = 18
-billboard = 1
-outline_size = 6
+[node name="ClockFace" type="MeshInstance3D" parent="Nightstand/AlarmClock"]
+position = Vector3(0, 0, 0.031)
+mesh = SubResource("QuadMesh_reloj")
+material_override = ExtResource("7_rel")
 
 [node name="Bookcase" type="Node3D" parent="."]
 
 [node name="Cabinet" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.9, 0.45, -2.8)
 size = Vector3(1.2, 0.9, 0.4)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
 [node name="SideL" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.32, 1.61, -2.8)
 size = Vector3(0.04, 1.42, 0.4)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
 [node name="SideR" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(1.48, 1.61, -2.8)
 size = Vector3(0.04, 1.42, 0.4)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
 [node name="Back" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.9, 1.61, -2.985)
 size = Vector3(1.2, 1.42, 0.03)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="Shelf1" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.9, 1.35, -2.8)
 size = Vector3(1.12, 0.04, 0.4)
-material = SubResource("StandardMaterial3D_2_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="Shelf2" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.9, 1.8, -2.8)
 size = Vector3(1.12, 0.04, 0.4)
-material = SubResource("StandardMaterial3D_2_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="Top" type="CSGBox3D" parent="Bookcase"]
 position = Vector3(0.9, 2.3, -2.8)
 size = Vector3(1.2, 0.04, 0.42)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
-[node name="Book1" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.45, 1.06, -2.82)
-size = Vector3(0.07, 0.3, 0.24)
-material = SubResource("StandardMaterial3D_11_s")
+[node name="BooksLow" type="MeshInstance3D" parent="Bookcase"]
+position = Vector3(0.9, 1.115, -2.74)
+mesh = SubResource("QuadMesh_libros")
+material_override = ExtResource("8_lib")
 
-[node name="Book2" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.53, 1.04, -2.82)
-size = Vector3(0.06, 0.26, 0.24)
-material = SubResource("StandardMaterial3D_22_s")
-
-[node name="Book3" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.61, 1.07, -2.82)
-size = Vector3(0.07, 0.32, 0.24)
-material = SubResource("StandardMaterial3D_23_s")
-
-[node name="Book4" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(1.3, 1.5, -2.82)
-size = Vector3(0.07, 0.26, 0.22)
-material = SubResource("StandardMaterial3D_12_s")
-
-[node name="Book5" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(1.38, 1.51, -2.82)
-size = Vector3(0.06, 0.28, 0.22)
-material = SubResource("StandardMaterial3D_11_s")
-
-[node name="Book6" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.5, 1.48, -2.82)
-size = Vector3(0.26, 0.22, 0.07)
-material = SubResource("StandardMaterial3D_23_s")
-
-[node name="Label3D" type="Label3D" parent="Bookcase"]
-position = Vector3(0.9, 2.55, -2.6)
-pixel_size = 0.0025
-text = "ESTANTE ALTO"
-font_size = 20
-billboard = 1
-outline_size = 6
+[node name="BooksMid" type="MeshInstance3D" parent="Bookcase"]
+position = Vector3(0.95, 1.565, -2.74)
+mesh = SubResource("QuadMesh_libros")
+material_override = ExtResource("8_lib")
 
 [node name="HighShelf" type="Node3D" parent="."]
 
 [node name="Board" type="CSGBox3D" parent="HighShelf"]
 position = Vector3(3.35, 2.45, 0.5)
 size = Vector3(0.3, 0.05, 1.0)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="BracketL" type="CSGBox3D" parent="HighShelf"]
 position = Vector3(3.37, 2.34, 0.1)
 size = Vector3(0.25, 0.18, 0.04)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="BracketR" type="CSGBox3D" parent="HighShelf"]
 position = Vector3(3.37, 2.34, 0.9)
 size = Vector3(0.25, 0.18, 0.04)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="Barquito" type="Node3D" parent="."]
 position = Vector3(3.35, 2.515, 0.5)
 rotation_degrees = Vector3(0, 90, 0)
 
-[node name="Hull" type="MeshInstance3D" parent="Barquito"]
-mesh = SubResource("BoxMesh_19_s")
-material_override = SubResource("StandardMaterial3D_14_s")
-
-[node name="Mast" type="MeshInstance3D" parent="Barquito"]
-position = Vector3(0, 0.15, 0)
-mesh = SubResource("CylinderMesh_20_s")
-material_override = SubResource("StandardMaterial3D_14_s")
-
-[node name="Sail" type="MeshInstance3D" parent="Barquito"]
-position = Vector3(0.06, 0.17, 0)
-mesh = SubResource("PrismMesh_21_s")
-material_override = SubResource("StandardMaterial3D_15_s")
+[node name="Modelo" parent="Barquito" instance=ExtResource("9_bar")]
+position = Vector3(0, 0.07, 0)
+scale = Vector3(0.179, 0.179, 0.179)
 
 [node name="BoatLight" type="OmniLight3D" parent="Barquito"]
 position = Vector3(0, 0.2, -0.3)
@@ -304,36 +272,25 @@ light_color = Color(1, 0.78, 0.45, 1)
 light_energy = 0.0
 omni_range = 3.5
 
-[node name="Label3D" type="Label3D" parent="Barquito"]
-position = Vector3(0, 0.42, -0.05)
-pixel_size = 0.0025
-text = "BARQUITO (fuera de alcance)"
-font_size = 20
-billboard = 1
-outline_size = 6
-
 [node name="Wardrobe" type="Node3D" parent="."]
 
 [node name="Body" type="CSGBox3D" parent="Wardrobe"]
 position = Vector3(-1.4, 0.9, 2.7)
 size = Vector3(1.0, 1.8, 0.55)
-material = SubResource("StandardMaterial3D_1_s")
+material = ExtResource("2_mad")
 use_collision = true
 
-[node name="Label3D" type="Label3D" parent="Wardrobe"]
-position = Vector3(-1.4, 1.95, 2.35)
-pixel_size = 0.0025
-text = "ROPERO"
-font_size = 20
-billboard = 1
-outline_size = 6
+[node name="Front" type="MeshInstance3D" parent="Wardrobe"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.4, 0.9, 2.423)
+mesh = SubResource("QuadMesh_ropero")
+material_override = ExtResource("6_rop")
 
 [node name="Toys" type="Node3D" parent="."]
 
 [node name="ToyChest" type="CSGBox3D" parent="Toys"]
 position = Vector3(-0.1, 0.2, 2.72)
 size = Vector3(0.6, 0.4, 0.45)
-material = SubResource("StandardMaterial3D_2_s")
+material = ExtResource("3_mos")
 use_collision = true
 
 [node name="Toy1" type="CSGBox3D" parent="Toys"]
@@ -355,14 +312,6 @@ position = Vector3(2.1, 0.07, -2.3)
 size = Vector3(0.14, 0.14, 0.14)
 material = SubResource("StandardMaterial3D_13_s")
 use_collision = true
-
-[node name="Label3D" type="Label3D" parent="Toys"]
-position = Vector3(-0.1, 0.95, 2.6)
-pixel_size = 0.0025
-text = "BAÚL Y JUGUETES"
-font_size = 20
-billboard = 1
-outline_size = 6
 
 [node name="Drawings" type="Node3D" parent="."]
 

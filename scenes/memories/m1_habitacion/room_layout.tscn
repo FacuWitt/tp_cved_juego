@@ -3,6 +3,12 @@
 [ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_e"]
 [ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="2_e"]
 [ext_resource type="Material" path="res://config/m1_mar_ventana.tres" id="3_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/piso.tres" id="4_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/pared.tres" id="5_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/techo.tres" id="6_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="7_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/puerta.tres" id="8_e"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="9_e"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3_s"]
 render_priority = 0
@@ -47,6 +53,9 @@ roughness = 0.8
 [sub_resource type="BoxMesh" id="BoxMesh_10_s"]
 size = Vector3(0.98, 2.08, 0.06)
 
+[sub_resource type="QuadMesh" id="QuadMesh_door"]
+size = Vector2(0.98, 2.08)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_11_s"]
 size = Vector3(0.98, 2.08, 0.06)
 
@@ -66,25 +75,25 @@ subdivide_depth = 239
 [node name="Floor" type="CSGBox3D" parent="."]
 position = Vector3(0, -0.1, 0)
 size = Vector3(7.4, 0.2, 6.4)
-material = SubResource("ShaderMaterial_3_s")
+material = ExtResource("4_e")
 use_collision = true
 
 [node name="Ceiling" type="CSGBox3D" parent="."]
 position = Vector3(0, 3.1, 0)
 size = Vector3(7.4, 0.2, 6.4)
-material = SubResource("ShaderMaterial_5_s")
+material = ExtResource("6_e")
 use_collision = true
 
 [node name="NorthWall" type="CSGBox3D" parent="."]
 position = Vector3(0, 1.5, -3.1)
 size = Vector3(7.4, 3.0, 0.2)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("5_e")
 use_collision = true
 
 [node name="EastWall" type="CSGBox3D" parent="."]
 position = Vector3(3.6, 1.5, 0)
 size = Vector3(0.2, 3.0, 6.4)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("5_e")
 use_collision = true
 
 [node name="WestWall" type="CSGCombiner3D" parent="."]
@@ -93,7 +102,7 @@ use_collision = true
 
 [node name="Wall" type="CSGBox3D" parent="WestWall"]
 size = Vector3(0.2, 3.0, 6.4)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("5_e")
 
 [node name="WindowHole" type="CSGBox3D" parent="WestWall"]
 operation = 2
@@ -105,7 +114,7 @@ size = Vector3(0.4, 1.4, 1.8)
 [node name="Sill" type="CSGBox3D" parent="Window"]
 position = Vector3(-3.42, 0.725, 0.8)
 size = Vector3(0.36, 0.05, 1.95)
-material = SubResource("StandardMaterial3D_7_s")
+material = ExtResource("7_e")
 use_collision = true
 
 [node name="MullionV" type="CSGBox3D" parent="Window"]
@@ -135,7 +144,7 @@ use_collision = true
 
 [node name="Wall" type="CSGBox3D" parent="SouthWall"]
 size = Vector3(7.4, 3.0, 0.2)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("5_e")
 
 [node name="DoorHole" type="CSGBox3D" parent="SouthWall"]
 operation = 2
@@ -151,18 +160,20 @@ sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorHinge/Door"]
 mesh = SubResource("BoxMesh_10_s")
-material_override = SubResource("StandardMaterial3D_7_s")
+material_override = ExtResource("9_e")
+
+[node name="FaceRoom" type="MeshInstance3D" parent="DoorHinge/Door"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
+mesh = SubResource("QuadMesh_door")
+material_override = ExtResource("8_e")
+
+[node name="FaceHall" type="MeshInstance3D" parent="DoorHinge/Door"]
+position = Vector3(0, 0, 0.032)
+mesh = SubResource("QuadMesh_door")
+material_override = ExtResource("8_e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHinge/Door"]
 shape = SubResource("BoxShape3D_11_s")
-
-[node name="Label3D" type="Label3D" parent="DoorHinge/Door"]
-position = Vector3(0, 0.5, -0.05)
-pixel_size = 0.0025
-text = "PUERTA"
-font_size = 26
-billboard = 1
-outline_size = 6
 
 [node name="Corridor" type="Node3D" parent="."]
 

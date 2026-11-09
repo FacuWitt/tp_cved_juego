@@ -1,7 +1,9 @@
 # Figuras de la Memoria 1 (juguetes de madera)
 
-Las 6 figuras son juguetes de madera del cuarto del nene. La mayoría está armada
-con primitivas de Godot; la `ola` y la `luna` usan modelos externos (.glb).
+Las 6 figuras son juguetes del cuarto del nene. **Desde CL-073 todas usan modelos 3D**
+(`assets/models/m1_juguetes/`), generados por el equipo a partir de imágenes de referencia y
+reducidos a estilo PS1 con `tools/ps1ify` (unos 2.000 triángulos y una textura de color de 256 px).
+Las figuras de primitivas y los modelos anteriores (`assets/models/m1_figuras/`) quedan sin usar.
 
 ## Dónde está cada cosa
 
@@ -13,13 +15,13 @@ con primitivas de Godot; la `ola` y la `luna` usan modelos externos (.glb).
 
 | Pieza | Archivo | Qué representa |
 |---|---|---|
-| `luna` | `figures/luna.tscn` | Globo lunar tallado (modelo `moon_globe.glb`) |
-| `red` | `figures/red.tscn` | Red de pesca: aro, mango e hilos cruzados |
-| `ola` | `figures/ola.tscn` | Ola tallada (modelo `wave_sculpture.glb`) |
-| `ancla` | `figures/ancla.tscn` | Ancla con anillo, travesaño y uñas |
-| `faro` | `figures/faro.tscn` | Faro con franjas rojas y linterna (ya no se usa en el acertijo desde CL-071) |
-| `sirena` | `figures/sirena.tscn` | Sirena de madera con cola verde azulada, pelo rojo y un barquito en la mano |
-| `barco` | `figures/barco.tscn` | Barquito de juguete sobre base (distractor) |
+| `luna` | `figures/luna.tscn` | Globo lunar con soporte (`m1_juguetes/luna.glb`) |
+| `red` | `figures/red.tscn` | Red de pesca con mango (`m1_juguetes/red.glb`) |
+| `ola` | `figures/ola.tscn` | Ola con espuma (`m1_juguetes/ola.glb`), girada para que se vea la curva de perfil |
+| `ancla` | `figures/ancla.tscn` | Ancla de hierro (`m1_juguetes/ancla.glb`) |
+| `faro` | `figures/faro.tscn` | Faro de primitivas (ya no se usa en el acertijo desde CL-071) |
+| `sirena` | `figures/sirena.tscn` | Sirena de pelo rojo (`m1_juguetes/sirena.glb`) |
+| `barco` | `figures/barco.tscn` | Pesquero rojo de juguete (`m1_juguetes/barco_de_juguete.glb`, distractor). El mismo modelo es el barquito del estante alto |
 
 > Antes había 8 figuras con dos distractores más (`marea` y `pescador`); se sacaron
 > del puzzle (ver CL-011, CL-012 y CL-034).
@@ -29,44 +31,26 @@ con primitivas de Godot; la `ola` y la `luna` usan modelos externos (.glb).
 ```
 RigidBody3D  (script PuzzlePiece, piece_id, label_text)
 ├── Visual (Node3D)
-│   ├── Base / Cuerpo / ...  (MeshInstance3D con primitivas)
-│   └── ...
-├── CollisionShape3D  (cubo de 36 cm, invisible)
-└── Label3D  (nombre provisorio, encima de la figura)
+│   └── Modelo  (instancia del .glb, escalada y centrada)
+└── CollisionShape3D  (caja invisible del tamaño del modelo, mínimo 12 cm de profundidad)
 ```
 
 - `piece_id` tiene que coincidir con `config/memory_1_puzzle.tres`.
-- El `CollisionShape3D` es un cubo de 36 cm: se mantiene igual para que todas se agarren
-  con la misma comodidad, aunque la figura visible sea más chica.
+- El `CollisionShape3D` es una caja del tamaño del modelo (la dimensión mayor mide 36 cm); en las
+  figuras planas (red, ancla) tiene al menos 12 cm de profundidad para que se agarren y se paren bien.
+- Ya no tienen cartel (`Label3D`): con el modelo real se reconocen solas.
 - `Visual` es el nodo que el script aplasta al encastrar (`settle_squash`).
-- La `ola` y la `luna` no tienen primitivas: dentro de `Visual` tienen un hijo `Modelo`
-  que instancia su `.glb`, ya escalado y apoyado (ver sección de reemplazo más abajo).
-- Las figuras miden hasta 36 cm y se apoyan en `y = -0.18` (el piso del cubo).
+- Los modelos vienen centrados en el origen: el centro de la caja es el centro del modelo.
+- El frente de cada modelo mira a +Z; en la alfombra, +Z apunta a la pieza.
 
-## Materiales
+## Cómo reemplazar o agregar un modelo `.glb`
 
-Se usan 7 materiales compartidos por nombre, definidos dentro de cada escena:
-
-| Material | Color | Uso |
-|---|---|---|
-| `madera` | marrón medio | cuerpos principales |
-| `madera_oscura` | marrón oscuro | bases, mástiles, hilos |
-| `madera_clara` | madera clara | torres, cabezas, cubiertas |
-| `azul` | azul pintado | agua, olas, ropa |
-| `blanco` | blanco tiza | espuma, velas, línea de pesca |
-| `rojo` | rojo pintado | franjas del faro, techo |
-| `amarillo` | amarillo | linterna del faro |
-
-## Cómo reemplazar una figura por un modelo `.glb`
-
-1. Copiar el modelo a `assets/models/m1_figuras/` y abrir el proyecto para que Godot lo importe.
-2. Abrir la escena de esa figura (por ejemplo `figures/ola.tscn`).
-3. Borrar los `MeshInstance3D` que están dentro de `Visual` y arrastrar el `.glb` como hijo de `Visual`.
-4. Escalar el modelo para que su dimensión mayor mida **0,36 m**:
-   `escala = 0.36 / mayor_dimension_del_modelo`.
-5. Apoyarlo: `Model.position.y = -0.18 - min_y * escala` (con `min_y` del AABB del modelo).
-6. No tocar `piece_id`, `CollisionShape3D` ni `Label3D`.
-7. Anotar el crédito en `assets/models/m1_figuras/CREDITS.md` si la licencia lo pide.
+1. Reducirlo: `cd tools/ps1ify && npm install && node ps1ify.mjs original.glb salida.glb 2000 256`.
+2. Copiar `salida.glb` a `assets/models/m1_juguetes/` y abrir el proyecto para que Godot lo importe.
+3. En la escena de la figura, cambiar el `.glb` del nodo `Modelo` y ajustar la escala para que la
+   dimensión mayor mida **0,36 m**: `escala = 0.36 / mayor_dimension_del_modelo`.
+4. Ajustar la caja de colisión al tamaño escalado.
+5. No tocar `piece_id`.
 
 ## Cómo ajustar una figura
 

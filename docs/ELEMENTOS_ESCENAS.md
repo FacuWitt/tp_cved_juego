@@ -41,6 +41,8 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | Mancha de humedad en el techo + goteo | AMB | Decal o plano oscuro + gota |
 
 ### Muebles y props
+**Texturas PS1 ✅ CL-073:** piso de tablas, empapelado, techo de yeso, dos maderas, frazada, almohadón tejido, frente del ropero, puerta, lomos de libros y el reloj marcando las 3:00 (`assets/textures/m1/`, materiales en `assets/materials/m1/`). Los muebles con textura ya no tienen cartel. Siguen en greybox: juguetes sueltos, dibujos, mancha del techo y pasillo.
+
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
 | Cama con frazada tejida | AMB | Caja |
@@ -54,6 +56,8 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama, en la pared este (`Label3D`) |
 
 ### Objetos del acertijo (agarrables, `PuzzlePiece`) ✅
+**Modelos 3D ✅ CL-073:** los seis juguetes (y el barquito del estante) usan modelos generados por el equipo y reducidos a estilo PS1 (`assets/models/m1_juguetes/`, ver `docs/FIGURAS_M1.md`). Ya no tienen cartel.
+
 La abuela le pide que ponga los juguetes en la alfombra del mar, cada uno en su número, y le deja la canción de cuna en un papel para recordar el orden.
 
 **Dónde están (CL-072): repartidos por toda la pieza.** Luna: estantería alta (hay que subirse al banquito) · Red: arriba del baúl · Ola: en el alféizar de la ventana, frente al mar · Ancla: en el piso, al pie de la cama · Sirena: sobre la cama · Barco (distractor): en el piso, cerca del ropero.
