@@ -41,6 +41,19 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-081 · Memoria 3: los barquitos se apoyan sobre la montaña, hay más abajo que arriba y la textura de fondo va tal cual · 2026-11-10
+- **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-081)"
+- **Pedido por:** Facu, con una captura de CL-080: "necesito que no estén tan metidos adentro de la textura plana los barcos, además, agregá más en la parte inferior y media, arriba no tanto [...] al final lo que más mira el personaje es hacia adelante y abajo"; "la textura usala tal cual, al parecer superposicionaste varias veces la imagen [...] subile un poquito el contraste"; "parece que están mezclados los barcos".
+- **Qué se hizo:**
+  - **Apoyados, no hundidos:** cada barquito se acuesta sobre la pendiente donde está y sobresale de ella entre 0,24 y 0,42 de su largo (`lift_min`, `lift_max`); después se lo vuelca al azar (`tilt_max`). Antes se los ponía derechos con el centro a la altura de la superficie, así que la mitad quedaba adentro.
+  - **Más abajo que arriba:** hasta 2,6 m de altura la montaña tiene todos sus barquitos y de ahí a la cima va raleando hasta un cuarto (`dense_height`, `top_density`). El total sube de 1.200 a 1.300.
+  - **Textura tal cual:** se dejó de proyectar desde tres direcciones mezcladas (triplanar), que era lo que hacía ver los barcos superpuestos. Ahora la malla lleva sus propias coordenadas: la imagen se despliega una sola vez, a lo largo de la sala y a lo largo de la pendiente, sin estirarse. Tampoco se funden más los bordes de arriba y abajo: para que empalme se apila la imagen con su copia espejada. Sin teñir, con un 15 % más de contraste. Se repite cada 4 m (`fill_tile`).
+- **Por qué (decisión de diseño):** el jugador camina mirando adelante y abajo: ahí tiene que estar el detalle 3D; la cima se ve poco y casi siempre a oscuras, y con la textura debajo alcanza con pocos. La proyección triplanar es cómoda para paredes y pisos, pero en una pendiente de 60° mezcla dos proyecciones y un dibujo con figuras reconocibles se ve doble.
+- **Alternativas descartadas:** proyectar la textura solo desde arriba (se estira al doble en lo empinado); fundir los bordes para el empalme (se veía como una imagen encimada).
+- **Cómo se probó:** capturas (`RECURSOS/IMAGENES/M3_capturas/sala_SalaBarcos_*.png`, renderizador de compatibilidad) y `tools/tests/m3_recorrido.tscn`, que da OK.
+- **Archivos y docs:** `scripts/world/boat_flood_room.gd`, `scripts/config/boat_flood_settings.gd`, `assets/materials/m3/monton_barcos.tres`, `assets/textures/m3/barcos_fondo.png`.
+- **Pendiente / ❓ ABIERTO:** ajustar jugando cuánto sobresalen y cuántos hay arriba.
+
 ### CL-080 · Memoria 3: las montañas de barcos estaban dadas vuelta (se atravesaban y solo se veían desde atrás) · 2026-11-10
 - **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-080)"
 - **Pedido por:** Facu, al probar CL-079 con capturas: "el efecto no está funcionando. La imagen se ve opaca y no tiene la misma textura/colores que los barcos, además no se renderiza si lo ves desde el pasillo de barcos, se renderiza la parte de detrás. Te podés pasar al otro lado de los barcos, traspasando la imagen".

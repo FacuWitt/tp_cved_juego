@@ -150,20 +150,34 @@ func _build_mounds() -> void:
 		for i: int in nx + 1:
 			# Apenas por debajo del piso sobre el paso, para que no se pisen las dos superficies.
 			heights[j * (nx + 1) + i] = mound_height(-half + i * GRID_CELL, z0 - j * GRID_CELL) - 0.03
+	# La textura se despliega sobre la superficie (a lo largo de la sala y a lo largo de la pendiente),
+	# una sola vez: así se ve tal cual es, sin estirarse en lo empinado ni mezclarse consigo misma.
+	var across: PackedFloat32Array = PackedFloat32Array()
+	across.resize((nx + 1) * (nz + 1))
+	for j: int in nz + 1:
+		var run: float = 0.0
+		for i: int in nx + 1:
+			if i > 0:
+				run += Vector2(GRID_CELL, heights[j * (nx + 1) + i] - heights[j * (nx + 1) + i - 1]).length()
+			across[j * (nx + 1) + i] = run
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for j: int in nz:
 		for i: int in nx:
-			var a: Vector3 = Vector3(-half + i * GRID_CELL, heights[j * (nx + 1) + i], z0 - j * GRID_CELL)
-			var b: Vector3 = Vector3(a.x + GRID_CELL, heights[j * (nx + 1) + i + 1], a.z)
-			var c: Vector3 = Vector3(a.x, heights[(j + 1) * (nx + 1) + i], a.z - GRID_CELL)
-			var d: Vector3 = Vector3(a.x + GRID_CELL, heights[(j + 1) * (nx + 1) + i + 1], a.z - GRID_CELL)
-			if maxf(maxf(a.y, b.y), maxf(c.y, d.y)) <= 0.0:
+			var corners: Array[int] = [j * (nx + 1) + i, j * (nx + 1) + i + 1, (j + 1) * (nx + 1) + i, (j + 1) * (nx + 1) + i + 1]
+			var top: float = -1.0
+			for k: int in corners:
+				top = maxf(top, heights[k])
+			if top <= 0.0:
 				continue
 			# En Godot la cara de adelante es la que se ve girar en sentido horario: en este orden
 			# las caras miran hacia arriba (hacia el paso), que es desde donde se las ve y se las pisa.
-			for v: Vector3 in [a, c, b, b, c, d]:
-				st.add_vertex(v)
+			for c: int in [0, 2, 1, 1, 2, 3]:
+				var k: int = corners[c]
+				var col: int = k % (nx + 1)
+				var row: int = k / (nx + 1)
+				st.set_uv(Vector2(row * GRID_CELL / settings.fill_tile, across[k] / (settings.fill_tile * 2.0)))
+				st.add_vertex(Vector3(-half + col * GRID_CELL, heights[k], z0 - row * GRID_CELL))
 	st.generate_normals()
 	var mesh: ArrayMesh = st.commit()
 	var instance: MeshInstance3D = MeshInstance3D.new()
@@ -217,12 +231,23 @@ func _build_boats() -> void:
 		length = minf(length, away * 1.9)
 		if length < settings.boat_min_length * 0.5:
 			continue
+		# Arriba hay menos: lo que más se mira es adelante y abajo.
+		var thin: float = smoothstep(settings.dense_height, maxf(settings.mound_height, settings.dense_height + 0.1), h)
+		if _rng.randf() > lerpf(1.0, settings.top_density, thin):
+			continue
+		# Apoyado sobre la pendiente (no hundido en ella), con el casco hacia la montaña.
+		var normal: Vector3 = Vector3(
+			mound_height(x - 0.15, z) - mound_height(x + 0.15, z),
+			0.3,
+			mound_height(x, z - 0.15) - mound_height(x, z + 0.15)).normalized()
+		var side: Vector3 = normal.cross(Vector3.FORWARD).normalized()
+		var lying: Basis = Basis(side, normal, side.cross(normal)).orthonormalized()
 		var tilt_axis: Vector3 = Vector3(_rng.randf_range(-1.0, 1.0), 0.0, _rng.randf_range(-1.0, 1.0)).normalized()
 		if tilt_axis == Vector3.ZERO:
 			tilt_axis = Vector3.RIGHT
-		var basis: Basis = Basis(tilt_axis, deg_to_rad(_rng.randf_range(-settings.tilt_max, settings.tilt_max))) \
+		var basis: Basis = lying * Basis(tilt_axis, deg_to_rad(_rng.randf_range(-settings.tilt_max, settings.tilt_max))) \
 			* Basis(Vector3.UP, _rng.randf_range(0.0, TAU))
-		var origin: Vector3 = Vector3(x, h + length * _rng.randf_range(0.0, 0.22), z)
+		var origin: Vector3 = Vector3(x, h, z) + normal * length * _rng.randf_range(settings.lift_min, settings.lift_max)
 		transforms.append(Transform3D(basis.scaled(Vector3.ONE * length), origin) * _unit)
 	var multimesh: MultiMesh = MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D

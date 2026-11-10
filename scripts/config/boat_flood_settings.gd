@@ -32,15 +32,27 @@ extends Resource
 ## Irregularidad de las montañas.
 @export_range(0.0, 1.5, 0.05, "suffix:m") var mound_bumps: float = 0.45
 ## Cantidad de barquitos apilados. Es lo que más pesa en el rendimiento: bajarlo si va lento.
-@export_range(50, 4000, 10) var boat_count: int = 1200
+@export_range(50, 4000, 10) var boat_count: int = 1300
 ## Largo del barquito más chico.
 @export_range(0.1, 2.0, 0.05, "suffix:m") var boat_min_length: float = 0.45
 ## Largo del barquito más grande.
 @export_range(0.2, 6.0, 0.05, "suffix:m") var boat_max_length: float = 1.7
 ## Cuántos son chicos: 1 = tamaños parejos; más alto = casi todos chicos y pocos grandes.
 @export_range(1.0, 5.0, 0.1) var small_bias: float = 2.2
-## Cuánto pueden estar volcados.
-@export_range(0.0, 180.0, 1.0, "suffix:°") var tilt_max: float = 60.0
+## Cuánto pueden estar volcados respecto de la pendiente donde están apoyados.
+@export_range(0.0, 180.0, 1.0, "suffix:°") var tilt_max: float = 80.0
+## Cuánto sobresalen de la superficie de la montaña, en largos de barco: 0 = medio enterrados,
+## 0,3 = apoyados encima, más = flotando.
+@export_range(0.0, 1.0, 0.01) var lift_min: float = 0.24
+## Hasta cuánto sobresalen (cada uno toma un valor al azar entre los dos).
+@export_range(0.0, 1.0, 0.01) var lift_max: float = 0.42
+## Hasta esta altura la montaña tiene todos sus barquitos (es lo que el jugador mira: adelante y abajo).
+@export_range(0.0, 12.0, 0.1, "suffix:m") var dense_height: float = 2.6
+## Cuántos barquitos hay en la cima respecto de abajo (1 = igual de tupido, 0 = ninguno).
+@export_range(0.0, 1.0, 0.01) var top_density: float = 0.25
+## Cada cuántos metros se repite la textura de barcos apilados que hay debajo (a lo largo de la sala;
+## a lo alto se repite cada el doble).
+@export_range(1.0, 20.0, 0.1, "suffix:m") var fill_tile: float = 4.0
 
 @export_group("Barquitos que caen")
 ## Cuántos barquitos sueltos puede haber a la vez (los más viejos se reciclan cuando no se los mira).
