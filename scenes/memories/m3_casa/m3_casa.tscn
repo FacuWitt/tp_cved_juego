@@ -25,7 +25,7 @@
 [ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_mensajes.tscn" id="23_msgs"]
 [ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/pasillo_hospital.tscn" id="24_hosp"]
 [ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_barcos.tscn" id="25_boats"]
-[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_lowpoly.glb" id="26_boat"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="26_boat"]
 
 [sub_resource type="Environment" id="Environment_m3"]
 background_mode = 1

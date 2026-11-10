@@ -41,6 +41,15 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-078 · Memoria 3: el barquito de la mano usa un modelo con más detalle · 2026-11-10
+- **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-078)"
+- **Pedido por:** Facu, al probar CL-077: "el barco no tiene buena calidad, el modelo original tiene muy buena calidad pero cuando lo llevas en la mano no se ve bien".
+- **Qué se hizo:** el barquito que se lleva en la mano y el que queda en manos de la hija usan `assets/models/m3/barquito_mano.glb` (el modelo original reducido a 16.000 triángulos con textura de 1.024 px). Las montañas y los barquitos que caen siguen con la versión liviana (`barquito_lowpoly.glb`, unos 1.100 triángulos y 128 px).
+- **Por qué (decisión de diseño):** en CL-077 se había usado la versión liviana para todo. Sirve para poner cientos a lo lejos, pero el de la mano está siempre en primer plano y es el objeto central de la memoria: se le notaban las facetas y la textura borrosa. Son dos modelos porque piden cosas opuestas: uno se ve una vez y de cerca, el otro mil veces y de lejos.
+- **Alternativas descartadas:** usar el original sin reducir (61.000 triángulos y tres texturas, 6,8 MB: pesa de más para lo que se gana); subir el detalle de todos los barquitos (1.200 copias en la sala de los barcos).
+- **Archivos y docs:** `assets/models/m3/barquito_mano.glb`, `scenes/memories/m3_casa/m3_casa.tscn`, `scenes/memories/m3_casa/daughter_room.tscn`.
+- **Pendiente / ❓ ABIERTO:** el barquito está en una esquina de la pantalla, donde los efectos de sueño desenfocan la imagen: si se sigue viendo borroso, hay que dibujarlo por encima de ese efecto. Falta la textura de fondo para tapar los huecos entre las montañas de barcos (la genera el equipo con una IA de imágenes).
+
 ### CL-077 · Memoria 3: salas intermedias detrás de cada puerta buena (los mensajes, el pasillo del hospital y los barcos) · 2026-11-10
 - **Rama / commits:** `memories/m3-casa` (desde `develop`) · ver el commit "[M3] Salas intermedias ... (CL-077)"
 - **Pedido por:** Facu, con referencias visuales de terror (paredes llenas de pedidos de ayuda, un salón con frases proyectadas, un techo de paneles de luz que no termina, un depósito lleno de barcos): "agregar habitaciones intermedias donde tengas que pasar por el medio"; "tu cerebro te grita que despiertes, mostrándote mensajes, hasta tal punto que te abomba de barquitos para recordar y volver a la realidad"; "pasillos con las luces del hospital, que son cuadrados de color cálido"; "usá el modelo del barco que está disponible en la carpeta de recursos".
