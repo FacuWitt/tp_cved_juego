@@ -42,6 +42,16 @@ extends Resource
 ## Cuánto pueden estar volcados.
 @export_range(0.0, 180.0, 1.0, "suffix:°") var tilt_max: float = 60.0
 
+@export_group("Relleno entre los barcos (textura de fondo)")
+## Cuánto se ve la textura de barcos apilados que rellena los huecos, entre rayo y rayo
+## (no depende de las luces: lo de abajo queda siempre a la sombra de los barcos).
+@export_range(0.0, 2.0, 0.005) var fill_glow: float = 0.07
+## Cuánto más se ve con la luz del rayo.
+@export_range(0.0, 4.0, 0.01) var fill_flash: float = 0.32
+## Cuánto se ve esa misma textura en las paredes de los costados, detrás de las montañas, respecto del relleno
+## (0 = paredes negras).
+@export_range(0.0, 2.0, 0.01) var wall_fill: float = 0.3
+
 @export_group("Barquitos que caen")
 ## Cuántos barquitos sueltos puede haber a la vez (los más viejos se reciclan cuando no se los mira).
 @export_range(0, 120, 1) var max_falling: int = 40

@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-079 · Memoria 3: una textura de barcos apilados rellena los huecos de la sala de los barcos · 2026-11-10
+- **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-079)"
+- **Pedido por:** Facu, al probar CL-077: "quedan huecos en el escenario de los barcos [...] deberíamos agregar una textura que funcione de fondo [...] para no llenar todo de objetos 3D". Se acordó el camino antes de hacerlo: Claude armó el pedido para una IA de imágenes y un render de referencia de los barcos del nivel vistos desde arriba; Facu generó la textura y la dejó en `RECURSOS/TEXTURAS/Nivel 3/barcos_fondo.jpg`.
+- **Qué se hizo:** la malla que hay debajo de los barquitos (la que se ve por los huecos) y las dos paredes de los costados pasan de un color oscuro liso a esa textura de barcos apilados (`assets/textures/m3/barcos_fondo.png`, 256 px, repetida cada 4 m). La textura se alumbra sola: un brillo bajo entre rayo y rayo y más con cada rayo (`fill_glow`, `fill_flash` y `wall_fill` en `m3_boat_flood.tres`). El material pasa a llamarse `monton_barcos.tres`.
+- **Por qué (decisión de diseño):** tapar los huecos con más barquitos 3D pesa en el rendimiento (ya son 1.200); una textura da la sensación de "más barcos atrás" gratis. Se alumbra sola porque lo que está debajo de los barcos queda siempre a su sombra: con la textura puesta pero dependiendo de las luces, las capturas de antes y después salían iguales. Las paredes de la entrada y la salida quedan negras: se ven de cerca y de frente, y ahí la textura se notaba plana.
+- **Alternativas descartadas:** más barquitos 3D (rendimiento); la textura como material común, sin brillo propio (no se veía); la textura en las cuatro paredes (de frente parecía un empapelado).
+- **Problemas encontrados:** la imagen generada empalmaba de izquierda a derecha pero no de arriba a abajo; se fundieron los bordes de arriba y abajo antes de reducirla (la costura quedó al nivel del resto de la imagen).
+- **Cómo se probó:** capturas de antes y después (`RECURSOS/IMAGENES/M3_capturas/barcos_antes_*.png` y `sala_SalaBarcos_*.png`) y la prueba de punta a punta, que da OK. En las capturas el efecto es sutil; hay que mirarlo en Forward+.
+- **Archivos y docs:** `assets/textures/m3/barcos_fondo.png`, `assets/materials/m3/monton_barcos.tres` (antes `monton_oscuro.tres`), `scripts/world/boat_flood_room.gd`, `scripts/config/boat_flood_settings.gd`, `scenes/memories/m3_casa/sala_barcos.tscn`.
+- **Pendiente / ❓ ABIERTO:** ajustar jugando cuánto se ve el relleno y las paredes.
+
 ### CL-078 · Memoria 3: el barquito de la mano usa un modelo con más detalle · 2026-11-10
 - **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-078)"
 - **Pedido por:** Facu, al probar CL-077: "el barco no tiene buena calidad, el modelo original tiene muy buena calidad pero cuando lo llevas en la mano no se ve bien".
