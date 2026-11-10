@@ -27,3 +27,21 @@ extends Resource
 ## Qué tan marcado es el "aplastamiento" sutil al tocar el lugar (0 = sin efecto, 1 = exagerado).
 ## Necesita que el PickupObject tenga asignado un nodo visual.
 @export_range(0.0, 0.6, 0.01) var settle_squash: float = 0.15
+
+@export_group("Sonidos")
+## Sonidos al agarrar el objeto. Si hay varios, suena uno al azar (así no se repite siempre igual).
+## Vacío = sin sonido.
+@export var pickup_sounds: Array[AudioStream] = []
+## Volumen del sonido de agarrar. Subilo si el archivo de audio quedó bajito.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var pickup_volume_db: float = 0.0
+## Sonidos al golpear el piso o un mueble después de soltarlo. Si hay varios, suena uno al azar.
+## Vacío = sin sonido. Si lo suelta sobre un casillero no suena este: suena el del casillero.
+@export var drop_sounds: Array[AudioStream] = []
+## Volumen del sonido de caída.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var drop_volume_db: float = 0.0
+## Velocidad mínima con la que tiene que golpear para que suene (así no suena al apoyarse despacito).
+@export_range(0.0, 5.0, 0.05, "suffix:m/s") var drop_min_speed: float = 0.6
+## Cuánto cambia el tono al azar en cada sonido (0 = siempre igual, 0.1 = ±10 %).
+@export_range(0.0, 0.5, 0.01) var sound_pitch_variation: float = 0.05
+## Bus de audio por el que salen estos sonidos (está en default_bus_layout.tres).
+@export var sound_bus: StringName = &"grab"

@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="PassageSettings" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="PassageSettings" format=3 uid="uid://bpcv6cecuvdrw"]
 
-[ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
-[ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+[ext_resource type="Script" uid="uid://cvd35qw01pplb" path="res://scripts/config/passage_settings.gd" id="1_ps"]
+[ext_resource type="AudioStream" uid="uid://bgunw6cccre0g" path="res://assets/audio/m1_habitacion/background.ogg" id="1_v5ni5"]
+[ext_resource type="Script" uid="uid://c54etumqcu88w" path="res://scripts/config/passage_voice.gd" id="2_pv"]
 
 [sub_resource type="Resource" id="v1"]
 script = ExtResource("2_pv")
@@ -12,7 +13,6 @@ duration = 3.2
 [sub_resource type="Resource" id="v2"]
 script = ExtResource("2_pv")
 text = "VOZ (mamá, tapada): ...hijo, ¿me escuchás?..."
-at_progress = 0.25
 duration = 3.2
 
 [sub_resource type="Resource" id="v3"]
@@ -30,3 +30,5 @@ duration = 3.4
 [resource]
 script = ExtResource("1_ps")
 voices = Array[ExtResource("2_pv")]([SubResource("v1"), SubResource("v2"), SubResource("v3"), SubResource("v4")])
+voice_light_offsets = null
+ambience = ExtResource("1_v5ni5")

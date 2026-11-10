@@ -17,6 +17,11 @@ extends Resource
 @export_range(0.5, 10.0, 0.1, "suffix:s") var reach_hint_duration: float = 3.0
 ## Tiempo mínimo entre un aviso y el siguiente si sigue intentando.
 @export_range(0.0, 30.0, 0.5, "suffix:s") var reach_hint_cooldown: float = 6.0
+## Voz del nene diciendo esa frase (suena a la vez que el texto). Vacío = solo el texto.
+@export var reach_hint_voice: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var reach_hint_voice_volume_db: float = 0.0
+## Bus de audio de la voz del nene (la abuela usa otro, con eco).
+@export var own_voice_bus: StringName = &"Master"
 
 @export_group("Al resolver el puzzle")
 ## Texto provisorio de la voz que felicita (en la etapa 2 se reemplaza por audio con eco).
@@ -43,6 +48,34 @@ extends Resource
 @export_range(0.0, 10.0, 0.1, "suffix:°") var door_shake_angle: float = 3.0
 ## Duración total de la sacudida.
 @export_range(0.05, 2.0, 0.05, "suffix:s") var door_shake_time: float = 0.35
+
+@export_group("Sonidos")
+## Si está activo, cada pieza que se coloca suena distinto según vaya o no en ese casillero.
+## Si se apaga, el jugador recién se entera de si acertó cuando llena todos los casilleros.
+@export var piece_feedback_enabled: bool = true
+## Sonido al colocar una pieza en el casillero que le corresponde.
+@export var piece_correct_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var piece_correct_volume_db: float = 0.0
+## Sonido al colocar una pieza en un casillero que no es el suyo.
+@export var piece_incorrect_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var piece_incorrect_volume_db: float = 0.0
+## Bus de audio de los dos sonidos anteriores.
+@export var piece_sound_bus: StringName = &"sound_correctly"
+## Sonido de la puerta al abrirse cuando se resuelve el puzzle (sale de la puerta misma).
+@export var door_open_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var door_open_volume_db: float = 0.0
+## Sonido del golpe en la puerta cuando el orden está mal.
+@export var door_knock_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var door_knock_volume_db: float = 0.0
+## Bus de audio de los sonidos de la puerta.
+@export var door_sound_bus: StringName = &"Master"
+## Voz que felicita al resolver el puzzle ("¡Muy bien, mi amor!"). Vacío = solo se muestra el texto.
+@export var solved_voice: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var solved_voice_volume_db: float = 0.0
+## Pausa entre que se resuelve el puzzle y empieza la voz (así no se pisa con el sonido de la última pieza).
+@export_range(0.0, 5.0, 0.05, "suffix:s") var solved_voice_delay: float = 0.6
+## Bus de audio de la voz. El de la abuela ("discurso_abuela") tiene un efecto de eco que se prende en el panel Audio.
+@export var voice_bus: StringName = &"discurso_abuela"
 
 @export_group("Salida")
 ## Texto provisorio al salir (hasta que el flujo entre memorias esté integrado).

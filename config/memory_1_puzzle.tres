@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="SequencePuzzleConfig" format=3]
+[gd_resource type="Resource" script_class="SequencePuzzleConfig" format=3 uid="uid://bqrfv8jyu3mem"]
 
-[ext_resource type="Script" path="res://scripts/puzzles/sequence_puzzle_config.gd" id="1_seqcf"]
+[ext_resource type="Script" uid="uid://2tquut4d40mf" path="res://scripts/puzzles/sequence_puzzle_config.gd" id="1_seqcf"]
 
 [resource]
 script = ExtResource("1_seqcf")

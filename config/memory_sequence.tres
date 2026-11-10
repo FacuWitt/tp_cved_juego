@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="MemorySequence" format=3]
+[gd_resource type="Resource" script_class="MemorySequence" format=3 uid="uid://duur8e8wap1hp"]
 
-[ext_resource type="Script" path="res://scripts/config/memory_sequence.gd" id="1_seq"]
+[ext_resource type="Script" uid="uid://b85ung3qk55w5" path="res://scripts/config/memory_sequence.gd" id="1_seq"]
 
 [resource]
 script = ExtResource("1_seq")

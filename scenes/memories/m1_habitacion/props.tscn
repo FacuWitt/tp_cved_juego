@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dk2y81vus6ww0"]
 
 [ext_resource type="PackedScene" path="res://scenes/props/banquito.tscn" id="1_ban"]
-[ext_resource type="PackedScene" path="res://scenes/props/comoda.tscn" id="10_com"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="2_mad"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="3_mos"]
 [ext_resource type="Material" path="res://assets/materials/m1/frazada.tres" id="4_fra"]
@@ -9,50 +8,44 @@
 [ext_resource type="Material" path="res://assets/materials/m1/ropero_frente.tres" id="6_rop"]
 [ext_resource type="Material" path="res://assets/materials/m1/reloj.tres" id="7_rel"]
 [ext_resource type="Material" path="res://assets/materials/m1/lomos_libros.tres" id="8_lib"]
-[ext_resource type="PackedScene" path="res://assets/models/m1_juguetes/barco_de_juguete.glb" id="9_bar"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1_s"]
-albedo_color = Color(0.36, 0.23, 0.14, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2_s"]
-albedo_color = Color(0.55, 0.38, 0.24, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3_s"]
-albedo_color = Color(0.85, 0.82, 0.74, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4_s"]
-albedo_color = Color(0.62, 0.22, 0.2, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
-albedo_color = Color(0.86, 0.8, 0.66, 1)
-roughness = 0.85
+[ext_resource type="PackedScene" uid="uid://c4ogohtkhygao" path="res://assets/models/m1_juguetes/barco_de_juguete.glb" id="9_bar"]
+[ext_resource type="PackedScene" path="res://scenes/props/comoda.tscn" id="10_com"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6_s"]
 albedo_color = Color(0.16, 0.14, 0.12, 1)
 roughness = 0.85
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
-albedo_color = Color(0.24, 0.24, 0.2, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8_s"]
-albedo_color = Color(0.34, 0.42, 0.5, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_9_s"]
-albedo_color = Color(0.92, 0.9, 0.82, 1)
-roughness = 0.85
+[sub_resource type="CylinderMesh" id="CylinderMesh_16_s"]
+top_radius = 0.05
+bottom_radius = 0.07
+height = 0.28
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_10_s"]
 albedo_color = Color(0.95, 0.8, 0.55, 1)
 roughness = 0.85
 emission_enabled = true
 emission = Color(1, 0.7, 0.4, 1)
-emission_energy_multiplier = 1.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_17_s"]
+top_radius = 0.09
+bottom_radius = 0.15
+height = 0.18
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_9_s"]
+albedo_color = Color(0.92, 0.9, 0.82, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_18_s"]
+size = Vector3(0.14, 0.12, 0.06)
+
+[sub_resource type="QuadMesh" id="QuadMesh_reloj"]
+size = Vector2(0.11, 0.11)
+
+[sub_resource type="QuadMesh" id="QuadMesh_libros"]
+size = Vector2(0.84, 0.42)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ropero"]
+size = Vector2(1, 1.8)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11_s"]
 albedo_color = Color(0.8, 0.3, 0.25, 1)
@@ -66,317 +59,263 @@ roughness = 0.85
 albedo_color = Color(0.9, 0.75, 0.2, 1)
 roughness = 0.85
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_14_s"]
-albedo_color = Color(0.55, 0.36, 0.2, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
+albedo_color = Color(0.24, 0.24, 0.2, 1)
 roughness = 0.85
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_15_s"]
-albedo_color = Color(0.92, 0.9, 0.84, 1)
-roughness = 0.85
+[node name="Props" type="Node3D" unique_id=1883894174]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_16_s"]
-top_radius = 0.05
-bottom_radius = 0.07
-height = 0.28
+[node name="Bed" type="Node3D" parent="." unique_id=114210499]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_17_s"]
-top_radius = 0.09
-bottom_radius = 0.15
-height = 0.18
-
-[sub_resource type="QuadMesh" id="QuadMesh_libros"]
-size = Vector2(0.84, 0.42)
-
-[sub_resource type="QuadMesh" id="QuadMesh_ropero"]
-size = Vector2(1.0, 1.8)
-
-[sub_resource type="QuadMesh" id="QuadMesh_reloj"]
-size = Vector2(0.11, 0.11)
-
-[sub_resource type="BoxMesh" id="BoxMesh_18_s"]
-size = Vector3(0.14, 0.12, 0.06)
-
-[sub_resource type="BoxMesh" id="BoxMesh_19_s"]
-size = Vector3(0.34, 0.08, 0.12)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_20_s"]
-top_radius = 0.008
-bottom_radius = 0.008
-height = 0.26
-
-[sub_resource type="PrismMesh" id="PrismMesh_21_s"]
-size = Vector3(0.16, 0.2, 0.01)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22_s"]
-albedo_color = Color(0.3, 0.42, 0.55, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_23_s"]
-albedo_color = Color(0.68, 0.52, 0.28, 1)
-roughness = 0.9
-
-[node name="Props" type="Node3D"]
-
-[node name="Bed" type="Node3D" parent="."]
-
-[node name="Frame" type="CSGBox3D" parent="Bed"]
-position = Vector3(2.97, 0.175, 0.5)
-size = Vector3(0.95, 0.35, 2.0)
-material = ExtResource("2_mad")
+[node name="Frame" type="CSGBox3D" parent="Bed" unique_id=2021606992]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97, 0.175, 0.5)
 use_collision = true
+size = Vector3(0.95, 0.35, 2)
+material = ExtResource("2_mad")
 
-[node name="Mattress" type="CSGBox3D" parent="Bed"]
-position = Vector3(2.97, 0.41, 0.5)
+[node name="Mattress" type="CSGBox3D" parent="Bed" unique_id=1200412278]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97, 0.41, 0.5)
+use_collision = true
 size = Vector3(0.9, 0.12, 1.95)
 material = ExtResource("4_fra")
-use_collision = true
 
-[node name="Blanket" type="CSGBox3D" parent="Bed"]
-position = Vector3(2.97, 0.49, 0.85)
+[node name="Blanket" type="CSGBox3D" parent="Bed" unique_id=1812551941]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97, 0.49, 0.85)
+use_collision = true
 size = Vector3(0.92, 0.04, 1.3)
 material = ExtResource("4_fra")
-use_collision = true
 
-[node name="Pillow" type="CSGBox3D" parent="Bed"]
-position = Vector3(2.97, 0.52, -0.27)
+[node name="Pillow" type="CSGBox3D" parent="Bed" unique_id=454793622]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97, 0.52, -0.27)
+use_collision = true
 size = Vector3(0.6, 0.1, 0.3)
 material = ExtResource("5_alm")
-use_collision = true
 
-[node name="Headboard" type="CSGBox3D" parent="Bed"]
-position = Vector3(2.97, 0.62, -0.52)
+[node name="Headboard" type="CSGBox3D" parent="Bed" unique_id=868719903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97, 0.62, -0.52)
+use_collision = true
 size = Vector3(0.95, 0.55, 0.06)
 material = ExtResource("3_mos")
+
+[node name="Nightstand" type="Node3D" parent="." unique_id=1819714557]
+
+[node name="Table" type="CSGBox3D" parent="Nightstand" unique_id=1936606248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 0.25, -1)
 use_collision = true
-
-[node name="Nightstand" type="Node3D" parent="."]
-
-[node name="Table" type="CSGBox3D" parent="Nightstand"]
-position = Vector3(3.2, 0.25, -1.0)
 size = Vector3(0.4, 0.5, 0.4)
 material = ExtResource("2_mad")
-use_collision = true
 
-[node name="LampBase" type="MeshInstance3D" parent="Nightstand"]
-position = Vector3(3.28, 0.64, -1.07)
-mesh = SubResource("CylinderMesh_16_s")
+[node name="LampBase" type="MeshInstance3D" parent="Nightstand" unique_id=1338862024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.28, 0.64, -1.07)
 material_override = SubResource("StandardMaterial3D_6_s")
+mesh = SubResource("CylinderMesh_16_s")
 
-[node name="LampShade" type="MeshInstance3D" parent="Nightstand"]
-position = Vector3(3.28, 0.86, -1.07)
-mesh = SubResource("CylinderMesh_17_s")
+[node name="LampShade" type="MeshInstance3D" parent="Nightstand" unique_id=150599203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.28, 0.86, -1.07)
 material_override = SubResource("StandardMaterial3D_10_s")
+mesh = SubResource("CylinderMesh_17_s")
 
-[node name="LampLight" type="OmniLight3D" parent="Nightstand"]
-position = Vector3(3.2, 0.92, -0.95)
+[node name="LampLight" type="OmniLight3D" parent="Nightstand" unique_id=1589522146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 0.92, -0.95)
 light_color = Color(1, 0.72, 0.42, 1)
 light_energy = 1.6
 shadow_enabled = true
 omni_range = 8.0
 
-[node name="AlarmClock" type="MeshInstance3D" parent="Nightstand"]
-position = Vector3(3.08, 0.56, -0.91)
-rotation_degrees = Vector3(0, -70, 0)
-mesh = SubResource("BoxMesh_18_s")
+[node name="AlarmClock" type="MeshInstance3D" parent="Nightstand" unique_id=446920339]
+transform = Transform3D(0.34202015, 0, -0.9396926, 0, 1, 0, 0.9396926, 0, 0.34202015, 3.08, 0.56, -0.91)
 material_override = SubResource("StandardMaterial3D_9_s")
+mesh = SubResource("BoxMesh_18_s")
 
-[node name="ClockFace" type="MeshInstance3D" parent="Nightstand/AlarmClock"]
-position = Vector3(0, 0, 0.031)
-mesh = SubResource("QuadMesh_reloj")
+[node name="ClockFace" type="MeshInstance3D" parent="Nightstand/AlarmClock" unique_id=1210366051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.031)
 material_override = ExtResource("7_rel")
+mesh = SubResource("QuadMesh_reloj")
 
-[node name="Bookcase" type="Node3D" parent="."]
+[node name="Bookcase" type="Node3D" parent="." unique_id=84666534]
 
-[node name="Cabinet" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.9, 0.45, -2.8)
+[node name="Cabinet" type="CSGBox3D" parent="Bookcase" unique_id=1027879178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.45, -2.8)
+use_collision = true
 size = Vector3(1.2, 0.9, 0.4)
 material = ExtResource("2_mad")
-use_collision = true
 
-[node name="SideL" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.32, 1.61, -2.8)
+[node name="SideL" type="CSGBox3D" parent="Bookcase" unique_id=1889296787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.61, -2.8)
+use_collision = true
 size = Vector3(0.04, 1.42, 0.4)
 material = ExtResource("2_mad")
-use_collision = true
 
-[node name="SideR" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(1.48, 1.61, -2.8)
+[node name="SideR" type="CSGBox3D" parent="Bookcase" unique_id=1257018243]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.48, 1.61, -2.8)
+use_collision = true
 size = Vector3(0.04, 1.42, 0.4)
 material = ExtResource("2_mad")
-use_collision = true
 
-[node name="Back" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.9, 1.61, -2.985)
+[node name="Back" type="CSGBox3D" parent="Bookcase" unique_id=1563921033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.61, -2.985)
+use_collision = true
 size = Vector3(1.2, 1.42, 0.03)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="Shelf1" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.9, 1.35, -2.8)
+[node name="Shelf1" type="CSGBox3D" parent="Bookcase" unique_id=570338782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.35, -2.8)
+use_collision = true
 size = Vector3(1.12, 0.04, 0.4)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="Shelf2" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.9, 1.8, -2.8)
+[node name="Shelf2" type="CSGBox3D" parent="Bookcase" unique_id=1922786517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.8, -2.8)
+use_collision = true
 size = Vector3(1.12, 0.04, 0.4)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="Top" type="CSGBox3D" parent="Bookcase"]
-position = Vector3(0.9, 2.3, -2.8)
+[node name="Top" type="CSGBox3D" parent="Bookcase" unique_id=2012092953]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 2.3, -2.8)
+use_collision = true
 size = Vector3(1.2, 0.04, 0.42)
 material = ExtResource("2_mad")
+
+[node name="BooksLow" type="MeshInstance3D" parent="Bookcase" unique_id=1445954839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.115, -2.74)
+material_override = ExtResource("8_lib")
+mesh = SubResource("QuadMesh_libros")
+
+[node name="BooksMid" type="MeshInstance3D" parent="Bookcase" unique_id=267821575]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.565, -2.74)
+material_override = ExtResource("8_lib")
+mesh = SubResource("QuadMesh_libros")
+
+[node name="HighShelf" type="Node3D" parent="." unique_id=937149849]
+
+[node name="Board" type="CSGBox3D" parent="HighShelf" unique_id=764440154]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.35, 2.45, 0.5)
 use_collision = true
-
-[node name="BooksLow" type="MeshInstance3D" parent="Bookcase"]
-position = Vector3(0.9, 1.115, -2.74)
-mesh = SubResource("QuadMesh_libros")
-material_override = ExtResource("8_lib")
-
-[node name="BooksMid" type="MeshInstance3D" parent="Bookcase"]
-position = Vector3(0.95, 1.565, -2.74)
-mesh = SubResource("QuadMesh_libros")
-material_override = ExtResource("8_lib")
-
-[node name="HighShelf" type="Node3D" parent="."]
-
-[node name="Board" type="CSGBox3D" parent="HighShelf"]
-position = Vector3(3.35, 2.45, 0.5)
-size = Vector3(0.3, 0.05, 1.0)
+size = Vector3(0.3, 0.05, 1)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="BracketL" type="CSGBox3D" parent="HighShelf"]
-position = Vector3(3.37, 2.34, 0.1)
+[node name="BracketL" type="CSGBox3D" parent="HighShelf" unique_id=1135521977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.37, 2.34, 0.1)
+use_collision = true
 size = Vector3(0.25, 0.18, 0.04)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="BracketR" type="CSGBox3D" parent="HighShelf"]
-position = Vector3(3.37, 2.34, 0.9)
+[node name="BracketR" type="CSGBox3D" parent="HighShelf" unique_id=1667280796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.37, 2.34, 0.9)
+use_collision = true
 size = Vector3(0.25, 0.18, 0.04)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="Barquito" type="Node3D" parent="."]
-position = Vector3(3.35, 2.515, 0.5)
-rotation_degrees = Vector3(0, 90, 0)
+[node name="Barquito" type="Node3D" parent="." unique_id=1220016155]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.35, 2.515, 0.5)
 
-[node name="Modelo" parent="Barquito" instance=ExtResource("9_bar")]
-position = Vector3(0, 0.07, 0)
-scale = Vector3(0.179, 0.179, 0.179)
+[node name="Modelo" parent="Barquito" unique_id=2007152034 instance=ExtResource("9_bar")]
+transform = Transform3D(0.179, 0, 0, 0, 0.179, 0, 0, 0, 0.179, 0, 0.07, 0)
 
-[node name="BoatLight" type="OmniLight3D" parent="Barquito"]
-position = Vector3(0, 0.2, -0.3)
+[node name="BoatLight" type="OmniLight3D" parent="Barquito" unique_id=290517878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.3)
 light_color = Color(1, 0.78, 0.45, 1)
 light_energy = 0.0
 omni_range = 3.5
 
-[node name="Wardrobe" type="Node3D" parent="."]
+[node name="Wardrobe" type="Node3D" parent="." unique_id=1224121709]
 
-[node name="Body" type="CSGBox3D" parent="Wardrobe"]
-position = Vector3(-1.4, 0.9, 2.7)
-size = Vector3(1.0, 1.8, 0.55)
-material = ExtResource("2_mad")
+[node name="Body" type="CSGBox3D" parent="Wardrobe" unique_id=614710784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 0.9, 2.7)
 use_collision = true
+size = Vector3(1, 1.8, 0.55)
+material = ExtResource("2_mad")
 
-[node name="Front" type="MeshInstance3D" parent="Wardrobe"]
+[node name="Front" type="MeshInstance3D" parent="Wardrobe" unique_id=1019466949]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.4, 0.9, 2.423)
-mesh = SubResource("QuadMesh_ropero")
 material_override = ExtResource("6_rop")
+mesh = SubResource("QuadMesh_ropero")
 
-[node name="Toys" type="Node3D" parent="."]
+[node name="Toys" type="Node3D" parent="." unique_id=1340819821]
 
-[node name="ToyChest" type="CSGBox3D" parent="Toys"]
-position = Vector3(-0.1, 0.2, 2.72)
+[node name="ToyChest" type="CSGBox3D" parent="Toys" unique_id=285520098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.2, 2.72)
+use_collision = true
 size = Vector3(0.6, 0.4, 0.45)
 material = ExtResource("3_mos")
-use_collision = true
 
-[node name="Toy1" type="CSGBox3D" parent="Toys"]
-position = Vector3(0.6, 0.08, 2.2)
+[node name="Toy1" type="CSGBox3D" parent="Toys" unique_id=795139427]
+transform = Transform3D(0.90630776, 0, 0.42261827, 0, 1, 0, -0.42261827, 0, 0.90630776, 0.6, 0.08, 2.2)
+use_collision = true
 size = Vector3(0.16, 0.16, 0.16)
 material = SubResource("StandardMaterial3D_11_s")
-use_collision = true
-rotation_degrees = Vector3(0, 25, 0)
 
-[node name="Toy2" type="CSGBox3D" parent="Toys"]
-position = Vector3(-2.5, 0.05, 1.9)
+[node name="Toy2" type="CSGBox3D" parent="Toys" unique_id=1136488575]
+transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -2.5, 0.05, 1.9)
+use_collision = true
 size = Vector3(0.24, 0.1, 0.12)
 material = SubResource("StandardMaterial3D_12_s")
-use_collision = true
-rotation_degrees = Vector3(0, -15, 0)
 
-[node name="Toy3" type="CSGBox3D" parent="Toys"]
-position = Vector3(1.9, 0.07, -1.8)
+[node name="Toy3" type="CSGBox3D" parent="Toys" unique_id=208004739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0.07, -1.8)
+use_collision = true
 size = Vector3(0.14, 0.14, 0.14)
 material = SubResource("StandardMaterial3D_13_s")
-use_collision = true
 
-[node name="Drawings" type="Node3D" parent="."]
+[node name="Drawings" type="Node3D" parent="." unique_id=695096838]
 
-[node name="Drawing1" type="CSGBox3D" parent="Drawings"]
-position = Vector3(-0.55, 1.4, 2.995)
+[node name="Drawing1" type="CSGBox3D" parent="Drawings" unique_id=667759409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.4, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label1" type="Label3D" parent="Drawings"]
-position = Vector3(-0.55, 1.4, 2.985)
-rotation_degrees = Vector3(0, 180, 0)
+[node name="Label1" type="Label3D" parent="Drawings" unique_id=1146772527]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.55, 1.4, 2.985)
 pixel_size = 0.0025
+modulate = Color(0.2, 0.2, 0.25, 1)
 text = "DIBUJO:
 CASA"
 font_size = 20
-modulate = Color(0.2, 0.2, 0.25, 1)
 outline_size = 0
 
-[node name="Drawing2" type="CSGBox3D" parent="Drawings"]
-position = Vector3(0.0, 1.32, 2.995)
+[node name="Drawing2" type="CSGBox3D" parent="Drawings" unique_id=336636957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label2" type="Label3D" parent="Drawings"]
-position = Vector3(0.0, 1.32, 2.985)
-rotation_degrees = Vector3(0, 180, 0)
+[node name="Label2" type="Label3D" parent="Drawings" unique_id=337233454]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.32, 2.985)
 pixel_size = 0.0025
+modulate = Color(0.2, 0.2, 0.25, 1)
 text = "DIBUJO:
 FAMILIA"
 font_size = 20
-modulate = Color(0.2, 0.2, 0.25, 1)
 outline_size = 0
 
-[node name="Drawing3" type="CSGBox3D" parent="Drawings"]
-position = Vector3(0.55, 1.45, 2.995)
+[node name="Drawing3" type="CSGBox3D" parent="Drawings" unique_id=1486884896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 1.45, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label3" type="Label3D" parent="Drawings"]
-position = Vector3(0.55, 1.45, 2.985)
-rotation_degrees = Vector3(0, 180, 0)
+[node name="Label3" type="Label3D" parent="Drawings" unique_id=1646711056]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.55, 1.45, 2.985)
 pixel_size = 0.0025
+modulate = Color(0.2, 0.2, 0.25, 1)
 text = "DIBUJO:
 PERRO"
 font_size = 20
-modulate = Color(0.2, 0.2, 0.25, 1)
 outline_size = 0
 
-[node name="CeilingStain" type="CSGBox3D" parent="."]
-position = Vector3(-0.6, 2.995, 0.7)
+[node name="CeilingStain" type="CSGBox3D" parent="." unique_id=1723619718]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2.995, 0.7)
 size = Vector3(0.7, 0.01, 0.5)
 material = SubResource("StandardMaterial3D_7_s")
 
-[node name="StainLabel" type="Label3D" parent="."]
-position = Vector3(-0.6, 2.8, 0.7)
+[node name="StainLabel" type="Label3D" parent="." unique_id=1710844743]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2.8, 0.7)
 pixel_size = 0.0025
+billboard = 1
 text = "MANCHA DE HUMEDAD (goteo)"
 font_size = 18
-billboard = 1
 outline_size = 6
 
-[node name="Banquito" parent="." instance=ExtResource("1_ban")]
-position = Vector3(-2.9, 0.21, 2.5)
-rotation_degrees = Vector3(0, 20, 0)
+[node name="Banquito" parent="." unique_id=2105121285 instance=ExtResource("1_ban")]
+transform = Transform3D(0.9396926, 0, 0.34202012, 0, 1, 0, -0.34202012, 0, 0.9396926, -2.9, 0.21, 2.5)
 
-[node name="Comoda" parent="." instance=ExtResource("10_com")]
-position = Vector3(2.6, 0, -2.765)
+[node name="Comoda" parent="." unique_id=1489620936 instance=ExtResource("10_com")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, -2.765)

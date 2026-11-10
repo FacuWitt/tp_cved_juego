@@ -1,8 +1,15 @@
-[gd_resource type="Resource" script_class="PickupSettings" format=3]
+[gd_resource type="Resource" script_class="PickupSettings" format=3 uid="uid://bkmwggumiqufq"]
 
-[ext_resource type="Script" path="res://scripts/config/pickup_settings.gd" id="1_p"]
+[ext_resource type="Script" uid="uid://bnpwgvoosfmsw" path="res://scripts/config/pickup_settings.gd" id="1_p"]
+[ext_resource type="AudioStream" uid="uid://dh8nymbvnbmhv" path="res://assets/audio/m1_habitacion/stool_drag.wav" id="1_wqdqq"]
+[ext_resource type="AudioStream" uid="uid://b3ak6pehvl58b" path="res://assets/audio/m1_habitacion/grab1.wav" id="2_grab1"]
+[ext_resource type="AudioStream" uid="uid://0imihauog8np" path="res://assets/audio/m1_habitacion/grab2.wav" id="3_grab2"]
 
 [resource]
 script = ExtResource("1_p")
 hold_distance = 0.8
 hold_drop = 0.6
+pickup_sounds = Array[AudioStream]([ExtResource("2_grab1"), ExtResource("3_grab2")])
+pickup_volume_db = 12.0
+drop_sounds = Array[AudioStream]([ExtResource("1_wqdqq")])
+drop_volume_db = -6.0

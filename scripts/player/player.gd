@@ -10,6 +10,7 @@ var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _held_object: PickupObject = null
 
+
 @onready var _head: Node3D = $Head
 @onready var _camera: Camera3D = $Head/Camera3D
 @onready var _interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay

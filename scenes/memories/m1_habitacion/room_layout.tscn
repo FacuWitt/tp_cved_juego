@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://88burhphcqex"]
 
-[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_e"]
-[ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="2_e"]
+[ext_resource type="Shader" uid="uid://b5aolwxtn8kab" path="res://assets/shaders/prototype_grid.gdshader" id="1_e"]
+[ext_resource type="Script" uid="uid://b6al43ttx7tk0" path="res://scripts/world/memory_exit.gd" id="2_e"]
 [ext_resource type="Material" path="res://config/m1_mar_ventana.tres" id="3_e"]
 [ext_resource type="Material" path="res://assets/materials/m1/piso.tres" id="4_e"]
 [ext_resource type="Material" path="res://assets/materials/m1/pared.tres" id="5_e"]
@@ -10,45 +10,12 @@
 [ext_resource type="Material" path="res://assets/materials/m1/puerta.tres" id="8_e"]
 [ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="9_e"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.42, 0.3, 0.2, 1)
-shader_parameter/line_color = Color(0.3, 0.21, 0.14, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.62, 0.5, 0.38, 1)
-shader_parameter/line_color = Color(0.48, 0.38, 0.28, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.5, 0.42, 0.34, 1)
-shader_parameter/line_color = Color(0.4, 0.33, 0.26, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.22, 0.27, 0.3, 1)
-shader_parameter/line_color = Color(0.15, 0.19, 0.22, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
-albedo_color = Color(0.4, 0.26, 0.16, 1)
-roughness = 0.85
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8_s"]
 albedo_color = Color(0.82, 0.78, 0.68, 1)
 roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_13_s"]
+size = Vector3(0.02, 1.4, 1.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_10_s"]
 size = Vector3(0.98, 2.08, 0.06)
@@ -59,173 +26,178 @@ size = Vector2(0.98, 2.08)
 [sub_resource type="BoxShape3D" id="BoxShape3D_11_s"]
 size = Vector3(0.98, 2.08, 0.06)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_12_s"]
-size = Vector3(1.0, 2.0, 0.8)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6_s"]
+render_priority = 0
+shader = ExtResource("1_e")
+shader_parameter/base_color = Color(0.22, 0.27, 0.3, 1)
+shader_parameter/line_color = Color(0.15, 0.19, 0.22, 1)
+shader_parameter/cell_size = 0.5
+shader_parameter/line_width = 0.02
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_13_s"]
-size = Vector3(0.02, 1.4, 1.8)
+[sub_resource type="BoxShape3D" id="BoxShape3D_12_s"]
+size = Vector3(1, 2, 0.8)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_14_s"]
 size = Vector2(600, 600)
 subdivide_width = 239
 subdivide_depth = 239
 
-[node name="RoomLayout" type="Node3D"]
+[node name="RoomLayout" type="Node3D" unique_id=1587424517]
 
-[node name="Floor" type="CSGBox3D" parent="."]
-position = Vector3(0, -0.1, 0)
+[node name="Floor" type="CSGBox3D" parent="." unique_id=1216223920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+use_collision = true
 size = Vector3(7.4, 0.2, 6.4)
 material = ExtResource("4_e")
-use_collision = true
 
-[node name="Ceiling" type="CSGBox3D" parent="."]
-position = Vector3(0, 3.1, 0)
+[node name="Ceiling" type="CSGBox3D" parent="." unique_id=271608005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+use_collision = true
 size = Vector3(7.4, 0.2, 6.4)
 material = ExtResource("6_e")
-use_collision = true
 
-[node name="NorthWall" type="CSGBox3D" parent="."]
-position = Vector3(0, 1.5, -3.1)
-size = Vector3(7.4, 3.0, 0.2)
-material = ExtResource("5_e")
+[node name="NorthWall" type="CSGBox3D" parent="." unique_id=143271097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3.1)
 use_collision = true
-
-[node name="EastWall" type="CSGBox3D" parent="."]
-position = Vector3(3.6, 1.5, 0)
-size = Vector3(0.2, 3.0, 6.4)
-material = ExtResource("5_e")
-use_collision = true
-
-[node name="WestWall" type="CSGCombiner3D" parent="."]
-position = Vector3(-3.6, 1.5, 0)
-use_collision = true
-
-[node name="Wall" type="CSGBox3D" parent="WestWall"]
-size = Vector3(0.2, 3.0, 6.4)
+size = Vector3(7.4, 3, 0.2)
 material = ExtResource("5_e")
 
-[node name="WindowHole" type="CSGBox3D" parent="WestWall"]
+[node name="EastWall" type="CSGBox3D" parent="." unique_id=1652860754]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 1.5, 0)
+use_collision = true
+size = Vector3(0.2, 3, 6.4)
+material = ExtResource("5_e")
+
+[node name="WestWall" type="CSGCombiner3D" parent="." unique_id=1616996030]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 1.5, 0)
+use_collision = true
+
+[node name="Wall" type="CSGBox3D" parent="WestWall" unique_id=533229141]
+size = Vector3(0.2, 3, 6.4)
+material = ExtResource("5_e")
+
+[node name="WindowHole" type="CSGBox3D" parent="WestWall" unique_id=855025988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0.8)
 operation = 2
-position = Vector3(0, -0.05, 0.8)
 size = Vector3(0.4, 1.4, 1.8)
 
-[node name="Window" type="Node3D" parent="."]
+[node name="Window" type="Node3D" parent="." unique_id=801426416]
 
-[node name="Sill" type="CSGBox3D" parent="Window"]
-position = Vector3(-3.42, 0.725, 0.8)
+[node name="Sill" type="CSGBox3D" parent="Window" unique_id=1084898234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.42, 0.725, 0.8)
+use_collision = true
 size = Vector3(0.36, 0.05, 1.95)
 material = ExtResource("7_e")
-use_collision = true
 
-[node name="MullionV" type="CSGBox3D" parent="Window"]
-position = Vector3(-3.62, 1.45, 0.8)
+[node name="MullionV" type="CSGBox3D" parent="Window" unique_id=774500450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.62, 1.45, 0.8)
 size = Vector3(0.06, 1.4, 0.05)
 material = SubResource("StandardMaterial3D_8_s")
 
-[node name="MullionH" type="CSGBox3D" parent="Window"]
-position = Vector3(-3.62, 1.62, 0.8)
+[node name="MullionH" type="CSGBox3D" parent="Window" unique_id=1679452880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.62, 1.62, 0.8)
 size = Vector3(0.06, 0.05, 1.8)
 material = SubResource("StandardMaterial3D_8_s")
 
-[node name="FrameTop" type="CSGBox3D" parent="Window"]
-position = Vector3(-3.62, 2.13, 0.8)
+[node name="FrameTop" type="CSGBox3D" parent="Window" unique_id=483910879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.62, 2.13, 0.8)
 size = Vector3(0.08, 0.06, 1.86)
 material = SubResource("StandardMaterial3D_8_s")
 
-[node name="Glass" type="StaticBody3D" parent="Window"]
-position = Vector3(-3.69, 1.45, 0.8)
+[node name="Glass" type="StaticBody3D" parent="Window" unique_id=2119105878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.69, 1.45, 0.8)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/Glass"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Window/Glass" unique_id=517393557]
 shape = SubResource("BoxShape3D_13_s")
 
-[node name="SouthWall" type="CSGCombiner3D" parent="."]
-position = Vector3(0, 1.5, 3.1)
+[node name="SouthWall" type="CSGCombiner3D" parent="." unique_id=29783209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3.1)
 use_collision = true
 
-[node name="Wall" type="CSGBox3D" parent="SouthWall"]
-size = Vector3(7.4, 3.0, 0.2)
+[node name="Wall" type="CSGBox3D" parent="SouthWall" unique_id=337005751]
+size = Vector3(7.4, 3, 0.2)
 material = ExtResource("5_e")
 
-[node name="DoorHole" type="CSGBox3D" parent="SouthWall"]
+[node name="DoorHole" type="CSGBox3D" parent="SouthWall" unique_id=469548643]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.45, 0)
 operation = 2
-position = Vector3(1.6, -0.45, 0)
-size = Vector3(1.0, 2.1, 0.4)
+size = Vector3(1, 2.1, 0.4)
 
-[node name="DoorHinge" type="Node3D" parent="."]
-position = Vector3(1.11, 0, 3.1)
+[node name="DoorHinge" type="Node3D" parent="." unique_id=260440838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11, 0, 3.1)
 
-[node name="Door" type="AnimatableBody3D" parent="DoorHinge"]
-position = Vector3(0.49, 1.04, 0)
+[node name="Door" type="AnimatableBody3D" parent="DoorHinge" unique_id=123347150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49, 1.04, 0)
 sync_to_physics = false
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorHinge/Door"]
-mesh = SubResource("BoxMesh_10_s")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorHinge/Door" unique_id=199295750]
 material_override = ExtResource("9_e")
+mesh = SubResource("BoxMesh_10_s")
 
-[node name="FaceRoom" type="MeshInstance3D" parent="DoorHinge/Door"]
+[node name="FaceRoom" type="MeshInstance3D" parent="DoorHinge/Door" unique_id=259126103]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
-mesh = SubResource("QuadMesh_door")
 material_override = ExtResource("8_e")
-
-[node name="FaceHall" type="MeshInstance3D" parent="DoorHinge/Door"]
-position = Vector3(0, 0, 0.032)
 mesh = SubResource("QuadMesh_door")
-material_override = ExtResource("8_e")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHinge/Door"]
+[node name="FaceHall" type="MeshInstance3D" parent="DoorHinge/Door" unique_id=1801511031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.032)
+material_override = ExtResource("8_e")
+mesh = SubResource("QuadMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHinge/Door" unique_id=1323493188]
 shape = SubResource("BoxShape3D_11_s")
 
-[node name="Corridor" type="Node3D" parent="."]
+[node name="Corridor" type="Node3D" parent="." unique_id=929855106]
 
-[node name="Floor" type="CSGBox3D" parent="Corridor"]
-position = Vector3(1.6, -0.1, 4.7)
-size = Vector3(1.4, 0.2, 3.0)
-material = SubResource("ShaderMaterial_6_s")
+[node name="Floor" type="CSGBox3D" parent="Corridor" unique_id=890648497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -0.1, 4.7)
 use_collision = true
-
-[node name="Ceiling" type="CSGBox3D" parent="Corridor"]
-position = Vector3(1.6, 2.3, 4.7)
-size = Vector3(1.4, 0.2, 3.0)
+size = Vector3(1.4, 0.2, 3)
 material = SubResource("ShaderMaterial_6_s")
-use_collision = true
 
-[node name="WallLeft" type="CSGBox3D" parent="Corridor"]
-position = Vector3(1.0, 1.1, 4.7)
-size = Vector3(0.2, 2.4, 3.0)
+[node name="Ceiling" type="CSGBox3D" parent="Corridor" unique_id=1205452179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 2.3, 4.7)
+use_collision = true
+size = Vector3(1.4, 0.2, 3)
 material = SubResource("ShaderMaterial_6_s")
-use_collision = true
 
-[node name="WallRight" type="CSGBox3D" parent="Corridor"]
-position = Vector3(2.2, 1.1, 4.7)
-size = Vector3(0.2, 2.4, 3.0)
+[node name="WallLeft" type="CSGBox3D" parent="Corridor" unique_id=544301720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.1, 4.7)
+use_collision = true
+size = Vector3(0.2, 2.4, 3)
 material = SubResource("ShaderMaterial_6_s")
-use_collision = true
 
-[node name="WallEnd" type="CSGBox3D" parent="Corridor"]
-position = Vector3(1.6, 1.1, 6.1)
+[node name="WallRight" type="CSGBox3D" parent="Corridor" unique_id=1731254335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.1, 4.7)
+use_collision = true
+size = Vector3(0.2, 2.4, 3)
+material = SubResource("ShaderMaterial_6_s")
+
+[node name="WallEnd" type="CSGBox3D" parent="Corridor" unique_id=1281161637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.1, 6.1)
+use_collision = true
 size = Vector3(1.4, 2.4, 0.2)
 material = SubResource("ShaderMaterial_6_s")
-use_collision = true
 
-[node name="Exit" type="Area3D" parent="."]
-position = Vector3(1.6, 1.0, 5.4)
+[node name="Exit" type="Area3D" parent="." unique_id=1092328989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1, 5.4)
 script = ExtResource("2_e")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Exit"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Exit" unique_id=527211794]
 shape = SubResource("BoxShape3D_12_s")
 
-[node name="Label3D" type="Label3D" parent="Exit"]
-position = Vector3(0, 0.6, 0)
+[node name="Label3D" type="Label3D" parent="Exit" unique_id=1847014664]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 pixel_size = 0.0025
+billboard = 1
 text = "SALIDA"
 font_size = 40
-billboard = 1
 outline_size = 6
 
-[node name="Exterior" type="Node3D" parent="."]
+[node name="Exterior" type="Node3D" parent="." unique_id=1650021979]
 
-[node name="DreamSea" type="MeshInstance3D" parent="Exterior"]
-position = Vector3(-303.7, 0.45, 0)
-mesh = SubResource("PlaneMesh_14_s")
+[node name="DreamSea" type="MeshInstance3D" parent="Exterior" unique_id=183581366]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -303.7, 0.45, 0)
 material_override = ExtResource("3_e")
 cast_shadow = 0
+mesh = SubResource("PlaneMesh_14_s")

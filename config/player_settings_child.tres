@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PlayerSettings" format=3]
+[gd_resource type="Resource" script_class="PlayerSettings" format=3 uid="uid://du38a4tl6xngb"]
 
-[ext_resource type="Script" path="res://scripts/config/player_settings.gd" id="1_child"]
+[ext_resource type="AudioStream" uid="uid://cmffygyu70f2w" path="res://assets/audio/m1_habitacion/bump.mp3" id="1_b4guq"]
+[ext_resource type="Script" uid="uid://b2sl0fgdxn0ke" path="res://scripts/config/player_settings.gd" id="1_child"]
 
 [resource]
 script = ExtResource("1_child")
@@ -8,3 +9,5 @@ walk_speed = 3.2
 sprint_speed = 5.0
 jump_velocity = 4.0
 camera_height = 1.1
+bump_sounds = Array[AudioStream]([ExtResource("1_b4guq")])
+bump_volume_db = 0.5
