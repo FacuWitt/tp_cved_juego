@@ -41,6 +41,16 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-080 · Memoria 3: las montañas de barcos estaban dadas vuelta (se atravesaban y solo se veían desde atrás) · 2026-11-10
+- **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-080)"
+- **Pedido por:** Facu, al probar CL-079 con capturas: "el efecto no está funcionando. La imagen se ve opaca y no tiene la misma textura/colores que los barcos, además no se renderiza si lo ves desde el pasillo de barcos, se renderiza la parte de detrás. Te podés pasar al otro lado de los barcos, traspasando la imagen".
+- **Qué se hizo:** la malla de las montañas (la que da el relleno y la colisión) se armaba con los triángulos al revés, mirando hacia abajo. Se corrigió el sentido de los triángulos y la colisión ahora vale de los dos lados. Se sacó el brillo propio de la textura y la textura de las paredes (CL-079): el relleno es un material común, alumbrado por las mismas luces que los barquitos. La textura sube a 512 px con filtro suave, como la de los barquitos.
+- **Por qué (decisión de diseño):** el error venía de CL-077 y explicaba todo lo que se veía: desde el paso la malla no se dibujaba (por eso había "huecos"), solo se veía desde atrás, la luz le llegaba al revés (opaca y gris) y la colisión, que es de una sola cara, dejaba pasar al jugador. En CL-079 se interpretó mal el síntoma: como la textura no aparecía en las capturas, se supuso que estaba a la sombra y se le dio brillo propio, que es lo que la dejaba lavada. Con la malla derecha ya no hace falta: toma el color y la luz de la escena igual que los barcos. Las paredes vuelven a ser negras: la textura plana en una pared no convencía.
+- **Problemas encontrados:** la prueba automática de CL-077 solo caminaba por el paso, así que nunca empujó contra las montañas. Ahora, en tres puntos de la sala, camina y salta hacia cada costado y comprueba que queda pegado al borde del paso. Con el código anterior esa prueba falla (termina a 6 m del paso); con el arreglo pasa.
+- **Cómo se probó:** `tools/tests/m3_recorrido.tscn` da OK con la comprobación nueva; capturas en `RECURSOS/IMAGENES/M3_capturas/sala_SalaBarcos_*.png` (renderizador de compatibilidad).
+- **Archivos y docs:** `scripts/world/boat_flood_room.gd`, `scripts/config/boat_flood_settings.gd` (se van `fill_glow`, `fill_flash` y `wall_fill`), `assets/materials/m3/monton_barcos.tres`, `assets/textures/m3/barcos_fondo.png`, `tools/tests/m3_recorrido.gd`.
+- **Pendiente / ❓ ABIERTO:** en las pendientes más empinadas la textura se estira un poco; si se nota jugando, se puede bajar `mound_slope` o sumar barquitos chicos cerca del paso.
+
 ### CL-079 · Memoria 3: una textura de barcos apilados rellena los huecos de la sala de los barcos · 2026-11-10
 - **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-079)"
 - **Pedido por:** Facu, al probar CL-077: "quedan huecos en el escenario de los barcos [...] deberíamos agregar una textura que funcione de fondo [...] para no llenar todo de objetos 3D". Se acordó el camino antes de hacerlo: Claude armó el pedido para una IA de imágenes y un render de referencia de los barcos del nivel vistos desde arriba; Facu generó la textura y la dejó en `RECURSOS/TEXTURAS/Nivel 3/barcos_fondo.jpg`.

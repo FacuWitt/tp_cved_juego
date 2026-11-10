@@ -14,7 +14,8 @@ const GRID_CELL: float = 0.25
 @export var settings: BoatFloodSettings
 ## El modelo del barquito (versión liviana, para poner cientos).
 @export var boat_scene: PackedScene
-## Material oscuro de lo que hay debajo de los barquitos (lo que se ve por los huecos).
+## Material de lo que hay debajo de los barquitos (lo que se ve por los huecos): una textura de
+## barcos apilados, alumbrada por las mismas luces que los barquitos.
 @export var mound_material: Material
 @export var knock_streams: Array[AudioStream] = []
 @export var cascade_stream: AudioStream
@@ -35,9 +36,6 @@ var _hit: AudioStreamPlayer
 var _fall_wait: float = 0.0
 var _flash_light: SpotLight3D
 var _kick_tween: Tween
-## Copias del material de relleno (montañas y paredes): su brillo sigue al rayo.
-var _fill: StandardMaterial3D
-var _wall_fill: StandardMaterial3D
 
 
 func _ready() -> void:
@@ -47,7 +45,6 @@ func _ready() -> void:
 	_noise.seed = settings.random_seed
 	_noise.frequency = 0.45
 	_read_model()
-	_make_fill_materials()
 	_build_shell()
 	_build_mounds()
 	_build_boats()
@@ -90,30 +87,6 @@ func _on_left() -> void:
 	t.tween_callback(_clear_loose)
 
 
-## El relleno entre los barcos es la textura de barcos apilados, que se alumbra sola: lo que hay
-## debajo de los barcos queda a la sombra y con las luces de la escena no se llega a ver.
-func _make_fill_materials() -> void:
-	var base: StandardMaterial3D = mound_material as StandardMaterial3D
-	if base == null:
-		return
-	_fill = base.duplicate() as StandardMaterial3D
-	_fill.emission_enabled = true
-	_fill.emission = Color.WHITE
-	_fill.emission_texture = base.albedo_texture
-	_wall_fill = _fill.duplicate() as StandardMaterial3D
-	# Las paredes no reciben la luz del rayo como una pared lisa: solo se ve la textura.
-	_wall_fill.albedo_color = Color(0.03, 0.03, 0.03)
-	_set_fill(0.0)
-
-
-func _set_fill(flash: float) -> void:
-	if _fill == null:
-		return
-	var energy: float = settings.fill_glow + flash * settings.fill_flash
-	_fill.emission_energy_multiplier = energy
-	_wall_fill.emission_energy_multiplier = energy * settings.wall_fill
-
-
 ## El primer rayo largo: deja ver la sala entera.
 func _reveal() -> void:
 	await get_tree().create_timer(settings.reveal_delay).timeout
@@ -124,9 +97,8 @@ func _reveal() -> void:
 func _process(delta: float) -> void:
 	var k: float = progress()
 	_cascade.volume_db = lerpf(settings.cascade_volume_start_db, settings.cascade_volume_end_db, k)
-	var flash: float = lightning.get_level() if lightning != null else 0.0
-	_flash_light.light_energy = flash * settings.flash_energy
-	_set_fill(flash)
+	if lightning != null:
+		_flash_light.light_energy = lightning.get_level() * settings.flash_energy
 	_fall_wait -= delta
 	if _fall_wait <= 0.0:
 		_fall_wait = lerpf(settings.fall_interval_start, settings.fall_interval_end, k) * _rng.randf_range(0.7, 1.3)
@@ -157,15 +129,12 @@ func _build_shell() -> void:
 	var z0: float = -STUB_FRONT
 	var z1: float = z0 - settings.room_depth
 	var h: float = settings.wall_height
-	# Solo las paredes de los costados, que quedan detrás de las montañas: las de la entrada y la
-	# salida se ven de cerca y de frente, y ahí la textura se notaría plana.
-	var walls: Material = _wall_fill if _wall_fill != null and settings.wall_fill > 0.0 else wall_material
 	add_entry_stub()
 	add_box(Vector3(0.0, -WALL * 0.5, (z0 + z1) * 0.5), Vector3(settings.room_width, WALL, settings.room_depth), floor_material)
 	add_wall_z(z0 + WALL * 0.5, -half, half, h, wall_material, 0.0)
 	add_wall_z(z1 - WALL * 0.5, -half, half, h, wall_material, path_x(1.0))
 	for side: float in [-1.0, 1.0]:
-		add_box(Vector3(side * (half + WALL * 0.5), h * 0.5, (z0 + z1) * 0.5), Vector3(WALL, h, settings.room_depth + WALL * 2.0), walls)
+		add_box(Vector3(side * (half + WALL * 0.5), h * 0.5, (z0 + z1) * 0.5), Vector3(WALL, h, settings.room_depth + WALL * 2.0), wall_material)
 	add_exit(path_x(1.0), z1, settings.exit_glow_energy, settings.exit_glow_range)
 
 
@@ -191,18 +160,23 @@ func _build_mounds() -> void:
 			var d: Vector3 = Vector3(a.x + GRID_CELL, heights[(j + 1) * (nx + 1) + i + 1], a.z - GRID_CELL)
 			if maxf(maxf(a.y, b.y), maxf(c.y, d.y)) <= 0.0:
 				continue
-			for v: Vector3 in [a, b, c, b, d, c]:
+			# En Godot la cara de adelante es la que se ve girar en sentido horario: en este orden
+			# las caras miran hacia arriba (hacia el paso), que es desde donde se las ve y se las pisa.
+			for v: Vector3 in [a, c, b, b, c, d]:
 				st.add_vertex(v)
 	st.generate_normals()
 	var mesh: ArrayMesh = st.commit()
 	var instance: MeshInstance3D = MeshInstance3D.new()
 	instance.name = "_GMounds"
 	instance.mesh = mesh
-	instance.material_override = _fill if _fill != null else mound_material
+	instance.material_override = mound_material
 	add_child(instance)
 	var body: StaticBody3D = StaticBody3D.new()
 	var shape: CollisionShape3D = CollisionShape3D.new()
-	shape.shape = mesh.create_trimesh_shape()
+	var trimesh: ConcavePolygonShape3D = mesh.create_trimesh_shape()
+	# Por si algo llega desde abajo o desde atrás: que choque igual.
+	trimesh.backface_collision = true
+	shape.shape = trimesh
 	body.add_child(shape)
 	instance.add_child(body)
 

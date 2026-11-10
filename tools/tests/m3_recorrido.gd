@@ -130,6 +130,8 @@ func _cross_interlude() -> void:
 		for i: int in n + 1:
 			points.append(start.lerp(end, float(i) / n))
 	var t0: float = _now()
+	if room is BoatFloodRoom and shots_dir == "":
+		await _try_to_cross_mounds(room as BoatFloodRoom, points)
 	var marks: Array[float] = [0.1, 0.3, 0.5, 0.62, 0.75, 0.92]
 	var next_mark: int = 0
 	for i: int in points.size():
@@ -155,6 +157,37 @@ func _cross_interlude() -> void:
 	Input.action_release("move_forward")
 	_check(mem.stage != Memory3House.Stage.INTERLUDE, "sala %s: se cruza y se sale (%.1f s)" % [label, _now() - t0])
 	await _wait(0.2)
+
+
+## Las montañas de barcos no se atraviesan ni se trepan: desde tres puntos del paso camina (y
+## salta) hacia cada costado y tiene que quedar pegado al borde del paso.
+func _try_to_cross_mounds(boats: BoatFloodRoom, points: Array[Vector3]) -> void:
+	var limit: float = boats.settings.path_half_width + 1.0
+	for k: float in [0.2, 0.5, 0.8]:
+		var index: int = int(points.size() * k)
+		for i: int in range(0, index + 1):
+			await _walk(boats.to_global(points[i]), 0.3, 25.0)
+		if failed:
+			return
+		for side: float in [-1.0, 1.0]:
+			var here: Vector3 = boats.to_local(player.global_position)
+			var target: Vector3 = boats.to_global(here + Vector3(side * 6.0, 0, 0))
+			Input.action_press("move_forward")
+			var t0: float = _now()
+			while _now() - t0 < 3.0:
+				_aim(target)
+				if int((_now() - t0) * 2.0) % 2 == 0:
+					Input.action_press("jump")
+				else:
+					Input.action_release("jump")
+				await get_tree().physics_frame
+			Input.action_release("jump")
+			Input.action_release("move_forward")
+			var now: Vector3 = boats.to_local(player.global_position)
+			var t: float = clampf((-InterludeRoom.STUB_FRONT - now.z) / boats.settings.room_depth, 0.0, 1.0)
+			var away: float = absf(now.x - boats.path_x(t))
+			_check(away <= limit and now.y < 1.2, "montañas de barcos: no se atraviesan ni se trepan (tramo %.0f%%, lado %+.0f: a %.2f m del centro del paso, altura %.2f)" % [k * 100.0, side, away, now.y])
+			await _walk(boats.to_global(points[index]), 0.3, 25.0)
 
 
 func _daughter_room() -> void:
