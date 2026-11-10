@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/daughter_room_layout.tscn" id="1_layout"]
 [ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="2_grid"]
 [ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="3_exit"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_lowpoly.glb" id="9_boat"]
 
 [sub_resource type="ShaderMaterial" id="m_hall"]
 render_priority = 0
@@ -376,19 +377,8 @@ outline_size = 6
 [node name="GivenBoat" type="Node3D" parent="Daughter"]
 position = Vector3(0, 0.62, 0.22)
 
-[node name="Hull" type="MeshInstance3D" parent="Daughter/GivenBoat"]
-mesh = SubResource("mesh_hull")
-material_override = SubResource("m_boat_wood")
-
-[node name="Mast" type="MeshInstance3D" parent="Daughter/GivenBoat"]
-position = Vector3(0, 0.15, 0)
-mesh = SubResource("mesh_mast")
-material_override = SubResource("m_boat_wood")
-
-[node name="Sail" type="MeshInstance3D" parent="Daughter/GivenBoat"]
-position = Vector3(0.06, 0.17, 0)
-mesh = SubResource("mesh_sail")
-material_override = SubResource("m_sail")
+[node name="Barquito" parent="Daughter/GivenBoat" instance=ExtResource("9_boat")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0, 0.07, 0)
 
 [node name="BoatLight" type="OmniLight3D" parent="Daughter/GivenBoat"]
 position = Vector3(0, 0.2, 0.15)

@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/wake_messages_room.gd" id="1"]
+[ext_resource type="Resource" path="res://config/m3_wake_messages.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/world/loop_portal.gd" id="4"]
+[ext_resource type="Material" path="res://assets/materials/m3/pared.tres" id="5"]
+[ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="6"]
+[ext_resource type="Material" path="res://assets/materials/m3/negro.tres" id="7"]
+[ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="8"]
+[ext_resource type="FontFile" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="9"]
+[ext_resource type="FontFile" path="res://assets/fonts/CaveatBrush-Regular.ttf" id="10"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_1.ogg" id="11"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_2.ogg" id="12"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_3.ogg" id="13"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/blackout_thud.ogg" id="14"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/dread_drone_loop.ogg" id="16"]
+
+[sub_resource type="BoxShape3D" id="shape_exit"]
+size = Vector3(1.6, 2.2, 0.8)
+
+[node name="SalaMensajes" type="Node3D" node_paths=PackedStringArray("entry", "exit_portal")]
+script = ExtResource("1")
+settings = ExtResource("2")
+calm_font = ExtResource("9")
+urgent_font = ExtResource("10")
+scrawl_streams = Array[AudioStream]([ExtResource("11"), ExtResource("12"), ExtResource("13")])
+thud_stream = ExtResource("14")
+entry = NodePath("Entry")
+exit_portal = NodePath("ExitPortal")
+wall_material = ExtResource("5")
+floor_material = ExtResource("6")
+ceiling_material = ExtResource("8")
+dark_material = ExtResource("7")
+drone_stream = ExtResource("16")
+stops_lightning = true
+
+[node name="Entry" type="Marker3D" parent="."]
+
+[node name="ExitPortal" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitPortal"]
+position = Vector3(0, 1.1, -1.2)
+shape = SubResource("shape_exit")

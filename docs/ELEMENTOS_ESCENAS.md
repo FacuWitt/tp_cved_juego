@@ -214,7 +214,7 @@ Subescenas: `house_layout.tscn` (cocina, pasillito oscuro del fondo, pasillo que
 1. Despierta dormido sobre la mesa de la cocina (`WakeUpIntro`, `config/wake_up_m3.tres`), con un rayo por la ventana. Aparece el barquito en la mano (`HeldItemView`, `config/held_boat.tres`); no se puede soltar.
 2. La hija lo llama de lejos. Sale de la cocina al pasillo; al fondo hay un **rellano con tres puertas cerradas** ((E) Abrir). Detrás de cada una hay un tramo oscuro con un umbral invisible (`LoopPortal`).
 3. **Regla del laberinto** (📝 era propuesta de PLAN_DEMO, ahora implementada así): hay 3 tramos (`good_doors`, por defecto centro → izquierda → derecha). La puerta buena tiene abajo la **luz cálida del velador**, cada tramo un poco más fuerte.
-   - **Puerta buena:** aparece de nuevo al comienzo del pasillo (tramo siguiente) y la voz de la hija se oye más cerca. En el último tramo aparece en el pasillo del cuarto de la hija.
+   - **Puerta buena:** entra a la sala intermedia de ese tramo (CL-077, ver abajo); al cruzarla aparece de nuevo al comienzo del pasillo (tramo siguiente) y la voz de la hija se oye más cerca. En el último tramo aparece en el pasillo del cuarto de la hija.
    - **Puerta mala:** aparece en el pasillito oscuro del fondo de la cocina, la voz se oye más lejos y la casa se degrada un escalón. **Se conserva el tramo ganado.**
    - El paso por el umbral conserva posición, orientación y velocidad (no hay corte ni fundido): sale de la oscuridad caminando.
 4. **Degradación** (0 a 1, arranca en 0,25 y sube 0,25 por error): pasillo más largo (8 m + hasta 8 m), más charcos visibles, fotos del pasillo más borradas, luz fría más fuerte. Con la casa degradada, **el fondo del pasillo se aleja mientras se camina hacia él**.
@@ -227,6 +227,20 @@ Tecla **0**: en el laberinto pasa al tramo siguiente; en el cuarto abre la puert
 ### Pasillos distintos y piernas que no responden 🧪 (CL-068)
 - **Cada tramo tiene otra forma** (`segment_shapes` en `memory_3_settings.tres`): por defecto el 1.º es recto (8 m), el 2.º dobla a la izquierda y después a la derecha (`4 L 3 R 4`) y el 3.º hace zigzag (`3 R 2 L 3 L 2 R 3`). Además **cada tramo es más angosto y más bajo** (1,6 → 1,35 → 1,1 m de ancho; 2,6 → 2,4 → 2,15 m de alto): la casa se va cerrando. El último tramo recto es el que se estira.
 - **Piernas que no responden** (`DreamSettings`, grupo "Piernas que no responden"): pasada una parte del pasillo, mientras empuja hacia adelante, a veces las piernas se traban: el personaje se frena en seco, la cámara tiembla y, si sigue empujando, el pasillo lo arrastra despacio hacia atrás. Aparece una línea ("Quiere avanzar y no puede.").
+
+### Salas intermedias: el sueño le pide que despierte ✅ (CL-077)
+Detrás de cada **puerta buena** hay una sala que hay que cruzar caminando antes del tramo siguiente (las malas siguen llevando a la cocina). Cada una se arma por código desde su `.tres` y vive lejos de la casa (a 100, 160 y 220 m); se llega y se sale por un tramo oscuro, como en el rellano. La salida tiene en el piso la franja cálida del velador.
+
+| Puerta | Sala | Escena y valores | Qué pasa |
+|---|---|---|---|
+| 1.ª | **Sala de los mensajes** | `sala_mensajes.tscn` · `config/m3_wake_messages.tres` | Cuarto vacío con una lamparita y tres frases blancas ("despertá", "por favor", "otra vez la pesadilla"). Aparecen más donde el jugador no mira (se oye el trazo atrás), después a mano y en rojo. Pasada la mitad, un apagón: al volver la luz está todo cubierto |
+| 2.ª | **Pasillo del hospital** | `pasillo_hospital.tscn` · `config/m3_hospital_corridor.tres` | Paredes de la casa, techo del hospital: paneles cuadrados cálidos que se pierden en la niebla. Se apagan a espaldas del jugador y laten con el bip (que se acelera). Apagón a mitad de camino; después quedan solo **las seis luces**, que lo siguen |
+| 3.ª | **Sala de los barcos** | `sala_barcos.tscn` · `config/m3_boat_flood.tres` | Sin techo, bajo la tormenta. Montañas de barquitos, un paso angosto en S y barquitos que caen cada vez más seguido (algunos le pegan). Un rayo largo al entrar la muestra entera. Del otro lado, el pasillo del cuarto de la hija |
+
+- Textos de los mensajes: 📝 propuesta (❓ confirmar), editables en `m3_wake_messages.tres`.
+- Sonidos de las salas en `assets/audio/m3/` (fabricados con `tools/m3_sonidos.py`): ❓ ajustar de oído.
+- Tecla **0** dentro de una sala: sale directo al tramo siguiente.
+- Prueba automática de toda la memoria: `godot --headless --fixed-fps 60 res://tools/tests/m3_recorrido.tscn` (con `-- sala=N` va directo a una sala; con `-- capturas=<carpeta>` y sin `--headless` saca capturas).
 
 ### Guía por el oído y fotos que se repiten 🧪 (CL-067)
 - Las tres puertas del rellano están **más separadas** (2,5 m entre sí) y **la voz de la hija suena detrás de la puerta buena** (`AudioStreamPlayer3D`), así se puede elegir también por el oído. Con la casa más degradada se oye más bajo. Hoy suena un placeholder (la cajita musical de la M2): falta grabar la voz (`voice_stream` en `memory_3_settings.tres`).
