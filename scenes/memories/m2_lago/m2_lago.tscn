@@ -1254,12 +1254,12 @@ player = NodePath("../../..")
 [node name="Bend" type="Node3D" parent="Player/Head/Camera3D/RodView"]
 
 [node name="Rod" type="MeshInstance3D" parent="Player/Head/Camera3D/RodView/Bend"]
-transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 0.35, -0.6062)
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.86603, 0, -0.86603, 0.5, 0, 0.35, -0.6062)
 mesh = SubResource("cm_rod")
 material_override = SubResource("m_wood_dark")
 
 [node name="Handle" type="CSGCylinder3D" parent="Player/Head/Camera3D/RodView/Bend"]
-transform = Transform3D(1, 0, 0, 0, 0.34202, -0.93969, 0, 0.93969, 0.34202, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.34202, 0.93969, 0, -0.93969, 0.34202, 0, 0, 0)
 radius = 0.022
 height = 0.3
 sides = 8

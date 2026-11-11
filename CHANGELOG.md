@@ -41,6 +41,14 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-082 · Memoria 2: la caña en la mano sale desde abajo a la derecha, no flota inclinada · 2026-11-11
+- **Rama / commits:** `fix/m2-cana-inclinada` · ver el commit "[M2] ... (CL-082)"
+- **Pedido por:** Facu, con una captura: "la caña siempre se vio así, como con una inclinación mal hecha [...] debería salir desde debajo a la derecha".
+- **Qué se hizo:** en `m2_lago.tscn` las matrices del palo (`Rod`) y del mango (`Handle`) de `RodView` estaban traspuestas, o sea giradas hacia el lado contrario. El palo iba del frente-abajo hacia el jugador-arriba: se veía como una línea que cruzaba la pantalla de abajo-izquierda a arriba-derecha, con la punta (donde nace el hilo) colgando en el aire. Se cambió el signo de la inclinación en las dos piezas: ahora el mango queda abajo a la derecha, el palo sube hacia el centro y la punta coincide con el `Tip` del que sale el hilo. No cambia ningún valor de config ni script.
+- **Verificación:** se proyectaron a pantalla (1152×648) los extremos del palo con la cámara real. Antes: de (634, 421) a (928, −75). Ahora: de (928, 746), fuera de pantalla abajo a la derecha, a (634, 233), que es la punta. No pude comparar una captura porque el post-proceso PS1 no se captura bien en headless.
+- **Ajustable en el Inspector:** `config/held_rod.tres` (`rest_position`, `rest_rotation_degrees`) para acercar, alejar o girar la caña entera.
+
+
 ### CL-081 · Memoria 3: los barquitos se apoyan sobre la montaña, hay más abajo que arriba y la textura de fondo va tal cual · 2026-11-10
 - **Rama / commits:** `memories/m3-casa` · ver el commit "[M3] ... (CL-081)"
 - **Pedido por:** Facu, con una captura de CL-080: "necesito que no estén tan metidos adentro de la textura plana los barcos, además, agregá más en la parte inferior y media, arriba no tanto [...] al final lo que más mira el personaje es hacia adelante y abajo"; "la textura usala tal cual, al parecer superposicionaste varias veces la imagen [...] subile un poquito el contraste"; "parece que están mezclados los barcos".
