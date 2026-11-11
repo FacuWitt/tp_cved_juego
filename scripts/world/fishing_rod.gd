@@ -9,6 +9,8 @@ signal fish_caught(count: int)
 
 enum State { OFF, READY, CASTING, WAITING, BITE, FIGHT, LANDING }
 
+const FISH_MODEL: PackedScene = preload("res://assets/models/m2_trucha/trucha_ps1.glb")
+
 @export var settings: FishingSettings
 @export var player: Player
 ## La caña en la mano. Tiene que tener un hijo "Bend" (gira al pelear) con un "Tip" (la punta).
@@ -27,7 +29,7 @@ var _tip: Node3D
 var _bobber: MeshInstance3D
 var _line: MeshInstance3D
 var _line_mesh: ImmediateMesh
-var _fish: MeshInstance3D
+var _fish: Node3D
 var _target: Vector3
 var _timer: float = 0.0
 var _time: float = 0.0
@@ -125,7 +127,9 @@ func _on_caught() -> void:
 	_fish.visible = true
 	var tween: Tween = create_tween()
 	tween.tween_method(func(k: float) -> void:
-		_fish.global_position = _target.lerp(_tip.global_position + Vector3.DOWN * 0.45, k) + Vector3.UP * sin(PI * k) * 1.2, 0.0, 1.0, 0.9)
+		_fish.global_position = _target.lerp(_tip.global_position + Vector3.DOWN * 0.45, k) + Vector3.UP * sin(PI * k) * 1.2
+		# Colgado de la boca, coletea y se va quedando quieto.
+		_fish.rotation_degrees.z = sin(k * TAU * settings.fish_wiggle_cycles) * settings.fish_wiggle_degrees * (1.0 - k), 0.0, 1.0, 0.9)
 	await tween.finished
 	await get_tree().create_timer(1.1).timeout
 	_fish.visible = false
@@ -224,17 +228,30 @@ func _build_line() -> void:
 
 
 func _build_fish() -> void:
-	_fish = MeshInstance3D.new()
+	_fish = Node3D.new()
 	_fish.name = "Fish"
-	var body: CapsuleMesh = CapsuleMesh.new()
-	body.radius = 0.06
-	body.height = 0.38
-	_fish.mesh = body
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.55, 0.6, 0.55)
-	mat.metallic = 0.5
-	mat.roughness = 0.3
-	_fish.material_override = mat
 	_fish.top_level = true
 	_fish.visible = false
 	add_child(_fish)
+	# La trucha (assets/models/m2_trucha) mira hacia +Z: se la para con la cabeza arriba y se
+	# la corre para que la boca, de donde cuelga el hilo, quede justo en el origen del nodo.
+	var model: Node3D = FISH_MODEL.instantiate() as Node3D
+	_fish.add_child(model)
+	var bounds: AABB = _meshes_bounds(model)
+	var fit: float = settings.fish_length / bounds.size.z
+	model.rotation_degrees = Vector3(-90.0, 0.0, 0.0)
+	model.scale = Vector3.ONE * fit
+	var mouth: Vector3 = bounds.get_center() + Vector3(0.0, 0.0, bounds.size.z * 0.5)
+	model.position = -(model.basis * mouth)
+
+
+## Caja que envuelve todas las mallas de un modelo, en el espacio del modelo.
+func _meshes_bounds(root: Node3D) -> AABB:
+	var result: AABB = AABB()
+	var first: bool = true
+	for node: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = node as MeshInstance3D
+		var box: AABB = root.global_transform.affine_inverse() * mi.global_transform * mi.get_aabb()
+		result = box if first else result.merge(box)
+		first = false
+	return result

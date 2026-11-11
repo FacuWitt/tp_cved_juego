@@ -46,6 +46,13 @@ extends Resource
 ## Captura inicial al enganchar.
 @export_range(0.0, 1.0, 0.01) var progress_start: float = 0.3
 
+@export_group("Pez sacado del agua")
+## Largo de la trucha que sale del agua, de la boca a la cola.
+@export_range(0.2, 1.5, 0.01, "suffix:m") var fish_length: float = 0.5
+## Cuánto se sacude de lado al salir del agua (grados) y cuántas sacudidas da hasta quedarse quieta.
+@export_range(0.0, 45.0, 0.5, "suffix:°") var fish_wiggle_degrees: float = 14.0
+@export_range(0.0, 10.0, 0.5) var fish_wiggle_cycles: float = 4.0
+
 @export_group("Textos")
 @export var cast_prompt: String = "(E) Lanzar"
 @export var hook_prompt: String = "¡Picó!  (E) Tirar"

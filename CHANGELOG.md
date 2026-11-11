@@ -41,6 +41,17 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-083 · Memoria 2: la trucha de verdad al sacar un pez del agua · 2026-11-11
+- **Rama / commits:** `m2/trucha` · ver el commit "[M2] ... (CL-083)"
+- **Pedido por:** Facu: "agregué el modelo de una trucha en recursos modelos 3d" (`MODELOS 3D/M2 LAGO/trucha.glb`). Se entendió que es para reemplazar el pez de la pesca; ❓ ABIERTO: confirmar que no iba a otro lado.
+- **Qué se hizo:**
+  - **Modelo:** el original tiene 27.918 triángulos y 5,7 MB de texturas, demasiado para algo que se ve un segundo. Con `tools/ps1ify` quedó en 1.500 triángulos y una sola textura de color de 512 px: `assets/models/m2_trucha/trucha_ps1.glb` (0,65 MB). El original se queda en la carpeta de recursos.
+  - **En el juego:** al sacar un pez, en lugar de la cápsula gris sale la trucha, colgando de la boca (de ahí sale el hilo), con la cabeza arriba, y se sacude de lado hasta quedarse quieta. El largo se ajusta solo al valor de `fish_length`, así que cambiar el modelo no obliga a tocar código.
+  - `FishingRod._fish` pasó de `MeshInstance3D` a `Node3D`. Nadie más lo usa: se buscó en todo el proyecto.
+- **Ajustable en el Inspector** (`config/fishing.tres`, grupo "Pez sacado del agua"): `fish_length` (0,5 m), `fish_wiggle_degrees` (14°), `fish_wiggle_cycles` (4).
+- **Verificación:** se instanció la escena de la M2, se sacó un pez y se midió: 0,5 m de alto con la boca exactamente en el punto donde termina el hilo, se sacude durante la subida, desaparece al terminar y cuenta como capturado. También se vio el modelo solo, sin el post-proceso (cabeza hacia +Z, colores de trucha arcoíris). No se probó en Forward+ ni el aspecto con el post-proceso PS1.
+
+
 ### CL-082 · Memoria 2: la caña en la mano sale desde abajo a la derecha, no flota inclinada · 2026-11-11
 - **Rama / commits:** `fix/m2-cana-inclinada` · ver el commit "[M2] ... (CL-082)"
 - **Pedido por:** Facu, con una captura: "la caña siempre se vio así, como con una inclinación mal hecha [...] debería salir desde debajo a la derecha".
