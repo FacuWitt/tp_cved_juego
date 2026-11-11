@@ -34,6 +34,7 @@ var _light: DirectionalLight3D
 var _env: WorldEnvironment
 var _page: TextureRect
 var _hint: Label
+var _audio: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -93,6 +94,7 @@ func open(item: InspectableItem, by: Node3D) -> void:
 
 	# 3: se abre la tapa (si tiene) y aparece la página.
 	if _hinge != null:
+		_play_cover_sound(settings.open_sound, settings.open_volume_db)
 		var o: Tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		o.tween_property(_hinge, "rotation:z", deg_to_rad(settings.open_angle), settings.open_time)
 		o.tween_method(_fly.bind(_held, _reading, 0.0), 0.0, 1.0, settings.open_time)
@@ -122,6 +124,7 @@ func close() -> void:
 	var from: Transform3D = _held
 	if _hinge != null:
 		from = _reading
+		_play_cover_sound(settings.close_sound, settings.close_volume_db)
 		var o: Tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		o.tween_property(_hinge, "rotation:z", 0.0, settings.open_time * 0.8)
 		o.tween_method(_fly.bind(_reading, _held, 0.0), 0.0, 1.0, settings.open_time * 0.8)
@@ -164,6 +167,15 @@ func _fly(t: float, from: Transform3D, to: Transform3D, spin_degrees: float) -> 
 	var spin: float = deg_to_rad(spin_degrees) * (1.0 - t) * sin(t * PI)
 	tr.basis = Basis(Vector3.UP, spin) * tr.basis
 	_clone.transform = tr
+
+
+## Suena el sonido de la tapa (abrir o cerrar), si hay uno asignado.
+func _play_cover_sound(sound: AudioStream, volume_db: float) -> void:
+	if sound == null:
+		return
+	_audio.stream = sound
+	_audio.volume_db = volume_db
+	_audio.play()
 
 
 func _set_blur(amount: float) -> void:
@@ -237,6 +249,10 @@ func _build() -> void:
 	_hint.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
 	_hint.add_theme_constant_override("outline_size", 6)
 	add_child(_hint)
+
+	_audio = AudioStreamPlayer.new()
+	_audio.bus = settings.sound_bus
+	add_child(_audio)
 
 
 func _layout_page() -> void:

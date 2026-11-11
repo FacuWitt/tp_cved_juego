@@ -15,7 +15,7 @@
 [ext_resource type="Script" uid="uid://bs67gb2yivlh5" path="res://scripts/ui/subtitle_display.gd" id="11_e"]
 [ext_resource type="Material" path="res://config/m1_cielo_ventana.tres" id="12_e"]
 [ext_resource type="Script" uid="uid://b2341wytdnnle" path="res://scripts/ui/inspect_view.gd" id="13_e"]
-[ext_resource type="Resource" path="res://config/inspect_settings.tres" id="14_e"]
+[ext_resource type="Resource" uid="uid://bcvltdlrfcqch" path="res://config/inspect_settings.tres" id="14_e"]
 [ext_resource type="AudioStream" uid="uid://bgunw6cccre0g" path="res://assets/audio/m1_habitacion/background.ogg" id="15_p6vd0"]
 
 [sub_resource type="Sky" id="Sky_dream"]

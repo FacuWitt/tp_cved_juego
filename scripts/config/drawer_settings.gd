@@ -11,3 +11,9 @@ extends Resource
 ## Sonido al abrir y al cerrar (opcionales).
 @export var open_sound: AudioStream
 @export var close_sound: AudioStream
+## Volumen del sonido de abrir. Subilo si el archivo de audio quedó bajito.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var open_volume_db: float = 0.0
+## Volumen del sonido de cerrar.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var close_volume_db: float = 0.0
+## Bus de audio por el que salen.
+@export var sound_bus: StringName = &"Master"

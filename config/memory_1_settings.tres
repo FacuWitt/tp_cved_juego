@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Memory1Settings" format=3 uid="uid://begc0s4t4q6u2"]
 
-[ext_resource type="AudioStream" uid="uid://vkopm8afjmhv" path="res://assets/audio/m1_habitacion/door_rattle.mp3" id="1_gjl0o"]
 [ext_resource type="Script" uid="uid://cfk6sxg8myjam" path="res://scripts/config/memory_1_settings.gd" id="1_m1set"]
+[ext_resource type="AudioStream" uid="uid://bb0arolohqqkc" path="res://assets/audio/m1_habitacion/rattle_door.wav" id="1_rs5ha"]
 [ext_resource type="AudioStream" uid="uid://k8xarxajqur5" path="res://assets/audio/m1_habitacion/creaky_door_hinge.wav" id="2_d3k4s"]
 [ext_resource type="AudioStream" uid="uid://xa36wkxtmbfk" path="res://assets/audio/m1_habitacion/put_down_correctly.wav" id="2_ok"]
 [ext_resource type="AudioStream" uid="uid://341csr5qh5eg" path="res://assets/audio/m1_habitacion/put_down_incorrectly.wav" id="3_bad"]
@@ -20,7 +20,7 @@ piece_incorrect_sound = ExtResource("3_bad")
 piece_incorrect_volume_db = -6.0
 door_open_sound = ExtResource("2_d3k4s")
 door_open_volume_db = 12.5
-door_knock_sound = ExtResource("1_gjl0o")
-door_knock_volume_db = 9.0
+door_knock_sound = ExtResource("1_rs5ha")
+door_knock_volume_db = 3.5
 solved_voice = ExtResource("6_rs5ha")
 solved_voice_volume_db = 3.0

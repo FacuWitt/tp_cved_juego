@@ -1,6 +1,13 @@
-[gd_resource type="Resource" script_class="DrawerSettings" format=3]
+[gd_resource type="Resource" script_class="DrawerSettings" format=3 uid="uid://xjff5jqy50ki"]
 
-[ext_resource type="Script" path="res://scripts/config/drawer_settings.gd" id="1_d"]
+[ext_resource type="Script" uid="uid://dxmppbv5xrfqg" path="res://scripts/config/drawer_settings.gd" id="1_d"]
+[ext_resource type="AudioStream" uid="uid://kpmekd474xx7" path="res://assets/audio/m1_habitacion/close_drawer.ogg" id="1_r774i"]
+[ext_resource type="AudioStream" uid="uid://ri5hgfn64xbo" path="res://assets/audio/m1_habitacion/open_drawer.ogg" id="2_5n5rf"]
 
 [resource]
 script = ExtResource("1_d")
+slide_time = 0.7000000000000001
+open_sound = ExtResource("2_5n5rf")
+close_sound = ExtResource("1_r774i")
+open_volume_db = 1.5
+close_volume_db = 1.5

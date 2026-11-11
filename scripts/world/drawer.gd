@@ -22,6 +22,9 @@ func _ready() -> void:
 	_closed_position = position
 	prompt_text = open_prompt
 	_audio = AudioStreamPlayer3D.new()
+	_audio.bus = settings.sound_bus
+	# El tope por defecto (3 dB) recortaría el sonido si se le sube el volumen.
+	_audio.max_db = 24.0
 	add_child(_audio)
 
 
@@ -48,4 +51,5 @@ func set_open(open: bool) -> void:
 	var sound: AudioStream = settings.open_sound if open else settings.close_sound
 	if sound != null:
 		_audio.stream = sound
+		_audio.volume_db = settings.open_volume_db if open else settings.close_volume_db
 		_audio.play()

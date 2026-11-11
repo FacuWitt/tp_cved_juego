@@ -37,6 +37,18 @@ extends Resource
 ## Texto de ayuda abajo mientras se lee.
 @export var close_hint: String = "(E) Cerrar"
 
+@export_group("Sonidos")
+## Sonido de la tapa al abrirse (el libro). Vacío = sin sonido.
+@export var open_sound: AudioStream
+## Volumen del sonido de abrir. Subilo si el archivo de audio quedó bajito.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var open_volume_db: float = 0.0
+## Sonido de la tapa al cerrarse. Vacío = sin sonido.
+@export var close_sound: AudioStream
+## Volumen del sonido de cerrar.
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var close_volume_db: float = 0.0
+## Bus de audio por el que salen.
+@export var sound_bus: StringName = &"Master"
+
 @export_group("Luz del objeto")
 ## Color e intensidad de la luz con la que se ve el objeto en la mano.
 @export var light_color: Color = Color(1.0, 0.85, 0.68)
