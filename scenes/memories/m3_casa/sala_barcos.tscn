@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world/boat_flood_room.gd" id="1"]
+[ext_resource type="Resource" path="res://config/m3_boat_flood.tres" id="2"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_lowpoly.glb" id="3"]
+[ext_resource type="Script" path="res://scripts/world/loop_portal.gd" id="4"]
+[ext_resource type="Material" path="res://assets/materials/m3/pared.tres" id="5"]
+[ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="6"]
+[ext_resource type="Material" path="res://assets/materials/m3/negro.tres" id="7"]
+[ext_resource type="Material" path="res://assets/materials/m3/monton_barcos.tres" id="8"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/wood_knock_1.ogg" id="9"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/wood_knock_2.ogg" id="10"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/wood_knock_3.ogg" id="11"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/wood_knock_4.ogg" id="12"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/wood_knock_5.ogg" id="13"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/boat_cascade_loop.ogg" id="14"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/boat_hit_body.ogg" id="15"]
+[ext_resource type="AudioStream" path="res://assets/audio/m3/dread_drone_loop.ogg" id="16"]
+
+[sub_resource type="BoxShape3D" id="shape_exit"]
+size = Vector3(1.6, 2.2, 0.8)
+
+[node name="SalaBarcos" type="Node3D" node_paths=PackedStringArray("entry", "exit_portal")]
+script = ExtResource("1")
+settings = ExtResource("2")
+boat_scene = ExtResource("3")
+mound_material = ExtResource("8")
+knock_streams = Array[AudioStream]([ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13")])
+cascade_stream = ExtResource("14")
+hit_stream = ExtResource("15")
+entry = NodePath("Entry")
+exit_portal = NodePath("ExitPortal")
+wall_material = ExtResource("7")
+floor_material = ExtResource("6")
+dark_material = ExtResource("7")
+drone_stream = ExtResource("16")
+
+[node name="Entry" type="Marker3D" parent="."]
+
+[node name="ExitPortal" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitPortal"]
+position = Vector3(0, 1.1, -1.2)
+shape = SubResource("shape_exit")

@@ -4,14 +4,15 @@ extends Memory
 ## El protagonista, adulto, se despierta en la mesa de la cocina por un trueno, con el barquito en
 ## la mano. Tiene que llegar al cuarto de su hija para despedirse, pero la casa se repite: al final
 ## del pasillo hay tres puertas y una sola es la buena (la que tiene la luz del velador abajo).
-## La buena lleva al tramo siguiente; las otras devuelven a la cocina, con la casa más degradada
+## La buena da a una sala intermedia (`interludes`: los mensajes, el pasillo del hospital, los
+## barcos) que hay que cruzar para llegar al tramo siguiente; las otras devuelven a la cocina, con la casa más degradada
 ## (pasillo más largo, más agua, fotos más borrosas), pero se conserva el tramo ganado.
 ## En el cuarto (el de la M1, redecorado) le deja el barquito a la hija: "Cuidámelo hasta que vuelva".
 ## La casa se estabiliza, se abre el camino a la entrada y al salir por la puerta de casa
 ## la memoria se completa (GameFlow funde a negro y empieza la M4).
 ## Este script solo ordena la memoria: el pasillo, los umbrales y la salida viven en sus clases.
 
-enum Stage { WAKE, MAZE, ROOM, GIVING, STABLE }
+enum Stage { WAKE, MAZE, INTERLUDE, ROOM, GIVING, STABLE }
 
 ## Frames de física después de un traslado en los que se ignoran los umbrales (margen técnico, no de feel).
 const CARRY_GRACE_FRAMES: int = 3
@@ -50,6 +51,11 @@ const CARRY_GRACE_FRAMES: int = 3
 @export var room_arrival: Node3D
 ## La voz de la hija: suena detrás de la puerta buena para guiar con el oído.
 @export var daughter_voice: AudioStreamPlayer3D
+## Salas intermedias: la que hay detrás de la puerta buena de cada tramo (misma posición que
+## `good_doors`). Si para un tramo no hay sala, la puerta buena lleva directo al tramo siguiente.
+@export var interludes: Array[InterludeRoom] = []
+## El ambiente de la escena (las salas intermedias le cambian la niebla mientras se las cruza).
+@export var world_environment: WorldEnvironment
 
 @export_group("Degradación")
 ## Contenedores de charcos: se muestran más hijos cuanto más degradada está la casa.
@@ -102,6 +108,11 @@ var _open_doors: Dictionary = {}
 var _door_tweens: Dictionary = {}
 var _cold_base: Array[float] = []
 var _glow_lights: Array[OmniLight3D] = []
+## La sala intermedia que se está cruzando (null fuera de ellas).
+var _interlude: InterludeRoom
+## Luz ambiente y cielo de la escena al empezar (para devolvérselos a las salas intermedias).
+var _ambient_base: float = 0.0
+var _sky_base: float = 1.0
 
 
 func _ready() -> void:
@@ -145,6 +156,17 @@ func _ready() -> void:
 		dream.blinked.connect(shifter.shift_all)
 	if dream != null:
 		dream.stuck_started.connect(_on_stuck)
+	if world_environment != null:
+		_ambient_base = world_environment.environment.ambient_light_energy
+		_sky_base = world_environment.environment.background_energy_multiplier
+	for room: InterludeRoom in interludes:
+		if room == null:
+			continue
+		room.base_ambient = _ambient_base
+		room.base_sky = _sky_base
+		room.exit_portal.crossed.connect(_on_interlude_exit.bind(room))
+		if dream != null:
+			dream.blinked.connect(room.on_blink)
 
 	if daughter_voice != null:
 		daughter_voice.stream = settings.voice_stream
@@ -179,7 +201,11 @@ func _process(delta: float) -> void:
 		_update_creep(delta)
 	if dream != null:
 		var in_maze: bool = stage == Stage.MAZE
-		dream.drag = hallway.progress(player.global_position) if in_maze else 0.0
+		if in_maze:
+			dream.drag = hallway.progress(player.global_position)
+		else:
+			# En una sala intermedia las piernas pesan lo que diga la sala.
+			dream.drag = _interlude.drag() if _interlude != null else 0.0
 		# "Atrás" es hacia la entrada del tramo donde está parado.
 		dream.pull_direction = -hallway.forward_at(player.global_position) if in_maze else Vector3.ZERO
 
@@ -254,9 +280,42 @@ func _resolve_door(index: int, from: LoopPortal) -> void:
 		_lose_way(from)
 
 
-## Eligió la puerta buena: pasa al tramo siguiente, o al cuarto si era el último.
+## Eligió la puerta buena: entra a la sala intermedia de ese tramo (si la hay); si no, sigue de largo.
 ## `from` es el umbral por el que pasó (null si lo pidió la tecla de prueba).
 func _advance(from: LoopPortal) -> void:
+	var room: InterludeRoom = interludes[segment] if segment < interludes.size() else null
+	_close_landing_doors()
+	if room == null:
+		_next_segment(from)
+		return
+	stage = Stage.INTERLUDE
+	_interlude = room
+	if daughter_voice != null:
+		daughter_voice.stop()
+	_carry(from, room.entry)
+	room.level = _degradation
+	room.enter(player, world_environment.environment if world_environment != null else null, lightning)
+
+
+## Cruzó el umbral del fondo de una sala intermedia.
+func _on_interlude_exit(_index: int, room: InterludeRoom) -> void:
+	if stage != Stage.INTERLUDE or room != _interlude:
+		return
+	# Igual que en el rellano: no se mueve el cuerpo dentro de la señal de la física.
+	_leave_interlude.call_deferred(room.exit_portal)
+
+
+func _leave_interlude(from: LoopPortal) -> void:
+	if stage != Stage.INTERLUDE:
+		return
+	_interlude.leave()
+	_interlude = null
+	stage = Stage.MAZE
+	_next_segment(from)
+
+
+## Pasa al tramo siguiente del pasillo, o al cuarto de la hija si era el último.
+func _next_segment(from: LoopPortal) -> void:
 	segment += 1
 	if segment >= settings.good_doors.size():
 		stage = Stage.ROOM
@@ -267,8 +326,9 @@ func _advance(from: LoopPortal) -> void:
 	else:
 		_carry(from, hallway_start)
 		_refresh_segment()
+		if daughter_voice != null and daughter_voice.stream != null and not daughter_voice.playing:
+			daughter_voice.play()
 		subtitles.show_line(_pick(settings.closer_lines, segment - 1, true), settings.line_duration)
-	_close_landing_doors()
 
 
 ## Eligió mal: vuelve al fondo de la cocina y la casa se degrada un poco más. El tramo se conserva.
@@ -367,6 +427,9 @@ func _apply_degradation(level: float) -> void:
 		dead_end.level = _degradation
 	if rising_water != null:
 		rising_water.level = _degradation
+	for room: InterludeRoom in interludes:
+		if room != null:
+			room.level = _degradation
 	for container: Node3D in water:
 		var count: int = container.get_child_count()
 		var shown: int = roundi(_degradation * count)
@@ -450,6 +513,8 @@ func _debug_skip() -> void:
 	match stage:
 		Stage.MAZE:
 			_advance(null)
+		Stage.INTERLUDE:
+			_leave_interlude(null)
 		Stage.ROOM:
 			if not _open_doors.get(room_door, false):
 				_open_door(room_door)

@@ -22,6 +22,10 @@
 [ext_resource type="Script" path="res://scripts/fx/dream_shifter.gd" id="20_shift"]
 [ext_resource type="Script" path="res://scripts/fx/hallway_dead_end.gd" id="21_dead"]
 [ext_resource type="Script" path="res://scripts/fx/rising_water.gd" id="22_water"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_mensajes.tscn" id="23_msgs"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/pasillo_hospital.tscn" id="24_hosp"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_barcos.tscn" id="25_boats"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="26_boat"]
 
 [sub_resource type="Environment" id="Environment_m3"]
 background_mode = 1
@@ -50,7 +54,7 @@ height = 0.22
 [sub_resource type="PrismMesh" id="mesh_sail"]
 size = Vector3(0.14, 0.16, 0.01)
 
-[node name="M3Casa" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "dream", "shifter", "dead_end", "rising_water", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "daughter_voice", "water", "repeating_photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
+[node name="M3Casa" type="Node3D" node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "dream", "shifter", "dead_end", "rising_water", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "daughter_voice", "interludes", "world_environment", "water", "repeating_photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
 script = ExtResource("1_mem")
 settings = ExtResource("2_mem")
 player = NodePath("Player")
@@ -72,6 +76,8 @@ hallway_start = NodePath("HouseLayout/Anchors/HallwayStart")
 kitchen_back = NodePath("HouseLayout/Anchors/KitchenBack")
 room_arrival = NodePath("DaughterRoom/Anchors/RoomArrival")
 daughter_voice = NodePath("HouseLayout/Hallway/FarEnd/DaughterVoice")
+interludes = [NodePath("SalaMensajes"), NodePath("PasilloHospital"), NodePath("SalaBarcos")]
+world_environment = NodePath("WorldEnvironment")
 water = [NodePath("HouseLayout/Water"), NodePath("DaughterRoom/Water")]
 repeating_photos = NodePath("HouseLayout/Hallway/Photos")
 cold_lights = [NodePath("HouseLayout/Kitchen/KitchenLight"), NodePath("HouseLayout/Hallway/FarEnd/LandingLight"), NodePath("DaughterRoom/CorridorLight"), NodePath("DaughterRoom/Entrance/EntranceLight")]
@@ -90,6 +96,15 @@ environment = SubResource("Environment_m3")
 
 [node name="DaughterRoom" parent="." instance=ExtResource("4_room")]
 position = Vector3(40, 0, 0)
+
+[node name="SalaMensajes" parent="." instance=ExtResource("23_msgs")]
+position = Vector3(100, 0, 0)
+
+[node name="PasilloHospital" parent="." instance=ExtResource("24_hosp")]
+position = Vector3(160, 0, 0)
+
+[node name="SalaBarcos" parent="." instance=ExtResource("25_boats")]
+position = Vector3(220, 0, 0)
 
 [node name="LightningLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 30, 0)
@@ -112,19 +127,8 @@ script = ExtResource("7_held")
 settings = ExtResource("8_held")
 player = NodePath("../../..")
 
-[node name="Hull" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
-mesh = SubResource("mesh_hull")
-material_override = SubResource("m_boat_wood")
-
-[node name="Mast" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
-position = Vector3(0, 0.15, 0)
-mesh = SubResource("mesh_mast")
-material_override = SubResource("m_boat_wood")
-
-[node name="Sail" type="MeshInstance3D" parent="Player/Head/Camera3D/BoatView"]
-position = Vector3(0.06, 0.17, 0)
-mesh = SubResource("mesh_sail")
-material_override = SubResource("m_sail")
+[node name="Barquito" parent="Player/Head/Camera3D/BoatView" instance=ExtResource("26_boat")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0, 0.07, 0)
 
 [node name="WakeUp" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "lightning")]
 script = ExtResource("11_wake")
