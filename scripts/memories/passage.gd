@@ -55,6 +55,7 @@ var _descend_t: float = 0.0
 var _surface_glow: MeshInstance3D
 var _surface_material: ShaderMaterial
 var _ambience: AudioStreamPlayer
+var _beep_timer: float = 0.0
 
 const VOICE_BUS: StringName = &"PassageVoices"
 
@@ -94,6 +95,7 @@ func _process(delta: float) -> void:
 			and _time >= _voice_busy_until:
 		_play_voice(voices_heard)
 	_update_lights(delta)
+	_update_monitor(delta)
 	if not is_completed:
 		var to_goal: Vector3 = _goal.global_position - player.global_position
 		if not settings.descend:
@@ -465,6 +467,34 @@ func _speck_material(color: Color, glow: float) -> StandardMaterial3D:
 
 
 ## Sonido de fondo en bucle (si el pasaje tiene uno).
+## El bip del monitor y el sonido de fondo siguen el avance del camino: cuanto más cerca de la luz,
+## más fuerte y más claro el bip (y, si se configura, más bajo el fondo).
+func _update_monitor(delta: float) -> void:
+	if _ambience != null:
+		_ambience.volume_db = lerpf(settings.ambience_db, settings.ambience_end_db, progress)
+	if settings.beep_muffled == null and settings.beep_clear == null:
+		return
+	_beep_timer -= delta
+	if _beep_timer > 0.0:
+		return
+	_beep_timer = settings.beep_interval
+	var db: float = lerpf(settings.beep_db_start, settings.beep_db_end, progress)
+	var clarity: float = clampf(lerpf(settings.beep_clarity_start, settings.beep_clarity_end, progress), 0.0, 1.0)
+	_play_beep(settings.beep_muffled, db + linear_to_db(maxf(1.0 - clarity, 0.0001)))
+	_play_beep(settings.beep_clear, db + linear_to_db(maxf(clarity, 0.0001)))
+
+
+func _play_beep(stream: AudioStream, db: float) -> void:
+	if stream == null or db < -70.0:
+		return
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.stream = stream
+	p.volume_db = db
+	add_child(p)
+	p.finished.connect(p.queue_free)
+	p.play()
+
+
 func _start_ambience() -> void:
 	if settings.ambience == null:
 		return

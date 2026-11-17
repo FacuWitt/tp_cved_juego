@@ -53,6 +53,23 @@ extends Resource
 @export_range(0.0, 45.0, 0.5, "suffix:°") var fish_wiggle_degrees: float = 14.0
 @export_range(0.0, 10.0, 0.5) var fish_wiggle_cycles: float = 4.0
 
+@export_group("Sonido")
+## Zumbido del hilo al lanzar y la boya cayendo al agua.
+@export var cast_sound: AudioStream
+@export var bobber_sound: AudioStream
+## Chapoteo de la picada (cuando aparece "¡Picó!").
+@export var bite_sound: AudioStream
+## Carrete: suena en loop mientras dura la pelea con W / S.
+@export var reel_sound: AudioStream
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var reel_db: float = -8.0
+## El pez saliendo del agua.
+@export var fish_out_sound: AudioStream
+## Volumen de los sonidos de la pesca (todos menos el carrete).
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -4.0
+## Voz para cada frase de `caught_lines` (mismo orden). Vacía = solo subtítulo.
+@export var caught_voices: Array[AudioStream] = []
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var voice_db: float = -3.0
+
 @export_group("Textos")
 @export var cast_prompt: String = "(E) Lanzar"
 @export var hook_prompt: String = "¡Picó!  (E) Tirar"

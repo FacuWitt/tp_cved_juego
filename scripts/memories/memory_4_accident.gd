@@ -50,6 +50,14 @@ var _wet: WetFx
 var _post_fx: PostFx
 var _lens_wet: float = 0.0
 var _head: Node3D
+var _storm_audio: StormAudio
+var _ship_creak: AudioStreamPlayer
+var _engine: AudioStreamPlayer
+var _hull_timer: float = 3.0
+var _chain: AudioStreamPlayer
+var _chain_slip: AudioStreamPlayer
+var _horn_played: bool = false
+var _voice: AudioStreamPlayer
 var _camera: Camera3D
 var _axe: AxeView
 var _has_axe: bool = false
@@ -98,6 +106,11 @@ func _ready() -> void:
 	_axe.player = player
 	_camera.add_child(_axe)
 	axe_item.equipped.connect(_on_axe_equipped)
+	_setup_storm_audio()
+	_ship_creak = _make_loop("ShipCreak", settings.ship_creak_loop)
+	_engine = _make_loop("ShipEngine", settings.engine_loop)
+	_chain = _make_loop("AnchorChain", settings.chain_loop)
+	_chain_slip = _make_loop("AnchorChainSlip", settings.chain_slip_loop)
 	_debug = DebugTools.new()
 	_debug.name = "DebugTools"
 	_debug.player = player
@@ -143,6 +156,7 @@ func _begin_level() -> void:
 	if settings.play_intro:
 		await _play_intro()
 		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
+		_say_voice(settings.intro_voice)
 		lightning.start()
 	else:
 		lightning.start()
@@ -153,6 +167,7 @@ func _say_intro() -> void:
 	await get_tree().create_timer(settings.intro_delay).timeout
 	if stage == Stage.DECK and subtitles.text == "":
 		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
+		_say_voice(settings.intro_voice)
 
 
 ## El jugador despierta en lo alto de la escalera, a oscuras. Un relámpago largo le muestra la tormenta
@@ -184,6 +199,7 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _axe != null:
 		_axe.boat_roll_degrees = _camera.rotation_degrees.z if _camera != null else 0.0
+	_update_ship_sound(delta)
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
 	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active and not _debug.is_flying
@@ -207,6 +223,7 @@ func _process(delta: float) -> void:
 			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
 				_set_underwater_view(false)
 				rain.emitting = true
+				_play_ship_horn()
 	if stage >= Stage.SURFACE:
 		_float_ship()
 	if stage >= Stage.SURFACE and searchlight != null:
@@ -277,6 +294,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if stage == Stage.ANCHOR and event.is_action_pressed("interact") and not _overboard:
 		if _cranking:
 			anchor_winch.press()
+			_play_random(settings.crank_sounds)
 			_kick_crank_camera()
 		elif _aiming_crank():
 			_engage_crank()
@@ -313,6 +331,7 @@ func _begin_qte() -> void:
 
 func _on_qte_hit() -> void:
 	_axe.swing_hit()
+	_play_random(settings.axe_chop_sounds)
 	_shake_amount = 0.05
 	if _chop_rope != null:
 		_chop_rope.add_hit()
@@ -333,9 +352,13 @@ func _on_qte_missed() -> void:
 	_roll_extra = minf(_roll_extra + settings.roll_per_miss, 8.0)
 	_shake_amount = 0.12
 	_axe.swing_miss()
+	_play_sfx(settings.axe_miss_sound)
 	if not settings.urge_lines.is_empty():
-		var line: String = settings.urge_lines[randi() % settings.urge_lines.size()]
+		var urge: int = randi() % settings.urge_lines.size()
+		var line: String = settings.urge_lines[urge]
 		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+		if urge < settings.urge_voices.size():
+			_say_voice(settings.urge_voices[urge])
 	await get_tree().create_timer(settings.retry_delay).timeout
 	if stage == Stage.DECK:
 		_busy = false
@@ -362,10 +385,12 @@ func _on_axe_equipped(from_global: Transform3D) -> void:
 	_has_axe = true
 	_axe.shiver = 0.0
 	_axe.equip(from_global)
+	_play_sfx(settings.axe_pickup_sound)
 
 
 func _on_rope_severed() -> void:
 	_ropes_cut += 1
+	_play_sfx(settings.rope_snap_sound)
 	_axe.shiver = axe_settings.shiver_per_rope * float(_ropes_cut)
 	_shake_amount = 0.2
 	_active_rope = null
@@ -391,6 +416,7 @@ func _fall_overboard() -> void:
 	_shake_amount = 0.6
 	if splash_player != null:
 		splash_player.play()
+	_set_storm_underwater(true)
 	# Golpe de frío: el campo de visión se abre de golpe y todo se va a negro.
 	var dive: Tween = create_tween().set_parallel(true)
 	dive.tween_property(_camera, "fov", _base_fov + 22.0, 0.25).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
@@ -415,11 +441,13 @@ func _fall_overboard() -> void:
 	_roll_extra = minf(_roll_extra + settings.fall_roll_penalty, 8.0)
 	if stage <= Stage.WARNING:
 		player.set_physics_process(true)
+	_set_storm_underwater(false)
 	var back_tween: Tween = create_tween().set_parallel(true)
 	back_tween.tween_property(_camera, "fov", _base_fov, 1.0)
 	back_tween.tween_property(black_overlay, "modulate:a", 0.0, 1.0)
 	back_tween.tween_property(water_overlay, "modulate:a", 0.0, 1.6)
 	subtitles.show_line(settings.fall_rescue_line % settings.protagonist_name, settings.line_duration)
+	_say_voice(settings.fall_rescue_voice)
 	await back_tween.finished
 	_overboard = false
 	if stage == Stage.DECK or stage == Stage.ANCHOR:
@@ -439,6 +467,7 @@ func _begin_anchor() -> void:
 		await get_tree().process_frame
 	var line: String = settings.anchor_line
 	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration * 1.4)
+	_say_voice(settings.anchor_voice)
 	# Como con el hacha: la vista gira sola hacia la manivela y el tripulante la mira.
 	if crew != null:
 		crew.look_target = anchor_winch.aim_area
@@ -454,6 +483,7 @@ func _warn_crank_too_early() -> void:
 	_axe_point_cooldown = settings.axe_point_cooldown
 	var line: String = settings.crank_too_early_line
 	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+	_say_voice(settings.crank_too_early_voice)
 
 
 func _aiming_crank() -> bool:
@@ -481,6 +511,7 @@ func _update_crank(delta: float) -> void:
 		_anchor_urge_cd = settings.anchor_urge_interval
 		var line: String = settings.anchor_urge_line
 		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+		_say_voice(settings.anchor_urge_voice)
 
 
 ## Se para frente a la manivela: no camina (puede mirar) hasta soltarla o terminar.
@@ -522,6 +553,7 @@ func _kick_crank_camera() -> void:
 
 
 func _on_anchor_raised() -> void:
+	_play_sfx(settings.anchor_top_sound)
 	_leave_crank()
 	anchor_winch.is_active = false
 	_finish_deck()
@@ -546,10 +578,13 @@ func _finish_deck() -> void:
 	while _overboard:
 		await get_tree().process_frame
 	subtitles.show_line(settings.success_line, settings.line_duration)
+	# El festejo va aparte de la voz de los gritos: el "¡CUIDADO!" se le superpone sin cortarlo.
+	_play_sfx(settings.success_voice, settings.voice_db - settings.sfx_db)
 	await get_tree().create_timer(settings.warning_delay).timeout
 	# El grito de advertencia y un rayo que deja ver lo que viene.
 	lightning.flash_now(1.0)
 	subtitles.show_line(settings.warning_line % settings.protagonist_name, settings.line_duration)
+	_say_voice(settings.warning_voice)
 	_start_wave()
 
 
@@ -591,6 +626,8 @@ func _on_wave_covered() -> void:
 	if _has_axe:
 		_axe.torn_away()
 		player.clear_held_object()
+	_set_storm_underwater(true)
+	_play_sfx(settings.capsize_sound)
 	var slam: Tween = create_tween()
 	slam.tween_property(slam_overlay, "modulate:a", 1.0, 0.35).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	await slam.finished
@@ -709,11 +746,13 @@ func _go_underwater_after_dip() -> void:
 		return
 	world_environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	_set_underwater_view(true)
+	_play_sfx(settings.bubbles_sound)
 
 
 ## Bajo el agua no existe nada más que la oscuridad: ni el barco, ni sus luces, ni la lluvia, ni el mar, ni el cielo.
 func _set_underwater_view(underwater: bool) -> void:
 	_under_view = underwater
+	_set_storm_underwater(underwater)
 	var env: Environment = world_environment.environment
 	env.background_mode = Environment.BG_COLOR if underwater else Environment.BG_SKY
 	env.background_color = Color.BLACK
@@ -751,6 +790,109 @@ func _show_rescue_light() -> void:
 	complete()
 
 
+# ---------- Sonido de la tormenta ----------
+
+## Arma el sonido de la tormenta (el mismo `StormAudio` de la M2) con la tormenta al máximo,
+## y hace que cada rayo traiga su trueno.
+func _setup_storm_audio() -> void:
+	if settings.storm_audio == null:
+		return
+	_storm_audio = StormAudio.new()
+	_storm_audio.name = "StormAudio"
+	_storm_audio.settings = settings.storm_audio
+	add_child(_storm_audio)
+	_storm_audio.set_storm(1.0)
+	lightning.flashed.connect(_storm_audio.on_flash)
+
+
+## El ambiente del barco suena mientras se está en cubierta (no al caerse al agua ni después de la ola).
+func _update_ship_sound(delta: float) -> void:
+	var on_deck: bool = stage <= Stage.WAVE and not _overboard
+	var follow: float = clampf(delta * 2.0, 0.0, 1.0)
+	if _ship_creak != null:
+		_ship_creak.volume_db = lerpf(_ship_creak.volume_db, settings.ship_creak_db if on_deck else -80.0, follow)
+	if _engine != null:
+		_engine.volume_db = lerpf(_engine.volume_db, settings.engine_db if on_deck else -80.0, follow)
+	# La cadena del ancla suena mientras sube o mientras se resbala para abajo.
+	if anchor_winch != null:
+		var chain_follow: float = clampf(delta * 10.0, 0.0, 1.0)
+		var slipping: bool = not _overboard and anchor_winch.is_slipping() and anchor_winch.progress > 0.0
+		var rising: bool = not _overboard and anchor_winch.is_cranking()
+		# Con sonido propio para el resbalón, la cadena normal suena solo al subir.
+		if _chain_slip != null:
+			_chain_slip.volume_db = lerpf(_chain_slip.volume_db, settings.chain_db if slipping else -80.0, chain_follow)
+			slipping = false
+		if _chain != null:
+			_chain.volume_db = lerpf(_chain.volume_db, settings.chain_db if (rising or slipping) else -80.0, chain_follow)
+			_chain.pitch_scale = settings.chain_slip_pitch if slipping else 1.0
+	if on_deck and not settings.hull_wave_sounds.is_empty():
+		_hull_timer -= delta
+		if _hull_timer <= 0.0:
+			_hull_timer = randf_range(settings.hull_wave_interval_min, settings.hull_wave_interval_max)
+			_play_random(settings.hull_wave_sounds, settings.hull_wave_db - settings.sfx_db)
+
+
+func _make_loop(node_name: String, stream: AudioStream) -> AudioStreamPlayer:
+	if stream == null:
+		return null
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.name = node_name
+	var looped: AudioStream = stream.duplicate() as AudioStream
+	if looped is AudioStreamOggVorbis:
+		(looped as AudioStreamOggVorbis).loop = true
+	p.stream = looped
+	p.volume_db = -80.0
+	add_child(p)
+	p.play()
+	return p
+
+
+## Suena un efecto una vez (si hay audio). `offset_db` se suma al volumen de los efectos.
+func _play_sfx(stream: AudioStream, offset_db: float = 0.0) -> void:
+	if stream == null:
+		return
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.stream = stream
+	p.volume_db = settings.sfx_db + offset_db
+	p.pitch_scale = randf_range(0.95, 1.05)
+	add_child(p)
+	p.finished.connect(p.queue_free)
+	p.play()
+
+
+func _play_random(pool: Array[AudioStream], offset_db: float = 0.0) -> void:
+	if not pool.is_empty():
+		_play_sfx(pool[randi() % pool.size()], offset_db)
+
+
+## Grita un tripulante (si hay audio). Una voz a la vez: la nueva corta a la anterior.
+func _say_voice(stream: AudioStream) -> void:
+	if stream == null:
+		return
+	if _voice == null:
+		_voice = AudioStreamPlayer.new()
+		_voice.name = "CrewVoice"
+		add_child(_voice)
+	_voice.stream = stream
+	_voice.volume_db = settings.voice_db
+	_voice.play()
+
+
+## Al sacar la cabeza del agua, el barco que se aleja toca la bocina a lo lejos (una sola vez).
+func _play_ship_horn() -> void:
+	if _horn_played or settings.ship_horn_sound == null:
+		return
+	_horn_played = true
+	await get_tree().create_timer(settings.ship_horn_delay).timeout
+	if stage == Stage.SURFACE:
+		_play_sfx(settings.ship_horn_sound, settings.ship_horn_db - settings.sfx_db)
+
+
+## Bajo el agua la tormenta se apaga y suena ahogado; al salir vuelve.
+func _set_storm_underwater(value: bool) -> void:
+	if _storm_audio != null:
+		_storm_audio.set_underwater(value)
+
 # ---------- Lluvia y abismo ----------
 
 ## Gotas cercanas, bruma fría, aliento y gotas en la lente: que todo se sienta mojado y helado.
@@ -785,6 +927,7 @@ func _point_to_axe(turn_view: bool) -> void:
 	_axe_hint_timer = -1.0
 	var line: String = settings.axe_hint_line
 	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+	_say_voice(settings.axe_hint_voice)
 	if crew != null:
 		crew.look_target = axe_item
 		_crew_look_timer = settings.crew_look_axe_time

@@ -41,6 +41,19 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-084 · Sonido de la Memoria 2 (lago y río) y de la Memoria 4 (barco) · 2026-11-12
+- **Rama / commits:** sin commitear (el equipo lo sube a mano a su rama)
+- **Pedido por:** la persona del equipo a cargo de ambientación y sonido: "le quiero cambiar todos los sonidos porque [...] están feos". Eligió y grabó cada sonido y cada voz; Claude los recortó, niveló y conectó.
+- **Qué se hizo:**
+  - **M2:** se reemplazaron los sonidos provisorios compartidos con la M2 de Mica (remos, golpes, truenos, agua contra el bote, bajo el agua, latido, jadeo, mano del padre) y las 12 voces del padre de `m2_remos/`. Sonidos nuevos en `assets/audio/m2_lago/`: pesca (lanzar, boya, picada, carrete en loop durante la pelea, trucha fuera del agua), red (tirarla, trabada) y cuchillo; 14 voces del padre que antes eran solo subtítulo y las dos frases del chico al sacar cada trucha ("¡Una trucha!", "¡Otra más!").
+  - **M4:** antes solo tenía el chapuzón de la caída. Se le enchufó el mismo `StormAudio` de la M2 (lluvia, viento, truenos con cada rayo, ahogado bajo el agua) y se agregaron casco que cruje y motor en loop, olas que golpean el casco cada 4 a 9 s, hacha (agarrar, golpes, errado), soga que se corta, manivela, cadena del ancla (sube / se resbala), ancla arriba, vuelco, burbujas al hundirse, bocina lejana al salir a la superficie y las 11 frases de la tripulación ("¡LO LOGRAMOS!" es una mezcla de tres voces desfasadas). Sonidos en `assets/audio/m4/`.
+  - **Nombre del protagonista:** **Santi** (decidido por el equipo); reemplaza "NOMBRE" en los subtítulos de la M4.
+- **Por qué (decisión de diseño):** cada sonido nuevo tiene su `AudioStream` y su volumen en el Resource de la memoria (`memory_2_settings`, `fishing`, `memory_4_settings`), siguiendo la regla de tuning: el equipo cambia sonidos y volúmenes desde el Inspector sin tocar código. Las voces se recortaron (silencio al final) y se igualaron en volumen. Los loops se armaron fundiendo el final con el principio para que no se note el salto. En la M4 se reutilizó `StormAudio` en vez de un sistema nuevo, y se creó por código para no tocar `memory_4.tscn`.
+- **Alternativas descartadas:** el latido que se acelera al hundirse (se prefirió dejarlo lento y parejo); "¡LO LOGRAMOS!" con todos diciendo lo mismo (no suena natural); un sonido aparte para tirar la caña y la boya en la M2 de Mica (ahí las cañas arrancan ya tiradas).
+- **Problemas encontrados:** al principio se tomó por "Memoria 2" la escena `m2_remos` (la de Mica, fuera de la secuencia); la que se juega es `m2_lago`. Los sonidos compartidos sirvieron para las dos; las 8 voces del padre que solo usa `m2_remos` quedaron reemplazadas igual. El código **no se pudo probar en Godot** en esta sesión: solo revisión a mano.
+- **Archivos y docs:** `scripts/memories/memory_2_lake.gd`, `scripts/world/fishing_rod.gd`, `scripts/memories/memory_4_accident.gd`, `scripts/world/anchor_winch.gd` (nuevo `is_cranking()`), `scripts/config/{memory_2_settings,fishing_settings,memory_4_settings}.gd`, `config/{memory_2_settings,fishing,memory_4_settings,storm_audio_m4}.tres`; `docs/ELEMENTOS_ESCENAS.md` (M4: sonido y nombre).
+- **Pendiente / ❓ ABIERTO:** música de la M2 (calma, tormenta y canción de cuna; la M4 usa por ahora la música de tormenta vieja); probar todo en Godot y ajustar volúmenes jugando; buses de audio Amenaza/Afuera.
+
 ### CL-083 · Memoria 2: la trucha de verdad al sacar un pez del agua · 2026-11-11
 - **Rama / commits:** `m2/trucha` · ver el commit "[M2] ... (CL-083)"
 - **Pedido por:** Facu: "agregué el modelo de una trucha en recursos modelos 3d" (`MODELOS 3D/M2 LAGO/trucha.glb`). Se entendió que es para reemplazar el pez de la pesca; ❓ ABIERTO: confirmar que no iba a otro lado.
