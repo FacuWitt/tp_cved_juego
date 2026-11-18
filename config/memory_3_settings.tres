@@ -1,10 +1,82 @@
-[gd_resource type="Resource" script_class="Memory3Settings" format=3]
+[gd_resource type="Resource" script_class="Memory3Settings" format=3 uid="uid://xn50rhkovbtj"]
 
-[ext_resource type="Script" path="res://scripts/config/memory_3_settings.gd" id="1"]
-[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lullaby_musicbox.ogg" id="2"]
+[ext_resource type="Script" uid="uid://nhgxogpcyn65" path="res://scripts/config/memory_3_settings.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://c1mb7qi7tmta3" path="res://assets/audio/m3/backrooms_music.mp3" id="1_parqw"]
+[ext_resource type="AudioStream" uid="uid://dtlqegsxbkkq4" path="res://assets/audio/m3/blink1.mp3" id="2_3dbqy"]
+[ext_resource type="AudioStream" uid="uid://yi8h7pvm8euc" path="res://assets/audio/m3/blink-altered.mp3" id="3_ojgd5"]
+[ext_resource type="AudioStream" uid="uid://dcc7dewrpxtvo" path="res://assets/audio/m3/door_closed.wav" id="4_2vb6g"]
+[ext_resource type="AudioStream" uid="uid://bb2j1xr3ukoa4" path="res://assets/audio/m3/cerca_papaNoTeVayas.mp3" id="4_38jjv"]
+[ext_resource type="AudioStream" uid="uid://bq71ycos7ohfb" path="res://assets/audio/m3/door_open.wav" id="5_38jjv"]
+[ext_resource type="AudioStream" uid="uid://cvpjo5ufqheip" path="res://assets/audio/m3/cerca_tengoMiedoPapa.mp3" id="5_hhdru"]
+[ext_resource type="AudioStream" uid="uid://c1tblgycl7bbb" path="res://assets/audio/m3/drop_water.mp3" id="6_hhdru"]
+[ext_resource type="AudioStream" uid="uid://c0lal0vdux23" path="res://assets/audio/m3/steps.wav" id="8_qtwtr"]
+[ext_resource type="AudioStream" uid="uid://qlmqql78fnpa" path="res://assets/audio/m3/voz_padre.mp3" id="9_0efxy"]
+[ext_resource type="AudioStream" uid="uid://do4enhjua45vo" path="res://assets/audio/m3/lejos_papá.mp3" id="9_snd0a"]
+[ext_resource type="AudioStream" uid="uid://c10cl02mlt27d" path="res://assets/audio/m3/lejos_dondeEstas.mp3" id="10_qtwtr"]
+[ext_resource type="AudioStream" uid="uid://c417l830im4cd" path="res://assets/audio/m3/linea_papa¿yaTeVas¿.mp3" id="11_0efxy"]
+[ext_resource type="AudioStream" uid="uid://d342cpnrhofvs" path="res://assets/audio/m3/stuck.mp3" id="13_sa237"]
+[ext_resource type="AudioStream" uid="uid://bdcr71m6gahu8" path="res://assets/audio/m3/stuck2.mp3" id="14_gljdo"]
+[ext_resource type="AudioStream" uid="uid://xott3nmw5p7s" path="res://assets/audio/m3/glitch-sound-hd.mp3" id="14_qtwtr"]
+[ext_resource type="AudioStream" uid="uid://bp1tahydlt0e7" path="res://assets/audio/m3/linea_noQuieroQueTeVayasPapa.mp3" id="14_ugh1o"]
+[ext_resource type="AudioStream" uid="uid://376rob8jrkxj" path="res://assets/audio/m3/tube_flicker.ogg" id="15_0efxy"]
+[ext_resource type="AudioStream" uid="uid://bhkdgbdeia1ny" path="res://assets/audio/m3/loud-thunder.mp3" id="15_ampt4"]
+[ext_resource type="AudioStream" uid="uid://cnanwgcrgj3d1" path="res://assets/audio/m2_remos/pad_storm.ogg" id="15_hhdru"]
+[ext_resource type="AudioStream" uid="uid://cknx48jr7vfh4" path="res://assets/audio/m3/linea_papa¿sosVos¿.mp3" id="15_m55y0"]
+[ext_resource type="AudioStream" uid="uid://dnfs1wjrpe3yf" path="res://assets/audio/m2_remos/thunder_near.ogg" id="16_n1ju2"]
+[ext_resource type="AudioStream" uid="uid://bxn73psy8oja0" path="res://assets/audio/m3/degrade.mp3" id="18_p4air"]
+[ext_resource type="AudioStream" uid="uid://6tnrb2mar3j3" path="res://assets/audio/m3/degrade (2).mp3" id="19_dsnmb"]
+[ext_resource type="AudioStream" uid="uid://b4imkc1viq3bl" path="res://assets/audio/m3/linea_papa¿.mp3" id="21_sa237"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_7a30v"]
+random_volume_offset_db = 5.0
+streams_count = 2
+stream_0/stream = ExtResource("2_3dbqy")
+stream_1/stream = ExtResource("3_ojgd5")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_6g0qa"]
+streams_count = 2
+stream_0/stream = ExtResource("13_sa237")
+stream_1/stream = ExtResource("14_gljdo")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_30apl"]
+streams_count = 2
+stream_0/stream = ExtResource("18_p4air")
+stream_1/stream = ExtResource("19_dsnmb")
 
 [resource]
 script = ExtResource("1")
-voice_stream = ExtResource("2")
+closer_lines = null
+farther_lines = null
+good_doors = null
 hallway_creep_speed = 2.5
 hallway_creep_max = 12.0
+glitch_sounds = Array[AudioStream]([ExtResource("14_qtwtr"), ExtResource("15_0efxy"), ExtResource("18_p4air"), ExtResource("19_dsnmb")])
+glitch_db = -6.0
+voice_stream = ExtResource("21_sa237")
+voice_volume_db = -8.0
+voice_max_distance = 80.0
+ambience_loop = ExtResource("1_parqw")
+rain_loop = ExtResource("15_hhdru")
+rain_db = -5.0
+thunder_sounds = Array[AudioStream]([ExtResource("15_ampt4"), ExtResource("16_n1ju2")])
+drip_sounds = Array[AudioStream]([ExtResource("6_hhdru")])
+footstep_sounds = Array[AudioStream]([ExtResource("8_qtwtr")])
+footstep_db = -15.0
+door_open_sound = ExtResource("5_38jjv")
+front_door_open_sound = ExtResource("5_38jjv")
+door_close_sound = ExtResource("4_2vb6g")
+good_door_sound = ExtResource("5_38jjv")
+wrong_door_sound = SubResource("AudioStreamRandomizer_30apl")
+blink_sound = SubResource("AudioStreamRandomizer_7a30v")
+stuck_sound = SubResource("AudioStreamRandomizer_6g0qa")
+first_call_voice = ExtResource("11_0efxy")
+closer_voices = Array[AudioStream]([ExtResource("4_38jjv"), ExtResource("5_hhdru")])
+farther_voices = Array[AudioStream]([ExtResource("9_snd0a"), ExtResource("10_qtwtr")])
+room_arrival_voice = ExtResource("15_m55y0")
+plea_voice = ExtResource("14_ugh1o")
+give_voice = ExtResource("9_0efxy")
+voice_line_db = 6.0
+segment_shapes = null
+segment_widths = null
+segment_heights = null
+stuck_lines = null

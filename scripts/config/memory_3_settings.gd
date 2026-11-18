@@ -66,6 +66,11 @@ extends Resource
 ## Cuánto tarda la casa en estabilizarse después de entregar el barquito.
 @export_range(0.1, 10.0, 0.1, "suffix:s") var stabilize_time: float = 3.0
 
+@export_subgroup("Glitches de la casa")
+## Sonidos que acompañan los momentos de degradación o glitch. Vacío = sin sonido.
+@export var glitch_sounds: Array[AudioStream] = []
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var glitch_db: float = -8.0
+
 @export_group("Puertas")
 ## Ángulo de una puerta abierta.
 @export_range(30.0, 120.0, 1.0, "suffix:°") var door_open_angle: float = 88.0
@@ -98,6 +103,112 @@ extends Resource
 @export_range(0.0, 3.0, 0.05, "suffix:m") var voice_depth: float = 1.0
 ## Pausa entre que termina de sonar y vuelve a llamar.
 @export_range(0.0, 20.0, 0.1, "suffix:s") var voice_interval: float = 3.0
+
+@export_group("Sonido")
+## Todos los slots de este grupo y del de "Voces de las líneas" arrancan VACÍOS: se arrastra el
+## archivo (.ogg, .wav o .mp3) desde el panel de archivos al slot en el Inspector. Un slot vacío no
+## da error: ese momento simplemente queda en silencio. Las salas intermedias (mensajes, hospital,
+## barcos) tienen sus propios sonidos en sus escenas; acá está lo de la casa.
+## Para los loops conviene .ogg o .mp3 (se repiten solos); un .wav se marca como loop en la
+## pestaña Importar de Godot.
+
+@export_subgroup("Ambiente de la casa")
+## El ambiente de la casa de noche (loop continuo). Se apaga al entrar a una sala intermedia y vuelve al salir.
+@export var ambience_loop: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var ambience_db: float = -18.0
+## La lluvia de la tormenta que se oye desde adentro (loop continuo). Se apaga y vuelve igual que el ambiente.
+@export var rain_loop: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var rain_db: float = -14.0
+## Cuánto tardan el ambiente y la lluvia en aparecer al empezar y en apagarse o volver con las salas intermedias.
+@export_range(0.1, 5.0, 0.1, "suffix:s") var ambience_fade_time: float = 1.5
+
+@export_subgroup("Truenos")
+## El trueno con el que se despierta en la cocina. Vacío = usa uno al azar de `thunder_sounds`.
+@export var wake_thunder_sound: AudioStream
+## Un trueno por cada rayo de la tormenta, se elige uno al azar. Vacío = los rayos no tienen trueno.
+@export var thunder_sounds: Array[AudioStream] = []
+## Volumen del trueno con un rayo al máximo (los rayos más débiles suenan más bajo).
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var thunder_db: float = -6.0
+## Cuánto tarda en llegar el trueno después del rayo (al azar entre mínimo y máximo). 0 = a la vez.
+@export_range(0.0, 6.0, 0.1, "suffix:s") var thunder_delay_min: float = 0.3
+@export_range(0.0, 6.0, 0.1, "suffix:s") var thunder_delay_max: float = 1.8
+
+@export_subgroup("Goteo")
+## Gotas que caen alrededor del jugador, se elige una al azar. Gotean más cuanto más degradada está la casa
+## y no gotea con la casa estable. Vacío = sin goteo.
+@export var drip_sounds: Array[AudioStream] = []
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var drip_db: float = -12.0
+## Cada cuánto cae una gota con la casa degradada al máximo (al azar entre mínimo y máximo).
+## Con menos degradación se espacian más.
+@export_range(0.2, 20.0, 0.1, "suffix:s") var drip_interval_min: float = 1.5
+@export_range(0.2, 20.0, 0.1, "suffix:s") var drip_interval_max: float = 5.0
+## A qué distancia del jugador cae cada gota (al azar entre mínimo y máximo).
+@export_range(0.5, 10.0, 0.1, "suffix:m") var drip_distance_min: float = 1.5
+@export_range(0.5, 10.0, 0.1, "suffix:m") var drip_distance_max: float = 5.0
+
+@export_subgroup("Pasos")
+## Un paso por cada tramo que recorre caminando, se elige uno al azar. Vacío = sin pasos.
+@export var footstep_sounds: Array[AudioStream] = []
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var footstep_db: float = -10.0
+## Metros que recorre entre un paso y el siguiente (más chico = pasos más seguidos).
+@export_range(0.3, 2.0, 0.05, "suffix:m") var footstep_stride: float = 0.8
+## Velocidad mínima para que suenen los pasos (con las piernas trabadas o casi quieto no suenan).
+@export_range(0.1, 3.0, 0.05, "suffix:m/s") var footstep_min_speed: float = 0.5
+
+@export_subgroup("Puertas")
+## Abrir una puerta del rellano o la del cuarto de la hija (suena donde está la puerta).
+@export var door_open_sound: AudioStream
+## Abrir la puerta de entrada de la casa. Vacío = usa `door_open_sound`.
+@export var front_door_open_sound: AudioStream
+## Las puertas del rellano que estaban abiertas se cierran solas al elegir (se oye desde donde esté el jugador).
+@export var door_close_sound: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var door_db: float = -6.0
+
+@export_subgroup("Laberinto y sueño")
+## Cruzó una puerta buena (entra a la sala intermedia o al tramo siguiente).
+@export var good_door_sound: AudioStream
+## Cruzó una puerta mala y vuelve a la cocina con la casa más degradada.
+@export var wrong_door_sound: AudioStream
+## La pantalla se va a negro un instante (parpadeo del sueño).
+@export var blink_sound: AudioStream
+## Las piernas dejan de responder (se frena, la cámara tiembla).
+@export var stuck_sound: AudioStream
+
+@export_subgroup("Barquito, cuarto y salida")
+## El barquito aparece en la mano al empezar la memoria.
+@export var boat_equip_sound: AudioStream
+## Le da el barquito a la hija.
+@export var give_boat_sound: AudioStream
+## La casa se estabiliza: se seca el agua y todo queda quieto.
+@export var stabilize_sound: AudioStream
+
+@export_subgroup("Volumen general de los efectos")
+## Volumen de los efectos sueltos de los grupos "Laberinto y sueño" y "Barquito, cuarto y salida".
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -6.0
+## Cuánto varía al azar la velocidad de cada efecto (0 = siempre igual; 0,05 = entre 5 % más lento y 5 % más rápido).
+## Evita que los sonidos repetidos (pasos, gotas, puertas) suenen idénticos.
+@export_range(0.0, 0.3, 0.01) var sfx_pitch_variation: float = 0.05
+
+@export_group("Voces de las líneas (una por subtítulo)")
+## Voz grabada de cada línea de texto de la sección "Textos". Si una voz está vacía, esa línea queda solo
+## como subtítulo. Suenan de a una: una voz nueva corta a la anterior. Las que van entre paréntesis
+## (el despertar, la casa que se queda quieta, las piernas) son narración y no tienen voz.
+## Ojo: `voice_stream` (la voz que sale de la puerta buena) puede decir lo mismo que `first_call_voice`;
+## si ya lo dice, dejá `first_call_voice` vacía para que no suene doble.
+## Primera llamada de la hija, al empezar (`first_call_line`).
+@export var first_call_voice: AudioStream
+## Una voz por cada línea de `closer_lines`, en el mismo orden (la hija se oye más cerca).
+@export var closer_voices: Array[AudioStream] = []
+## Una voz por cada línea de `farther_lines`, en el mismo orden (la hija se oye más lejos).
+@export var farther_voices: Array[AudioStream] = []
+## La hija, del otro lado de la puerta del cuarto (`room_arrival_line`).
+@export var room_arrival_voice: AudioStream
+## La hija, al abrir la puerta de su cuarto (`plea_line`).
+@export var plea_voice: AudioStream
+## El protagonista, al darle el barquito (`give_line`: "Cuidámelo hasta que vuelva").
+@export var give_voice: AudioStream
+## Volumen de todas las voces de las líneas.
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var voice_line_db: float = -3.0
 
 @export_group("Fotos del pasillo (la misma foto, cada vez más borrosa)")
 ## La foto que se repite. Vacío = una foto genérica dibujada por el shader (una silueta en sepia).

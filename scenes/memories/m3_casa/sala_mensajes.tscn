@@ -1,24 +1,24 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://0cfmf2inouro"]
 
-[ext_resource type="Script" path="res://scripts/world/wake_messages_room.gd" id="1"]
-[ext_resource type="Resource" path="res://config/m3_wake_messages.tres" id="2"]
-[ext_resource type="Script" path="res://scripts/world/loop_portal.gd" id="4"]
+[ext_resource type="Script" uid="uid://wuft3nj51yls" path="res://scripts/world/wake_messages_room.gd" id="1"]
+[ext_resource type="Resource" uid="uid://bcduu5hytanel" path="res://config/m3_wake_messages.tres" id="2"]
+[ext_resource type="Script" uid="uid://btye2q5g63tn1" path="res://scripts/world/loop_portal.gd" id="4"]
 [ext_resource type="Material" path="res://assets/materials/m3/pared.tres" id="5"]
 [ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="6"]
 [ext_resource type="Material" path="res://assets/materials/m3/negro.tres" id="7"]
 [ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="8"]
-[ext_resource type="FontFile" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="9"]
-[ext_resource type="FontFile" path="res://assets/fonts/CaveatBrush-Regular.ttf" id="10"]
-[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_1.ogg" id="11"]
-[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_2.ogg" id="12"]
-[ext_resource type="AudioStream" path="res://assets/audio/m3/scrawl_3.ogg" id="13"]
-[ext_resource type="AudioStream" path="res://assets/audio/m3/blackout_thud.ogg" id="14"]
-[ext_resource type="AudioStream" path="res://assets/audio/m3/dread_drone_loop.ogg" id="16"]
+[ext_resource type="FontFile" uid="uid://djla7lqp4t6t2" path="res://assets/fonts/IMFellEnglish-Regular.ttf" id="9"]
+[ext_resource type="FontFile" uid="uid://cdd3qpc2230m6" path="res://assets/fonts/CaveatBrush-Regular.ttf" id="10"]
+[ext_resource type="AudioStream" uid="uid://cb1gwp4jtongr" path="res://assets/audio/m3/scrawl_1.ogg" id="11"]
+[ext_resource type="AudioStream" uid="uid://bnw0fk7op8auq" path="res://assets/audio/m3/scrawl_2.ogg" id="12"]
+[ext_resource type="AudioStream" uid="uid://wmkmph5i6eaf" path="res://assets/audio/m3/scrawl_3.ogg" id="13"]
+[ext_resource type="AudioStream" uid="uid://cyhn7crx7aab5" path="res://assets/audio/m3/blackout_thud.ogg" id="14"]
+[ext_resource type="AudioStream" uid="uid://csbxysp28uuxr" path="res://assets/audio/m3/comeback_alive.mp3" id="16"]
 
 [sub_resource type="BoxShape3D" id="shape_exit"]
 size = Vector3(1.6, 2.2, 0.8)
 
-[node name="SalaMensajes" type="Node3D" node_paths=PackedStringArray("entry", "exit_portal")]
+[node name="SalaMensajes" type="Node3D" unique_id=1545710389 node_paths=PackedStringArray("entry", "exit_portal")]
 script = ExtResource("1")
 settings = ExtResource("2")
 calm_font = ExtResource("9")
@@ -34,13 +34,12 @@ dark_material = ExtResource("7")
 drone_stream = ExtResource("16")
 stops_lightning = true
 
-[node name="Entry" type="Marker3D" parent="."]
+[node name="Entry" type="Marker3D" parent="." unique_id=1520846255]
 
-[node name="ExitPortal" type="Area3D" parent="."]
+[node name="ExitPortal" type="Area3D" parent="." unique_id=1358562295]
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("4")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitPortal"]
-position = Vector3(0, 1.1, -1.2)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitPortal" unique_id=1070607793]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.2)
 shape = SubResource("shape_exit")
