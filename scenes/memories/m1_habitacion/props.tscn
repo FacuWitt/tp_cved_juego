@@ -8,8 +8,14 @@
 [ext_resource type="Material" path="res://assets/materials/m1/ropero_frente.tres" id="6_rop"]
 [ext_resource type="Material" path="res://assets/materials/m1/reloj.tres" id="7_rel"]
 [ext_resource type="Material" path="res://assets/materials/m1/lomos_libros.tres" id="8_lib"]
-[ext_resource type="PackedScene" uid="uid://c4ogohtkhygao" path="res://assets/models/m1_juguetes/barco_de_juguete.glb" id="9_bar"]
 [ext_resource type="PackedScene" path="res://scenes/props/comoda.tscn" id="10_com"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="boat_model"]
+[ext_resource type="Material" path="res://assets/materials/m1/dibujo_casa.tres" id="dib_casa"]
+[ext_resource type="Material" path="res://assets/materials/m1/dibujo_familia.tres" id="dib_familia"]
+[ext_resource type="Material" path="res://assets/materials/m1/dibujo_perro.tres" id="dib_perro"]
+
+[sub_resource type="QuadMesh" id="mesh_drawing"]
+size = Vector2(0.39, 0.29)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6_s"]
 albedo_color = Color(0.16, 0.14, 0.12, 1)
@@ -209,8 +215,8 @@ material = ExtResource("3_mos")
 [node name="Barquito" type="Node3D" parent="." unique_id=1220016155]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.35, 2.515, 0.5)
 
-[node name="Modelo" parent="Barquito" unique_id=2007152034 instance=ExtResource("9_bar")]
-transform = Transform3D(0.179, 0, 0, 0, 0.179, 0, 0, 0, 0.179, 0, 0.07, 0)
+[node name="Modelo" parent="Barquito" unique_id=2007152034 instance=ExtResource("boat_model")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0, 0.07, 0)
 
 [node name="BoatLight" type="OmniLight3D" parent="Barquito" unique_id=290517878]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.3)
@@ -264,42 +270,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.4, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label1" type="Label3D" parent="Drawings" unique_id=1146772527]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.55, 1.4, 2.985)
-pixel_size = 0.0025
-modulate = Color(0.2, 0.2, 0.25, 1)
-text = "DIBUJO:
-CASA"
-font_size = 20
-outline_size = 0
+[node name="Picture" type="MeshInstance3D" parent="Drawings/Drawing1"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.006)
+mesh = SubResource("mesh_drawing")
+surface_material_override/0 = ExtResource("dib_casa")
 
 [node name="Drawing2" type="CSGBox3D" parent="Drawings" unique_id=336636957]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label2" type="Label3D" parent="Drawings" unique_id=337233454]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.32, 2.985)
-pixel_size = 0.0025
-modulate = Color(0.2, 0.2, 0.25, 1)
-text = "DIBUJO:
-FAMILIA"
-font_size = 20
-outline_size = 0
+[node name="Picture" type="MeshInstance3D" parent="Drawings/Drawing2"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.006)
+mesh = SubResource("mesh_drawing")
+surface_material_override/0 = ExtResource("dib_familia")
 
 [node name="Drawing3" type="CSGBox3D" parent="Drawings" unique_id=1486884896]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 1.45, 2.995)
 size = Vector3(0.4, 0.3, 0.01)
 material = SubResource("StandardMaterial3D_9_s")
 
-[node name="Label3" type="Label3D" parent="Drawings" unique_id=1646711056]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.55, 1.45, 2.985)
-pixel_size = 0.0025
-modulate = Color(0.2, 0.2, 0.25, 1)
-text = "DIBUJO:
-PERRO"
-font_size = 20
-outline_size = 0
+[node name="Picture" type="MeshInstance3D" parent="Drawings/Drawing3"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.006)
+mesh = SubResource("mesh_drawing")
+surface_material_override/0 = ExtResource("dib_perro")
 
 [node name="CeilingStain" type="CSGBox3D" parent="." unique_id=1723619718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2.995, 0.7)

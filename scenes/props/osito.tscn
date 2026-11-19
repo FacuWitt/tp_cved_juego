@@ -1,0 +1,162 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://assets/materials/m3/felpa_osito.tres" id="1_felpa"]
+[ext_resource type="Material" path="res://assets/materials/m3/felpa_osito_clara.tres" id="2_clara"]
+
+[sub_resource type="StandardMaterial3D" id="m_eye"]
+albedo_color = Color(0.04, 0.03, 0.03, 1)
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="m_bow"]
+albedo_color = Color(0.85, 0.25, 0.4, 1)
+roughness = 0.7
+
+[sub_resource type="SphereMesh" id="mesh_body"]
+radius = 0.085
+height = 0.2
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="mesh_belly"]
+radius = 0.055
+height = 0.11
+radial_segments = 10
+rings = 5
+
+[sub_resource type="SphereMesh" id="mesh_head"]
+radius = 0.068
+height = 0.13
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="mesh_snout"]
+radius = 0.03
+height = 0.045
+radial_segments = 8
+rings = 4
+
+[sub_resource type="SphereMesh" id="mesh_ear"]
+radius = 0.026
+height = 0.052
+radial_segments = 8
+rings = 4
+
+[sub_resource type="SphereMesh" id="mesh_eye"]
+radius = 0.008
+height = 0.016
+radial_segments = 6
+rings = 3
+
+[sub_resource type="CapsuleMesh" id="mesh_arm"]
+radius = 0.026
+height = 0.12
+radial_segments = 8
+rings = 2
+
+[sub_resource type="CapsuleMesh" id="mesh_leg"]
+radius = 0.032
+height = 0.12
+radial_segments = 8
+rings = 2
+
+[sub_resource type="CylinderMesh" id="mesh_pad"]
+top_radius = 0.024
+bottom_radius = 0.024
+height = 0.006
+radial_segments = 10
+rings = 1
+
+[sub_resource type="TorusMesh" id="mesh_bow"]
+inner_radius = 0.045
+outer_radius = 0.058
+rings = 12
+ring_segments = 6
+
+[sub_resource type="BoxShape3D" id="shape_bear"]
+size = Vector3(0.24, 0.32, 0.22)
+
+[node name="Osito" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, 0.02)
+shape = SubResource("shape_bear")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("mesh_body")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="Belly" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.042)
+mesh = SubResource("mesh_belly")
+surface_material_override/0 = ExtResource("2_clara")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.235, 0.008)
+mesh = SubResource("mesh_head")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="Snout" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.222, 0.064)
+mesh = SubResource("mesh_snout")
+surface_material_override/0 = ExtResource("2_clara")
+
+[node name="Nose" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.234, 0.09)
+mesh = SubResource("mesh_eye")
+surface_material_override/0 = SubResource("m_eye")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.026, 0.254, 0.062)
+mesh = SubResource("mesh_eye")
+surface_material_override/0 = SubResource("m_eye")
+
+[node name="EyeRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.026, 0.254, 0.062)
+mesh = SubResource("mesh_eye")
+surface_material_override/0 = SubResource("m_eye")
+
+[node name="EarLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.6, -0.052, 0.292, 0)
+mesh = SubResource("mesh_ear")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="EarRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.6, 0.052, 0.292, 0)
+mesh = SubResource("mesh_ear")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.906, 0.423, 0, -0.423, 0.906, 0, 0, 0, 1, -0.09, 0.12, 0.025)
+mesh = SubResource("mesh_arm")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="ArmRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.906, -0.423, 0, 0.423, 0.906, 0, 0, 0, 1, 0.09, 0.12, 0.025)
+mesh = SubResource("mesh_arm")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="LegLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.048, 0.032, 0.07)
+mesh = SubResource("mesh_leg")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="LegRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.048, 0.032, 0.07)
+mesh = SubResource("mesh_leg")
+surface_material_override/0 = ExtResource("1_felpa")
+
+[node name="PadLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.048, 0.032, 0.13)
+mesh = SubResource("mesh_pad")
+surface_material_override/0 = ExtResource("2_clara")
+
+[node name="PadRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.048, 0.032, 0.13)
+mesh = SubResource("mesh_pad")
+surface_material_override/0 = ExtResource("2_clara")
+
+[node name="Bow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0.004)
+mesh = SubResource("mesh_bow")
+surface_material_override/0 = SubResource("m_bow")

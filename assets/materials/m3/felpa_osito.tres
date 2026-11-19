@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/m3/felpa.png" id="1_tex"]
+
+[resource]
+albedo_color = Color(0.72, 0.5, 0.32, 1)
+albedo_texture = ExtResource("1_tex")
+roughness = 1.0
+uv1_scale = Vector3(6, 6, 6)
+texture_filter = 2

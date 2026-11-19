@@ -1,0 +1,49 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="m_red"]
+albedo_color = Color(0.85, 0.2, 0.22, 1)
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="m_yellow"]
+albedo_color = Color(0.95, 0.78, 0.2, 1)
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="m_blue"]
+albedo_color = Color(0.2, 0.42, 0.85, 1)
+roughness = 0.45
+
+[sub_resource type="SphereMesh" id="mesh_ball"]
+radius = 0.1
+height = 0.2
+radial_segments = 14
+rings = 7
+
+[sub_resource type="TorusMesh" id="mesh_band"]
+inner_radius = 0.094
+outer_radius = 0.104
+rings = 16
+ring_segments = 4
+
+[sub_resource type="SphereShape3D" id="shape_ball"]
+radius = 0.1
+
+[node name="Pelota" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("shape_ball")
+
+[node name="Ball" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("mesh_ball")
+surface_material_override/0 = SubResource("m_red")
+
+[node name="BandYellow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.1, 0)
+mesh = SubResource("mesh_band")
+surface_material_override/0 = SubResource("m_yellow")
+
+[node name="BandBlue" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("mesh_band")
+surface_material_override/0 = SubResource("m_blue")

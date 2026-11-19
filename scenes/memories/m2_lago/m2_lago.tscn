@@ -61,6 +61,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_1.res" id="veg_arbusto_1"]
 [ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_2.res" id="veg_arbusto_2"]
 [ext_resource type="ArrayMesh" path="res://assets/models/m2_arboles/arbusto_3.res" id="veg_arbusto_3"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="boat_model"]
 
 [sub_resource type="ShaderMaterial" id="sky_mat"]
 shader = ExtResource("sh_sky")
@@ -158,18 +159,6 @@ transparency = 1
 metallic = 0.2
 roughness = 0.05
 
-[sub_resource type="StandardMaterial3D" id="m_toy"]
-albedo_color = Color(0.62, 0.4, 0.22, 1)
-emission_enabled = true
-emission = Color(1, 0.7, 0.35, 1)
-emission_energy_multiplier = 0.6
-
-[sub_resource type="StandardMaterial3D" id="m_sail"]
-albedo_color = Color(0.92, 0.9, 0.82, 1)
-emission_enabled = true
-emission = Color(1, 0.85, 0.6, 1)
-emission_energy_multiplier = 0.5
-
 [sub_resource type="StandardMaterial3D" id="m_father_lens"]
 shading_mode = 0
 albedo_color = Color(1, 0.93, 0.78, 1)
@@ -205,9 +194,6 @@ size = Vector2(2.4, 2.4)
 
 [sub_resource type="PlaneMesh" id="pm_water_in"]
 size = Vector2(0.7, 3.0)
-
-[sub_resource type="PrismMesh" id="prism_toy"]
-size = Vector3(0.06, 0.045, 0.17)
 
 [sub_resource type="BoxShape3D" id="sh_boat"]
 size = Vector3(1.25, 0.8, 3.4)
@@ -1304,21 +1290,8 @@ water_level = 0.0
 [node name="ToyBoat" type="Node3D" parent="."]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, -20, 0)
 
-[node name="Hull" type="MeshInstance3D" parent="ToyBoat"]
-transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
-mesh = SubResource("prism_toy")
-material_override = SubResource("m_toy")
-
-[node name="Mast" type="CSGCylinder3D" parent="ToyBoat"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
-radius = 0.004
-height = 0.11
-material = SubResource("m_toy")
-
-[node name="Sail" type="CSGBox3D" parent="ToyBoat"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.065, 0.02)
-size = Vector3(0.003, 0.075, 0.045)
-material = SubResource("m_sail")
+[node name="Modelo" parent="ToyBoat" instance=ExtResource("boat_model")]
+transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, 0, 0.03, 0)
 
 [node name="Glow" type="OmniLight3D" parent="ToyBoat"]
 light_color = Color(1, 0.72, 0.4, 1)

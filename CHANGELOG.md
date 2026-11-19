@@ -41,6 +41,46 @@ El profesor pidió que **todo lo que hagamos vaya quedando en el documento de la
 
 <!-- ENTRADAS -->
 
+### CL-089 · Pasajes: al llegar a la luz se queda ahí, ya no hay que darse vuelta y volver · 2026-11-19
+- **Rama / commits:** `claude/m3-detalles` · sin commitear
+- **Pedido por:** Theo: "en la transición de la memoria 2 a la 3 hay como dos transiciones seguidas, la primera está bien porque tiene diálogo y todo pero la segunda borrala ya que es girarse y caminar hacia la luz blanca".
+- **Qué pasaba:** no eran dos transiciones sino un bug del pasaje. El pasaje no termina hasta que se calla la voz que está sonando (CL-075, para no cortarla). En el M2→M3 la última voz (la hija) es larga: el jugador llegaba a la luz mientras hablaba, seguía caminando, pasaba la luz de largo y quedaba en la oscuridad. Como el pasaje pedía estar dentro del radio de la luz *en el momento* en que terminaba la voz, había que darse vuelta y volver a la luz.
+- **Qué se hizo:** en `Passage` (`scripts/memories/passage.gd`), llegar a la luz queda registrado y el jugador se queda quieto ahí, sin control; el pasaje termina apenas se callan la voz que suena y las que faltaban. Vale para los cuatro pasajes (es la misma escena base).
+- **Alternativas descartadas:** sacar la última voz o acortarla (se pierde el diálogo de la hija); agrandar el radio de la luz (solo corre el problema más lejos); dejar caminar y terminar al llegar sin esperar la voz (la corta a la mitad, lo que CL-075 quiso evitar).
+- **Verificación:** con una prueba temporal que camina sola, los cuatro pasajes (M1→M2, M2→M3, M3→M4 y M4→despertar) terminan y cargan la escena siguiente. Antes, el M2→M3 no terminaba nunca caminando derecho.
+- **Archivos y docs:** `scripts/memories/passage.gd`.
+
+### CL-088 · Juguetes, valija, botas y piloto en la M3; dibujos en la pared de la M1 · 2026-11-19
+- **Rama / commits:** `claude/m3-detalles` · sin commitear
+- **Pedido por:** Theo: "en la habitación de la nena los cuadrados de colores hacé unos juguetes y en la puerta antes de salir hacé una valija a la izquierda reemplazando el cuadrado azul y a la derecha unas botas reemplazando los dos cuadrados negros y el piloto colgado en la pared. En la memoria 1 hacé los dibujos que están en la pared al lado de la puerta".
+- **Qué se hizo:**
+  - **Juguetes de la hija:** los tres cubos de colores pasan a ser un osito de peluche (con moño rosa), cubitos de madera con letras y números, y una pelota a rayas. Cada uno es una escena chica en `scenes/props/` (`osito.tscn`, `cubitos.tscn`, `pelota.tscn`) con colisión.
+  - **Entrada:** a la izquierda de la puerta, una valija de cuero con dos correas, hebillas, manija y esquineros (`valija.tscn`, en lugar del bolso azul). A la derecha, botas de lluvia de goma con borde amarillo (`botas_lluvia.tscn`, en lugar de los dos cubos negros) y el piloto amarillo de pesca colgado de un perchero en la pared (`piloto.tscn`, en lugar de la caja amarilla).
+  - **Dibujos de la M1:** los tres carteles "DIBUJO: CASA / FAMILIA / PERRO" de la pared junto a la puerta se reemplazaron por dibujos de crayón de un nene: la casa (con el mar al lado), "mi familia" (la abuela, mamá, papá y "yo") y "mi perro". Mantienen los temas que ya tenían los carteles.
+  - Texturas nuevas generadas por código: felpa, cuero y el atlas de los cubitos (`assets/textures/m3/`), y los tres dibujos (`assets/textures/m1/dibujo_*.png`).
+  - **Bug evitado:** el `DreamShifter` de la M3 (que mueve cosas cuando no se las mira) apuntaba a `Toy1`, `Toy2` y `Toy3`; ahora apunta al osito, los cubitos y la pelota.
+- **Por qué (decisión de diseño):** no hay modelos de estos objetos en el repo, así que se armaron con formas simples (esferas, cilindros, cajas) y texturas chicas, en el mismo estilo low-poly que la taza y la canilla de CL-087. Al ser escenas aparte, si el equipo consigue modelos se reemplaza la escena sin tocar el cuarto.
+- **Alternativas descartadas:** dejar los cubos con color y sacar solo los carteles (no se reconoce qué son); dibujos de la M1 con el mismo trazo que los de la hija (se confundirían: estos son del protagonista de chico, más torpes y con el papel amarillento).
+- **Verificación:** `tools/tests/m3_recorrido.tscn` pasa de punta a punta sin errores. La M1 carga sin errores. Con capturas se revisaron los juguetes, la valija, el piloto, las botas y los dibujos de la M1.
+- **Archivos y docs:** `scenes/memories/m3_casa/daughter_room.tscn`, `scenes/memories/m3_casa/m3_casa.tscn` (lista del `DreamShifter`), `scenes/memories/m1_habitacion/props.tscn`; `scenes/props/` (`osito`, `cubitos`, `pelota`, `valija`, `botas_lluvia`, `piloto`); `assets/materials/m3/` (`felpa_osito*`, `cuero_valija*`, `cubitos_letras`), `assets/materials/m1/dibujo_*.tres`; `docs/ELEMENTOS_ESCENAS.md`.
+- **Pendiente / ❓ ABIERTO:** el contenido de los dibujos de la M1 (cómo es la familia, cómo es el perro) lo eligió Claude a partir de los carteles: confirmar con el equipo.
+
+### CL-087 · Un solo barquito en todo el juego; lluvia, taza, canilla y dibujos en la M3; la cara borrosa de la hija sin "casco" · 2026-11-19
+- **Rama / commits:** `claude/m3-detalles` · sin commitear
+- **Pedido por:** Theo: "el modelo de barco que se usa en todo el juego es el mismo? si no es el mismo hacé que todos sean iguales, en la memoria 3 hacé la lluvia afuera que se pueda ver desde la ventana y agregá la taza y el grifo de agua [...] borrá las letras blancas [...] de las cosas que ya están [...] agregá los dibujos de la hija en su habitación y [...] cuando le doy el barco a la hija se le pone como un casco transparente, eso sacalo o no sé si está bien según el CDD".
+- **Qué se hizo:**
+  - **Barquito:** la M1 (`barco_de_juguete.glb`) y la M3 (`barquito_mano.glb`) ya eran el mismo barco, reducido de dos formas. En la M2 (`ToyBoat`, que hoy no se muestra) y en el despertar (mesa de luz) era un prisma con mástil y vela. Ahora el barquito de la historia usa `assets/models/m3/barquito_mano.glb` en la M1, la M2, la M3 y el despertar. El "barco" del puzzle de la M1 es otro juguete y se dejó como estaba.
+  - **Lluvia en las ventanas:** escena nueva `scenes/props/window_rain.tscn` (las mismas gotas de la M4, en una franja afuera de la ventana), en la cocina y en el cuarto de la hija.
+  - **Taza y canilla:** la taza tiene asa y café; la canilla tiene caño, pico y dos llaves, sobre una pileta de acero. Formas simples, en el estilo low-poly del resto. La taza sigue llamándose `Cup` porque el efecto de sueño la mueve.
+  - **Carteles:** se sacaron los 15 `Label3D` de greybox de la casa, el cuarto y la entrada (cama, velador, estante, juguetes, dibujos, bolso, campera, botas, puertas, ventanas, taza, canilla, salida). Las frases de la sala de los mensajes son parte del juego y quedan.
+  - **Dibujos de la hija:** tres dibujos de crayón en la pared de su cuarto: "papá y yo" (él con la campera amarilla de pesca de la entrada), el barco de papá en el mar con lluvia, y un corazón con "te quiero papá". Se generaron por código (`assets/textures/m3/dibujo_*.png`) y se pueden reemplazar por dibujos del equipo con el mismo nombre.
+  - **Cara de la hija:** el guion (doc "PROPUESTAS", M3: "la cara de la hija borrosa") la pide borrosa, así que el efecto se mantiene. Lo que se veía era una esfera semitransparente color piel, más grande que la cabeza, que parecía un casco. Ahora es una esfera más chica con un shader (`assets/shaders/face_blur.gdshader`, material `cara_borrosa.tres`) que desenfoca lo que tiene detrás y se desvanece hacia los bordes: se ve la cara borrosa, no un objeto encima.
+- **Por qué (decisión de diseño):** el barquito es el hilo conductor del juego: si cambia de forma entre memorias, el jugador no lo reconoce como el mismo objeto. Los carteles eran de la etapa 0 y ya no hacían falta porque los objetos existen.
+- **Alternativas descartadas:** sacar la cara borrosa (contradice el guion); desenfocar la cara con un post-proceso de pantalla entera (más caro, y no sigue a la hija); dibujar la lluvia con una textura pegada al vidrio (no tiene profundidad).
+- **Verificación:** `tools/tests/m3_recorrido.tscn` pasa de punta a punta. Con capturas se revisaron la taza, la canilla, la lluvia por la ventana, los dibujos, la cara de la hija y el barquito de la M1.
+- **Archivos y docs:** `scenes/memories/m3_casa/house_layout.tscn`, `daughter_room.tscn`, `daughter_room_layout.tscn`, `scenes/memories/m1_habitacion/props.tscn`, `scenes/memories/m2_lago/m2_lago.tscn`, `scenes/memories/awakening.tscn`; `scenes/props/window_rain.tscn`; `assets/shaders/face_blur.gdshader`; `assets/materials/m3/` (`cara_borrosa`, `dibujo_*`); `assets/textures/m3/dibujo_*.png`; `docs/ELEMENTOS_ESCENAS.md`.
+- **Pendiente / ❓ ABIERTO:** el contenido de los dibujos lo eligió Claude (no estaba definido): confirmar con el equipo. La canilla todavía no muestra la gota (el goteo solo suena).
+
 ### CL-086 · Memoria 3: reloj en las 3:00, la hija del hospital en el cuarto y fotos de la familia en el pasillo · 2026-11-19
 - **Rama / commits:** `claude/m3-ajustes` · `34b8f4d` (PR #4)
 - **Pedido por:** Theo: "quiero que el reloj del principio de la memoria 3 marque las 3 en punto, el personaje de la hija que aparece al final reemplazala por la misma niña que aparece en la escena final en el hospital y en los cuadros agregá fotos de la hija y de la abuela".

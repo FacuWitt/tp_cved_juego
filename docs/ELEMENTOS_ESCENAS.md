@@ -41,7 +41,7 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | Mancha de humedad en el techo + goteo | AMB | Decal o plano oscuro + gota |
 
 ### Muebles y props
-**Texturas PS1 ✅ CL-073:** piso de tablas, empapelado, techo de yeso, dos maderas, frazada, almohadón tejido, frente del ropero, puerta, lomos de libros y el reloj marcando las 3:00 (`assets/textures/m1/`, materiales en `assets/materials/m1/`). Los muebles con textura ya no tienen cartel. Siguen en greybox: juguetes sueltos, dibujos, mancha del techo y pasillo.
+**Texturas PS1 ✅ CL-073:** piso de tablas, empapelado, techo de yeso, dos maderas, frazada, almohadón tejido, frente del ropero, puerta, lomos de libros y el reloj marcando las 3:00 (`assets/textures/m1/`, materiales en `assets/materials/m1/`). Los muebles con textura ya no tienen cartel. Siguen en greybox: juguetes sueltos, mancha del techo y pasillo. Los tres dibujos de la pared junto a la puerta ("casa", "mi familia", "mi perro", hechos con crayón por el protagonista de chico) tienen imagen desde CL-088 (`assets/textures/m1/dibujo_*.png`).
 
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
@@ -272,21 +272,21 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 ### Props
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Barquito en las manos del protagonista** | OBL | ✅ Prisma + mástil + vela en `HeldItemView` |
-| Cama chica con dibujos, juguetes de nena | AMB | ✅ Cajas |
+| **Barquito en las manos del protagonista** | OBL | ✅ `assets/models/m3/barquito_mano.glb` en `HeldItemView`: el mismo modelo en todo el juego (CL-087) |
+| Cama chica con dibujos, juguetes de nena | AMB | ✅ Cama con frazada y sábana texturadas; tres dibujos de la hija en la pared ("papá y yo", el barco de papá, un corazón; `assets/textures/m3/dibujo_*.png`, CL-087); juguetes en el piso: osito de peluche, cubitos con letras y pelota (`scenes/props/osito.tscn`, `cubitos.tscn`, `pelota.tscn`, CL-088). Son los que el sueño corre de lugar (`DreamShifter`) |
 | El mismo estante alto, ahora **vacío** | AMB | ✅ Mismas medidas que en M1 |
-| Bolso de viaje listo en la entrada | AMB | ✅ Caja |
-| Campera de pesca y botas | AMB | ✅ Cajas |
-| Taza de café en la cocina | AMB | ✅ Cilindro |
-| Ventana con la luna | AMB | ✅ Cocina y cuarto (el del layout de M1) |
+| Bolso de viaje listo en la entrada | AMB | ✅ Valija de cuero con correas, a la izquierda de la puerta (`scenes/props/valija.tscn`, CL-088) |
+| Campera de pesca y botas | AMB | ✅ Piloto amarillo de pesca colgado de un perchero y botas de lluvia, a la derecha de la puerta (`scenes/props/piloto.tscn`, `botas_lluvia.tscn`, CL-088) |
+| Taza de café en la cocina | AMB | ✅ Taza con asa y café (formas simples, CL-087) |
+| Ventana con la luna | AMB | ✅ Cocina y cuarto, con lluvia afuera (`scenes/props/window_rain.tscn`, CL-087) |
 | Relojes parados | AMB | ✅ Cocina y mesa de luz, con `Label3D` "3:00" (falta el reloj compartido, T2 de M1) |
-| Canilla que gotea al ritmo del bip | AMB | Cilindro con cartel; gota y audio ❓ etapa 2 |
+| Canilla que gotea al ritmo del bip | AMB | ✅ Canilla con pico y dos llaves sobre una pileta (CL-087); gota visible ❓ |
 | Velador del cuarto de la hija (**única luz cálida**) | OBL | ✅ `OmniLight3D` cálida (y su luz bajo las puertas buenas) |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | ✅ Cápsula chica + esfera semitransparente sobre la cara (`StaticBody3D` para apuntarla) |
+| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | ✅ Modelo del hospital (`hija_ps1.glb`, CL-086); la cara se desenfoca con `face_blur.gdshader` (CL-087) (`StaticBody3D` para apuntarla) |
 
 ### Luz
 - Cálida solo en el velador (y en la franja bajo la puerta buena, que es "su" luz). El resto, luz fría azul verdosa (más fuerte que en M1 y M2, y sube con la degradación).

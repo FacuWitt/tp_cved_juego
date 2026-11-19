@@ -12,6 +12,7 @@
 [ext_resource type="Material" path="res://assets/materials/m3/puerta.tres" id="m3_puerta"]
 [ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="m3_techo"]
 [ext_resource type="Material" path="res://assets/materials/m3/reloj.tres" id="m3_reloj"]
+[ext_resource type="PackedScene" path="res://scenes/props/window_rain.tscn" id="window_rain"]
 
 [sub_resource type="StandardMaterial3D" id="m_black"]
 shading_mode = 0
@@ -70,9 +71,52 @@ bottom_radius = 0.04
 height = 0.1
 
 [sub_resource type="CylinderMesh" id="mesh_faucet"]
-top_radius = 0.025
-bottom_radius = 0.025
-height = 0.3
+top_radius = 0.02
+bottom_radius = 0.028
+height = 0.25
+radial_segments = 8
+
+[sub_resource type="TorusMesh" id="mesh_cup_handle"]
+inner_radius = 0.016
+outer_radius = 0.03
+rings = 8
+ring_segments = 6
+
+[sub_resource type="CylinderMesh" id="mesh_coffee"]
+top_radius = 0.04
+bottom_radius = 0.04
+height = 0.004
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="mesh_spout"]
+top_radius = 0.016
+bottom_radius = 0.016
+height = 0.2
+radial_segments = 8
+
+[sub_resource type="CylinderMesh" id="mesh_spout_tip"]
+top_radius = 0.016
+bottom_radius = 0.014
+height = 0.06
+radial_segments = 8
+
+[sub_resource type="CylinderMesh" id="mesh_knob"]
+top_radius = 0.02
+bottom_radius = 0.024
+height = 0.035
+radial_segments = 6
+
+[sub_resource type="BoxMesh" id="mesh_sink"]
+size = Vector3(0.42, 0.012, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="m_coffee"]
+albedo_color = Color(0.13, 0.07, 0.04, 1)
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="m_sink"]
+albedo_color = Color(0.32, 0.34, 0.36, 1)
+metallic = 0.6
+roughness = 0.4
 
 [sub_resource type="QuadMesh" id="mesh_clock_face"]
 size = Vector2(0.31, 0.31)
@@ -168,13 +212,15 @@ position = Vector3(0.2, 0.8, 0.0)
 mesh = SubResource("mesh_cup")
 material_override = SubResource("m_white")
 
-[node name="CupLabel" type="Label3D" parent="Kitchen"]
-position = Vector3(0.2, 1.0, 0.0)
-pixel_size = 0.0025
-billboard = 1
-text = "TAZA DE CAFÉ (frío)"
-font_size = 18
-outline_size = 6
+[node name="Handle" type="MeshInstance3D" parent="Kitchen/Cup"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.05, 0.005, 0)
+mesh = SubResource("mesh_cup_handle")
+material_override = SubResource("m_white")
+
+[node name="Coffee" type="MeshInstance3D" parent="Kitchen/Cup"]
+position = Vector3(0, 0.035, 0)
+mesh = SubResource("mesh_coffee")
+material_override = SubResource("m_coffee")
 
 [node name="Counter" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(2.75, 0.45, 0.2)
@@ -182,18 +228,35 @@ size = Vector3(0.6, 0.9, 2.2)
 material = ExtResource("m3_madera")
 use_collision = true
 
+[node name="Sink" type="MeshInstance3D" parent="Kitchen"]
+position = Vector3(2.7, 0.906, 0.4)
+mesh = SubResource("mesh_sink")
+material_override = SubResource("m_sink")
+
 [node name="Faucet" type="MeshInstance3D" parent="Kitchen"]
-position = Vector3(2.9, 1.05, 0.4)
+position = Vector3(2.92, 1.025, 0.4)
 mesh = SubResource("mesh_faucet")
 material_override = SubResource("m_metal")
 
-[node name="FaucetLabel" type="Label3D" parent="Kitchen"]
-position = Vector3(2.75, 1.4, 0.4)
-pixel_size = 0.0025
-billboard = 1
-text = "CANILLA (gotea al ritmo del bip)"
-font_size = 18
-outline_size = 6
+[node name="Spout" type="MeshInstance3D" parent="Kitchen/Faucet"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.09, 0.11, 0)
+mesh = SubResource("mesh_spout")
+material_override = SubResource("m_metal")
+
+[node name="SpoutTip" type="MeshInstance3D" parent="Kitchen/Faucet"]
+position = Vector3(-0.185, 0.08, 0)
+mesh = SubResource("mesh_spout_tip")
+material_override = SubResource("m_metal")
+
+[node name="KnobLeft" type="MeshInstance3D" parent="Kitchen/Faucet"]
+position = Vector3(0, -0.105, -0.07)
+mesh = SubResource("mesh_knob")
+material_override = SubResource("m_metal")
+
+[node name="KnobRight" type="MeshInstance3D" parent="Kitchen/Faucet"]
+position = Vector3(0, -0.105, 0.07)
+mesh = SubResource("mesh_knob")
+material_override = SubResource("m_metal")
 
 [node name="Fridge" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(2.65, 0.9, -1.95)
@@ -212,14 +275,6 @@ position = Vector3(0, 0.021, 0)
 rotation_degrees = Vector3(-90, 0, 0)
 mesh = SubResource("mesh_clock_face")
 material_override = ExtResource("m3_reloj")
-
-[node name="WindowLabel" type="Label3D" parent="Kitchen"]
-position = Vector3(-2.9, 2.25, 0)
-pixel_size = 0.0025
-billboard = 1
-text = "VENTANA: tormenta (lluvia en etapa 2)"
-font_size = 18
-outline_size = 6
 
 [node name="BackStub" type="Node3D" parent="."]
 
@@ -477,3 +532,6 @@ material_override = SubResource("m_sky")
 position = Vector3(-11, 3.6, 1.0)
 mesh = SubResource("mesh_moon")
 material_override = SubResource("m_moon")
+
+[node name="WindowRain" parent="Exterior" instance=ExtResource("window_rain")]
+position = Vector3(-6.5, 0, 0)

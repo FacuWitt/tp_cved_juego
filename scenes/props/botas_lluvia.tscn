@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="m_rubber"]
+albedo_color = Color(0.1, 0.13, 0.11, 1)
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="m_sole"]
+albedo_color = Color(0.05, 0.05, 0.05, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_rim"]
+albedo_color = Color(0.85, 0.6, 0.12, 1)
+roughness = 0.4
+
+[sub_resource type="CylinderMesh" id="mesh_shaft"]
+top_radius = 0.066
+bottom_radius = 0.058
+height = 0.3
+radial_segments = 12
+rings = 1
+
+[sub_resource type="CylinderMesh" id="mesh_rim"]
+top_radius = 0.069
+bottom_radius = 0.068
+height = 0.03
+radial_segments = 12
+rings = 1
+
+[sub_resource type="BoxMesh" id="mesh_foot"]
+size = Vector3(0.112, 0.09, 0.15)
+
+[sub_resource type="CylinderMesh" id="mesh_toe"]
+top_radius = 0.052
+bottom_radius = 0.056
+height = 0.09
+radial_segments = 12
+rings = 1
+
+[sub_resource type="BoxMesh" id="mesh_sole"]
+size = Vector3(0.122, 0.024, 0.29)
+
+[node name="BotasLluvia" type="Node3D"]
+
+[node name="BootLeft" type="Node3D" parent="."]
+transform = Transform3D(0.99, 0, 0.139, 0, 1, 0, -0.139, 0, 0.99, -0.075, 0, 0)
+
+[node name="Shaft" type="MeshInstance3D" parent="BootLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, -0.045)
+mesh = SubResource("mesh_shaft")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Rim" type="MeshInstance3D" parent="BootLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31, -0.045)
+mesh = SubResource("mesh_rim")
+surface_material_override/0 = SubResource("m_rim")
+
+[node name="Foot" type="MeshInstance3D" parent="BootLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.069, 0.03)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Toe" type="MeshInstance3D" parent="BootLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.069, 0.1)
+mesh = SubResource("mesh_toe")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Sole" type="MeshInstance3D" parent="BootLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, 0.02)
+mesh = SubResource("mesh_sole")
+surface_material_override/0 = SubResource("m_sole")
+
+[node name="BootRight" type="Node3D" parent="."]
+transform = Transform3D(0.985, 0, -0.174, 0, 1, 0, 0.174, 0, 0.985, 0.085, 0, 0.03)
+
+[node name="Shaft" type="MeshInstance3D" parent="BootRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, -0.045)
+mesh = SubResource("mesh_shaft")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Rim" type="MeshInstance3D" parent="BootRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31, -0.045)
+mesh = SubResource("mesh_rim")
+surface_material_override/0 = SubResource("m_rim")
+
+[node name="Foot" type="MeshInstance3D" parent="BootRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.069, 0.03)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Toe" type="MeshInstance3D" parent="BootRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.069, 0.1)
+mesh = SubResource("mesh_toe")
+surface_material_override/0 = SubResource("m_rubber")
+
+[node name="Sole" type="MeshInstance3D" parent="BootRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, 0.02)
+mesh = SubResource("mesh_sole")
+surface_material_override/0 = SubResource("m_sole")

@@ -133,7 +133,7 @@ player = NodePath("../Player")
 script = ExtResource("20_shift")
 settings = ExtResource("19_dream")
 player = NodePath("../Player")
-loose_props = [NodePath("../HouseLayout/Kitchen/Cup"), NodePath("../DaughterRoom/Props/Toy1"), NodePath("../DaughterRoom/Props/Toy2"), NodePath("../DaughterRoom/Props/Toy3")]
+loose_props = [NodePath("../HouseLayout/Kitchen/Cup"), NodePath("../DaughterRoom/Props/Osito"), NodePath("../DaughterRoom/Props/Cubitos"), NodePath("../DaughterRoom/Props/Pelota")]
 
 [node name="HallwayDeadEnd" type="Node" parent="." unique_id=1368584483 node_paths=PackedStringArray("player", "hallway")]
 script = ExtResource("21_dead")
