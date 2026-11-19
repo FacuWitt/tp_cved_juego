@@ -1,0 +1,151 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://assets/materials/m3/cuero_valija.tres" id="1_cuero"]
+[ext_resource type="Material" path="res://assets/materials/m3/cuero_valija_oscuro.tres" id="2_oscuro"]
+
+[sub_resource type="StandardMaterial3D" id="m_brass"]
+albedo_color = Color(0.72, 0.56, 0.25, 1)
+metallic = 0.85
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="mesh_body"]
+size = Vector3(0.54, 0.38, 0.19)
+
+[sub_resource type="BoxMesh" id="mesh_seam"]
+size = Vector3(0.552, 0.392, 0.02)
+
+[sub_resource type="BoxMesh" id="mesh_corner"]
+size = Vector3(0.05, 0.05, 0.198)
+
+[sub_resource type="BoxMesh" id="mesh_strap"]
+size = Vector3(0.045, 0.388, 0.2)
+
+[sub_resource type="BoxMesh" id="mesh_buckle"]
+size = Vector3(0.055, 0.04, 0.008)
+
+[sub_resource type="BoxMesh" id="mesh_latch"]
+size = Vector3(0.04, 0.012, 0.03)
+
+[sub_resource type="BoxMesh" id="mesh_mount"]
+size = Vector3(0.03, 0.02, 0.05)
+
+[sub_resource type="CylinderMesh" id="mesh_foot"]
+top_radius = 0.012
+bottom_radius = 0.012
+height = 0.02
+radial_segments = 8
+rings = 1
+
+[sub_resource type="CapsuleMesh" id="mesh_handle"]
+radius = 0.016
+height = 0.17
+radial_segments = 8
+rings = 2
+
+[sub_resource type="BoxShape3D" id="shape_case"]
+size = Vector3(0.56, 0.44, 0.21)
+
+[node name="Valija" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0)
+shape = SubResource("shape_case")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21, 0)
+mesh = SubResource("mesh_body")
+surface_material_override/0 = ExtResource("1_cuero")
+
+[node name="Seam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21, 0)
+mesh = SubResource("mesh_seam")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="Corners" type="Node3D" parent="."]
+
+[node name="TopLeft" type="MeshInstance3D" parent="Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.252, 0.382, 0)
+mesh = SubResource("mesh_corner")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="TopRight" type="MeshInstance3D" parent="Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.252, 0.382, 0)
+mesh = SubResource("mesh_corner")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="BottomLeft" type="MeshInstance3D" parent="Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.252, 0.038, 0)
+mesh = SubResource("mesh_corner")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="BottomRight" type="MeshInstance3D" parent="Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.252, 0.038, 0)
+mesh = SubResource("mesh_corner")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="StrapLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.21, 0)
+mesh = SubResource("mesh_strap")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="StrapRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.21, 0)
+mesh = SubResource("mesh_strap")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="BuckleLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.3, 0.102)
+mesh = SubResource("mesh_buckle")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="BuckleRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.3, 0.102)
+mesh = SubResource("mesh_buckle")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="LatchLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.404, 0)
+mesh = SubResource("mesh_latch")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="LatchRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.404, 0)
+mesh = SubResource("mesh_latch")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="MountLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.408, 0)
+mesh = SubResource("mesh_mount")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="MountRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.085, 0.408, 0)
+mesh = SubResource("mesh_mount")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="Handle" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0.43, 0)
+mesh = SubResource("mesh_handle")
+surface_material_override/0 = ExtResource("2_oscuro")
+
+[node name="Feet" type="Node3D" parent="."]
+
+[node name="Foot1" type="MeshInstance3D" parent="Feet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.01, -0.06)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="Foot2" type="MeshInstance3D" parent="Feet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.01, -0.06)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="Foot3" type="MeshInstance3D" parent="Feet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.01, 0.06)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_brass")
+
+[node name="Foot4" type="MeshInstance3D" parent="Feet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.01, 0.06)
+mesh = SubResource("mesh_foot")
+surface_material_override/0 = SubResource("m_brass")

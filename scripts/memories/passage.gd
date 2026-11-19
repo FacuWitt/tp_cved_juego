@@ -56,6 +56,8 @@ var _surface_glow: MeshInstance3D
 var _surface_material: ShaderMaterial
 var _ambience: AudioStreamPlayer
 var _beep_timer: float = 0.0
+## Ya llegó a la luz (queda así aunque después se mueva).
+var _arrived: bool = false
 
 const VOICE_BUS: StringName = &"PassageVoices"
 
@@ -101,8 +103,15 @@ func _process(delta: float) -> void:
 		if not settings.descend:
 			to_goal.y = 0.0
 		var arrived: bool = (settings.descend and progress >= 1.0) or (not settings.descend and to_goal.length() <= settings.end_radius)
-		# No se corta una voz a la mitad: al llegar, espera a que termine la que está sonando.
-		if arrived and _time >= _voice_busy_until:
+		# Al llegar a la luz queda ahí, sin control: antes seguía caminando mientras terminaba la
+		# voz, pasaba la luz de largo y tenía que darse vuelta y volver para terminar el pasaje.
+		if arrived and not _arrived:
+			_arrived = true
+			player.set_controls_enabled(false)
+		var voice_pending: bool = voices_heard < settings.voices.size() \
+				and progress >= settings.voices[voices_heard].at_progress
+		# No se corta una voz a la mitad: al llegar, espera a que terminen la que suena y las que faltaban.
+		if _arrived and _time >= _voice_busy_until and not voice_pending:
 			goal_reached.emit()
 			complete()
 

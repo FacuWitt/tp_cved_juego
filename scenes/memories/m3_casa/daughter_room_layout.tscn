@@ -7,6 +7,7 @@
 [ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="m3_piso"]
 [ext_resource type="Material" path="res://assets/materials/m3/puerta.tres" id="m3_puerta"]
 [ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="m3_techo"]
+[ext_resource type="PackedScene" path="res://scenes/props/window_rain.tscn" id="window_rain"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8_s"]
 albedo_color = Color(0.03, 0.05, 0.1, 1)
@@ -121,15 +122,6 @@ material_override = ExtResource("m3_puerta")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHinge/Door"]
 shape = SubResource("BoxShape3D_11_s")
 
-[node name="Label3D" type="Label3D" parent="DoorHinge/Door"]
-position = Vector3(0, 0.5, -0.05)
-pixel_size = 0.0025
-text = "PUERTA"
-font_size = 26
-modulate = Color(1, 1, 1, 1)
-billboard = 1
-outline_size = 6
-
 [node name="Corridor" type="Node3D" parent="."]
 
 [node name="Floor" type="CSGBox3D" parent="Corridor"]
@@ -169,15 +161,6 @@ script = ExtResource("2_e")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Exit"]
 shape = SubResource("BoxShape3D_12_s")
 
-[node name="Label3D" type="Label3D" parent="Exit"]
-position = Vector3(0, 0.6, 0)
-pixel_size = 0.0025
-text = "SALIDA"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-billboard = 1
-outline_size = 6
-
 [node name="Exterior" type="Node3D" parent="."]
 
 [node name="NightSky" type="MeshInstance3D" parent="Exterior"]
@@ -190,11 +173,5 @@ position = Vector3(-11, 3.6, -1.2)
 mesh = SubResource("SphereMesh_14_s")
 material_override = SubResource("StandardMaterial3D_9_s")
 
-[node name="WindowLabel" type="Label3D" parent="Exterior"]
-position = Vector3(-2.25, 2.15, 0)
-pixel_size = 0.0025
-text = "VENTANA: noche y tormenta (lluvia y relámpagos en etapa 2)"
-font_size = 20
-modulate = Color(1, 1, 1, 1)
-billboard = 1
-outline_size = 6
+[node name="WindowRain" parent="Exterior" instance=ExtResource("window_rain")]
+position = Vector3(-5.5, 0, 0)

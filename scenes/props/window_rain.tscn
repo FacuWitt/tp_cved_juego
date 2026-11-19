@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[sub_resource type="Gradient" id="Gradient_drop"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.28, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_drop"]
+gradient = SubResource("Gradient_drop")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="m_drop"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.7, 0.8, 0.9, 0.35)
+albedo_texture = SubResource("GradientTexture2D_drop")
+billboard_mode = 2
+billboard_keep_scale = true
+
+[sub_resource type="BoxMesh" id="mesh_drop"]
+size = Vector3(0.012, 0.6, 0.012)
+
+[node name="WindowRain" type="Node3D"]
+
+[node name="Rain" type="CPUParticles3D" parent="."]
+position = Vector3(0, 4.5, 0)
+material_override = SubResource("m_drop")
+cast_shadow = 0
+amount = 900
+lifetime = 0.65
+preprocess = 1.0
+mesh = SubResource("mesh_drop")
+emission_shape = 3
+emission_box_extents = Vector3(2.5, 0.1, 5)
+particle_flag_align_y = true
+direction = Vector3(0.15, -1, 0)
+spread = 0.0
+gravity = Vector3(0, -12, 0)
+initial_velocity_min = 7.0
+initial_velocity_max = 9.0

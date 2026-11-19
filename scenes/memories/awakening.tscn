@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/hospital/suero_ps1.glb" id="pc_suero"]
 [ext_resource type="PackedScene" path="res://assets/models/hospital/mesa_cama_ps1.glb" id="pc_mesa"]
 [ext_resource type="PackedScene" path="res://assets/models/hospital/persiana_ps1.glb" id="pc_persiana"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="boat_model"]
 
 [sub_resource type="Environment" id="env"]
 background_mode = 1
@@ -49,10 +50,6 @@ roughness = 1.0
 
 [sub_resource type="StandardMaterial3D" id="m_wood"]
 albedo_color = Color(0.55, 0.36, 0.2, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="m_sail"]
-albedo_color = Color(0.92, 0.9, 0.84, 1)
 roughness = 0.85
 
 [sub_resource type="StandardMaterial3D" id="m_dark"]
@@ -127,17 +124,6 @@ bottom_radius = 0.03
 height = 0.1
 radial_segments = 10
 rings = 1
-
-[sub_resource type="BoxMesh" id="bm_hull"]
-size = Vector3(0.34, 0.08, 0.12)
-
-[sub_resource type="CylinderMesh" id="cm_mast"]
-top_radius = 0.008
-bottom_radius = 0.008
-height = 0.26
-
-[sub_resource type="PrismMesh" id="pm_sail"]
-size = Vector3(0.16, 0.2, 0.01)
 
 [sub_resource type="CylinderMesh" id="cm_clock"]
 top_radius = 0.22
@@ -297,19 +283,8 @@ material = SubResource("m_wood")
 [node name="Barquito" type="Node3D" parent="Nightstand"]
 transform = Transform3D(0.5, 0, 0.866, 0, 1, 0, -0.866, 0, 0.5, 0, 0.64, 0)
 
-[node name="Hull" type="MeshInstance3D" parent="Nightstand/Barquito"]
-mesh = SubResource("bm_hull")
-material_override = SubResource("m_wood")
-
-[node name="Mast" type="MeshInstance3D" parent="Nightstand/Barquito"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
-mesh = SubResource("cm_mast")
-material_override = SubResource("m_wood")
-
-[node name="Sail" type="MeshInstance3D" parent="Nightstand/Barquito"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.17, 0)
-mesh = SubResource("pm_sail")
-material_override = SubResource("m_sail")
+[node name="Modelo" parent="Nightstand/Barquito" instance=ExtResource("boat_model")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0, 0.065, 0)
 
 [node name="Daughter" type="Node3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.05, 0, 1.05)
