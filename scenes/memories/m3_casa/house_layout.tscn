@@ -1,54 +1,21 @@
 [gd_scene format=3]
 
-[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_grid"]
 [ext_resource type="Script" path="res://scripts/world/bending_hallway.gd" id="2_hall"]
 [ext_resource type="Script" path="res://scripts/world/loop_portal.gd" id="3_portal"]
 [ext_resource type="Script" path="res://scripts/world/repeating_photos.gd" id="4_photos"]
 [ext_resource type="Resource" path="res://config/memory_3_settings.tres" id="5_settings"]
-
-[sub_resource type="ShaderMaterial" id="m_floor"]
-render_priority = 0
-shader = ExtResource("1_grid")
-shader_parameter/base_color = Color(0.34, 0.33, 0.3, 1)
-shader_parameter/line_color = Color(0.25, 0.25, 0.23, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="m_wall"]
-render_priority = 0
-shader = ExtResource("1_grid")
-shader_parameter/base_color = Color(0.5, 0.54, 0.5, 1)
-shader_parameter/line_color = Color(0.4, 0.44, 0.41, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="m_ceiling"]
-render_priority = 0
-shader = ExtResource("1_grid")
-shader_parameter/base_color = Color(0.42, 0.44, 0.42, 1)
-shader_parameter/line_color = Color(0.34, 0.36, 0.34, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="m_hall"]
-render_priority = 0
-shader = ExtResource("1_grid")
-shader_parameter/base_color = Color(0.3, 0.36, 0.36, 1)
-shader_parameter/line_color = Color(0.22, 0.27, 0.27, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
+[ext_resource type="Material" path="res://assets/materials/m3/madera.tres" id="m3_madera"]
+[ext_resource type="Material" path="res://assets/materials/m3/madera_oscura.tres" id="m3_madera_oscura"]
+[ext_resource type="Material" path="res://assets/materials/m3/pared.tres" id="m3_pared"]
+[ext_resource type="Material" path="res://assets/materials/m3/pasillo.tres" id="m3_pasillo"]
+[ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="m3_piso"]
+[ext_resource type="Material" path="res://assets/materials/m3/puerta.tres" id="m3_puerta"]
+[ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="m3_techo"]
+[ext_resource type="Material" path="res://assets/materials/m3/reloj.tres" id="m3_reloj"]
 
 [sub_resource type="StandardMaterial3D" id="m_black"]
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="m_wood"]
-albedo_color = Color(0.4, 0.27, 0.17, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="m_door"]
-albedo_color = Color(0.36, 0.26, 0.18, 1)
-roughness = 0.85
 
 [sub_resource type="StandardMaterial3D" id="m_white"]
 albedo_color = Color(0.85, 0.85, 0.82, 1)
@@ -58,10 +25,6 @@ roughness = 0.6
 albedo_color = Color(0.6, 0.62, 0.64, 1)
 metallic = 0.7
 roughness = 0.35
-
-[sub_resource type="StandardMaterial3D" id="m_frame"]
-albedo_color = Color(0.2, 0.14, 0.1, 1)
-roughness = 0.85
 
 [sub_resource type="StandardMaterial3D" id="m_water"]
 transparency = 1
@@ -86,6 +49,9 @@ albedo_color = Color(0.85, 0.88, 0.95, 1)
 [sub_resource type="BoxMesh" id="mesh_door"]
 size = Vector3(0.98, 2.08, 0.06)
 
+[sub_resource type="QuadMesh" id="mesh_door_face"]
+size = Vector2(0.98, 2.08)
+
 [sub_resource type="BoxShape3D" id="shape_door"]
 size = Vector3(0.98, 2.08, 0.06)
 
@@ -108,6 +74,9 @@ top_radius = 0.025
 bottom_radius = 0.025
 height = 0.3
 
+[sub_resource type="QuadMesh" id="mesh_clock_face"]
+size = Vector2(0.31, 0.31)
+
 [sub_resource type="CylinderMesh" id="mesh_clock"]
 top_radius = 0.16
 bottom_radius = 0.16
@@ -127,13 +96,13 @@ height = 1.2
 [node name="Floor" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(0, -0.1, 0)
 size = Vector3(6.4, 0.2, 5.4)
-material = SubResource("m_floor")
+material = ExtResource("m3_piso")
 use_collision = true
 
 [node name="Ceiling" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(0, 2.7, 0)
 size = Vector3(6.4, 0.2, 5.4)
-material = SubResource("m_ceiling")
+material = ExtResource("m3_techo")
 use_collision = true
 
 [node name="NorthWall" type="CSGCombiner3D" parent="Kitchen"]
@@ -142,7 +111,7 @@ use_collision = true
 
 [node name="Wall" type="CSGBox3D" parent="Kitchen/NorthWall"]
 size = Vector3(6.4, 2.8, 0.2)
-material = SubResource("m_wall")
+material = ExtResource("m3_pared")
 
 [node name="DoorHole" type="CSGBox3D" parent="Kitchen/NorthWall"]
 operation = 2
@@ -155,7 +124,7 @@ use_collision = true
 
 [node name="Wall" type="CSGBox3D" parent="Kitchen/SouthWall"]
 size = Vector3(6.4, 2.8, 0.2)
-material = SubResource("m_wall")
+material = ExtResource("m3_pared")
 
 [node name="DoorHole" type="CSGBox3D" parent="Kitchen/SouthWall"]
 operation = 2
@@ -165,7 +134,7 @@ size = Vector3(1.0, 2.1, 0.4)
 [node name="EastWall" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(3.1, 1.3, 0)
 size = Vector3(0.2, 2.8, 5.4)
-material = SubResource("m_wall")
+material = ExtResource("m3_pared")
 use_collision = true
 
 [node name="WestWall" type="CSGCombiner3D" parent="Kitchen"]
@@ -174,7 +143,7 @@ use_collision = true
 
 [node name="Wall" type="CSGBox3D" parent="Kitchen/WestWall"]
 size = Vector3(0.2, 2.8, 5.4)
-material = SubResource("m_wall")
+material = ExtResource("m3_pared")
 
 [node name="WindowHole" type="CSGBox3D" parent="Kitchen/WestWall"]
 operation = 2
@@ -191,7 +160,7 @@ omni_range = 6.0
 [node name="Table" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(0, 0.375, -0.3)
 size = Vector3(1.4, 0.75, 0.9)
-material = SubResource("m_wood")
+material = ExtResource("m3_madera")
 use_collision = true
 
 [node name="Cup" type="MeshInstance3D" parent="Kitchen"]
@@ -210,7 +179,7 @@ outline_size = 6
 [node name="Counter" type="CSGBox3D" parent="Kitchen"]
 position = Vector3(2.75, 0.45, 0.2)
 size = Vector3(0.6, 0.9, 2.2)
-material = SubResource("m_wood")
+material = ExtResource("m3_madera")
 use_collision = true
 
 [node name="Faucet" type="MeshInstance3D" parent="Kitchen"]
@@ -238,13 +207,11 @@ rotation_degrees = Vector3(90, 0, 0)
 mesh = SubResource("mesh_clock")
 material_override = SubResource("m_white")
 
-[node name="ClockLabel" type="Label3D" parent="Kitchen"]
-position = Vector3(-1.4, 2.32, -2.4)
-pixel_size = 0.0025
-billboard = 1
-text = "RELOJ PARADO (3:00)"
-font_size = 18
-outline_size = 6
+[node name="ClockFace" type="MeshInstance3D" parent="Kitchen/WallClock"]
+position = Vector3(0, 0.021, 0)
+rotation_degrees = Vector3(-90, 0, 0)
+mesh = SubResource("mesh_clock_face")
+material_override = ExtResource("m3_reloj")
 
 [node name="WindowLabel" type="Label3D" parent="Kitchen"]
 position = Vector3(-2.9, 2.25, 0)
@@ -290,7 +257,7 @@ use_collision = true
 position = Vector3(0, 0, -2.7)
 script = ExtResource("2_hall")
 far_end = NodePath("FarEnd")
-hall_material = SubResource("m_hall")
+hall_material = ExtResource("m3_pasillo")
 dark_material = SubResource("m_black")
 outside_material = SubResource("m_sky")
 
@@ -298,7 +265,7 @@ outside_material = SubResource("m_sky")
 script = ExtResource("4_photos")
 settings = ExtResource("5_settings")
 hallway = NodePath("..")
-frame_material = SubResource("m_frame")
+frame_material = ExtResource("m3_madera_oscura")
 
 [node name="FarEnd" type="Node3D" parent="Hallway"]
 position = Vector3(0, 0, -8)
@@ -318,7 +285,17 @@ sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
 mesh = SubResource("mesh_door")
-material_override = SubResource("m_door")
+material_override = ExtResource("m3_madera")
+
+[node name="FaceFront" type="MeshInstance3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
+
+[node name="FaceBack" type="MeshInstance3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door0Hinge/Door"]
 shape = SubResource("shape_door")
@@ -332,7 +309,17 @@ sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
 mesh = SubResource("mesh_door")
-material_override = SubResource("m_door")
+material_override = ExtResource("m3_madera")
+
+[node name="FaceFront" type="MeshInstance3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
+
+[node name="FaceBack" type="MeshInstance3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door1Hinge/Door"]
 shape = SubResource("shape_door")
@@ -346,7 +333,17 @@ sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
 mesh = SubResource("mesh_door")
-material_override = SubResource("m_door")
+material_override = ExtResource("m3_madera")
+
+[node name="FaceFront" type="MeshInstance3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
+
+[node name="FaceBack" type="MeshInstance3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hallway/FarEnd/Door2Hinge/Door"]
 shape = SubResource("shape_door")

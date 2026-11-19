@@ -1,43 +1,12 @@
 [gd_scene format=3]
 
-[ext_resource type="Shader" path="res://assets/shaders/prototype_grid.gdshader" id="1_e"]
 [ext_resource type="Script" path="res://scripts/world/memory_exit.gd" id="2_e"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.42, 0.3, 0.2, 1)
-shader_parameter/line_color = Color(0.3, 0.21, 0.14, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.62, 0.5, 0.38, 1)
-shader_parameter/line_color = Color(0.48, 0.38, 0.28, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.5, 0.42, 0.34, 1)
-shader_parameter/line_color = Color(0.4, 0.33, 0.26, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6_s"]
-render_priority = 0
-shader = ExtResource("1_e")
-shader_parameter/base_color = Color(0.22, 0.27, 0.3, 1)
-shader_parameter/line_color = Color(0.15, 0.19, 0.22, 1)
-shader_parameter/cell_size = 0.5
-shader_parameter/line_width = 0.02
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
-albedo_color = Color(0.4, 0.26, 0.16, 1)
-roughness = 0.85
+[ext_resource type="Material" path="res://assets/materials/m3/madera.tres" id="m3_madera"]
+[ext_resource type="Material" path="res://assets/materials/m3/pared.tres" id="m3_pared"]
+[ext_resource type="Material" path="res://assets/materials/m3/pasillo.tres" id="m3_pasillo"]
+[ext_resource type="Material" path="res://assets/materials/m3/piso.tres" id="m3_piso"]
+[ext_resource type="Material" path="res://assets/materials/m3/puerta.tres" id="m3_puerta"]
+[ext_resource type="Material" path="res://assets/materials/m3/techo.tres" id="m3_techo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8_s"]
 albedo_color = Color(0.03, 0.05, 0.1, 1)
@@ -51,6 +20,9 @@ shading_mode = 0
 
 [sub_resource type="BoxMesh" id="BoxMesh_10_s"]
 size = Vector3(0.98, 2.08, 0.06)
+
+[sub_resource type="QuadMesh" id="mesh_door_face"]
+size = Vector2(0.98, 2.08)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_11_s"]
 size = Vector3(0.98, 2.08, 0.06)
@@ -70,25 +42,25 @@ height = 1.2
 [node name="Floor" type="CSGBox3D" parent="."]
 position = Vector3(0, -0.1, 0)
 size = Vector3(4.4, 0.2, 4.4)
-material = SubResource("ShaderMaterial_3_s")
+material = ExtResource("m3_piso")
 use_collision = true
 
 [node name="Ceiling" type="CSGBox3D" parent="."]
 position = Vector3(0, 2.7, 0)
 size = Vector3(4.4, 0.2, 4.4)
-material = SubResource("ShaderMaterial_5_s")
+material = ExtResource("m3_techo")
 use_collision = true
 
 [node name="NorthWall" type="CSGBox3D" parent="."]
 position = Vector3(0, 1.3, -2.1)
 size = Vector3(4.4, 2.6, 0.2)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("m3_pared")
 use_collision = true
 
 [node name="EastWall" type="CSGBox3D" parent="."]
 position = Vector3(2.1, 1.3, 0)
 size = Vector3(0.2, 2.6, 4.4)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("m3_pared")
 use_collision = true
 
 [node name="WestWall" type="CSGCombiner3D" parent="."]
@@ -98,7 +70,7 @@ use_collision = true
 [node name="Wall" type="CSGBox3D" parent="WestWall"]
 position = Vector3(0, 0, 0)
 size = Vector3(0.2, 2.6, 4.4)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("m3_pared")
 
 [node name="WindowHole" type="CSGBox3D" parent="WestWall"]
 operation = 2
@@ -108,7 +80,7 @@ size = Vector3(0.4, 1.0, 1.0)
 [node name="WindowSill" type="CSGBox3D" parent="."]
 position = Vector3(-1.95, 0.975, 0)
 size = Vector3(0.35, 0.05, 1.1)
-material = SubResource("StandardMaterial3D_7_s")
+material = ExtResource("m3_madera")
 use_collision = true
 
 [node name="SouthWall" type="CSGCombiner3D" parent="."]
@@ -118,7 +90,7 @@ use_collision = true
 [node name="Wall" type="CSGBox3D" parent="SouthWall"]
 position = Vector3(0, 0, 0)
 size = Vector3(4.4, 2.6, 0.2)
-material = SubResource("ShaderMaterial_4_s")
+material = ExtResource("m3_pared")
 
 [node name="DoorHole" type="CSGBox3D" parent="SouthWall"]
 operation = 2
@@ -134,7 +106,17 @@ sync_to_physics = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorHinge/Door"]
 mesh = SubResource("BoxMesh_10_s")
-material_override = SubResource("StandardMaterial3D_7_s")
+material_override = ExtResource("m3_madera")
+
+[node name="FaceFront" type="MeshInstance3D" parent="DoorHinge/Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
+
+[node name="FaceBack" type="MeshInstance3D" parent="DoorHinge/Door"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.032)
+mesh = SubResource("mesh_door_face")
+material_override = ExtResource("m3_puerta")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHinge/Door"]
 shape = SubResource("BoxShape3D_11_s")
@@ -153,31 +135,31 @@ outline_size = 6
 [node name="Floor" type="CSGBox3D" parent="Corridor"]
 position = Vector3(1.3, -0.1, 3.7)
 size = Vector3(1.4, 0.2, 3.0)
-material = SubResource("ShaderMaterial_6_s")
+material = ExtResource("m3_pasillo")
 use_collision = true
 
 [node name="Ceiling" type="CSGBox3D" parent="Corridor"]
 position = Vector3(1.3, 2.3, 3.7)
 size = Vector3(1.4, 0.2, 3.0)
-material = SubResource("ShaderMaterial_6_s")
+material = ExtResource("m3_pasillo")
 use_collision = true
 
 [node name="WallLeft" type="CSGBox3D" parent="Corridor"]
 position = Vector3(0.7, 1.1, 3.7)
 size = Vector3(0.2, 2.4, 3.0)
-material = SubResource("ShaderMaterial_6_s")
+material = ExtResource("m3_pasillo")
 use_collision = true
 
 [node name="WallRight" type="CSGBox3D" parent="Corridor"]
 position = Vector3(1.9, 1.1, 3.7)
 size = Vector3(0.2, 2.4, 3.0)
-material = SubResource("ShaderMaterial_6_s")
+material = ExtResource("m3_pasillo")
 use_collision = true
 
 [node name="WallEnd" type="CSGBox3D" parent="Corridor"]
 position = Vector3(1.3, 1.1, 5.1)
 size = Vector3(1.4, 2.4, 0.2)
-material = SubResource("ShaderMaterial_6_s")
+material = ExtResource("m3_pasillo")
 use_collision = true
 
 [node name="Exit" type="Area3D" parent="."]

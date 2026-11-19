@@ -1,6 +1,7 @@
 class_name RepeatingPhotos
 extends Node3D
-## La misma foto familiar repetida a lo largo del pasillo de la M3, alternando paredes. Cuanto más
+## Fotos familiares a lo largo del pasillo de la M3, alternando paredes (`photo_textures`: cada par
+## enfrentado usa la siguiente foto de la lista). Cuanto más
 ## adentro del pasillo, más borrosa y más torcida; con la casa degradada, todas se borran más.
 ## Arma las fotos por código (cuadro + foto) para cubrir el pasillo aunque se estire, y cada vez
 ## que el pasillo cambia de forma o de largo las vuelve a ubicar a lo largo de las paredes (no pone
@@ -11,7 +12,7 @@ const SHADER: Shader = preload("res://assets/shaders/memory_photo.gdshader")
 @export var settings: Memory3Settings
 @export var hallway: BendingHallway
 ## Cartel de etapa 0 sobre la primera foto (vacío = sin cartel).
-@export var label_text: String = "FOTO (se repite, cada vez más borrosa)"
+@export var label_text: String = ""
 @export var frame_material: Material
 
 var _photos: Array[Node3D] = []
@@ -59,9 +60,12 @@ func _add_photo(i: int) -> void:
 	picture.mesh = quad
 	var material: ShaderMaterial = ShaderMaterial.new()
 	material.shader = SHADER
-	material.set_shader_parameter("use_texture", settings.photo_texture != null)
-	if settings.photo_texture != null:
-		material.set_shader_parameter("photo_tex", settings.photo_texture)
+	var texture: Texture2D = null
+	if not settings.photo_textures.is_empty():
+		texture = settings.photo_textures[int(i / 2.0) % settings.photo_textures.size()]
+	material.set_shader_parameter("use_texture", texture != null)
+	if texture != null:
+		material.set_shader_parameter("photo_tex", texture)
 	picture.material_override = material
 	picture.position.z = 0.012
 	photo.add_child(picture)
