@@ -6,6 +6,11 @@ extends Node
 ##   godot --headless --fixed-fps 60 res://tools/tests/m3_recorrido.tscn
 ## Con `-- capturas=<carpeta>` y sin --headless guarda capturas en los puntos clave.
 ## Con `-- sala=<n>` salta directo a la sala intermedia n (0, 1, 2), la cruza caminando y termina.
+## Con `-- quieto=<s>` (junto con `sala=<n>`) se queda esos segundos girando la cámara antes de cruzar.
+## Con `-- rapido` cruza cada puerta apenas la abre, sin esperar a que termine de abrirse.
+## Con `-- flujo` llega a la M3 como con F5: GameFlow carga una por una las escenas anteriores de la
+## secuencia (unos segundos cada una) y después la M3.
+## Con `-- mala=<n>` la primera puerta que prueba es la que está n lugares después de la buena (1 o 2; por defecto 1).
 
 const SCENE: String = "res://scenes/memories/m3_casa/m3_casa.tscn"
 
@@ -17,6 +22,10 @@ var finished: bool = false
 var shots_dir: String = ""
 var _try_wrong: bool = true
 var only_room: int = -1
+var wrong_offset: int = 1
+var through_flow: bool = false
+var linger: float = 0.0
+var hurry: bool = false
 
 
 func _ready() -> void:
@@ -25,14 +34,45 @@ func _ready() -> void:
 			shots_dir = arg.trim_prefix("capturas=")
 		if arg.begins_with("sala="):
 			only_room = arg.trim_prefix("sala=").to_int()
+		if arg.begins_with("mala="):
+			wrong_offset = arg.trim_prefix("mala=").to_int()
+		if arg.begins_with("quieto="):
+			linger = arg.trim_prefix("quieto=").to_float()
+		if arg == "rapido":
+			hurry = true
+		if arg == "flujo":
+			through_flow = true
 	seed(12345)
+	if through_flow:
+		_run_flow.call_deferred()
+		return
 	var scene: Node = (load(SCENE) as PackedScene).instantiate()
 	mem = scene as Memory3House
 	_run.call_deferred(scene)
 
 
+## Recorre la secuencia con GameFlow hasta la M3. Este nodo no puede ser la escena actual (el cambio
+## de escena lo borraría): se pone un nodo vacío en su lugar.
+func _run_flow() -> void:
+	var placeholder: Node = Node.new()
+	get_tree().root.add_child(placeholder)
+	get_tree().current_scene = placeholder
+	var m3_index: int = 4
+	for i: int in m3_index:
+		GameFlow.go_to(i)
+		await GameFlow.transition_finished
+		_log("flujo: escena %d (%s)" % [i, get_tree().current_scene.scene_file_path.get_file()])
+		await _wait(3.0)
+	GameFlow.go_to(m3_index)
+	await GameFlow.transition_finished
+	mem = get_tree().current_scene as Memory3House
+	_log("flujo: llega a la M3 (%s)" % mem.scene_file_path.get_file())
+	_run(null)
+
+
 func _run(scene: Node) -> void:
-	get_tree().root.add_child(scene)
+	if scene != null:
+		get_tree().root.add_child(scene)
 	player = mem.player
 	head = player.get_node("Head") as Node3D
 	mem.exit.reached.connect(func() -> void: finished = true)
@@ -43,6 +83,14 @@ func _run(scene: Node) -> void:
 		mem.segment = only_room
 		mem._advance(null)
 		await _wait(0.3)
+		var t0: float = _now()
+		var next_log: float = 0.0
+		while _now() - t0 < linger:
+			await get_tree().physics_frame
+			player.rotate_y(2.5 / Engine.physics_ticks_per_second)
+			if _now() - t0 >= next_log:
+				next_log += 5.0
+				_log("quieto: %.0f s, %d nodos" % [_now() - t0, Performance.get_monitor(Performance.OBJECT_NODE_COUNT)])
 		await _cross_interlude()
 		_log("RESULTADO: %s" % ("FALLO" if failed else "OK"))
 		get_tree().quit(1 if failed else 0)
@@ -54,7 +102,7 @@ func _run(scene: Node) -> void:
 		var good: int = mem.settings.good_doors[mem.segment]
 		var door: int = good
 		if _try_wrong:
-			door = (good + 1) % 3
+			door = (good + wrong_offset) % 3
 		await _hallway_to_door(door)
 		if failed:
 			break
@@ -97,7 +145,7 @@ func _hallway_to_door(door: int) -> void:
 	await _walk(far.to_global(Vector3(x, 0, -1.2)), 0.25, 10.0)
 	_face(far.to_global(Vector3(x, 0, -6.0)))
 	await _interact()
-	await _wait(mem.settings.door_open_time + 0.3)
+	await _wait(0.05 if hurry else mem.settings.door_open_time + 0.3)
 	var before: Vector3 = player.global_position
 	Input.action_press("move_forward")
 	t0 = _now()

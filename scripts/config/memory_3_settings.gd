@@ -99,9 +99,11 @@ extends Resource
 ## Pausa entre que termina de sonar y vuelve a llamar.
 @export_range(0.0, 20.0, 0.1, "suffix:s") var voice_interval: float = 3.0
 
-@export_group("Fotos del pasillo (la misma foto, cada vez más borrosa)")
-## La foto que se repite. Vacío = una foto genérica dibujada por el shader (una silueta en sepia).
-@export var photo_texture: Texture2D
+@export_group("Fotos del pasillo (fotos familiares, cada vez más borrosas)")
+## Las fotos que se cuelgan, en orden: cada par de fotos enfrentadas (una por pared) usa la
+## siguiente de la lista y al terminar vuelve a empezar. Un casillero vacío = una foto genérica
+## dibujada por el shader (una silueta en sepia). Lista vacía = todas genéricas.
+@export var photo_textures: Array[Texture2D] = []
 ## Distancia entre una foto y la siguiente (se alternan las paredes).
 @export_range(0.5, 5.0, 0.05, "suffix:m") var photo_spacing: float = 1.4
 ## Dónde está la primera foto, desde la entrada del pasillo.

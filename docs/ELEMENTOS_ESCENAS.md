@@ -263,7 +263,7 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
 | **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | ✅ Se reutiliza `room_layout.tscn` de M1 (su salida queda apagada) |
-| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `BendingHallway` (CL-068) + `RepeatingPhotos`: la misma foto repetida en las dos paredes, cada vez más borrosa y torcida hacia el fondo (CL-067). Foto genérica por shader hasta tener la real (`photo_texture`) |
+| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `BendingHallway` (CL-068) + `RepeatingPhotos`: fotos familiares en las dos paredes, cada vez más borrosas y torcidas hacia el fondo (CL-067). Desde CL-086 usan la lista `photo_textures`: por ahora todas muestran a la hija (retrato del modelo del hospital). ❓ ABIERTO: falta la imagen de la abuela, que va como segundo casillero. Se cambian en `photo_textures` de `memory_3_settings.tres` |
 | Cocina (se repite) | OBL | ✅ Caja con mesa, mesada, heladera; las puertas malas vuelven acá |
 | Puertas que llevan siempre al mismo lugar | OBL | ✅ 3 puertas + `LoopPortal` en tramos oscuros |
 | Entrada con la puerta de salida | OBL | ✅ Detrás del pasillo del cuarto; se abre al estabilizarse |

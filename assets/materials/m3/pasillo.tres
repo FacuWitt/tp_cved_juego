@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/house_surfaces.gdshader" id="1_sh"]
+[ext_resource type="Texture2D" path="res://assets/textures/m3/piso_madera.png" id="2_floor"]
+[ext_resource type="Texture2D" path="res://assets/textures/m3/pared_empapelado.png" id="3_wall"]
+[ext_resource type="Texture2D" path="res://assets/textures/m3/techo_yeso.png" id="4_ceil"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_sh")
+shader_parameter/floor_texture = ExtResource("2_floor")
+shader_parameter/wall_texture = ExtResource("3_wall")
+shader_parameter/ceiling_texture = ExtResource("4_ceil")
+shader_parameter/floor_scale = 1.0
+shader_parameter/wall_scale = 1.4
+shader_parameter/ceiling_scale = 0.8
+shader_parameter/floor_tint = Color(1, 1, 1, 1)
+shader_parameter/wall_tint = Color(1, 1, 1, 1)
+shader_parameter/ceiling_tint = Color(1, 1, 1, 1)
+shader_parameter/roughness = 0.9
