@@ -227,15 +227,27 @@ func make_player(stream: AudioStream, volume_db: float, loop: bool = false) -> A
 
 
 ## Suena una vez en un punto de la sala (posición global) y se libera sola.
-func play_at(stream: AudioStream, at: Vector3, volume_db: float, pitch: float = 1.0, unit_size: float = 3.0) -> void:
+func play_at(
+	stream: AudioStream,
+	at: Vector3,
+	volume_db: float,
+	pitch: float = 1.0,
+	unit_size: float = 3.0,
+	spatial: bool = true
+) -> void:
 	if stream == null:
 		return
+
 	var audio: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 	audio.stream = stream
 	audio.volume_db = volume_db
 	audio.pitch_scale = pitch
 	audio.unit_size = unit_size
 	audio.max_distance = 40.0
+
+	if not spatial:
+		audio.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
+
 	add_child(audio)
 	audio.global_position = at
 	audio.finished.connect(audio.queue_free)

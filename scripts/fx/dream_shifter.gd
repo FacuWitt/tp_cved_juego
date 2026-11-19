@@ -52,10 +52,16 @@ func shift_unseen() -> void:
 	if not settings.shifts_enabled or level <= 0.0:
 		return
 	var chance: float = settings.shift_chance * clampf(level * settings.level_gain, 0.0, 1.0)
+	var moved: Node3D = null
 	for prop: Node3D in _rest:
 		if float(_unseen[prop]) >= settings.shift_unseen_time and randf() < chance:
 			_shift(prop)
 			_unseen[prop] = 0.0
+			if moved == null:
+				moved = prop
+	# Un solo sonido por tanda, desde el primer objeto que se movió.
+	if moved != null:
+		Sfx.play_3d(self, settings.shift_sound, moved.global_position, settings.shift_volume_db, 0.05, settings.sound_bus)
 
 
 ## Cambia todos, aunque se los esté mirando (en un parpadeo, cuando la pantalla está en negro).

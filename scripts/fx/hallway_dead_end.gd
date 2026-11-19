@@ -85,6 +85,7 @@ func _try_place(here: float) -> void:
 	_wall.visible = true
 	_wall.use_collision = true
 	_unseen = 0.0
+	Sfx.play_3d(self, settings.dead_end_sound, _wall.global_position, settings.dead_end_volume_db, 0.05, settings.sound_bus)
 
 
 func _hide_wall() -> void:

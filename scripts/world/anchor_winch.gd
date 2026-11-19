@@ -66,6 +66,11 @@ func complete_now() -> void:
 	raised.emit()
 
 
+## Está subiendo: el jugador viene apretando (E) sin aflojar.
+func is_cranking() -> bool:
+	return is_active and not is_raised and _since_press <= settings.slip_delay
+
+
 ## Está bajando porque el jugador aflojó.
 func is_slipping() -> bool:
 	return is_active and not is_raised and progress > 0.0 and _since_press > settings.slip_delay

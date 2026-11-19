@@ -7,6 +7,9 @@
 [ext_resource type="Resource" path="res://config/postfx_hospital.tres" id="r_pfx"]
 [ext_resource type="Script" path="res://scripts/world/wall_clock_hands.gd" id="s_clock"]
 [ext_resource type="PackedScene" path="res://assets/models/personajes/hija_ps1.glb" id="pc_hija"]
+[ext_resource type="PackedScene" path="res://assets/models/hospital/suero_ps1.glb" id="pc_suero"]
+[ext_resource type="PackedScene" path="res://assets/models/hospital/mesa_cama_ps1.glb" id="pc_mesa"]
+[ext_resource type="PackedScene" path="res://assets/models/hospital/persiana_ps1.glb" id="pc_persiana"]
 
 [sub_resource type="Environment" id="env"]
 background_mode = 1
@@ -65,8 +68,8 @@ emission_energy_multiplier = 0.6
 [sub_resource type="StandardMaterial3D" id="m_window"]
 albedo_color = Color(1, 1, 1, 1)
 emission_enabled = true
-emission = Color(0.95, 0.97, 1, 1)
-emission_energy_multiplier = 2.2
+emission = Color(0.72, 0.86, 1, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="StandardMaterial3D" id="m_daughter"]
 albedo_color = Color(0.78, 0.5, 0.48, 1)
@@ -75,6 +78,55 @@ roughness = 0.9
 [sub_resource type="StandardMaterial3D" id="m_clock"]
 albedo_color = Color(0.95, 0.95, 0.92, 1)
 roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="m_panel"]
+albedo_color = Color(0.86, 0.88, 0.87, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="m_oxygen"]
+albedo_color = Color(0.25, 0.62, 0.42, 1)
+
+[sub_resource type="StandardMaterial3D" id="m_call"]
+albedo_color = Color(0.8, 0.15, 0.15, 1)
+emission_enabled = true
+emission = Color(0.9, 0.2, 0.2, 1)
+emission_energy_multiplier = 0.4
+
+[sub_resource type="StandardMaterial3D" id="m_curtain"]
+albedo_color = Color(0.62, 0.78, 0.8, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="m_door"]
+albedo_color = Color(0.78, 0.74, 0.66, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="m_door_glass"]
+albedo_color = Color(0.75, 0.85, 0.95, 1)
+emission_enabled = true
+emission = Color(0.7, 0.82, 1, 1)
+emission_energy_multiplier = 1.4
+
+[sub_resource type="StandardMaterial3D" id="m_glass"]
+transparency = 1
+albedo_color = Color(0.85, 0.92, 1, 0.45)
+
+[sub_resource type="StandardMaterial3D" id="m_tube"]
+transparency = 1
+albedo_color = Color(0.9, 0.95, 1, 0.6)
+
+[sub_resource type="CylinderMesh" id="cm_tube"]
+top_radius = 0.005
+bottom_radius = 0.005
+height = 1.344
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="cm_glass"]
+top_radius = 0.035
+bottom_radius = 0.03
+height = 0.1
+radial_segments = 10
+rings = 1
 
 [sub_resource type="BoxMesh" id="bm_hull"]
 size = Vector3(0.34, 0.08, 0.12)
@@ -349,3 +401,127 @@ theme_override_font_sizes/font_size = 48
 text = "Cable a Tierra"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Suero" parent="Props" instance=ExtResource("pc_suero")]
+transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, -1.05, 0, 1.1)
+
+[node name="Manguera" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(-0, 0.5581, 0.8298, 0.538, -0.6995, 0.4704, 0.8429, 0.4465, -0.3003, -0.675, 1.33, 1.4)
+mesh = SubResource("cm_tube")
+material_override = SubResource("m_tube")
+
+[node name="MesaCama" parent="Props" instance=ExtResource("pc_mesa")]
+transform = Transform3D(-0.9, 0, 0, 0, 0.9, 0, 0, 0, -0.9, 0.31, 0, 0.55)
+
+[node name="Bandeja" type="CSGBox3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 1.012, 0.55)
+size = Vector3(0.38, 0.02, 0.28)
+material = SubResource("m_panel")
+
+[node name="Vaso" type="MeshInstance3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.07, 0.5)
+mesh = SubResource("cm_glass")
+material_override = SubResource("m_glass")
+
+[node name="PanelCabecera" type="CSGBox3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 3.02)
+size = Vector3(2.2, 0.26, 0.06)
+material = SubResource("m_panel")
+
+[node name="Oxigeno1" type="CSGCylinder3D" parent="Props/PanelCabecera"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.75, 0, -0.04)
+radius = 0.035
+height = 0.04
+material = SubResource("m_oxygen")
+
+[node name="Oxigeno2" type="CSGCylinder3D" parent="Props/PanelCabecera"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.6, 0, -0.04)
+radius = 0.035
+height = 0.04
+material = SubResource("m_oxygen")
+
+[node name="Enchufes" type="CSGBox3D" parent="Props/PanelCabecera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0, -0.035)
+size = Vector3(0.3, 0.09, 0.02)
+material = SubResource("m_sheet")
+
+[node name="BotonLlamado" type="CSGBox3D" parent="Props/PanelCabecera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, -0.04)
+size = Vector3(0.07, 0.07, 0.03)
+material = SubResource("m_call")
+
+[node name="LuzLectura" type="CSGBox3D" parent="Props/PanelCabecera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.035)
+size = Vector3(0.6, 0.05, 0.02)
+material = SubResource("m_window")
+
+[node name="Curtain" type="Node3D" parent="Props"]
+
+[node name="Riel" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 2.82, 0.9)
+size = Vector3(0.04, 0.03, 4.3)
+material = SubResource("m_metal")
+
+[node name="Fold0" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(-0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, -0.4226, 1.75, 1.6, 2.95)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold1" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, 0.4226, 1.75, 1.6, 2.84)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold2" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(-0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, -0.4226, 1.75, 1.6, 2.73)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold3" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, 0.4226, 1.75, 1.6, 2.62)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold4" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(-0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, -0.4226, 1.75, 1.6, 2.51)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold5" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, 0.4226, 1.75, 1.6, 2.4)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Fold6" type="CSGBox3D" parent="Props/Curtain"]
+transform = Transform3D(-0.4226, 0, 0.9063, 0, 1, 0, -0.9063, 0, -0.4226, 1.75, 1.6, 2.29)
+size = Vector3(0.13, 2.3, 0.01)
+material = SubResource("m_curtain")
+
+[node name="Puerta" type="CSGBox3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.05, -2.53)
+size = Vector3(0.95, 2.1, 0.06)
+material = SubResource("m_door")
+
+[node name="Ventanita" type="CSGBox3D" parent="Props/Puerta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.035)
+size = Vector3(0.24, 0.5, 0.01)
+material = SubResource("m_door_glass")
+
+[node name="Picaporte" type="CSGBox3D" parent="Props/Puerta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.36, -0.05, 0.05)
+size = Vector3(0.14, 0.03, 0.04)
+material = SubResource("m_metal")
+
+[node name="LuzPasillo" type="OmniLight3D" parent="Props/Puerta"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.3)
+light_color = Color(0.75, 0.85, 1, 1)
+light_energy = 0.4
+omni_range = 1.4
+
+[node name="Persiana" type="Node3D" parent="Props"]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -3.08, 1.78, -0.1)
+
+[node name="Modelo" parent="Props/Persiana" instance=ExtResource("pc_persiana")]
+transform = Transform3D(0.0153, 0, 0, 0, 0.0153, 0, 0, 0, 0.0153, -1.289, -0.6275, -0.8579)

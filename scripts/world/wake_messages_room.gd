@@ -84,7 +84,7 @@ func _burst() -> void:
 	_burst_done = true
 	_dark = true
 	_set_bulb(0.0)
-	play_at(thud_stream, player.global_position, settings.thud_volume_db, 1.0, 20.0)
+	play_at(thud_stream, player.global_position, settings.thud_volume_db, 1.0, 3.0, true)
 	await get_tree().create_timer(settings.burst_dark_time).timeout
 	_write_many(settings.burst_count, true)
 	_allowed = float(_count)

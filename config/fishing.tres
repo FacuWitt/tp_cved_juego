@@ -1,6 +1,19 @@
 [gd_resource type="Resource" script_class="FishingSettings" format=3]
 
 [ext_resource type="Script" path="res://scripts/config/fishing_settings.gd" id="1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/fish_cast.ogg" id="a_fish_cast"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/fish_bobber.ogg" id="a_fish_bobber"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/fish_bite.ogg" id="a_fish_bite"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/fish_reel.ogg" id="a_fish_reel"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/fish_out.ogg" id="a_fish_out"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/boy_una_trucha.ogg" id="a_boy_una_trucha"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/boy_otra_mas.ogg" id="a_boy_otra_mas"]
 
 [resource]
 script = ExtResource("1")
+cast_sound = ExtResource("a_fish_cast")
+bobber_sound = ExtResource("a_fish_bobber")
+bite_sound = ExtResource("a_fish_bite")
+reel_sound = ExtResource("a_fish_reel")
+fish_out_sound = ExtResource("a_fish_out")
+caught_voices = Array[AudioStream]([ExtResource("a_boy_una_trucha"), ExtResource("a_boy_otra_mas")])

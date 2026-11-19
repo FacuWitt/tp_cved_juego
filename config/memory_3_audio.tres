@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="Memory3AudioSettings" format=3 uid="uid://bc2srs41etllo"]
+
+[ext_resource type="Script" uid="uid://w3n301xnih8k" path="res://scripts/config/memory_3_audio_settings.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://bb2j1xr3ukoa4" path="res://assets/audio/m3/cerca_papaNoTeVayas.mp3" id="2_gujrq"]
+[ext_resource type="Resource" uid="uid://cbo3nbjkk1myt" path="res://config/storm_audio_m3.tres" id="2_storm"]
+[ext_resource type="AudioStream" uid="uid://cvpjo5ufqheip" path="res://assets/audio/m3/cerca_tengoMiedoPapa.mp3" id="3_em2c3"]
+[ext_resource type="AudioStream" uid="uid://c1mb7qi7tmta3" path="res://assets/audio/m3/backrooms_music.mp3" id="6_stable_background"]
+[ext_resource type="AudioStream" uid="uid://u8ct1bh2vth3" path="res://assets/audio/m3/dread_drone_loop.ogg" id="7_messages_room_background"]
+[ext_resource type="AudioStream" uid="uid://do4enhjua45vo" path="res://assets/audio/m3/lejos_papá.mp3" id="7_xkh0h"]
+[ext_resource type="AudioStream" uid="uid://c10cl02mlt27d" path="res://assets/audio/m3/lejos_dondeEstas.mp3" id="8_88u60"]
+[ext_resource type="AudioStream" uid="uid://byds3s1yoobl3" path="res://assets/audio/m3/fluoro_hum_loop.ogg" id="8_hospital_corridor_background"]
+[ext_resource type="AudioStream" uid="uid://b2mr2p7as7nyr" path="res://assets/audio/m3/boat_cascade_loop.ogg" id="9_boat_room_background"]
+[ext_resource type="AudioStream" uid="uid://b4imkc1viq3bl" path="res://assets/audio/m3/linea_papa¿.mp3" id="9_mm3t0"]
+[ext_resource type="AudioStream" uid="uid://bp1tahydlt0e7" path="res://assets/audio/m3/linea_noQuieroQueTeVayasPapa.mp3" id="12_plea_voice"]
+[ext_resource type="AudioStream" uid="uid://qlmqql78fnpa" path="res://assets/audio/m3/voz_padre.mp3" id="13_give_voice"]
+[ext_resource type="AudioStream" uid="uid://c417l830im4cd" path="res://assets/audio/m3/linea_papa¿yaTeVas¿.mp3" id="15_8engg"]
+[ext_resource type="AudioStream" uid="uid://dcc7dewrpxtvo" path="res://assets/audio/m3/door_closed.wav" id="17_door_close_sound"]
+[ext_resource type="AudioStream" uid="uid://bq71ycos7ohfb" path="res://assets/audio/m3/door_open.wav" id="18_good_door_sound"]
+[ext_resource type="AudioStream" uid="uid://xott3nmw5p7s" path="res://assets/audio/m3/glitch-sound-hd.mp3" id="19_wrong_door_sound"]
+[ext_resource type="AudioStream" uid="uid://de6whs24mjame" path="res://assets/audio/m3/boat_hit_body.ogg" id="20_give_boat_sound"]
+[ext_resource type="AudioStream" uid="uid://yi8h7pvm8euc" path="res://assets/audio/m3/blink-altered.mp3" id="20_gujrq"]
+[ext_resource type="AudioStream" uid="uid://d342cpnrhofvs" path="res://assets/audio/m3/stuck.mp3" id="26_stuck_sounds_0"]
+[ext_resource type="AudioStream" uid="uid://bdcr71m6gahu8" path="res://assets/audio/m3/stuck2.mp3" id="27_stuck_sounds_1"]
+
+[resource]
+script = ExtResource("1_script")
+storm = ExtResource("2_storm")
+kitchen_background = ExtResource("6_stable_background")
+hallway_background = ExtResource("6_stable_background")
+daughter_room_background = ExtResource("7_messages_room_background")
+stable_background = ExtResource("6_stable_background")
+messages_room_background = ExtResource("7_messages_room_background")
+hospital_corridor_background = ExtResource("8_hospital_corridor_background")
+boat_room_background = ExtResource("9_boat_room_background")
+first_call_voice = ExtResource("9_mm3t0")
+closer_voices = Array[AudioStream]([ExtResource("2_gujrq"), ExtResource("3_em2c3")])
+farther_voices = Array[AudioStream]([ExtResource("7_xkh0h"), ExtResource("8_88u60")])
+room_arrival_voice = ExtResource("15_8engg")
+plea_voice = ExtResource("12_plea_voice")
+give_voice = ExtResource("13_give_voice")
+wake_sound = ExtResource("20_gujrq")
+wake_volume_db = 3.0
+door_open_sound = ExtResource("18_good_door_sound")
+door_open_volume_db = 3.0
+front_door_open_sound = ExtResource("18_good_door_sound")
+front_door_open_volume_db = 3.0
+door_close_sound = ExtResource("17_door_close_sound")
+door_close_volume_db = 3.0
+good_door_sound = ExtResource("18_good_door_sound")
+good_door_volume_db = 3.0
+wrong_door_sound = ExtResource("19_wrong_door_sound")
+wrong_door_volume_db = 3.0
+stuck_sounds = Array[AudioStream]([ExtResource("26_stuck_sounds_0"), ExtResource("27_stuck_sounds_1")])
+stuck_volume_db = 3.0
+give_boat_sound = ExtResource("20_give_boat_sound")
+give_boat_volume_db = 3.0
+stabilize_volume_db = 3.0

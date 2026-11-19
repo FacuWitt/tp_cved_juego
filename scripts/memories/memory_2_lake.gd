@@ -181,7 +181,7 @@ func _sit_player() -> void:
 
 
 func _begin() -> void:
-	wake_up.thunder_struck.connect(func() -> void: subtitles.show_line(settings.wake_line, settings.line_duration), CONNECT_ONE_SHOT)
+	wake_up.thunder_struck.connect(_on_wake_thunder, CONNECT_ONE_SHOT)
 	await wake_up.play()
 	# El despertar le devuelve la física al jugador: sentado en el bote no la usa.
 	player.set_physics_process(false)
@@ -233,6 +233,7 @@ func _on_fish_caught(count: int) -> void:
 func _go_to_net() -> void:
 	stage = Stage.NET
 	subtitles.show_line(settings.net_line, settings.line_duration)
+	_say_voice(settings.net_voice)
 	_waiting_net = true
 	prompt.override_text = settings.net_prompt
 
@@ -247,6 +248,8 @@ func _throw_net() -> void:
 		var tween: Tween = create_tween()
 		tween.tween_property(net, "position", rest + Vector3.UP * 0.5, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		tween.tween_property(net, "position", rest, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		# Chapuzón cuando la red toca el agua.
+		tween.tween_callback(func() -> void: _play_sfx(settings.net_throw_sound))
 	if net_rope != null:
 		net_rope.visible = true
 	await get_tree().create_timer(settings.net_wait_time).timeout
@@ -261,6 +264,7 @@ func _storm_arrives() -> void:
 		lightning.start()
 		lightning.flash_now(0.9)
 	subtitles.show_line(settings.storm_line, settings.line_duration)
+	_say_voice(settings.storm_voice)
 	# Con la tormenta se prende la linterna de la proa.
 	if _bow_light != null:
 		create_tween().tween_property(_bow_light, "light_energy", settings.bow_lamp_energy, 1.2)
@@ -271,6 +275,7 @@ func _storm_arrives() -> void:
 	await get_tree().create_timer(settings.storm_build_time * 0.5).timeout
 	# Intenta juntar la red: tira, pero no sube.
 	subtitles.show_line(settings.stuck_line, settings.line_duration * 0.7)
+	_play_sfx(settings.net_stuck_sound)
 	var tug: Tween = create_tween()
 	for i: int in 3:
 		tug.tween_property(_head, "rotation:x", deg_to_rad(-22.0), 0.18)
@@ -280,6 +285,7 @@ func _storm_arrives() -> void:
 	if stage != Stage.STORM:
 		return
 	subtitles.show_line(settings.cut_line, settings.line_duration)
+	_say_voice(settings.cut_voice)
 	stage = Stage.CUT
 	knife_view.equip()
 
@@ -338,6 +344,7 @@ func _begin_cut_qte() -> void:
 
 func _on_qte_hit() -> void:
 	_swing_knife()
+	_play_sfx(settings.knife_cut_sound)
 	if net_rope != null:
 		net_rope.add_hit()
 
@@ -353,7 +360,10 @@ func _on_rope_hit(hits: int) -> void:
 
 func _on_qte_missed() -> void:
 	if not settings.urge_lines.is_empty():
-		subtitles.show_line(settings.urge_lines[randi() % settings.urge_lines.size()], settings.line_duration * 0.7)
+		var urge: int = randi() % settings.urge_lines.size()
+		subtitles.show_line(settings.urge_lines[urge], settings.line_duration * 0.7)
+		if urge < settings.urge_voices.size():
+			_say_voice(settings.urge_voices[urge])
 	await get_tree().create_timer(0.5).timeout
 	if stage == Stage.CUT:
 		_busy = false
@@ -384,6 +394,7 @@ func _on_net_cut() -> void:
 	await get_tree().create_timer(0.5).timeout
 	knife_view.unequip()
 	subtitles.show_line(settings.follow_line, settings.line_duration)
+	_say_voice(settings.follow_voice)
 	if _bow_light != null:
 		_bow_light.light_energy = settings.bow_lamp_energy
 	if _bow_glow != null:
@@ -411,6 +422,7 @@ func _update_gusts(delta: float) -> void:
 			if not _gust_warned:
 				_gust_warned = true
 				subtitles.show_line(settings.gust_line, settings.line_duration)
+				_say_voice(settings.gust_voice)
 	else:
 		_gust_time += delta
 		var k: float = _gust_time / settings.gust_duration
@@ -432,6 +444,7 @@ func _check_rapids() -> void:
 		if offset > r.x - 12.0 and offset < r.y and not _rapids_warned.has(i):
 			_rapids_warned.append(i)
 			subtitles.show_line(settings.rapids_line, settings.line_duration)
+			_say_voice(settings.rapids_voice)
 
 
 ## Tramos oscuros: la niebla se cierra y se apaga el cielo; solo se ve lo que alumbra la
@@ -468,6 +481,7 @@ func _update_darkness(delta: float) -> void:
 		if offset > z.x - es.dark_fade * 0.5 and offset < z.y and not _dark_warned.has(i):
 			_dark_warned.append(i)
 			subtitles.show_line(settings.dark_line, settings.line_duration)
+			_say_voice(settings.dark_voice)
 
 
 ## La linterna de la proa apunta hacia donde mira el jugador (con un tope a cada lado).
@@ -485,6 +499,7 @@ func _on_tree_falling(_index: int) -> void:
 	if lightning != null and events.settings.tree_flash > 0.0:
 		lightning.flash_now(events.settings.tree_flash)
 	subtitles.show_line(settings.tree_line, settings.line_duration * 0.8)
+	_say_voice(settings.tree_voice)
 
 
 func _on_boat_hit(hits: int) -> void:
@@ -503,6 +518,12 @@ func _on_father_calling() -> void:
 		subtitles.show_line(settings.call_lines[index], settings.line_duration * 0.8)
 		if index < settings.call_voices.size():
 			_say_voice(settings.call_voices[index])
+
+
+## El trueno del despertar: el padre le habla (subtítulo y voz).
+func _on_wake_thunder() -> void:
+	subtitles.show_line(settings.wake_line, settings.line_duration)
+	_say_voice(settings.wake_voice)
 
 
 ## Suena una voz del padre (si hay audio).
@@ -711,7 +732,10 @@ func _update_float(delta: float) -> void:
 		_search_timer -= delta
 		if _search_timer <= 0.0 and not settings.search_lines.is_empty():
 			_search_timer = settings.search_line_interval
-			subtitles.show_line(settings.search_lines[randi() % settings.search_lines.size()], settings.line_duration * 0.8)
+			var search: int = randi() % settings.search_lines.size()
+			subtitles.show_line(settings.search_lines[search], settings.line_duration * 0.8)
+			if search < settings.search_voices.size():
+				_say_voice(settings.search_voices[search])
 	var bob: float = (sin(_float_time * 1.3) + sin(_float_time * 0.7 + 1.0) * 0.5) * settings.swim_bob * _bob_scale
 	player.global_position.y = settings.water_level + settings.eye_above_water - _eye_height + bob - _dip * settings.dip_depth
 	# Con la cabeza abajo del agua se ve como bajo el agua.

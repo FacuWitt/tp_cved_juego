@@ -86,6 +86,25 @@ extends Resource
 @export var ambience: AudioStream
 @export_range(-60.0, 6.0, 0.5, "suffix:dB") var ambience_db: float = -10.0
 
+## Volumen del sonido de fondo al llegar a la luz (al empezar usa `ambience_db`). Igual a `ambience_db` = no cambia.
+## En el último pasaje el agua se apaga mientras sube el monitor: el agua "se transforma" en el bip.
+@export_range(-80.0, 6.0, 0.5, "suffix:dB") var ambience_end_db: float = -10.0
+
+@export_group("Monitor cardíaco")
+## El bip del monitor del hospital que se filtra en el pasaje: apagado (como bajo el agua) y claro.
+## A lo largo del camino se pasa de uno al otro según `beep_clarity_start` y `beep_clarity_end`.
+## Vacíos = sin bip.
+@export var beep_muffled: AudioStream
+@export var beep_clear: AudioStream
+## Cada cuánto suena (segundos entre bips).
+@export_range(0.3, 3.0, 0.01, "suffix:s") var beep_interval: float = 0.95
+## Volumen al empezar y al llegar a la luz.
+@export_range(-80.0, 6.0, 0.5, "suffix:dB") var beep_db_start: float = -40.0
+@export_range(-80.0, 6.0, 0.5, "suffix:dB") var beep_db_end: float = -34.0
+## Qué tan claro se oye (0 = solo el apagado, 1 = solo el claro) al empezar y al llegar.
+@export_range(0.0, 1.0, 0.01) var beep_clarity_start: float = 0.0
+@export_range(0.0, 1.0, 0.01) var beep_clarity_end: float = 0.0
+
 @export_group("Descenso (bajo el agua)")
 ## Si está prendido, en vez de caminar sobre el mar el jugador baja por el agua hacia la luz,
 ## que está abajo. Baja solo; se puede mirar alrededor.

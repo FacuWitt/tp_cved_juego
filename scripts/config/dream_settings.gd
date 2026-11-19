@@ -147,3 +147,13 @@ extends Resource
 ## Qué tan rápido se mueven las ondas.
 @export_range(0.0, 3.0, 0.05) var water_ripple_speed: float = 0.35
 @export var water_color: Color = Color(0.04, 0.1, 0.12, 0.8)
+
+@export_group("Sonidos")
+## La pared que cierra el pasillo a las espaldas del jugador, en el momento en que aparece (suena de donde aparece).
+@export var dead_end_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var dead_end_volume_db: float = 0.0
+## Algo cambió de lugar mientras no se lo miraba (suena de donde está ese objeto).
+@export var shift_sound: AudioStream
+@export_range(-40.0, 24.0, 0.5, "suffix:dB") var shift_volume_db: float = 0.0
+## Bus de audio de los dos sonidos.
+@export var sound_bus: StringName = &"Master"

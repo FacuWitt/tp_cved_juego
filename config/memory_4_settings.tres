@@ -1,6 +1,60 @@
 [gd_resource type="Resource" script_class="Memory4Settings" format=3]
 
 [ext_resource type="Script" path="res://scripts/config/memory_4_settings.gd" id="1_m4set"]
+[ext_resource type="Resource" path="res://config/storm_audio_m4.tres" id="2_m4storm"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/axe_chop_1.ogg" id="s_axe_chop_1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/axe_chop_2.ogg" id="s_axe_chop_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/axe_chop_3.ogg" id="s_axe_chop_3"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/axe_pickup.ogg" id="s_axe_pickup"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/hull_wave.ogg" id="s_hull_wave"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/ship_creak_loop.ogg" id="s_ship_creak_loop"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/ship_engine_loop.ogg" id="s_ship_engine_loop"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crank_1.ogg" id="s_crank_1"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crank_2.ogg" id="s_crank_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/axe_miss.ogg" id="s_axe_miss"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/rope_snap.ogg" id="s_rope_snap"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/chain_loop.ogg" id="s_chain_loop"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/anchor_top.ogg" id="s_anchor_top"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/capsize.ogg" id="s_capsize"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/bubbles.ogg" id="s_bubbles"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/chain_slip_loop.ogg" id="s_chain_slip_loop"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/ship_horn_far.ogg" id="s_ship_horn_far"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_intro.ogg" id="v_crew_intro"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_axe_hint.ogg" id="v_crew_axe_hint"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_urge_rapido.ogg" id="v_crew_urge_rapido"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_urge_pegale.ogg" id="v_crew_urge_pegale"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_crank_too_early.ogg" id="v_crew_crank_too_early"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_anchor.ogg" id="v_crew_anchor"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_fall_rescue.ogg" id="v_crew_fall_rescue"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_urge_aguanta.ogg" id="v_crew_urge_aguanta"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_warning.ogg" id="v_crew_warning"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_anchor_urge.ogg" id="v_crew_anchor_urge"]
+[ext_resource type="AudioStream" path="res://assets/audio/m4/crew_success.ogg" id="v_crew_success"]
 
 [resource]
 script = ExtResource("1_m4set")
+storm_audio = ExtResource("2_m4storm")
+ship_creak_loop = ExtResource("s_ship_creak_loop")
+engine_loop = ExtResource("s_ship_engine_loop")
+hull_wave_sounds = Array[AudioStream]([ExtResource("s_hull_wave")])
+axe_pickup_sound = ExtResource("s_axe_pickup")
+axe_chop_sounds = Array[AudioStream]([ExtResource("s_axe_chop_1"), ExtResource("s_axe_chop_2"), ExtResource("s_axe_chop_3")])
+rope_snap_sound = ExtResource("s_rope_snap")
+axe_miss_sound = ExtResource("s_axe_miss")
+crank_sounds = Array[AudioStream]([ExtResource("s_crank_1"), ExtResource("s_crank_2")])
+chain_loop = ExtResource("s_chain_loop")
+anchor_top_sound = ExtResource("s_anchor_top")
+chain_slip_loop = ExtResource("s_chain_slip_loop")
+capsize_sound = ExtResource("s_capsize")
+bubbles_sound = ExtResource("s_bubbles")
+ship_horn_sound = ExtResource("s_ship_horn_far")
+intro_voice = ExtResource("v_crew_intro")
+axe_hint_voice = ExtResource("v_crew_axe_hint")
+urge_voices = Array[AudioStream]([ExtResource("v_crew_urge_rapido"), ExtResource("v_crew_urge_aguanta"), ExtResource("v_crew_urge_pegale")])
+crank_too_early_voice = ExtResource("v_crew_crank_too_early")
+anchor_voice = ExtResource("v_crew_anchor")
+fall_rescue_voice = ExtResource("v_crew_fall_rescue")
+warning_voice = ExtResource("v_crew_warning")
+anchor_urge_voice = ExtResource("v_crew_anchor_urge")
+protagonist_name = "Santi"
+success_voice = ExtResource("v_crew_success")

@@ -255,7 +255,7 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 - **Parpadeos:** cada tanto la pantalla se va a negro un instante; en ese negro las cosas cambian de lugar aunque se las esté mirando.
 - **Cosas que cambian cuando no se las mira:** la taza y los juguetes se corren o giran (las fotos del pasillo se tuercen solas con el borroso, ver CL-067). Al volver a la cocina por una puerta mala, algo ya no está donde estaba.
 - **El pasillo cambia a tus espaldas** (CL-070): si pasa un rato sin mirar hacia atrás, el camino recorrido aparece cerrado por una pared a unos metros de su espalda; cuando deja de mirarla, desaparece (y puede volver a aparecer en otro lugar). Nunca se cierra delante ni cerca de una esquina (`HallwayDeadEnd`).
-- **Bajo el agua (sonido)** (CL-070): todo se oye cada vez más apagado (sin agudos) y con eco, como con la cabeza sumergida. Se pone en el bus Master solo mientras sueña y se saca al terminar. ❓ Pasos con eco: no hay sonido de pasos todavía.
+- **Bajo el agua (sonido)** (CL-070): todo se oye cada vez más apagado (sin agudos) y con eco, como con la cabeza sumergida. Se pone en el bus Master solo mientras sueña y se saca al terminar. Pasos: ya hay slot (`footstep_sounds`, CL-085) para cargarlos; el eco les llega por el mismo efecto.
 - **Estela al girar** (CL-070): al girar la cámara la imagen deja un rastro que tarda en alcanzarlo (`dream_haze.gdshader`).
 - **Agua que sube** (CL-070): una lámina de agua oscura sobre el piso de la cocina, el pasillito del fondo y el pasillo; sube despacio con la degradación, se mece sola y baja cuando la casa se estabiliza (`RisingWater`, `dream_water.gdshader`). Los charcos siguen como antes.
 
@@ -297,7 +297,40 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 |---|---|---|
 | Voz de la hija (más lejana cuando el jugador se pierde) | Recuerdo | Subtítulos de etapa 0 (`closer_lines` / `farther_lines`) |
 | *"Cuidámelo hasta que vuelva."* | Recuerdo | Subtítulo de etapa 0 (lo dice el protagonista) |
-| Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) · ❓ etapa 2 |
+| Goteo, agua en las paredes, canilla | Amenaza | Gotas 3D alrededor del jugador (slot `drip_sounds`, ver abajo); canilla fija ❓ etapa 2 |
+
+### Slots de sonido de la casa ✅ (CL-085)
+La casa tiene **un slot por cada momento que puede sonar**, todos **vacíos** hasta que se graben los sonidos: se arrastra el archivo (.ogg, .wav o .mp3) al slot en el Inspector, en `config/memory_3_settings.tres` (grupos **Sonido** y **Voces de las líneas**). Un slot vacío no da error: ese momento queda en silencio. Cada grupo tiene sus volúmenes (dB) al lado. Las tres salas intermedias **no** están acá: ya traen sus sonidos en sus escenas (`assets/audio/m3/`).
+
+| Slot | Cuándo suena | Tipo |
+|---|---|---|
+| `ambience_loop` | Ambiente de la casa de noche, desde el despertar. Se apaga adentro de las salas intermedias y vuelve al salir | Loop |
+| `rain_loop` | Lluvia de la tormenta (igual que el ambiente) | Loop |
+| `wake_thunder_sound` | El trueno con el que despierta en la cocina (vacío = usa uno de `thunder_sounds`) | Una vez |
+| `thunder_sounds` | Un trueno por cada rayo, un rato después (`thunder_delay_min/max`), más bajo si el rayo es débil | Lista, al azar |
+| `drip_sounds` | Gotas alrededor del jugador: más seguidas cuanto más degradada la casa; ninguna con la casa estable | Lista, al azar |
+| `footstep_sounds` | Un paso cada `footstep_stride` metros caminados (no suena quieto, en el aire ni con las piernas trabadas) | Lista, al azar |
+| `door_open_sound` | Abrir una puerta del rellano o la del cuarto de la hija (suena donde está la puerta) | Una vez |
+| `front_door_open_sound` | Abrir la puerta de entrada (vacío = usa `door_open_sound`) | Una vez |
+| `door_close_sound` | Las puertas del rellano que estaban abiertas se cierran solas al elegir | Una vez |
+| `good_door_sound` | Cruza una puerta buena | Una vez |
+| `wrong_door_sound` | Cruza una puerta mala y vuelve a la cocina | Una vez |
+| `blink_sound` | Parpadeo del sueño (la pantalla se va a negro un instante) | Una vez |
+| `stuck_sound` | Las piernas dejan de responder | Una vez |
+| `boat_equip_sound` | El barquito aparece en la mano al empezar | Una vez |
+| `give_boat_sound` | Le da el barquito a la hija | Una vez |
+| `stabilize_sound` | La casa se estabiliza (se seca el agua, todo queda quieto) | Una vez |
+| `first_call_voice` | Primera llamada de la hija (`first_call_line`) | Voz |
+| `closer_voices` | La hija "más cerca" al pasar cada puerta buena, en el mismo orden que `closer_lines` | Lista, una por línea |
+| `farther_voices` | La hija "más lejos" al elegir mal, en el mismo orden que `farther_lines` | Lista, una por línea |
+| `room_arrival_voice` | La hija del otro lado de la puerta (`room_arrival_line`) | Voz |
+| `plea_voice` | La hija al abrir la puerta de su cuarto (`plea_line`) | Voz |
+| `give_voice` | El protagonista: *"Cuidámelo hasta que vuelva."* (`give_line`) | Voz |
+
+- Las voces suenan **de a una** (una nueva corta a la anterior) y **sin posición** (no vienen de la puerta); si una voz está vacía, su línea queda solo como subtítulo. Las líneas entre paréntesis (despertar, casa quieta, piernas) son narración y no tienen voz.
+- `voice_stream` (la voz en 3D que sale de la puerta buena, hoy con la cajita musical de placeholder) sigue siendo aparte: si ya dice lo mismo que `first_call_voice`, dejar esa vacía para que no suene doble.
+- Para los loops conviene .ogg o .mp3 (se repiten solos); un .wav se marca como loop en la pestaña Importar de Godot.
+- Sin slot (no hay punto de enganche): la pared que se cierra a las espaldas (`HallwayDeadEnd`) y los objetos que cambian de lugar (`DreamShifter`).
 
 ### Cinemática (sin control) 📝
 ✅ Sale por la puerta de su casa → **pasaje en silencio** (CL-062: el mar negro y la luz, sin voces del hospital, como se había decidido para este corte) → empieza M4 en el camarote.
@@ -309,7 +342,7 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 
 ### Pendiente ❓
 - Textos de la hija y del protagonista: son **provisorios** (📝), salvo *"Cuidámelo hasta que vuelva."*. Confirmarlos con el equipo.
-- Voz real de la hija con `AudioStreamPlayer3D` (más fuerte/cerca según el tramo), goteo de la canilla al ritmo del bip.
+- ✅ Slots de sonido de la casa listos (CL-085): falta **grabar y cargar** los sonidos y las voces, y ajustar los volúmenes de oído. Sigue sin resolver la voz de la hija en 3D según el tramo (`voice_stream`) y el goteo de la canilla al ritmo del bip (❓ etapa 2).
 - Probar a mano el largo del pasillo, la velocidad a la que se aleja y la cantidad de tramos.
 
 ---
@@ -319,13 +352,14 @@ Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la c
 > ### 🔄 Cambio de diseño (CL-014): cubierta, sogas y ola gigante
 > El prototipo de M4 se armó con **una sola escena de cubierta** (`scenes/memories/memory_4.tscn`) en lugar de camarote + escalera + fondo. Lo que quedó implementado:
 > - **Cortar sogas con hacha:** 3 sogas (izquierda, centro, derecha). Hay que acertar un **quick event** (barra con marcador que va y viene, tecla `interact`) 2 veces por soga. Errar nunca es game over: el barco se inclina un poco más y se vuelve a intentar. Cada soga hace la zona más chica y el marcador más rápido.
-> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, NOMBRE!"* (`protagonist_name` en `config/memory_4_settings.tres`, ❓ falta el nombre).
+> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, SANTI!"* (`protagonist_name` en `config/memory_4_settings.tres`: el protagonista se llama **Santi**, decidido por el equipo el 12/11).
 > - **La ola gigante** (`GiantWave` + `giant_wave.gdshader`): una malla que se deforma en el shader desde una ola baja, a una pared, a una ola que **rompe hacia el jugador** (`curl`). Avanza acelerando y lo cubre. Todo configurable en `Memory4Settings`.
 > - **Luz:** lo único que ilumina son los **rayos** (`LightningController`) y una luz muy lejana del barco. Entre rayo y rayo, casi negro.
 > - **Después de la ola:** el protagonista emerge, flota; el barco se aleja mirando para otro lado y su reflector barre otras partes del mar sin verlo. Luego se hunde a oscuridad total (talasofobia).
 > - **Final de la memoria:** una luz que crece desde el fondo = **helicóptero** ✅ (reemplaza al barquito luminoso del fondo). ❓ Falta confirmar con el equipo si además aparece el barquito.
 > - **CL-015 — Barco pesquero grande:** unos 39 m, **6 sogas (3 por banda)** sobre huecos de la baranda, **suelo resbaladizo** (el barco cabecea y empuja al jugador, `DeckSlip` + `config/player_settings_deck.tres`) y **costados abiertos**: si cae al agua → negro con sonido de chapuzón (`assets/audio/m4_fall_splash.wav`, placeholder) y vuelve a bordo como un fallo más. El evento rápido (`E`) se achica y acelera con cada soga. Lluvia en manchas borrosas, que cerca del barco se ve apenas y lejos casi no se ve. Mirando hacia abajo en el agua la pantalla se va a negro (`abyss.gdshader`).
-> - **Pendientes ❓:** sonido (capas Amenaza/Afuera), modelos finales, nombre del protagonista, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
+> - **Sonido ✅ CL-084:** tormenta (`StormAudio` de la M2, en `config/storm_audio_m4.tres`), casco que cruje, motor, olas contra el casco, hacha, sogas, manivela, cadena del ancla, vuelco, burbujas, bocina lejana y las voces de la tripulación (`config/memory_4_settings.tres`, grupos "Sonido" y "Tripulación").
+> - **Pendientes ❓:** capas de audio Amenaza/Afuera (no se armaron buses aparte), modelos finales, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
 
 **Escena:** `scenes/memories/m4_pesquero/`. Noche, tormenta fuerte. **Sin degradación:** la más nítida y real.
 

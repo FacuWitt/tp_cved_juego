@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="StormAudioSettings" format=3 uid="uid://cbo3nbjkk1myt"]
+
+[ext_resource type="AudioStream" uid="uid://bfhui2miyp3ht" path="res://assets/audio/m2_remos/pad_calm.ogg" id="1_m4wse"]
+[ext_resource type="Script" uid="uid://c1yj0tee0okbt" path="res://scripts/config/storm_audio_settings.gd" id="1_storm"]
+[ext_resource type="AudioStream" uid="uid://cnanwgcrgj3d1" path="res://assets/audio/m2_remos/pad_storm.ogg" id="2_00k2q"]
+[ext_resource type="AudioStream" uid="uid://ddalvacfcij4k" path="res://assets/audio/m2_remos/rain_loop.ogg" id="3_wu7j6"]
+[ext_resource type="AudioStream" uid="uid://bhxdu1j5mnks" path="res://assets/audio/m2_remos/thunder_far.ogg" id="5_unapp"]
+[ext_resource type="AudioStream" uid="uid://068vok4p7psq" path="res://assets/audio/m2_remos/thunder_mid.ogg" id="6_cnqh7"]
+[ext_resource type="AudioStream" uid="uid://bhkdgbdeia1ny" path="res://assets/audio/m3/loud-thunder.mp3" id="7_6bdk0"]
+[ext_resource type="AudioStream" uid="uid://qanvxwph3cqe" path="res://assets/audio/m2_remos/underwater_loop.ogg" id="8_at6ty"]
+[ext_resource type="AudioStream" uid="uid://du62kxss47s06" path="res://assets/audio/m2_remos/lap_loop.ogg" id="9_vlugr"]
+[ext_resource type="AudioStream" uid="uid://4xmhwakjgpv8" path="res://assets/audio/m2_remos/wind_loop.ogg" id="10_488og"]
+
+[resource]
+script = ExtResource("1_storm")
+rain = ExtResource("3_wu7j6")
+wind = ExtResource("10_488og")
+water_lap = ExtResource("9_vlugr")
+pad_calm = ExtResource("1_m4wse")
+pad_storm = ExtResource("2_00k2q")
+underwater = ExtResource("8_at6ty")
+thunder_near = ExtResource("7_6bdk0")
+thunder_mid = ExtResource("6_cnqh7")
+thunder_far = ExtResource("5_unapp")
+rain_calm_db = -7.0
+rain_storm_db = -3.0
+wind_calm_db = -5.0
+wind_storm_db = -3.0
+lap_storm_db = -10.0
+pad_calm_storm_db = -10.0
+pad_storm_calm_db = -20.0
