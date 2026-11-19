@@ -2,8 +2,17 @@
 
 [ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
 [ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_muffled.ogg" id="b_muf"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_clear.ogg" id="b_clr"]
 
 
 [resource]
 script = ExtResource("1_ps")
 voices = Array[ExtResource("2_pv")]([])
+beep_muffled = ExtResource("b_muf")
+beep_clear = ExtResource("b_clr")
+beep_db_start = -31.0
+beep_db_end = -27.0
+beep_clarity_start = 0.2
+beep_clarity_end = 0.35
+beep_interval = 1.25

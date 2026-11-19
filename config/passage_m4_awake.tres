@@ -2,28 +2,38 @@
 
 [ext_resource type="Script" path="res://scripts/config/passage_settings.gd" id="1_ps"]
 [ext_resource type="Script" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_muffled.ogg" id="b_muf"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_clear.ogg" id="b_clr"]
 [ext_resource type="AudioStream" path="res://assets/audio/m2_remos/underwater_loop.ogg" id="3_amb"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v09_enfermera.ogg" id="a_v09_enfermera"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v10_doctor.ogg" id="a_v10_doctor"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v11_hija.ogg" id="a_v11_hija"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v12_hija.ogg" id="a_v12_hija"]
 
 [sub_resource type="Resource" id="v1"]
 script = ExtResource("2_pv")
+stream = ExtResource("a_v09_enfermera")
 text = "VOZ (enfermera, clara): ¡Doctor! Movió la mano."
 at_progress = 0.12
 duration = 3.5
 
 [sub_resource type="Resource" id="v2"]
 script = ExtResource("2_pv")
+stream = ExtResource("a_v10_doctor")
 text = "VOZ (doctor, clara): ...la frecuencia sube. Está volviendo. Hablale."
 at_progress = 0.38
 duration = 4.0
 
 [sub_resource type="Resource" id="v3"]
 script = ExtResource("2_pv")
+stream = ExtResource("a_v11_hija")
 text = "VOZ (hija, clara): Papá... ¿me escuchás? Estoy acá."
 at_progress = 0.62
 duration = 4.5
 
 [sub_resource type="Resource" id="v4"]
 script = ExtResource("2_pv")
+stream = ExtResource("a_v12_hija")
 text = "VOZ (hija, muy cerca): Te traje el barquito."
 at_progress = 0.85
 duration = 3.5
@@ -42,3 +52,10 @@ goal_glow_size = 5.0
 goal_light_energy = 6.0
 goal_light_range = 40.0
 voice_light_offsets = PackedVector3Array(-9, 6, 2, 9, 6, 2)
+beep_muffled = ExtResource("b_muf")
+beep_clear = ExtResource("b_clr")
+beep_db_start = -26.0
+beep_db_end = -8.0
+beep_clarity_start = 0.1
+beep_clarity_end = 1.0
+ambience_end_db = -30.0

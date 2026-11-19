@@ -84,7 +84,7 @@ extends Resource
 
 @export_group("Sonido")
 ## Trazo de escritura que suena en la pared donde acaba de aparecer un mensaje.
-@export_range(-40.0, 12.0, 0.5, "suffix:dB") var scrawl_volume_db: float = -7.0
+@export_range(-40.0, 12.0, 0.5, "suffix:dB") var scrawl_volume_db: float = -11.0
 ## Pausa mínima entre dos trazos.
 @export_range(0.1, 5.0, 0.05, "suffix:s") var scrawl_gap: float = 0.8
 ## Golpe grave del apagón.

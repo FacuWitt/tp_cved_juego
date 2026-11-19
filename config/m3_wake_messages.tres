@@ -1,6 +1,11 @@
-[gd_resource type="Resource" script_class="WakeMessagesSettings" format=3]
+[gd_resource type="Resource" script_class="WakeMessagesSettings" format=3 uid="uid://bcduu5hytanel"]
 
-[ext_resource type="Script" path="res://scripts/config/wake_messages_settings.gd" id="1"]
+[ext_resource type="Script" uid="uid://2ursdvgpmsy1" path="res://scripts/config/wake_messages_settings.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
+first_messages = null
+calm_texts = null
+urgent_texts = null
+thud_volume_db = 12.0
+drone_volume_db = -4.0

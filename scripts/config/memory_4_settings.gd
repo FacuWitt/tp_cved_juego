@@ -3,6 +3,47 @@ extends Resource
 ## Valores de "feel" y textos provisorios de la Memoria 4 (el accidente en el barco).
 ## Se editan desde el Inspector en res://config/memory_4_settings.tres.
 
+@export_group("Sonido")
+## Sonido de la tormenta (lluvia, viento, agua, música y truenos con cada rayo). Es el mismo sistema
+## que la Memoria 2 (`StormAudio`); en la M4 la tormenta está siempre al máximo. Vacío = sin sonido de tormenta.
+@export var storm_audio: StormAudioSettings
+## Ambiente del barco mientras se está en cubierta: casco que cruje y motor (loops) y olas que golpean
+## el casco cada tanto. Se apaga cuando la ola tapa el barco.
+@export var ship_creak_loop: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var ship_creak_db: float = -12.0
+@export var engine_loop: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var engine_db: float = -18.0
+@export var hull_wave_sounds: Array[AudioStream] = []
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var hull_wave_db: float = -8.0
+## Cada cuánto golpea una ola el casco (al azar entre estos valores).
+@export_range(1.0, 30.0, 0.5, "suffix:s") var hull_wave_interval_min: float = 4.0
+@export_range(1.0, 30.0, 0.5, "suffix:s") var hull_wave_interval_max: float = 9.0
+## Hacha: agarrarla, cada golpe en la soga (se elige uno al azar), la soga que se corta y el golpe errado.
+@export var axe_pickup_sound: AudioStream
+@export var axe_chop_sounds: Array[AudioStream] = []
+@export var rope_snap_sound: AudioStream
+@export var axe_miss_sound: AudioStream
+## Ancla: un clic de la manivela por cada (E) (se elige uno al azar), la cadena en loop mientras sube
+## (y más rápida mientras se resbala para abajo) y el golpe al llegar arriba.
+@export var crank_sounds: Array[AudioStream] = []
+@export var chain_loop: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var chain_db: float = -6.0
+## Velocidad de la cadena cuando el ancla se resbala (1 = la misma que al subir).
+@export_range(0.5, 3.0, 0.05) var chain_slip_pitch: float = 1.4
+@export var anchor_top_sound: AudioStream
+## Cadena corriendo para abajo cuando el ancla se resbala (loop). Vacío = la misma cadena, más rápida.
+@export var chain_slip_loop: AudioStream
+## El barco dándose vuelta cuando lo tapa la ola, y las burbujas al hundirse al final.
+@export var capsize_sound: AudioStream
+@export var bubbles_sound: AudioStream
+## Bocina del barco a lo lejos, cuando se aleja después del vuelco: cuánto después de sacar la cabeza
+## del agua suena, y a qué volumen (bien bajo, para que se sienta lejos).
+@export var ship_horn_sound: AudioStream
+@export_range(0.0, 15.0, 0.1, "suffix:s") var ship_horn_delay: float = 3.0
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var ship_horn_db: float = -10.0
+## Volumen de los efectos de la memoria (hacha, sogas, ancla...).
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -4.0
+
 @export_group("Barco")
 ## Altura del nivel del mar respecto de la cubierta (negativo = más abajo que la cubierta).
 @export_range(-6.0, -0.5, 0.1, "suffix:m") var sea_level: float = -2.6
@@ -52,6 +93,17 @@ extends Resource
 ]
 
 @export_group("Tripulación")
+## Voces de la tripulación, una por frase (vacía = solo subtítulo). `urge_voices` va en el mismo orden que `urge_lines`.
+@export var intro_voice: AudioStream
+@export var axe_hint_voice: AudioStream
+@export var urge_voices: Array[AudioStream] = []
+@export var fall_rescue_voice: AudioStream
+@export var crank_too_early_voice: AudioStream
+@export var anchor_voice: AudioStream
+@export var anchor_urge_voice: AudioStream
+@export var success_voice: AudioStream
+@export var warning_voice: AudioStream
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var voice_db: float = -3.0
 ## Nombre provisorio del protagonista (❓ ABIERTO: todavía no está decidido).
 @export var protagonist_name: String = "NOMBRE"
 

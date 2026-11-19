@@ -12,17 +12,48 @@
 [ext_resource type="AudioStream" path="res://assets/audio/m2_remos/capsize_splash.ogg" id="v_splash"]
 [ext_resource type="AudioStream" path="res://assets/audio/m2_remos/gasp.ogg" id="v_gasp"]
 [ext_resource type="AudioStream" path="res://assets/audio/m2_remos/heartbeat.ogg" id="v_heart"]
-[ext_resource type="AudioStream" path="res://assets/audio/m2_remos/lullaby_musicbox.ogg" id="v_lull"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/lullaby_m2.ogg" id="v_lull"]
 [ext_resource type="AudioStream" path="res://assets/audio/m2_remos/hand_grab.ogg" id="v_grab"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/net_throw.ogg" id="l_net_throw"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/net_stuck.ogg" id="l_net_stuck"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/knife_cut.ogg" id="l_knife_cut"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_wake.ogg" id="l_father_wake"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_net.ogg" id="l_father_net"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_storm.ogg" id="l_father_storm"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_cut.ogg" id="l_father_cut"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_urge_cortala.ogg" id="l_father_urge_cortala"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_urge_rapido.ogg" id="l_father_urge_rapido"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_follow.ogg" id="l_father_follow"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_gust.ogg" id="l_father_gust"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_rapids.ogg" id="l_father_rapids"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_tree.ogg" id="l_father_tree"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_dark.ogg" id="l_father_dark"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_search_donde.ogg" id="l_father_search_donde"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_search_contestame.ogg" id="l_father_search_contestame"]
+[ext_resource type="AudioStream" path="res://assets/audio/m2_lago/father_search_hijo.ogg" id="l_father_search_hijo"]
 
 [resource]
 script = ExtResource("1")
 father_rescue_pose = ExtResource("2_rescue")
 call_voices = Array[AudioStream]([ExtResource("v_call_por_aca"), ExtResource("v_call_no_pares"), ExtResource("v_call_seguime")])
 rescue_voice = ExtResource("v_rescue_voice")
+wake_voice = ExtResource("l_father_wake")
+net_voice = ExtResource("l_father_net")
+storm_voice = ExtResource("l_father_storm")
+cut_voice = ExtResource("l_father_cut")
+urge_voices = Array[AudioStream]([ExtResource("l_father_urge_cortala"), ExtResource("l_father_urge_rapido")])
+follow_voice = ExtResource("l_father_follow")
+gust_voice = ExtResource("l_father_gust")
+rapids_voice = ExtResource("l_father_rapids")
+tree_voice = ExtResource("l_father_tree")
+dark_voice = ExtResource("l_father_dark")
+search_voices = Array[AudioStream]([ExtResource("l_father_search_donde"), ExtResource("l_father_search_contestame"), ExtResource("l_father_search_hijo")])
 capsize_roar_sound = ExtResource("v_roar")
 capsize_splash_sound = ExtResource("v_splash")
 gasp_sound = ExtResource("v_gasp")
 heartbeat_sound = ExtResource("v_heart")
 lullaby_sound = ExtResource("v_lull")
 hand_grab_sound = ExtResource("v_grab")
+net_throw_sound = ExtResource("l_net_throw")
+net_stuck_sound = ExtResource("l_net_stuck")
+knife_cut_sound = ExtResource("l_knife_cut")

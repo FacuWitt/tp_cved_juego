@@ -17,7 +17,7 @@ extends Resource
 @export var call_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Por acá, hijo! ¡Seguí la luz!", "PADRE: ¡No te quedes atrás! ¡Seguí mi luz!", "PADRE: ¡Seguime, hijo! ¡No me pierdas de vista!"])
 @export var hit_lines: PackedStringArray = PackedStringArray(["(el bote cruje: entra agua)", "(otro golpe: el agua sube)"])
 @export var gust_line: String = "PADRE: ¡Cuidado con el viento! ¡Remá del otro lado!"
-@export var rapids_line: String = "PADRE: ¡Rápidos! ¡Agarrate fuerte!"
+@export var rapids_line: String = "PADRE: ¡Rápido! ¡Agarrate fuerte!"
 @export var tree_line: String = "PADRE: ¡Cuidado, el árbol!"
 @export var dark_line: String = "PADRE: ¡No se ve nada! ¡Seguí mi luz y alumbrá adelante!"
 @export var capsize_line: String = "(el bote se da vuelta)"
@@ -179,6 +179,20 @@ extends Resource
 @export var call_voices: Array[AudioStream] = []
 ## Voz del padre en el rescate (frase `father_line`).
 @export var rescue_voice: AudioStream
+## Voces del padre para el resto de las frases (cada una con su texto). Vacía = solo subtítulo.
+@export var wake_voice: AudioStream
+@export var net_voice: AudioStream
+@export var storm_voice: AudioStream
+@export var cut_voice: AudioStream
+## Una voz por frase de `urge_lines` (mismo orden).
+@export var urge_voices: Array[AudioStream] = []
+@export var follow_voice: AudioStream
+@export var gust_voice: AudioStream
+@export var rapids_voice: AudioStream
+@export var tree_voice: AudioStream
+@export var dark_voice: AudioStream
+## Una voz por frase de `search_lines` (mismo orden).
+@export var search_voices: Array[AudioStream] = []
 @export_range(-40.0, 6.0, 0.5, "suffix:dB") var voice_db: float = -3.0
 ## Rugido de la ola que da vuelta el bote, y chapuzón al caer al agua.
 @export var capsize_roar_sound: AudioStream
@@ -193,6 +207,10 @@ extends Resource
 @export_range(-60.0, 6.0, 0.5, "suffix:dB") var lullaby_db: float = -16.0
 ## Sonido de la mano del padre agarrándolo.
 @export var hand_grab_sound: AudioStream
+## La red cayendo al agua, la red trabada (soga tirante) y cada corte del cuchillo.
+@export var net_throw_sound: AudioStream
+@export var net_stuck_sound: AudioStream
+@export var knife_cut_sound: AudioStream
 @export_range(-40.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -2.0
 ## Cuánta lluvia hay en calma y con la tormenta al máximo (0 = nada, 1 = la lluvia entera).
 @export_range(0.0, 1.0, 0.01) var rain_calm: float = 0.0

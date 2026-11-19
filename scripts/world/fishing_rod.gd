@@ -33,6 +33,7 @@ var _fish: Node3D
 var _target: Vector3
 var _timer: float = 0.0
 var _time: float = 0.0
+var _reel: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -43,6 +44,9 @@ func _ready() -> void:
 	_build_bobber()
 	_build_line()
 	_build_fish()
+	_reel = AudioStreamPlayer.new()
+	_reel.name = "ReelSound"
+	add_child(_reel)
 	bar.caught.connect(_on_caught)
 	bar.escaped.connect(_on_escaped)
 
@@ -57,6 +61,7 @@ func start() -> void:
 func stop() -> void:
 	_set_state(State.OFF)
 	bar.cancel()
+	_stop_reel()
 	_bobber.visible = false
 	_line.visible = false
 	rod_view.unequip()
@@ -88,6 +93,7 @@ func _set_state(value: State) -> void:
 
 func _cast() -> void:
 	_set_state(State.CASTING)
+	_play_sfx(settings.cast_sound)
 	var forward: Vector3 = -_camera.global_basis.z
 	forward.y = 0.0
 	forward = forward.normalized() if forward.length() > 0.01 else -player.global_basis.z
@@ -107,18 +113,24 @@ func _cast() -> void:
 	swing.tween_property(_bend, "rotation:x", 0.8, settings.cast_time * 0.3)
 	swing.tween_property(_bend, "rotation:x", -0.2, settings.cast_time * 0.7)
 	await tween.finished
+	_play_sfx(settings.bobber_sound)
 	_timer = randf_range(settings.bite_min_wait, settings.bite_max_wait)
 	_set_state(State.WAITING)
 
 
 func _hook() -> void:
 	_set_state(State.FIGHT)
+	_start_reel()
 	bar.begin(caught_count)
 
 
 func _on_caught() -> void:
 	caught_count += 1
 	_set_state(State.LANDING)
+	_stop_reel()
+	_play_sfx(settings.fish_out_sound)
+	if caught_count - 1 < settings.caught_voices.size():
+		_play_sfx(settings.caught_voices[caught_count - 1], settings.voice_db - settings.sfx_db)
 	var lines: PackedStringArray = settings.caught_lines
 	if subtitles != null and not lines.is_empty():
 		subtitles.show_line(lines[mini(caught_count - 1, lines.size() - 1)], 2.2)
@@ -140,6 +152,7 @@ func _on_caught() -> void:
 
 
 func _on_escaped() -> void:
+	_stop_reel()
 	if subtitles != null:
 		subtitles.show_line(settings.escaped_line, 1.8)
 	_bobber.visible = false
@@ -156,6 +169,7 @@ func _process(delta: float) -> void:
 			if _timer <= 0.0:
 				_timer = settings.hook_window
 				_set_state(State.BITE)
+				_play_sfx(settings.bite_sound)
 		State.BITE:
 			# Pica: la boya se hunde a tirones.
 			_bobber.global_position = _target + Vector3.DOWN * (0.12 + 0.06 * sin(_time * 30.0))
@@ -174,6 +188,35 @@ func _process(delta: float) -> void:
 				_bend.rotation.x = lerpf(_bend.rotation.x, 0.0, minf(delta * 4.0, 1.0))
 				_bend.rotation.z = lerpf(_bend.rotation.z, 0.0, minf(delta * 4.0, 1.0))
 	_draw_line()
+
+
+## Suena un efecto una vez (si hay audio). `offset_db` se suma al volumen de los efectos.
+func _play_sfx(stream: AudioStream, offset_db: float = 0.0) -> void:
+	if stream == null:
+		return
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.stream = stream
+	p.volume_db = settings.sfx_db + offset_db
+	add_child(p)
+	p.finished.connect(p.queue_free)
+	p.play()
+
+
+## El carrete suena en loop mientras dura la pelea.
+func _start_reel() -> void:
+	if settings.reel_sound == null:
+		return
+	var looped: AudioStream = settings.reel_sound.duplicate() as AudioStream
+	if looped is AudioStreamOggVorbis:
+		(looped as AudioStreamOggVorbis).loop = true
+	_reel.stream = looped
+	_reel.volume_db = settings.reel_db
+	_reel.play()
+
+
+func _stop_reel() -> void:
+	if _reel != null:
+		_reel.stop()
 
 
 func _draw_line() -> void:
