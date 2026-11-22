@@ -42,6 +42,19 @@ uniform float reflect_strength = 1.0;
 uniform float night_reflect = 0.012;
 uniform float foam_streaks = 1.0;
 
+// Rápidos de un río (M2): un mapa visto desde arriba marca dónde hay rápidos (R = cuánto) y hacia
+// dónde corre el agua (G, B). Ahí el agua se cubre de espuma que corre con la corriente y se pica.
+// Lo arma RiverBuilder; con rapids_strength = 0 (por defecto) no hace nada.
+uniform sampler2D rapids_mask : filter_linear, repeat_disable, hint_default_black;
+uniform vec4 rapids_rect = vec4(0.0, 0.0, 0.0, 0.0); // x, z de la esquina; ancho en x, en z
+uniform float rapids_strength = 0.0;
+uniform float rapids_coverage = 0.55;
+uniform float rapids_scale = 0.45;
+uniform float rapids_stretch = 3.2;
+uniform float rapids_speed = 2.4;
+uniform float rapids_turbulence = 0.6;
+uniform float rapids_glow = 0.06;
+
 varying vec3 w_pos;
 varying float v_foam;
 varying float v_crest;
@@ -55,6 +68,8 @@ float vnoise(vec2 p) {
 	return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
 			mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
 }
+
+float crest_hint(float c) { return clamp(c * 0.5 + 0.5, 0.0, 1.0); }
 
 // Factor de escala del oleaje según la distancia al barco (0 = cerca, 1 = lejos).
 float far_factor(vec2 p) {
@@ -109,6 +124,29 @@ void fragment() {
 	vec2 mr = vec2(vnoise(w_pos.xz * 2.1 + vec2(TIME * 0.7, 0.0)), vnoise(w_pos.xz * 2.3 - vec2(0.0, TIME * 0.6))) - 0.5;
 	float mr_fade = 1.0 - smoothstep(30.0, 120.0, length(VERTEX));
 	vec3 nw = normalize(vec3(-sl.x - mr.x * 0.22 * mr_fade, 1.0, -sl.y - mr.y * 0.22 * mr_fade));
+	// Rápidos: espuma en vetas que corre río abajo y agua más revuelta.
+	float rfoam = 0.0;
+	if (rapids_strength > 0.0 && rapids_rect.z > 0.0) {
+		vec2 ruv = (w_pos.xz - rapids_rect.xy) / rapids_rect.zw;
+		if (ruv.x > 0.0 && ruv.y > 0.0 && ruv.x < 1.0 && ruv.y < 1.0) {
+			vec4 rm = texture(rapids_mask, ruv);
+			float rap = rm.r;
+			if (rap > 0.003) {
+				vec2 rdir = rm.gb * 2.0 - 1.0;
+				rdir = length(rdir) > 0.01 ? normalize(rdir) : vec2(0.0, -1.0);
+				vec2 rperp = vec2(-rdir.y, rdir.x);
+				vec2 q = vec2(dot(w_pos.xz, rperp) * rapids_stretch, dot(w_pos.xz, rdir) - TIME * rapids_speed) * rapids_scale;
+				float n1 = vnoise(q) * 0.5 + vnoise(q * 2.2 + vec2(7.1, 3.3)) * 0.3
+						+ vnoise(q * 4.7 + vec2(0.0, TIME * rapids_speed * rapids_scale * 0.7)) * 0.2;
+				float boil = vnoise(w_pos.xz * 0.8 + vec2(TIME * 0.9, -TIME * 0.6));
+				float cover = 1.0 - rapids_coverage * (0.55 + 0.45 * rap);
+				rfoam = smoothstep(cover - 0.08, cover + 0.12, n1 * 0.8 + boil * 0.2 + crest_hint(v_crest) * 0.1) * smoothstep(0.0, 0.35, rap);
+				rfoam *= rapids_strength;
+				vec2 tb = vec2(vnoise(q * 3.0 + 11.0), vnoise(q * 3.3 - 5.0)) - 0.5;
+				nw = normalize(nw + vec3(tb.x, 0.0, tb.y) * rapids_turbulence * rap);
+			}
+		}
+	}
 	// A espacio de vista.
 	vec3 n = normalize((VIEW_MATRIX * vec4(nw, 0.0)).xyz);
 	if (dot(n, VIEW) < 0.0) {
@@ -127,6 +165,7 @@ void fragment() {
 	float foam_base = smoothstep(0.78, 1.05, v_crest * 0.5 + foam_noise * 0.62);
 	float foam_str = smoothstep(0.55, 0.85, crest * 0.7 + comp * 0.5 + streak * 0.35) * smoothstep(0.35, 0.8, streak) * foam_streaks;
 	float foam = clamp(foam_base + foam_str * 0.7, 0.0, 1.0) * foam_amount;
+	foam = max(foam, rfoam);
 	v_foam = foam / max(foam_amount, 0.001);
 
 	vec3 view_w = normalize((INV_VIEW_MATRIX * vec4(VIEW, 0.0)).xyz);
@@ -150,6 +189,7 @@ void fragment() {
 		SPECULAR = 0.5 * dim;
 		EMISSION = (sky * fres * reflect_strength * (night_reflect + flash * 0.55) * reflect_vis
 				+ foam_color * foam * flash * 0.07
+				+ foam_color * rfoam * rapids_glow
 				+ vec3(0.02, 0.06, 0.07) * slate * flash * 0.5) * dim;
 	} else {
 		ALBEDO = vec3(0.0);

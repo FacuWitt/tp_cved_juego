@@ -18,34 +18,57 @@ Guía que Claude Code lee al inicio de cada sesión. Es corta a propósito: el d
 - Todo el equipo usa **la misma versión exacta** de Godot.
 - Escena principal actual: `res://scenes/memories/m1_habitacion/m1_habitacion.tscn` (memoria 1 en greybox). El sandbox de prueba sigue en `scenes/sandbox/` (F6).
 - Autoloads: `GameFlow` (encadena las memorias) y `ScreenFade` (fundido a negro). Falta `EventBus`, `AudioManager`, etc.
-- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`, y los de debug `debug_next_memory` (F9) y `debug_restart_memory` (F10).
+- InputMap: `move_forward`, `move_back`, `move_left`, `move_right`, `jump`, `sprint`, `interact`, `release_mouse`, `capture_mouse`, `row_left` (A), `row_right` (D) para remar, y los de debug `debug_next_memory` (F9) y `debug_restart_memory` (F10).
 
 ## Qué existe hoy
 | Clase | Archivo | Qué hace |
 |---|---|---|
-| `Player` | `scripts/player/player.gd` | CharacterBody3D en primera persona: salto variable, coyote time, agarra y suelta `PickupObject` con `interact` |
+| `Player` | `scripts/player/player.gd` | CharacterBody3D en primera persona: salto variable, coyote time, agarra y suelta `PickupObject` con `interact`, usa `Interactable`. `set_controls_enabled(false)` lo deja quieto y sin control |
 | `PlayerSettings` | `scripts/config/player_settings.gd` → `config/player_settings.tres` | Valores de feel del jugador |
-| `PickupObject` | `scripts/interaction/pickup_object.gd` | RigidBody3D que se agarra y se arrastra con física; se puede bloquear (`lock()`) |
-| `PickupSettings` | `scripts/config/pickup_settings.gd` → `config/pickup_settings.tres` | Valores de feel del agarre |
-| `PlacementSlot` | `scripts/world/placement_slot.gd` | Area3D donde un `PickupObject` encastra. Emite `object_placed` y `object_removed` |
+| `PickupObject` | `scripts/interaction/pickup_object.gd` | RigidBody3D que se agarra y se arrastra con física; se puede bloquear (`lock()`). Con `reach` (`ReachSettings`) solo se alcanza con los ojos cerca de su altura y apoyado en algo (la luna de la M1, con el banquito); si no llega emite `reach_failed` |
+| `ReachSettings` | `scripts/config/reach_settings.gd` → `config/reach_estante_alto.tres` | Hasta cuánto más abajo que un objeto en alto pueden estar los ojos para agarrarlo, y si hay que estar apoyado |
+| `PickupSettings` | `scripts/config/pickup_settings.gd` → `config/pickup_settings.tres` | Valores de feel del agarre (distancia, `hold_drop` para sostener más abajo). La M1 usa `pickup_settings_m1.tres` y `pickup_settings_banquito.tres` |
+| `PlacementSlot` | `scripts/world/placement_slot.gd` | Area3D donde un `PickupObject` encastra. Emite `object_placed` y `object_removed`. Con `only_puzzle_pieces` ignora lo que no sea `PuzzlePiece` (el banquito) |
 | `KillZone` | `scripts/world/kill_zone.gd` | Devuelve al jugador a un punto de reaparición |
 | `Memory` | `scripts/memories/memory.gd` | Clase base de la raíz de cada memoria: se registra en `GameFlow`; `complete()` y `fail()` |
 | `MemoryExit` | `scripts/world/memory_exit.gd` | Salida de una memoria: emite `reached` y completa la `Memory` que la contiene (`enabled` la abre o cierra) |
-| `Memory1Room` | `scripts/memories/memory_1_room.gd` | Memoria 1 (habitación de la abuela): une el puzzle con la puerta, el barquito y la salida |
+| `Memory1Room` | `scripts/memories/memory_1_room.gd` | Memoria 1 (habitación de la abuela, 7 × 6 m): juguetes repartidos que van a la alfombra del mar; la luna está en alto y se alcanza con el banquito (`scenes/props/banquito.tscn`); por la ventana se ve un mar de sueño (`dream_sea.gdshader`, `dream_night_sky.gdshader`). Une el puzzle con la puerta, el barquito y la salida |
 | `SequencePuzzle` | `scripts/puzzles/sequence_puzzle.gd` | Puzzle genérico de ordenar piezas (`PuzzlePiece`) en casilleros |
-| `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" |
+| `InteractionPrompt` | `scripts/ui/interaction_prompt.gd` | Mira contextual: "(E) Agarrar" / "(E) Colocar" / "No llego" / el texto de un `Interactable`. Sin control del jugador no muestra nada |
+| `Interactable` | `scripts/interaction/interactable.gd` | StaticBody3D fijo con el que se interactúa con E (no se agarra); la mira muestra su `prompt_text`. Base de `Drawer` e `InspectableItem` |
+| `Drawer` + `DrawerSettings` | `scripts/world/drawer.gd` → `config/drawer_settings.tres` | Cajón que se abre y cierra con E; lo que cuelga de él sale con él. Escena: `scenes/props/comoda.tscn` (M1) |
+| `InspectableItem` + `InspectView` + `InspectSettings` | `scripts/interaction/inspectable_item.gd`, `scripts/ui/inspect_view.gd` → `config/inspect_settings.tres` | Inspección estilo Silent Hill: "(E) Leer", el fondo se desenfoca y oscurece (`inspect_blur.gdshader`), una copia del objeto viene a la cara en su propio SubViewport, se abre la tapa (`CoverHinge`) y aparece la página. Una `InspectView` por escena |
 | `DebugTools` | `scripts/debug/debug_tools.gd` | Teclas de prueba comunes a todas las memorias: 8 cámara libre, 9 luz de rayo fija, 0 saltar el evento principal, 7 flashback (se apagan con `debug_keys` de cada memoria) |
 | `LightningController` + `LightningSettings` | `scripts/world/lightning_controller.gd` | Rayos de tormenta (luz, ambiente, cielo, materiales con `flash`) |
 | `WakeUpIntro` + `WakeUpSettings` | `scripts/fx/wake_up_intro.gd` | Despertar por la tormenta al empezar una memoria (ojos, trueno, se levanta) |
 | `HeldItemView` + `HeldItemSettings` | `scripts/fx/held_item_view.gd` | Objeto en la mano en primera persona (linterna, barquito) |
 | `EquipPickup` | `scripts/world/equip_pickup.gd` | Objeto que se agarra con E y pasa a llevarse puesto (no se suelta) |
 | `FlashbackOverlay` + `FlashbackSettings` | `scripts/ui/flashback_overlay.gd` | Flashbacks de menos de un segundo, con opción de fotosensibilidad |
-| `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 (el lago helado): cabaña, placas, perro, final bajo el hielo |
+| `Memory2Boats` | `scripts/memories/memory_2_boats.gd` | M2 de Mica (`m2_remos`, CL-054): remar en el lago escapando de la tormenta, con ola, vuelco y rescate. Convive con la M2 del río; no está en la secuencia, es fuente de sonido y clima |
+| `RemosBoat` / `RemosFatherBoat` / `RowCourse` | `scripts/world/remos_boat.gd`, `remos_father_boat.gd`, `row_course.gd` | Bote del jugador (un remo por tecla), bote del padre que guía y camino con obstáculos de la M2 de Mica |
+| `LakeWater` / `StormAudio` / `RowHud` | `scripts/world/lake_water.gd`, `scripts/fx/storm_audio.gd`, `scripts/ui/row_hud.gd` | Agua con olas y tormenta, mezcla de audio de tormenta, teclas en pantalla |
+| `Memory2Lake` | `scripts/memories/memory_2_lake.gd` | Memoria 2 vigente (el río y el lago de noche): pesca, red, huida remando, final nadando y rescate del padre |
+| `RowBoat` + `RowBoatSettings` | `scripts/world/row_boat.gd` → `config/row_boat.tres` | Bote del jugador en la M2 del río: cada toque de tecla es una remada (A remo izquierdo, D derecho, S los dos atrás), con empuje al entrar la pala, sonidos de remos y golpes, y balanceo con las olas |
 | `IcePlate` + `IceSettings` | `scripts/world/ice_plate.gd` | Placa de hielo que se inclina, resbala, se agrieta y se rompe |
 | `DogNpc` | `scripts/world/dog_npc.gd` | El perro: corre por puntos y espera ladrando |
+| `Memory3House` | `scripts/memories/memory_3_house.gd` | Memoria 3 (la casa que se repite): laberinto de puertas, salas intermedias detrás de cada puerta buena, degradación, entrega del barquito a la hija y salida por la puerta de casa. Prueba de punta a punta: `tools/tests/m3_recorrido.tscn` |
+| `BendingHallway` | `scripts/world/bending_hallway.gd` | Pasillo de la M3 que dobla y se estira: se arma "cavando" en un bloque CSG según una forma de texto ("4 L 3 R 5"), con ancho y alto por tramo; al final pone el rellano y sus tramos oscuros (reemplaza a `StretchingHallway`, CL-068) |
+| `LoopPortal` | `scripts/world/loop_portal.gd` | Umbral invisible: avisa con `crossed` y lleva al jugador a otro punto conservando posición, orientación y velocidad (M3) |
+| `DreamEffects` + `DreamSettings` | `scripts/fx/dream_effects.gd` → `config/dream_m3.tres` | Efectos de sueño que siguen a un nivel 0..1: imagen que ondula y se desenfoca en los bordes (`dream_haze.gdshader`), cámara que se mece, piernas pesadas al avanzar, piernas que se traban (se frena y lo arrastra para atrás), parpadeos, estela al girar y sonido "bajo el agua" (efectos en el bus Master solo mientras sueña) (M3) |
+| `HallwayDeadEnd` | `scripts/fx/hallway_dead_end.gd` | El pasillo de la M3 se cierra a espaldas del jugador si no mira atrás un rato (usa `DreamSettings`) |
+| `RisingWater` | `scripts/fx/rising_water.gd` | Lámina de agua (`dream_water.gdshader`) que sube con el sueño sobre el piso de unas áreas y se mece sola (M3; usa `DreamSettings`) |
+| `DreamShifter` | `scripts/fx/dream_shifter.gd` | Objetos que cambian de lugar cuando no se los mira (o en un parpadeo); cuadros que se tuercen (M3) |
+| `RepeatingPhotos` | `scripts/world/repeating_photos.gd` | Fotos familiares a lo largo del pasillo de la M3 (lista `photo_textures`: hoy la hija; falta la abuela), cada vez más borrosas y torcidas (`memory_photo.gdshader`); acompaña al `BendingHallway` |
+| `InterludeRoom` | `scripts/world/interlude_room.gd` | Base de las salas intermedias de la M3 (lo que hay detrás de una puerta buena): llegada, umbral de salida, armado de paredes por código, luz ambiente y sonido. La memoria las recorre con `interludes` |
+| `WakeMessagesRoom` + `WakeMessagesSettings` | `scripts/world/wake_messages_room.gd` → `config/m3_wake_messages.tres` | Sala de los mensajes (M3): frases que piden despertar y aparecen donde el jugador no mira, cada vez más y en rojo; apagón que la cubre |
+| `HospitalCorridorRoom` + `HospitalCorridorSettings` | `scripts/world/hospital_corridor_room.gd` → `config/m3_hospital_corridor.tres` | Pasillo del hospital (M3): techo de paneles cálidos en la niebla que se apagan atrás y laten con el bip; apagón y quedan las seis luces siguiendo al jugador |
+| `BoatFloodRoom` + `BoatFloodSettings` | `scripts/world/boat_flood_room.gd` → `config/m3_boat_flood.tres` | Sala de los barcos (M3): montañas de barquitos (MultiMesh sobre una malla con colisión), paso en S y barquitos físicos que caen cada vez más seguido |
 | `Memory4Accident` | `scripts/memories/memory_4_accident.gd` | Memoria 4 (el accidente en el barco) |
 | `HospitalLights` + `HospitalLightsSettings` | `scripts/world/hospital_lights.gd` | 6 luces del techo del hospital que se ven en el cielo, en la dirección del rayo, mientras el rayo ilumina (M4) |
+| `AnchorWinch` + `AnchorWinchSettings` | `scripts/world/anchor_winch.gd` | Malacate del ancla de la M4: se sube apretando (E) en la manivela y se resbala si se afloja. Escena: `scenes/props/anchor_winch.tscn` |
 | `CharacterRig` + `CharacterPose` | `scripts/world/character_rig.gd` | Posa por código un modelo con esqueleto sin animaciones (pose base, respiración, remar, gesto al hablar según los subtítulos, mirar a un objetivo). Escena: `scenes/characters/male_character.tscn` |
+| `Passage` + `PassageSettings` + `PassageVoice` | `scripts/memories/passage.gd` | Pasaje entre memorias (hereda de `Memory`): caminar sobre un mar negro hacia una luz mientras suenan voces del hospital; cuando hablan las voces se encienden luces cálidas grandes arriba a los costados, con un brillo que sigue el volumen de la voz. Escena base `scenes/passages/passage.tscn`; cada pasaje la hereda con su `.tres` (hoy `pasaje_m1_m2.tscn`) |
+| `Awakening` + `AwakeningSettings` | `scripts/memories/awakening.gd` | Despertar en el hospital (última escena): abre los ojos bajo las 6 luces del techo (las del cielo de la M4), la hija le habla y el último plano es el barquito; termina en blanco con el título |
 
 Capas de colisión: **1 = cuerpos físicos** (el InteractionRay mira esta), **2 = zonas de detección** (los `PlacementSlot`).
 

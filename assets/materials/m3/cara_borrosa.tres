@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/face_blur.gdshader" id="1_sh"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_sh")
+shader_parameter/blur_amount = 2.2
+shader_parameter/edge_softness = 0.7
+shader_parameter/wash = Color(0.9, 0.78, 0.7, 0.0)

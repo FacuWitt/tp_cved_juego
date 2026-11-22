@@ -1,0 +1,208 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://assets/materials/m1/madera.tres" id="1_mad"]
+[ext_resource type="Material" path="res://assets/materials/m1/madera_oscura.tres" id="2_mos"]
+[ext_resource type="Script" path="res://scripts/world/drawer.gd" id="3_drw"]
+[ext_resource type="Resource" path="res://config/drawer_settings.tres" id="4_drs"]
+[ext_resource type="Script" path="res://scripts/interaction/inspectable_item.gd" id="5_ins"]
+[ext_resource type="Texture2D" path="res://assets/textures/m1/libro_puzzle.png" id="6_tap"]
+[ext_resource type="Texture2D" path="res://assets/textures/m1/libro_puzzle_poema.png" id="7_pag"]
+
+[sub_resource type="StandardMaterial3D" id="mat_tapa"]
+albedo_texture = ExtResource("6_tap")
+roughness = 0.8
+emission_enabled = true
+emission_texture = ExtResource("6_tap")
+emission_energy_multiplier = 0.35
+texture_filter = 2
+
+[sub_resource type="StandardMaterial3D" id="mat_cuero"]
+albedo_color = Color(0.45, 0.2, 0.12, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_hojas"]
+albedo_color = Color(0.9, 0.84, 0.68, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_perilla"]
+albedo_color = Color(0.72, 0.58, 0.3, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="m_frente"]
+size = Vector3(0.94, 0.19, 0.02)
+
+[sub_resource type="BoxMesh" id="m_frente_cajon"]
+size = Vector3(0.94, 0.15, 0.02)
+
+[sub_resource type="BoxMesh" id="m_fondo_cajon"]
+size = Vector3(0.92, 0.015, 0.4)
+
+[sub_resource type="BoxMesh" id="m_lado_cajon"]
+size = Vector3(0.015, 0.11, 0.4)
+
+[sub_resource type="BoxMesh" id="m_atras_cajon"]
+size = Vector3(0.92, 0.11, 0.015)
+
+[sub_resource type="SphereMesh" id="m_perilla"]
+radius = 0.022
+height = 0.044
+radial_segments = 10
+rings = 5
+
+[sub_resource type="BoxShape3D" id="col_frente"]
+size = Vector3(0.94, 0.09, 0.03)
+
+[sub_resource type="BoxMesh" id="m_tapa"]
+size = Vector3(0.2, 0.007, 0.24)
+
+[sub_resource type="QuadMesh" id="m_tapa_img"]
+size = Vector2(0.2, 0.24)
+
+[sub_resource type="BoxMesh" id="m_hojas"]
+size = Vector3(0.19, 0.026, 0.23)
+
+[sub_resource type="BoxMesh" id="m_lomo"]
+size = Vector3(0.012, 0.042, 0.24)
+
+[sub_resource type="BoxShape3D" id="col_libro"]
+size = Vector3(0.21, 0.05, 0.25)
+
+[node name="Comoda" type="Node3D"]
+
+[node name="Top" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.93, 0)
+size = Vector3(1.02, 0.04, 0.47)
+material = ExtResource("1_mad")
+use_collision = true
+
+[node name="SideL" type="CSGBox3D" parent="."]
+position = Vector3(-0.485, 0.455, 0)
+size = Vector3(0.03, 0.91, 0.45)
+material = ExtResource("1_mad")
+use_collision = true
+
+[node name="SideR" type="CSGBox3D" parent="."]
+position = Vector3(0.485, 0.455, 0)
+size = Vector3(0.03, 0.91, 0.45)
+material = ExtResource("1_mad")
+use_collision = true
+
+[node name="Back" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.455, -0.215)
+size = Vector3(0.94, 0.91, 0.02)
+material = ExtResource("1_mad")
+use_collision = true
+
+[node name="Lower" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.33, 0)
+size = Vector3(0.94, 0.62, 0.43)
+material = ExtResource("1_mad")
+use_collision = true
+
+[node name="Rail" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.67, 0.0)
+size = Vector3(0.94, 0.02, 0.43)
+material = ExtResource("2_mos")
+use_collision = true
+
+[node name="FrontMid" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.5, 0.222)
+mesh = SubResource("m_frente")
+material_override = ExtResource("2_mos")
+
+[node name="KnobMid" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.5, 0.24)
+mesh = SubResource("m_perilla")
+material_override = SubResource("mat_perilla")
+
+[node name="FrontLow" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.2, 0.222)
+mesh = SubResource("m_frente")
+material_override = ExtResource("2_mos")
+
+[node name="KnobLow" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.2, 0.24)
+mesh = SubResource("m_perilla")
+material_override = SubResource("mat_perilla")
+
+[node name="Drawer" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.78, 0)
+script = ExtResource("3_drw")
+settings = ExtResource("4_drs")
+prompt_text = "(E) Abrir cajón"
+
+[node name="Front" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(0, -0.02, 0.212)
+mesh = SubResource("m_frente_cajon")
+material_override = ExtResource("2_mos")
+
+[node name="Knob" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(0, -0.02, 0.232)
+mesh = SubResource("m_perilla")
+material_override = SubResource("mat_perilla")
+
+[node name="TrayBottom" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(0, -0.085, 0.0)
+mesh = SubResource("m_fondo_cajon")
+material_override = ExtResource("1_mad")
+
+[node name="TrayL" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(-0.455, -0.03, 0.0)
+mesh = SubResource("m_lado_cajon")
+material_override = ExtResource("1_mad")
+
+[node name="TrayR" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(0.455, -0.03, 0.0)
+mesh = SubResource("m_lado_cajon")
+material_override = ExtResource("1_mad")
+
+[node name="TrayBack" type="MeshInstance3D" parent="Drawer"]
+position = Vector3(0, -0.03, -0.195)
+mesh = SubResource("m_atras_cajon")
+material_override = ExtResource("1_mad")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Drawer"]
+position = Vector3(0, -0.05, 0.212)
+shape = SubResource("col_frente")
+
+[node name="Book" type="StaticBody3D" parent="Drawer" node_paths=PackedStringArray("visual")]
+position = Vector3(0.1, -0.054, -0.01)
+rotation_degrees = Vector3(0, -8, 0)
+script = ExtResource("5_ins")
+visual = NodePath("Visual")
+page = ExtResource("7_pag")
+prompt_text = "(E) Leer"
+
+[node name="Visual" type="Node3D" parent="Drawer/Book"]
+
+[node name="BackCover" type="MeshInstance3D" parent="Drawer/Book/Visual"]
+position = Vector3(0, -0.0175, 0)
+mesh = SubResource("m_tapa")
+material_override = SubResource("mat_cuero")
+
+[node name="Pages" type="MeshInstance3D" parent="Drawer/Book/Visual"]
+position = Vector3(0.004, 0, 0)
+mesh = SubResource("m_hojas")
+material_override = SubResource("mat_hojas")
+
+[node name="Spine" type="MeshInstance3D" parent="Drawer/Book/Visual"]
+position = Vector3(-0.1, 0, 0)
+mesh = SubResource("m_lomo")
+material_override = SubResource("mat_cuero")
+
+[node name="CoverHinge" type="Node3D" parent="Drawer/Book/Visual"]
+position = Vector3(-0.1, 0.0175, 0)
+
+[node name="Cover" type="MeshInstance3D" parent="Drawer/Book/Visual/CoverHinge"]
+position = Vector3(0.1, 0, 0)
+mesh = SubResource("m_tapa")
+material_override = SubResource("mat_cuero")
+
+[node name="CoverArt" type="MeshInstance3D" parent="Drawer/Book/Visual/CoverHinge/Cover"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.0038, 0)
+mesh = SubResource("m_tapa_img")
+material_override = SubResource("mat_tapa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Drawer/Book"]
+shape = SubResource("col_libro")

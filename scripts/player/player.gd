@@ -10,6 +10,7 @@ var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _held_object: PickupObject = null
 
+
 @onready var _head: Node3D = $Head
 @onready var _camera: Camera3D = $Head/Camera3D
 @onready var _interaction_ray: RayCast3D = $Head/Camera3D/InteractionRay
@@ -66,8 +67,16 @@ func _toggle_pickup() -> void:
 		return
 
 	var collider: Object = _interaction_ray.get_collider()
+	if collider is Interactable:
+		if (collider as Interactable).enabled:
+			(collider as Interactable).interact(self)
+		return
 	if collider is PickupObject:
-		_held_object = collider as PickupObject
+		var object: PickupObject = collider as PickupObject
+		if not can_reach(object):
+			object.reach_failed.emit()
+			return
+		_held_object = object
 		_held_object.pickup(_camera, self)
 
 
@@ -98,7 +107,7 @@ func get_aimed_slot() -> PlacementSlot:
 	if hit.is_empty():
 		return null
 	var slot: PlacementSlot = hit.collider as PlacementSlot
-	if slot == null or not slot.is_free():
+	if slot == null or not slot.is_free() or not slot.accepts(_held_object):
 		return null
 	return slot
 
@@ -111,6 +120,29 @@ func get_interactable_under_crosshair() -> PickupObject:
 	if collider is PickupObject and not (collider as PickupObject).is_locked:
 		return collider as PickupObject
 	return null
+
+
+## Sin nada en la mano: el Interactable (cajón, libro...) al que apunta la mira, o null.
+func get_aimed_interactable() -> Interactable:
+	if _held_object != null or not _interaction_ray.is_colliding():
+		return null
+	var collider: Object = _interaction_ray.get_collider()
+	if collider is Interactable and (collider as Interactable).enabled:
+		return collider as Interactable
+	return null
+
+
+## Deja al jugador quieto y sin control (inspeccionar un objeto, una cinemática) o se lo devuelve.
+func set_controls_enabled(enabled: bool) -> void:
+	set_physics_process(enabled)
+	set_process_unhandled_input(enabled)
+	if not enabled:
+		velocity = Vector3.ZERO
+
+
+## true si el jugador alcanza ese objeto ahora (los puestos en alto piden estar subido a algo).
+func can_reach(object: PickupObject) -> bool:
+	return object != null and object.can_be_picked_by(_camera, self)
 
 
 func _apply_camera_settings() -> void:

@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/passages/passage.tscn" id="1_base"]
+[ext_resource type="Resource" path="res://config/passage_m1_m2.tres" id="2_ps"]
+
+[node name="PasajeM1M2" instance=ExtResource("1_base")]
+settings = ExtResource("2_ps")

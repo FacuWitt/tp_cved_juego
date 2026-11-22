@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="PassageSettings" format=3 uid="uid://bpcv6cecuvdrw"]
+
+[ext_resource type="Script" uid="uid://cvd35qw01pplb" path="res://scripts/config/passage_settings.gd" id="1_ps"]
+[ext_resource type="AudioStream" uid="uid://bgunw6cccre0g" path="res://assets/audio/m1_habitacion/background.ogg" id="1_v5ni5"]
+[ext_resource type="Script" uid="uid://c54etumqcu88w" path="res://scripts/config/passage_voice.gd" id="2_pv"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_muffled.ogg" id="b_muf"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_clear.ogg" id="b_clr"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v01_doctor.ogg" id="a_v01_doctor"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v02_abuela.ogg" id="a_v02_abuela"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v03_doctor.ogg" id="a_v03_doctor"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v04_abuela.ogg" id="a_v04_abuela"]
+
+[sub_resource type="Resource" id="v1"]
+script = ExtResource("2_pv")
+stream = ExtResource("a_v01_doctor")
+text = "VOZ (doctor, tapada, como a través de una pared): ...está estable. Por ahora..."
+at_progress = 0.02
+duration = 3.2
+
+[sub_resource type="Resource" id="v2"]
+script = ExtResource("2_pv")
+stream = ExtResource("a_v02_abuela")
+text = "VOZ (abuela, tapada): ...hijo, ¿me escuchás?..."
+duration = 3.2
+
+[sub_resource type="Resource" id="v3"]
+script = ExtResource("2_pv")
+stream = ExtResource("a_v03_doctor")
+text = "VOZ (doctor, tapada): ...dicen que oye. Háblenle..."
+at_progress = 0.48
+duration = 3.2
+
+[sub_resource type="Resource" id="v4"]
+script = ExtResource("2_pv")
+stream = ExtResource("a_v04_abuela")
+text = "VOZ (abuela, tapada): ...acá estoy. No me voy a ir..."
+at_progress = 0.71
+duration = 3.4
+
+[resource]
+script = ExtResource("1_ps")
+voices = Array[ExtResource("2_pv")]([SubResource("v1"), SubResource("v2"), SubResource("v3"), SubResource("v4")])
+voice_light_offsets = null
+ambience = ExtResource("1_v5ni5")
+beep_muffled = ExtResource("b_muf")
+beep_clear = ExtResource("b_clr")
+beep_db_start = -42.0
+beep_db_end = -36.0
+beep_clarity_start = 0.0
+beep_clarity_end = 0.0

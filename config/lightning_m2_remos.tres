@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="LightningSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/lightning_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+lightning_min_interval = 4.0
+lightning_max_interval = 9.0
+lightning_energy = 1.7
+lightning_ambient = 0.3
+lightning_sky = 5.0
+lightning_time = 0.55

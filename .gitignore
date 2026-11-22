@@ -1,3 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Herramientas: dependencias de npm
+node_modules/
+
+# Archivos temporales del editor de Godot
+*.tmp

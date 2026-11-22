@@ -1,257 +1,183 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dram0g61h675t"]
 
-[ext_resource type="Script" path="res://scripts/world/placement_slot.gd" id="1_e"]
-[ext_resource type="Script" path="res://scripts/puzzles/sequence_puzzle.gd" id="2_e"]
-[ext_resource type="Resource" path="res://config/memory_1_puzzle.tres" id="3_e"]
-[ext_resource type="PackedScene" path="res://scenes/interaction/puzzle_piece.tscn" id="4_e"]
+[ext_resource type="Script" uid="uid://53fnxdfhejgd" path="res://scripts/world/placement_slot.gd" id="1_e"]
+[ext_resource type="Script" uid="uid://djvfp7e28mwh8" path="res://scripts/puzzles/sequence_puzzle.gd" id="2_e"]
+[ext_resource type="Resource" uid="uid://bqrfv8jyu3mem" path="res://config/memory_1_puzzle.tres" id="3_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/luna.tscn" id="4_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/red.tscn" id="5_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/ola.tscn" id="6_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/ancla.tscn" id="7_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/sirena.tscn" id="8_e"]
+[ext_resource type="PackedScene" path="res://scenes/interaction/figures/barco.tscn" id="9_e"]
+[ext_resource type="Texture2D" uid="uid://bfxfpsfvey3hd" path="res://assets/textures/m1/alfombra_oceano.png" id="10_e"]
+[ext_resource type="Resource" path="res://config/reach_estante_alto.tres" id="11_e"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5_s"]
-albedo_color = Color(0.48, 0.32, 0.2, 1)
-roughness = 0.85
+[sub_resource type="StandardMaterial3D" id="mat_alfombra"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_texture = ExtResource("10_e")
+texture_filter = 2
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6_s"]
-albedo_color = Color(0.3, 0.2, 0.13, 1)
-roughness = 0.85
+[sub_resource type="PlaneMesh" id="mesh_alfombra"]
+size = Vector2(3.3369, 1.864)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7_s"]
-albedo_color = Color(1.0, 0.85, 0.55, 1)
-roughness = 0.85
-emission_enabled = true
-emission = Color(1.0, 0.8, 0.45, 1)
-emission_energy_multiplier = 1.0
+[sub_resource type="StandardMaterial3D" id="mat_aim"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.85, 0.55, 0.55)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8_s"]
-size = Vector3(0.46, 0.4, 0.42)
+[sub_resource type="BoxShape3D" id="shape_slot"]
+size = Vector3(0.4, 0.4, 0.4)
 
-[node name="Puzzle" type="Node3D"]
+[node name="Puzzle" type="Node3D" unique_id=1346719532]
 
-[node name="Shelf" type="Node3D" parent="."]
+[node name="Rug" type="Node3D" parent="." unique_id=919140962]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, -1.9, 0, -1.4)
 
-[node name="Board" type="CSGBox3D" parent="Shelf"]
-position = Vector3(0, 0.95, -1.79)
-size = Vector3(2.9, 0.06, 0.42)
-material = SubResource("StandardMaterial3D_5_s")
-use_collision = true
+[node name="Mat" type="MeshInstance3D" parent="Rug" unique_id=241432653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, -0.8473)
+material_override = SubResource("mat_alfombra")
+cast_shadow = 0
+mesh = SubResource("mesh_alfombra")
 
-[node name="BracketL" type="CSGBox3D" parent="Shelf"]
-position = Vector3(-1.4, 0.8, -1.85)
-size = Vector3(0.05, 0.25, 0.3)
-material = SubResource("StandardMaterial3D_5_s")
-use_collision = true
+[node name="Slot1" type="Node3D" parent="Rug" unique_id=2018591683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.199, 0, -0.704)
 
-[node name="BracketR" type="CSGBox3D" parent="Shelf"]
-position = Vector3(1.4, 0.8, -1.85)
-size = Vector3(0.05, 0.25, 0.3)
-material = SubResource("StandardMaterial3D_5_s")
-use_collision = true
+[node name="SnapPoint" type="Marker3D" parent="Rug/Slot1" unique_id=171938211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19, 0)
 
-[node name="Label3D" type="Label3D" parent="Shelf"]
-position = Vector3(0, 1.45, -1.8)
-pixel_size = 0.0025
-text = "REPISA DE LOS JUGUETES: ordenalos como dice la canción"
-font_size = 20
-modulate = Color(1, 1, 1, 1)
-billboard = 1
-outline_size = 6
+[node name="AimIndicator" type="CSGCylinder3D" parent="Rug/Slot1" unique_id=685739100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.17
+height = 0.006
+sides = 24
+material = SubResource("mat_aim")
 
-[node name="Slot1" type="Node3D" parent="."]
-position = Vector3(-1.1, 0, -1.84)
-
-[node name="Mark" type="CSGBox3D" parent="Slot1"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
-
-[node name="SnapPoint" type="Marker3D" parent="Slot1"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot1"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot1" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
+[node name="PlacementSlot" type="Area3D" parent="Rug/Slot1" unique_id=997814189 node_paths=PackedStringArray("snap_point", "aim_indicator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 aim_indicator = NodePath("../AimIndicator")
+only_puzzle_pieces = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot1/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rug/Slot1/PlacementSlot" unique_id=443258758]
+shape = SubResource("shape_slot")
 
-[node name="Number" type="Label3D" parent="Slot1"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "1"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
+[node name="Slot2" type="Node3D" parent="Rug" unique_id=1215870631]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.691, 0, -1.206)
 
-[node name="Slot2" type="Node3D" parent="."]
-position = Vector3(-0.55, 0, -1.84)
+[node name="SnapPoint" type="Marker3D" parent="Rug/Slot2" unique_id=129595508]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19, 0)
 
-[node name="Mark" type="CSGBox3D" parent="Slot2"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
+[node name="AimIndicator" type="CSGCylinder3D" parent="Rug/Slot2" unique_id=1196133298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.17
+height = 0.006
+sides = 24
+material = SubResource("mat_aim")
 
-[node name="SnapPoint" type="Marker3D" parent="Slot2"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot2"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot2" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
+[node name="PlacementSlot" type="Area3D" parent="Rug/Slot2" unique_id=1299953626 node_paths=PackedStringArray("snap_point", "aim_indicator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 aim_indicator = NodePath("../AimIndicator")
+only_puzzle_pieces = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot2/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rug/Slot2/PlacementSlot" unique_id=1326231706]
+shape = SubResource("shape_slot")
 
-[node name="Number" type="Label3D" parent="Slot2"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "2"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
+[node name="Slot3" type="Node3D" parent="Rug" unique_id=163302017]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.007, 0, -1.388)
 
-[node name="Slot3" type="Node3D" parent="."]
-position = Vector3(0.0, 0, -1.84)
+[node name="SnapPoint" type="Marker3D" parent="Rug/Slot3" unique_id=1070575179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19, 0)
 
-[node name="Mark" type="CSGBox3D" parent="Slot3"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
+[node name="AimIndicator" type="CSGCylinder3D" parent="Rug/Slot3" unique_id=835797708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.17
+height = 0.006
+sides = 24
+material = SubResource("mat_aim")
 
-[node name="SnapPoint" type="Marker3D" parent="Slot3"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot3"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot3" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
+[node name="PlacementSlot" type="Area3D" parent="Rug/Slot3" unique_id=731559701 node_paths=PackedStringArray("snap_point", "aim_indicator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 aim_indicator = NodePath("../AimIndicator")
+only_puzzle_pieces = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot3/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rug/Slot3/PlacementSlot" unique_id=1360017098]
+shape = SubResource("shape_slot")
 
-[node name="Number" type="Label3D" parent="Slot3"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "3"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
+[node name="Slot4" type="Node3D" parent="Rug" unique_id=1344797173]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.678, 0, -1.212)
 
-[node name="Slot4" type="Node3D" parent="."]
-position = Vector3(0.55, 0, -1.84)
+[node name="SnapPoint" type="Marker3D" parent="Rug/Slot4" unique_id=1987550594]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19, 0)
 
-[node name="Mark" type="CSGBox3D" parent="Slot4"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
+[node name="AimIndicator" type="CSGCylinder3D" parent="Rug/Slot4" unique_id=2108863921]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.17
+height = 0.006
+sides = 24
+material = SubResource("mat_aim")
 
-[node name="SnapPoint" type="Marker3D" parent="Slot4"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot4"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot4" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
+[node name="PlacementSlot" type="Area3D" parent="Rug/Slot4" unique_id=684044758 node_paths=PackedStringArray("snap_point", "aim_indicator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 aim_indicator = NodePath("../AimIndicator")
+only_puzzle_pieces = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot4/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rug/Slot4/PlacementSlot" unique_id=1665984056]
+shape = SubResource("shape_slot")
 
-[node name="Number" type="Label3D" parent="Slot4"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "4"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
+[node name="Slot5" type="Node3D" parent="Rug" unique_id=2101609942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.186, 0, -0.717)
 
-[node name="Slot5" type="Node3D" parent="."]
-position = Vector3(1.1, 0, -1.84)
+[node name="SnapPoint" type="Marker3D" parent="Rug/Slot5" unique_id=1360683840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.19, 0)
 
-[node name="Mark" type="CSGBox3D" parent="Slot5"]
-position = Vector3(0, 0.9825, 0.05)
-size = Vector3(0.4, 0.005, 0.36)
-material = SubResource("StandardMaterial3D_6_s")
+[node name="AimIndicator" type="CSGCylinder3D" parent="Rug/Slot5" unique_id=1200530490]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.17
+height = 0.006
+sides = 24
+material = SubResource("mat_aim")
 
-[node name="SnapPoint" type="Marker3D" parent="Slot5"]
-position = Vector3(0, 1.16, 0.05)
-
-[node name="AimIndicator" type="CSGBox3D" parent="Slot5"]
-position = Vector3(0, 0.99, 0.05)
-size = Vector3(0.42, 0.012, 0.38)
-material = SubResource("StandardMaterial3D_7_s")
-
-[node name="PlacementSlot" type="Area3D" parent="Slot5" node_paths=PackedStringArray("snap_point", "aim_indicator")]
-position = Vector3(0, 1.2, 0.05)
+[node name="PlacementSlot" type="Area3D" parent="Rug/Slot5" unique_id=628497123 node_paths=PackedStringArray("snap_point", "aim_indicator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 script = ExtResource("1_e")
 snap_point = NodePath("../SnapPoint")
 aim_indicator = NodePath("../AimIndicator")
+only_puzzle_pieces = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Slot5/PlacementSlot"]
-shape = SubResource("BoxShape3D_8_s")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rug/Slot5/PlacementSlot" unique_id=1190799778]
+shape = SubResource("shape_slot")
 
-[node name="Number" type="Label3D" parent="Slot5"]
-position = Vector3(0, 0.9, 0.27)
-pixel_size = 0.003
-text = "5"
-font_size = 40
-modulate = Color(1, 1, 1, 1)
-outline_size = 6
-
-[node name="SequencePuzzle" type="Node" parent="." node_paths=PackedStringArray("slots")]
+[node name="SequencePuzzle" type="Node" parent="." unique_id=1603503327 node_paths=PackedStringArray("slots")]
 script = ExtResource("2_e")
 config = ExtResource("3_e")
-slots = [NodePath("../Slot1/PlacementSlot"), NodePath("../Slot2/PlacementSlot"), NodePath("../Slot3/PlacementSlot"), NodePath("../Slot4/PlacementSlot"), NodePath("../Slot5/PlacementSlot")]
+slots = [NodePath("../Rug/Slot1/PlacementSlot"), NodePath("../Rug/Slot2/PlacementSlot"), NodePath("../Rug/Slot3/PlacementSlot"), NodePath("../Rug/Slot4/PlacementSlot"), NodePath("../Rug/Slot5/PlacementSlot")]
 
-[node name="Pieces" type="Node3D" parent="."]
+[node name="Pieces" type="Node3D" parent="." unique_id=679808099]
 
-[node name="Luna" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.9, 1.19, 0.2)
-piece_id = &"luna"
-label_text = "LUNA"
+[node name="Luna" parent="Pieces" unique_id=555666064 instance=ExtResource("4_e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 2, -2.66)
+reach = ExtResource("11_e")
 
-[node name="Red" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.6, 0.59, 1.68)
-piece_id = &"red"
-label_text = "RED"
+[node name="Red" parent="Pieces" unique_id=603724104 instance=ExtResource("5_e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.59, 2.72)
 
-[node name="Ola" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-1.2, 0.19, -0.55)
-piece_id = &"ola"
-label_text = "OLA"
+[node name="Ola" parent="Pieces" unique_id=1395159474 instance=ExtResource("6_e")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.38, 0.94, 1.35)
 
-[node name="Ancla" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(-0.7, 0.19, 0.6)
-piece_id = &"ancla"
-label_text = "ANCLA"
+[node name="Ancla" parent="Pieces" unique_id=1409661006 instance=ExtResource("7_e")]
+transform = Transform3D(0.8660254, 0, -0.5, 0, 1, 0, 0.5, 0, 0.8660254, 2.2, 0.19, 1.9)
 
-[node name="Faro" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(0.8, 0.19, -0.75)
-piece_id = &"faro"
-label_text = "FARO"
+[node name="Sirena" parent="Pieces" unique_id=2085415689 instance=ExtResource("8_e")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.85, 0.7, 1)
 
-[node name="Barco" parent="Pieces" instance=ExtResource("4_e")]
-position = Vector3(1.45, 0.7, 0.15)
-piece_id = &"barco"
-label_text = "BARCO"
+[node name="Barco" parent="Pieces" unique_id=744945483 instance=ExtResource("9_e")]
+transform = Transform3D(0.81915206, 0, 0.57357645, 0, 1, 0, -0.57357645, 0, 0.81915206, -1, 0.19, 1.5)

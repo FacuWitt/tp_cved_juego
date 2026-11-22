@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AwakeningSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/awakening_settings.gd" id="1"]
+[ext_resource type="Resource" path="res://config/hospital_lights_m4.tres" id="2"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/monitor_beep_clear.ogg" id="3"]
+[ext_resource type="AudioStream" path="res://assets/audio/hospital/v13_hija.ogg" id="4"]
+
+[resource]
+script = ExtResource("1")
+ceiling_lights = ExtResource("2")
+monitor_beep = ExtResource("3")
+daughter_voice = ExtResource("4")

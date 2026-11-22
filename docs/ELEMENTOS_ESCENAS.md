@@ -24,60 +24,70 @@ Inventario de todo lo que hay que construir o conseguir para cada escena del jue
 | **Ventana con exterior falso** | M1, M3, Final | Plano con color | Plano detrás del vidrio (cielo, luna, lluvia o día) |
 | **Player** | Todas | ✅ existe | Tiene que poder **quedar sin control** durante las cinemáticas |
 | **NPC simple** | Padre, perro, hija, compañero | Cápsula de color + `Label3D` | Posición, mirar al jugador y un punto de donde sale su voz. Sin IA |
-| **Transiciones en negro** | Entre todas las escenas | Pantalla negra + texto con la línea | Voces del hospital, cada vez más cercanas; resplandor rojizo que late |
+| **Pasajes entre memorias** ✅ (reemplaza las transiciones en negro) | Entre todas las memorias (CL-062): M1 → M2, M2 → M3, M3 → M4 (en silencio) y M4 → despertar (bajando por el agua hacia la luz, CL-063) | `scenes/passages/`: mar quieto (el océano de la M4 casi sin olas), cielo negro absoluto, una luz lejana que no se sabe qué es | Se camina hacia la luz (✅ CL-075: 36 m, unos 15 s; el descenso final dura unos 22 s); las voces del hospital suenan a medida que se avanza, una por vez y sin cortarse (📝 textos provisorios, subtítulos) y mientras hablan se encienden dos luces cálidas grandes y tenues arriba a los costados del jugador, que lo acompañan: las luces del presente. Su brillo sigue el volumen de la voz, como la luz de un parlante, y es lo que deja ver el agua. ❓ ABIERTO: si M3 → M4 también tiene pasaje (hoy es negro sin voces) |
 
 ---
 
 ## 1. Memoria 1 — La habitación de la abuela ✅
 
-**Escena:** `scenes/memories/m1_habitacion/`. Noche, tormenta afuera, cálido. Degradación mínima.
+**Escena:** `scenes/memories/m1_habitacion/`. Noche, cálido adentro; afuera de la ventana, un mar de sueño (CL-072). Degradación mínima.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| Habitación de madera, chica (📝 4 × 4 m, techo de 2,6 m) | OBL | Caja de `CSGBox3D` |
-| Puerta de salida | OBL | Caja; se abre o desaparece al resolver ❓ |
-| Ventana (luna + tormenta afuera) | AMB | Hueco con plano azul oscuro y esfera de luna |
+| Habitación de madera, grande para un nene (✅ 7 × 6 m, techo de 3 m, CL-072; antes 4 × 4 m) | OBL | Caja de `CSGBox3D` |
+| Puerta de salida (pared sur) | OBL | Caja que se abre al resolver; da a un pasillo con la salida |
+| **Ventana al mar de sueño** (pared oeste, 1,8 × 1,4 m) ✅ CL-072 | AMB | Afuera hay mar abierto, quieto y oscuro, con el nivel del agua **más alto que el piso de la pieza** (justo debajo del alféizar), y un cielo despejado con estrellas y una luna creciente enorme, como la de la alfombra. Shaders `dream_sea.gdshader` y `dream_night_sky.gdshader`; valores en `config/m1_mar_ventana.tres` y `config/m1_cielo_ventana.tres`. Vidrio invisible (no se sale por la ventana). ❓ ABIERTO: la regla de "siempre hay tormenta" en la M1 (hoy el mar está calmo; el oleaje se puede subir desde el material) |
 | Mancha de humedad en el techo + goteo | AMB | Decal o plano oscuro + gota |
 
 ### Muebles y props
+**Texturas PS1 ✅ CL-073:** piso de tablas, empapelado, techo de yeso, dos maderas, frazada, almohadón tejido, frente del ropero, puerta, lomos de libros y el reloj marcando las 3:00 (`assets/textures/m1/`, materiales en `assets/materials/m1/`). Los muebles con textura ya no tienen cartel. Siguen en greybox: juguetes sueltos, mancha del techo y pasillo. Los tres dibujos de la pared junto a la puerta ("casa", "mi familia", "mi perro", hechos con crayón por el protagonista de chico) tienen imagen desde CL-088 (`assets/textures/m1/dibujo_*.png`).
+
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
 | Cama con frazada tejida | AMB | Caja |
-| **Estante alto con el barquito** (fuera de alcance: **no** es agarrable) | OBL | Caja a 📝 2,1 m + prisma |
+| **Estante alto con el barquito** (fuera de alcance: **no** es agarrable) | OBL | Repisa a 2,45 m en la pared este, arriba del papel de la canción |
 | Mesa de luz con **despertador parado** | AMB | Caja + reloj compartido |
 | Lámpara de mesa (fuente de luz cálida principal) | OBL | Cilindro + `OmniLight3D` |
-| Juguetes de chico | AMB | 3–4 cubos chicos |
-| **Repisa de los juguetes** (casilleros del puzzle) | OBL | ✅ Repisa con 5 `PlacementSlot` numerados |
-| **Papel de la abuela con la canción** | OBL | ✅ Papel clavado sobre la cama (`Label3D`) |
+| Juguetes de chico | AMB | 3–4 cubos chicos repartidos por el piso |
+| **Estantería alta** (pared norte) ✅ CL-072 | OBL | Mueble bajo cerrado (0,9 m) y estantes abiertos a 1,35 y 1,8 m con libros; la **luna** está en el de 1,8 m |
+| **Banquito** ✅ CL-072 | OBL | `scenes/props/banquito.tscn`: `PickupObject` de 0,4 m que se arrastra con E y queda siempre parado (rotación bloqueada en X y Z). Arranca en la esquina sudoeste, al lado del ropero |
+| **Alfombra del mar** (casilleros del puzzle) ✅ CL-072 | OBL | Alfombra semicircular con un océano, una luna y los números 1 a 5 (`assets/textures/m1/alfombra_oceano.png`), en la esquina noroeste: la curva hacia la esquina y el lado recto hacia la pieza, para leer los números de frente. Un `PlacementSlot` sobre cada número (`only_puzzle_pieces`: el banquito no ocupa casilleros). Reemplaza a la repisa de los juguetes. La ilumina la luz de luna que entra por la ventana |
+| ~~Papel de la abuela con la canción~~ | — | Se sacó en CL-074: la canción ahora está en el libro del cajón |
+| **Cómoda con cajón y el libro de cuentos** ✅ CL-074 | OBL | `scenes/props/comoda.tscn`, en la pared norte junto a la mesa de luz. El cajón de arriba se abre con E (`Drawer`); adentro está el libro (`InspectableItem`). Con "(E) Leer" se inspecciona estilo Silent Hill (`InspectView`): el fondo se desenfoca y se oscurece, el libro viene a la cara girando, se abre la tapa y aparece la página con la canción (`assets/textures/m1/libro_puzzle_poema.png`). Con E se cierra y vuelve al cajón |
 
 ### Objetos del acertijo (agarrables, `PuzzlePiece`) ✅
-La abuela le pide que ordene los juguetes y le deja la canción de cuna en un papel para recordar el orden.
+**Modelos 3D ✅ CL-073:** los seis juguetes (y el barquito del estante) usan modelos generados por el equipo y reducidos a estilo PS1 (`assets/models/m1_juguetes/`, ver `docs/FIGURAS_M1.md`). Ya no tienen cartel.
+
+La abuela le pide que ponga los juguetes en la alfombra del mar, cada uno en su número; la canción de cuna que dice el orden está en el libro de cuentos del cajón de la cómoda (CL-074; antes era un papel en la pared).
+
+**Agarre (CL-074):** los juguetes se sostienen cerca, a la altura del pecho (`config/pickup_settings_m1.tres`), y el banquito bajo, para que no tape la vista (`config/pickup_settings_banquito.tres`).
+
+**Dónde están (CL-072): repartidos por toda la pieza.** Luna: estantería alta (hay que subirse al banquito) · Red: arriba del baúl · Ola: en el alféizar de la ventana, frente al mar · Ancla: en el piso, al pie de la cama · Sirena: sobre la cama · Barco (distractor): en el piso, cerca del ropero.
+
+**La luna en alto ✅ CL-072:** desde el piso la mira dice *"No llego"* y, si aprieta E, el nene piensa *"No llego... ¿y si me subo a algo?"* (`Memory1Settings`). Subido al banquito la alcanza; saltando no (hay que estar apoyado). Regla en `ReachSettings` (`config/reach_estante_alto.tres`): cuánto más abajo que el objeto pueden estar los ojos (0,65 m).
 
 | Orden | Verso | Objeto |
 |---|---|---|
 | 1 | Cuando el espejo del sol se asomó a mirar el mar | Luna |
-| 2 | los hilos volvieron llenos | Red |
+| 2 | los hilos volvieron llenos y se negaron a soltar | Red |
 | 3 | Un muro de espuma blanca se levantó a saludar | Ola |
 | 4 | y el hierro que nunca flota le enseñó a descansar | Ancla |
-| 5 | Mientras la torre que no duerme lo llamaba sin cesar | Faro |
+| 5 | Y una pequeña sirena lo esperaba junto al mar; su amuleto de madera lo llamaba a regresar | Sirena (CL-071) |
 
-**Distractor:** barco. ✅ Es el único. El pescador no es un objeto (el poema lo nombra porque es el protagonista) y la marea se descartó por ser difícil de representar como objeto. Total: **6 objetos** agarrables (5 correctos + el barco).
+**Distractor:** barco. Total: **6 objetos** agarrables (5 correctos + 1 distractor). El pescador aparece nombrado en el poema pero no es un juguete: es el propio protagonista (decisión CL-012; marea y pescador fueron sacados del puzzle).
 
-#### El barco: el juguete favorito ✅
-El barco **no** sirve para el orden, pero el nene no se va sin él:
-1. El barco está suelto en el cuarto (Etapa 0: junto a la cama, sobre la mesa de luz).
-2. Al resolver el puzzle la puerta se abre. El jugador, naturalmente, intenta salir.
-3. Un `ItemGate` (barrera física + zona de aviso) en el umbral lo frena y el protagonista dice: *"No me puedo ir sin mi juguete favorito."* (`gate_line` en `memory_1_settings.tres`).
-4. El jugador vuelve a buscar el barco. Al agarrarlo, el paso queda libre para siempre (aunque lo suelte).
-5. Si agarró el barco antes de resolver, no hay aviso: ya lo lleva.
-Intención narrativa: refuerza el vínculo con el barquito (el cable a tierra) desde la primera memoria.
+#### El barquito: el juguete favorito ✅
+El barco **no** sirve para el orden: es un distractor más. El barquito que le talló el abuelo está en el estante alto (2,1 m), **fuera de alcance, y no se puede agarrar**.
+1. Al resolver el puzzle la puerta se abre y el jugador sale **sin condiciones**: no hay barrera en el umbral.
+2. El barquito del estante se enciende con luz cálida al resolver, pero sigue fuera de alcance.
+Intención narrativa: el barquito queda como un recuerdo que no se puede tocar (el vínculo se recupera en las memorias siguientes).
 
-Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan apuntando al casillero con la mira.
+Figuras (36 cm, escala de nene): están en `scenes/interaction/figures/` (ver `docs/FIGURAS_M1.md`). La `ola` y la `luna` usan modelos 3D externos (`assets/models/m1_figuras/`); el resto se arma con primitivas. Se colocan apuntando al casillero con la mira.
 
 ### Luz
 - **Cálida:** la lámpara de mesa (dominante).
-- **Fría:** relámpagos y el reflejo de la ventana.
+- **Fría:** la luna. Una luz direccional (la luna que se ve en el cielo, con sombras de la ventana) y un foco que entra por la ventana sobre la alfombra (CL-072). Relámpagos ❓ (ver la ventana).
 - **Al resolver:** el barquito se enciende (luz cálida propia).
 
 ### Audio
@@ -104,8 +114,25 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 ### Sistemas que pide
 - `piece_id` en `PickupObject` + script de puzzle de secuencia que valide qué pieza hay en cada `PlacementSlot`.
 - Evento de puzzle resuelto: ilumina el barquito, suena la voz, se habilita la salida.
-- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto (el barco) y avisa con la señal `blocked`. ✅ Implementado.
+- `ItemGate` (`scripts/world/item_gate.gd`): barrera en el umbral que no deja salir hasta agarrar un objeto y avisa con la señal `blocked`. ✅ Implementado (M1 ya no lo usa: se mantiene para M2).
 - Reacción al error (sin castigo, sube la tensión). ✅ Incluye agua visible que se filtra por debajo de la puerta.
+- Objetos en alto ✅ (CL-072): `ReachSettings` en `PickupObject.reach`; `Player.can_reach()`; la mira muestra "No llego"; `PickupObject.reach_failed` → pista del nene en `Memory1Room`.
+- Interactuar con cosas fijas ✅ (CL-074): `Interactable` (cajón, libro), `Drawer`, `InspectableItem` e `InspectView` (inspección con fondo borroso, `InspectSettings`).
+- Casilleros que solo aceptan piezas ✅ (CL-072): `PlacementSlot.only_puzzle_pieces`, para que el banquito no ocupe un número de la alfombra.
+
+---
+
+## 2c. Memoria 2 de Mica — El lago de noche: remar tras el padre ✅ (CL-054)
+
+**Escena:** `scenes/memories/m2_remos/m2_remos.tscn` ✅. Atardecer que pasa a tormenta. Convive con la M2 del río (sección 2): no está en la secuencia, se usa de referencia y de fuente de sonido y clima para la M2 híbrida. Sus scripts se llaman `remos_*` / `Remos…`.
+
+- **Jugador:** bote propio, un remo por tecla (A/D), HUD con las teclas, cámara a la altura de los ojos, balanceo con las olas.
+- **Padre:** bote adelante con farol y resplandor visible de lejos; espera si te alejás, acelera si lo alcanzás; habla con subtítulos (voz provisoria).
+- **Camino:** 12 puntos, rocas, troncos, palos, boyas con luz, bancos de niebla, cabaña con muelle al final.
+- **Tormenta:** olas, cielo, niebla, lluvia, rayos y audio suben con el avance. Ola gigante al ~84 %, vuelco, buceo con audio apagado y latido, rescate con luz y mano del padre, barquito de juguete.
+- **Audio:** 37 OGG en `assets/audio/m2_remos/` (remos, agua, viento, lluvia, truenos, ola, vuelco, latido, voces provisorias).
+- **Sistemas:** `Memory2Boats`, `RemosBoat`, `RemosFatherBoat`, `RowCourse`, `RowObstacle`, `LakeWater`, `LakeScenery`, `StormAudio`, `RowHud`, `WakeUpIntro`, `FlashbackOverlay`, `LightningController`, `DebugTools`.
+- ❓ Voz real del padre, sentido de giro, texto final de diálogos.
 
 ---
 
@@ -123,12 +150,12 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | **Rápidos** (2): corriente más fuerte, el bote se sacude | OBL | Rangos en `RiverFlow.rapids` + espuma |
 | Zona del vuelco (último rápido) | OBL | `Area3D` `CapsizeZone` |
 | **Tramos oscuros** (2): se cierra la niebla y solo se ve lo que alumbra la linterna y la luz del padre | OBL | `RiverEvents` + `config/river_events.tres` (`dark_zones`); la memoria baja niebla, cielo y luz ambiente y frena los rayos |
-| Orillas nevadas, lomas, pinos | AMB | Generado por `RiverBuilder` |
+| Orillas nevadas, lomas, árboles y arbustos | AMB | Generado por `RiverBuilder`; árboles y arbustos PS1 de `assets/models/m2_arboles` (CL-048) |
 
 ### Props e interactivos
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: Q / E remo izquierdo / derecho hacia adelante, A / D hacia atrás por lado, S los dos hacia atrás. Acelera despacio y tiene buena velocidad máxima (inercia). Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes |
+| **Bote del protagonista** con dos remos ✅ | OBL | `RowBoat`: cada toque de tecla es una remada (mecánica de Mica, CL-055): A remo izquierdo, D remo derecho (alternar rinde más, un solo remo gira), S los dos hacia atrás. Responde rápido (la pala empuja al entrar al agua) y tiene buena velocidad máxima (inercia). Sube y baja con las olas. Lo lleva la corriente, lo empuja el viento, aguanta 3 golpes. **Modelo:** canoa PS1 (`scenes/props/canoe.tscn`, CL-047), la misma que usa el padre |
 | **Caña de pescar** ✅ | OBL | Objeto en mano (`HeldItemView`) + `FishingRod` (boya, línea, pez) |
 | **Red** con su soga ✅ | OBL | Plano con shader de red + `CuttableRope` (la misma soga de M4, más chica) |
 | **Cuchillo** ✅ | OBL | Objeto en mano; corta con el evento rápido de M4 (`TimingQte`) |
@@ -161,12 +188,12 @@ Etapa 0: cubos grandes (36 cm, escala de nene) con `Label3D` arriba. Se colocan 
 | Rápidos | Amenaza | Tramos del río (3D) |
 
 ### Efectos
-- **Flashbacks:** imágenes de la noche del accidente, de menos de un segundo, en la oscuridad del final. 📝 Las capturas definitivas las hace el equipo, parecidas a lo que se ve fuera de los flashbacks; se cambian en `config/flashbacks_m2.tres` sin tocar código.
+- **Flashbacks:** cuatro fotos sacadas del juego desde el agua, de menos de un segundo, que alternan **A** (el bote del padre a lo lejos con su linterna, M2) y **B** (el pesquero a lo lejos con su reflector, M4, después de caer), con la luz en el mismo lugar de la pantalla: la misma escena en los dos recuerdos. El bote del padre, mientras el protagonista nada, está armado igual que en las fotos. 📝 Los cambios entre A y B los van a marcar los truenos. Se cambian en `config/flashbacks_m2.tres` sin tocar código.
 - Nieve liviana (calma) y nieve de tormenta que el viento inclina.
 - El bote se inclina con el viento y se sacude en los rápidos.
 
 ### Cinemática (sin control) ✅
-El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista cae al agua → **la linterna se hunde apagándose** → oscuridad total → **flashbacks** → el barquito sube encendido → la luz, la mano y la voz del padre (*"agarrate, no te suelto"*) → negro → M3.
+El bote se da vuelta en el último rápido (los golpes lo llenan de agua pero no lo hunden: el protagonista cae al agua solo al final) → el protagonista cae al agua → **la linterna se hunde apagándose** → sale a la superficie en la tormenta y **nada medio ahogándose** (se puede mirar y moverse despacio; la cabeza se hunde cada tanto) mientras el padre lo busca a lo lejos con la linterna → **flashbacks** → en el negro, **el bote del padre llega al lado**, su linterna se enciende de a poco desde arriba y él, inclinado sobre la borda, le estira la mano (*"¡Agarrate! No te suelto."*) → negro → M3. ❓ ABIERTO: el barquito ya no aparece en este final.
 
 ### Sistemas que pide
 - `RowBoat` + `RowBoatSettings` (`config/row_boat.tres`).
@@ -179,54 +206,144 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 
 ## 3. Memoria 3 — La casa, la madrugada antes de embarcar ✅
 
-**Escena:** `scenes/memories/m3_casa/`. Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno 📝. **La más degradada:** pasillos que se estiran, cocina que se repite.
+**Escena:** `scenes/memories/m3_casa/m3_casa.tscn` ✅ greybox jugable (CL-071). Madrugada, casi las 3:00, tormenta afuera (✅ regla de todas las memorias; antes decía "sin tormenta"). El protagonista se despierta en la mesa de la cocina por un trueno. **La más degradada:** pasillos que se estiran, cocina que se repite.
+
+Subescenas: `house_layout.tscn` (cocina, pasillito oscuro del fondo, pasillo que se estira, rellano con tres puertas y sus umbrales) y `daughter_room.tscn` (el `room_layout.tscn` de M1 + cuarto de la hija + entrada de la casa). Raíz: `Memory3House` (`scripts/memories/memory_3_house.gd`). Valores y textos: `config/memory_3_settings.tres`.
+
+### Recorrido implementado
+1. Despierta dormido sobre la mesa de la cocina (`WakeUpIntro`, `config/wake_up_m3.tres`), con un rayo por la ventana. Aparece el barquito en la mano (`HeldItemView`, `config/held_boat.tres`); no se puede soltar.
+2. La hija lo llama de lejos. Sale de la cocina al pasillo; al fondo hay un **rellano con tres puertas cerradas** ((E) Abrir). Detrás de cada una hay un tramo oscuro con un umbral invisible (`LoopPortal`).
+3. **Regla del laberinto** (📝 era propuesta de PLAN_DEMO, ahora implementada así): hay 3 tramos (`good_doors`, por defecto centro → izquierda → derecha). La puerta buena tiene abajo la **luz cálida del velador**, cada tramo un poco más fuerte.
+   - **Puerta buena:** entra a la sala intermedia de ese tramo (CL-077, ver abajo); al cruzarla aparece de nuevo al comienzo del pasillo (tramo siguiente) y la voz de la hija se oye más cerca. En el último tramo aparece en el pasillo del cuarto de la hija.
+   - **Puerta mala:** aparece en el pasillito oscuro del fondo de la cocina, la voz se oye más lejos y la casa se degrada un escalón. **Se conserva el tramo ganado.**
+   - El paso por el umbral conserva posición, orientación y velocidad (no hay corte ni fundido): sale de la oscuridad caminando.
+4. **Degradación** (0 a 1, arranca en 0,25 y sube 0,25 por error): pasillo más largo (8 m + hasta 8 m), más charcos visibles, fotos del pasillo más borradas, luz fría más fuerte. Con la casa degradada, **el fondo del pasillo se aleja mientras se camina hacia él**.
+5. El cuarto de la hija: la puerta (la de M1) tiene la luz del velador abajo; al abrirla la hija dice que no quiere que se vaya. Apuntándola: (E) Darle el barquito → *"Cuidámelo hasta que vuelva."* El barquito pasa a sus manos.
+6. **La casa se estabiliza:** se seca el agua, baja la luz fría y desaparece la pared del fondo del pasillo del cuarto: se abre el camino a la entrada (bolso, campera, botas).
+7. (E) Abrir la puerta de casa → sale → `MemoryExit` completa la memoria → pasaje M3 → M4 en silencio (CL-062) → M4.
+
+Tecla **0**: en el laberinto pasa al tramo siguiente; en el cuarto abre la puerta y entrega el barquito; con la casa estable completa la memoria.
+
+### Pasillos distintos y piernas que no responden 🧪 (CL-068)
+- **Cada tramo tiene otra forma** (`segment_shapes` en `memory_3_settings.tres`): por defecto el 1.º es recto (8 m), el 2.º dobla a la izquierda y después a la derecha (`4 L 3 R 4`) y el 3.º hace zigzag (`3 R 2 L 3 L 2 R 3`). Además **cada tramo es más angosto y más bajo** (1,6 → 1,35 → 1,1 m de ancho; 2,6 → 2,4 → 2,15 m de alto): la casa se va cerrando. El último tramo recto es el que se estira.
+- **Piernas que no responden** (`DreamSettings`, grupo "Piernas que no responden"): pasada una parte del pasillo, mientras empuja hacia adelante, a veces las piernas se traban: el personaje se frena en seco, la cámara tiembla y, si sigue empujando, el pasillo lo arrastra despacio hacia atrás. Aparece una línea ("Quiere avanzar y no puede.").
+
+### Salas intermedias: el sueño le pide que despierte ✅ (CL-077)
+Detrás de cada **puerta buena** hay una sala que hay que cruzar caminando antes del tramo siguiente (las malas siguen llevando a la cocina). Cada una se arma por código desde su `.tres` y vive lejos de la casa (a 100, 160 y 220 m); se llega y se sale por un tramo oscuro, como en el rellano. La salida tiene en el piso la franja cálida del velador.
+
+| Puerta | Sala | Escena y valores | Qué pasa |
+|---|---|---|---|
+| 1.ª | **Sala de los mensajes** | `sala_mensajes.tscn` · `config/m3_wake_messages.tres` | Cuarto vacío con una lamparita y tres frases blancas ("despertá", "por favor", "otra vez la pesadilla"). Aparecen más donde el jugador no mira (se oye el trazo atrás), después a mano y en rojo. Pasada la mitad, un apagón: al volver la luz está todo cubierto |
+| 2.ª | **Pasillo del hospital** | `pasillo_hospital.tscn` · `config/m3_hospital_corridor.tres` | Paredes de la casa, techo del hospital: paneles cuadrados cálidos que se pierden en la niebla. Se apagan a espaldas del jugador y laten con el bip (que se acelera). Apagón a mitad de camino; después quedan solo **las seis luces**, que lo siguen |
+| 3.ª | **Sala de los barcos** | `sala_barcos.tscn` · `config/m3_boat_flood.tres` | Sin techo, bajo la tormenta. Montañas de barquitos, un paso angosto en S y barquitos que caen cada vez más seguido (algunos le pegan). Un rayo largo al entrar la muestra entera. Del otro lado, el pasillo del cuarto de la hija |
+
+- Textos de los mensajes: 📝 propuesta (❓ confirmar), editables en `m3_wake_messages.tres`.
+- Sonidos de las salas en `assets/audio/m3/` (fabricados con `tools/m3_sonidos.py`): ❓ ajustar de oído.
+- Tecla **0** dentro de una sala: sale directo al tramo siguiente.
+- Prueba automática de toda la memoria: `godot --headless --fixed-fps 60 res://tools/tests/m3_recorrido.tscn` (con `-- sala=N` va directo a una sala; con `-- capturas=<carpeta>` y sin `--headless` saca capturas).
+
+### Guía por el oído y fotos que se repiten 🧪 (CL-067)
+- Las tres puertas del rellano están **más separadas** (2,5 m entre sí) y **la voz de la hija suena detrás de la puerta buena** (`AudioStreamPlayer3D`), así se puede elegir también por el oído. Con la casa más degradada se oye más bajo. Hoy suena un placeholder (la cajita musical de la M2): falta grabar la voz (`voice_stream` en `memory_3_settings.tres`).
+- ❓ ABIERTO: la regla de audio dice que la capa recuerdo "no viene de ningún lugar"; esta voz sí viene de un lugar (la puerta). Confirmar con el equipo si es la excepción de la M3.
+- **Fotos del pasillo:** la misma foto se repite a lo largo de las dos paredes; cuanto más adentro, más borrosa (desenfoque, doble exposición, sin contraste) y más torcida. Como el pasillo se estira, aparecen más fotos, cada vez más borradas.
+
+### Efectos de sueño 🧪 (experimento, CL-066)
+Para que la M3 se sienta soñada y no tan real. Siguen a la degradación de la casa (más errores = más sueño) y **se apagan cuando la casa se estabiliza** (la despedida es lo real). Cada uno se prende y apaga por separado en `config/dream_m3.tres` para compararlos:
+- **Imagen:** ondula, los bordes se desenfocan y separan sus colores, doble imagen tenue, esquinas oscuras, colores apagados y fríos (`dream_haze.gdshader`).
+- **Cámara:** se mece de un lado al otro y el campo de visión "respira". Al acercarse al fondo del pasillo el campo de visión se abre (efecto vértigo): el fondo se ve más lejos.
+- **Piernas pesadas:** cuanto más cerca del fondo del pasillo, más lento camina; correr no sirve. Sumado al fondo que se aleja, es "querer avanzar y no poder".
+- **Parpadeos:** cada tanto la pantalla se va a negro un instante; en ese negro las cosas cambian de lugar aunque se las esté mirando.
+- **Cosas que cambian cuando no se las mira:** la taza y los juguetes se corren o giran (las fotos del pasillo se tuercen solas con el borroso, ver CL-067). Al volver a la cocina por una puerta mala, algo ya no está donde estaba.
+- **El pasillo cambia a tus espaldas** (CL-070): si pasa un rato sin mirar hacia atrás, el camino recorrido aparece cerrado por una pared a unos metros de su espalda; cuando deja de mirarla, desaparece (y puede volver a aparecer en otro lugar). Nunca se cierra delante ni cerca de una esquina (`HallwayDeadEnd`).
+- **Bajo el agua (sonido)** (CL-070): todo se oye cada vez más apagado (sin agudos) y con eco, como con la cabeza sumergida. Se pone en el bus Master solo mientras sueña y se saca al terminar. Pasos: ya hay slot (`footstep_sounds`, CL-085) para cargarlos; el eco les llega por el mismo efecto.
+- **Estela al girar** (CL-070): al girar la cámara la imagen deja un rastro que tarda en alcanzarlo (`dream_haze.gdshader`).
+- **Agua que sube** (CL-070): una lámina de agua oscura sobre el piso de la cocina, el pasillito del fondo y el pasillo; sube despacio con la degradación, se mece sola y baja cuando la casa se estabiliza (`RisingWater`, `dream_water.gdshader`). Los charcos siguen como antes.
 
 ### Espacio
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | **Se reutiliza el layout de M1** |
-| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | Pasillo de cajas + planos |
-| Cocina (se repite) | OBL | Caja con mesa |
-| Puertas que llevan siempre al mismo lugar | OBL | Triggers que teletransportan |
-| Entrada con la puerta de salida | OBL | Caja + trigger final |
-| Charcos en el piso, paredes húmedas | AMB | Planos oscuros |
+| **Habitación de M1 redecorada** (ahora cuarto de la hija) | OBL | ✅ Se reutiliza `room_layout.tscn` de M1 (su salida queda apagada) |
+| Pasillo con fotos familiares desdibujadas (la abuela, el padre) | OBL | ✅ `BendingHallway` (CL-068) + `RepeatingPhotos`: fotos familiares en las dos paredes, cada vez más borrosas y torcidas hacia el fondo (CL-067). Desde CL-086 usan la lista `photo_textures`: por ahora todas muestran a la hija (retrato del modelo del hospital). ❓ ABIERTO: falta la imagen de la abuela, que va como segundo casillero. Se cambian en `photo_textures` de `memory_3_settings.tres` |
+| Cocina (se repite) | OBL | ✅ Caja con mesa, mesada, heladera; las puertas malas vuelven acá |
+| Puertas que llevan siempre al mismo lugar | OBL | ✅ 3 puertas + `LoopPortal` en tramos oscuros |
+| Entrada con la puerta de salida | OBL | ✅ Detrás del pasillo del cuarto; se abre al estabilizarse |
+| Charcos en el piso, paredes húmedas | AMB | ✅ Charcos (planos oscuros) según la degradación · paredes húmedas ❓ etapa 2 |
 
 ### Props
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
-| **Barquito en las manos del protagonista** | OBL | Prisma pegado a la cámara |
-| Cama chica con dibujos, juguetes de nena | AMB | Cajas |
-| El mismo estante alto, ahora **vacío** | AMB | Reutilizado de M1 |
-| Bolso de viaje listo en la entrada | AMB | Caja |
-| Campera de pesca y botas | AMB | Cajas |
-| Taza de café en la cocina | AMB | Cilindro |
-| Ventana con la luna | AMB | Compartido |
-| Relojes parados | AMB | Compartido |
-| Canilla que gotea al ritmo del bip | AMB | Gota + audio |
-| Velador del cuarto de la hija (**única luz cálida**) | OBL | `OmniLight3D` cálida |
+| **Barquito en las manos del protagonista** | OBL | ✅ `assets/models/m3/barquito_mano.glb` en `HeldItemView`: el mismo modelo en todo el juego (CL-087) |
+| Cama chica con dibujos, juguetes de nena | AMB | ✅ Cama con frazada y sábana texturadas; tres dibujos de la hija en la pared ("papá y yo", el barco de papá, un corazón; `assets/textures/m3/dibujo_*.png`, CL-087); juguetes en el piso: osito de peluche, cubitos con letras y pelota (`scenes/props/osito.tscn`, `cubitos.tscn`, `pelota.tscn`, CL-088). Son los que el sueño corre de lugar (`DreamShifter`) |
+| El mismo estante alto, ahora **vacío** | AMB | ✅ Mismas medidas que en M1 |
+| Bolso de viaje listo en la entrada | AMB | ✅ Valija de cuero con correas, a la izquierda de la puerta (`scenes/props/valija.tscn`, CL-088) |
+| Campera de pesca y botas | AMB | ✅ Piloto amarillo de pesca colgado de un perchero y botas de lluvia, a la derecha de la puerta (`scenes/props/piloto.tscn`, `botas_lluvia.tscn`, CL-088) |
+| Taza de café en la cocina | AMB | ✅ Taza con asa y café (formas simples, CL-087) |
+| Ventana con la luna | AMB | ✅ Cocina y cuarto, con lluvia afuera (`scenes/props/window_rain.tscn`, CL-087) |
+| Relojes parados | AMB | ✅ Cocina y mesa de luz, con `Label3D` "3:00" (falta el reloj compartido, T2 de M1) |
+| Canilla que gotea al ritmo del bip | AMB | ✅ Canilla con pico y dos llaves sobre una pileta (CL-087); gota visible ❓ |
+| Velador del cuarto de la hija (**única luz cálida**) | OBL | ✅ `OmniLight3D` cálida (y su luz bajo las puertas buenas) |
 
 ### Personajes
 | Personaje | Qué hace | Etapa 0 |
 |---|---|---|
-| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | Cápsula chica |
+| **Hija** (~7 años, cara borrosa) | Espera en su cuarto. Recibe el barquito | ✅ Modelo del hospital (`hija_ps1.glb`, CL-086); la cara se desenfoca con `face_blur.gdshader` (CL-087) (`StaticBody3D` para apuntarla) |
 
 ### Luz
-- Cálida solo en el velador. El resto, luz fría azul verdosa (más fuerte que en M1 y M2).
+- Cálida solo en el velador (y en la franja bajo la puerta buena, que es "su" luz). El resto, luz fría azul verdosa (más fuerte que en M1 y M2, y sube con la degradación).
+- Rayos por las ventanas (`LightningController`, `config/lightning_m3.tres`).
 
 ### Audio
 | Sonido | Capa | Fuente |
 |---|---|---|
-| Voz de la hija (más lejana cuando el jugador se pierde) | Recuerdo | — |
-| *"Cuidámelo hasta que vuelva."* | Recuerdo | — |
-| Goteo, agua en las paredes, canilla | Amenaza | Puntos concretos (3D) |
+| Voz de la hija (más lejana cuando el jugador se pierde) | Recuerdo | Subtítulos de etapa 0 (`closer_lines` / `farther_lines`) |
+| *"Cuidámelo hasta que vuelva."* | Recuerdo | Subtítulo de etapa 0 (lo dice el protagonista) |
+| Goteo, agua en las paredes, canilla | Amenaza | Gotas 3D alrededor del jugador (slot `drip_sounds`, ver abajo); canilla fija ❓ etapa 2 |
+
+### Slots de sonido de la casa ✅ (CL-085)
+La casa tiene **un slot por cada momento que puede sonar**, todos **vacíos** hasta que se graben los sonidos: se arrastra el archivo (.ogg, .wav o .mp3) al slot en el Inspector, en `config/memory_3_settings.tres` (grupos **Sonido** y **Voces de las líneas**). Un slot vacío no da error: ese momento queda en silencio. Cada grupo tiene sus volúmenes (dB) al lado. Las tres salas intermedias **no** están acá: ya traen sus sonidos en sus escenas (`assets/audio/m3/`).
+
+| Slot | Cuándo suena | Tipo |
+|---|---|---|
+| `ambience_loop` | Ambiente de la casa de noche, desde el despertar. Se apaga adentro de las salas intermedias y vuelve al salir | Loop |
+| `rain_loop` | Lluvia de la tormenta (igual que el ambiente) | Loop |
+| `wake_thunder_sound` | El trueno con el que despierta en la cocina (vacío = usa uno de `thunder_sounds`) | Una vez |
+| `thunder_sounds` | Un trueno por cada rayo, un rato después (`thunder_delay_min/max`), más bajo si el rayo es débil | Lista, al azar |
+| `drip_sounds` | Gotas alrededor del jugador: más seguidas cuanto más degradada la casa; ninguna con la casa estable | Lista, al azar |
+| `footstep_sounds` | Un paso cada `footstep_stride` metros caminados (no suena quieto, en el aire ni con las piernas trabadas) | Lista, al azar |
+| `door_open_sound` | Abrir una puerta del rellano o la del cuarto de la hija (suena donde está la puerta) | Una vez |
+| `front_door_open_sound` | Abrir la puerta de entrada (vacío = usa `door_open_sound`) | Una vez |
+| `door_close_sound` | Las puertas del rellano que estaban abiertas se cierran solas al elegir | Una vez |
+| `good_door_sound` | Cruza una puerta buena | Una vez |
+| `wrong_door_sound` | Cruza una puerta mala y vuelve a la cocina | Una vez |
+| `blink_sound` | Parpadeo del sueño (la pantalla se va a negro un instante) | Una vez |
+| `stuck_sound` | Las piernas dejan de responder | Una vez |
+| `boat_equip_sound` | El barquito aparece en la mano al empezar | Una vez |
+| `give_boat_sound` | Le da el barquito a la hija | Una vez |
+| `stabilize_sound` | La casa se estabiliza (se seca el agua, todo queda quieto) | Una vez |
+| `first_call_voice` | Primera llamada de la hija (`first_call_line`) | Voz |
+| `closer_voices` | La hija "más cerca" al pasar cada puerta buena, en el mismo orden que `closer_lines` | Lista, una por línea |
+| `farther_voices` | La hija "más lejos" al elegir mal, en el mismo orden que `farther_lines` | Lista, una por línea |
+| `room_arrival_voice` | La hija del otro lado de la puerta (`room_arrival_line`) | Voz |
+| `plea_voice` | La hija al abrir la puerta de su cuarto (`plea_line`) | Voz |
+| `give_voice` | El protagonista: *"Cuidámelo hasta que vuelva."* (`give_line`) | Voz |
+
+- Las voces suenan **de a una** (una nueva corta a la anterior) y **sin posición** (no vienen de la puerta); si una voz está vacía, su línea queda solo como subtítulo. Las líneas entre paréntesis (despertar, casa quieta, piernas) son narración y no tienen voz.
+- `voice_stream` (la voz en 3D que sale de la puerta buena, hoy con la cajita musical de placeholder) sigue siendo aparte: si ya dice lo mismo que `first_call_voice`, dejar esa vacía para que no suene doble.
+- Para los loops conviene .ogg o .mp3 (se repiten solos); un .wav se marca como loop en la pestaña Importar de Godot.
+- Sin slot (no hay punto de enganche): la pared que se cierra a las espaldas (`HallwayDeadEnd`) y los objetos que cambian de lugar (`DreamShifter`).
 
 ### Cinemática (sin control) 📝
-✅ Sale por la puerta de su casa → **todo se pone negro** (sin voces del hospital) → empieza M4 en el camarote.
+✅ Sale por la puerta de su casa → **pasaje en silencio** (CL-062: el mar negro y la luz, sin voces del hospital, como se había decidido para este corte) → empieza M4 en el camarote.
 
 ### Sistemas que pide
-- Laberinto que se repite: zonas que teletransportan sin que se note y que cambian según el progreso.
-- Objeto sostenido (el barquito en la mano) y "entregar" al interactuar con la hija.
-- Al entregar: la casa se estabiliza (se apagan los loops) y se habilita la salida.
+- ✅ Laberinto que se repite: `LoopPortal` (umbral que lleva al jugador conservando posición y orientación) + `BendingHallway` (pasillo que dobla y se estira, con una forma distinta por tramo).
+- ✅ Objeto sostenido (el barquito en la mano) y "entregar" al interactuar con la hija.
+- ✅ Al entregar: la casa se estabiliza y se habilita la salida.
+
+### Pendiente ❓
+- Textos de la hija y del protagonista: son **provisorios** (📝), salvo *"Cuidámelo hasta que vuelva."*. Confirmarlos con el equipo.
+- ✅ Slots de sonido de la casa listos (CL-085): falta **grabar y cargar** los sonidos y las voces, y ajustar los volúmenes de oído. Sigue sin resolver la voz de la hija en 3D según el tramo (`voice_stream`) y el goteo de la canilla al ritmo del bip (❓ etapa 2).
+- Probar a mano el largo del pasillo, la velocidad a la que se aleja y la cantidad de tramos.
 
 ---
 
@@ -235,13 +352,14 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 > ### 🔄 Cambio de diseño (CL-014): cubierta, sogas y ola gigante
 > El prototipo de M4 se armó con **una sola escena de cubierta** (`scenes/memories/memory_4.tscn`) en lugar de camarote + escalera + fondo. Lo que quedó implementado:
 > - **Cortar sogas con hacha:** 3 sogas (izquierda, centro, derecha). Hay que acertar un **quick event** (barra con marcador que va y viene, tecla `interact`) 2 veces por soga. Errar nunca es game over: el barco se inclina un poco más y se vuelve a intentar. Cada soga hace la zona más chica y el marcador más rápido.
-> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, NOMBRE!"* (`protagonist_name` en `config/memory_4_settings.tres`, ❓ falta el nombre).
+> - **Tripulación (placeholders):** al cortar la última soga gritan *"¡LO LOGRAMOS!"* y justo después *"¡CUIDADO, SANTI!"* (`protagonist_name` en `config/memory_4_settings.tres`: el protagonista se llama **Santi**, decidido por el equipo el 12/11).
 > - **La ola gigante** (`GiantWave` + `giant_wave.gdshader`): una malla que se deforma en el shader desde una ola baja, a una pared, a una ola que **rompe hacia el jugador** (`curl`). Avanza acelerando y lo cubre. Todo configurable en `Memory4Settings`.
 > - **Luz:** lo único que ilumina son los **rayos** (`LightningController`) y una luz muy lejana del barco. Entre rayo y rayo, casi negro.
 > - **Después de la ola:** el protagonista emerge, flota; el barco se aleja mirando para otro lado y su reflector barre otras partes del mar sin verlo. Luego se hunde a oscuridad total (talasofobia).
 > - **Final de la memoria:** una luz que crece desde el fondo = **helicóptero** ✅ (reemplaza al barquito luminoso del fondo). ❓ Falta confirmar con el equipo si además aparece el barquito.
 > - **CL-015 — Barco pesquero grande:** unos 39 m, **6 sogas (3 por banda)** sobre huecos de la baranda, **suelo resbaladizo** (el barco cabecea y empuja al jugador, `DeckSlip` + `config/player_settings_deck.tres`) y **costados abiertos**: si cae al agua → negro con sonido de chapuzón (`assets/audio/m4_fall_splash.wav`, placeholder) y vuelve a bordo como un fallo más. El evento rápido (`E`) se achica y acelera con cada soga. Lluvia en manchas borrosas, que cerca del barco se ve apenas y lejos casi no se ve. Mirando hacia abajo en el agua la pantalla se va a negro (`abyss.gdshader`).
-> - **Pendientes ❓:** sonido (capas Amenaza/Afuera), modelos finales, nombre del protagonista, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
+> - **Sonido ✅ CL-084:** tormenta (`StormAudio` de la M2, en `config/storm_audio_m4.tres`), casco que cruje, motor, olas contra el casco, hacha, sogas, manivela, cadena del ancla, vuelco, burbujas, bocina lejana y las voces de la tripulación (`config/memory_4_settings.tres`, grupos "Sonido" y "Tripulación").
+> - **Pendientes ❓:** capas de audio Amenaza/Afuera (no se armaron buses aparte), modelos finales, control del QTE (hoy `E`), mecánica de frío/input lag **descartada** por ahora, camarote/reloj de las 3:00 am no incluidos en este prototipo.
 
 **Escena:** `scenes/memories/m4_pesquero/`. Noche, tormenta fuerte. **Sin degradación:** la más nítida y real.
 
@@ -267,6 +385,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 | Timón | (tareas) | AMB ❓ | Cilindro |
 | **La ola** | 4. La ola | OBL | Evento + cinemática |
 | Ancla y cadena | 5. El hundimiento | OBL | Cilindros; acompaña la caída |
+| **Malacate del ancla en popa** ✅ (CL-045): después de las sogas hay que subir el ancla apretando (E) en la manivela; si se afloja, baja | (tareas) | OBL | `AnchorWinch` (`scenes/props/anchor_winch.tscn`): soporte y manivela con modelo, ancla provisoria con formas simples |
 | **Luz del faro en el fondo + imagen del barquito luminosa** | 6. El faro | OBL | Luz + barquito luminoso |
 | Cajones y equipo sueltos, salvavidas | — | AMB | Cajas |
 
@@ -303,7 +422,7 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 
 ## 5. Despertar ✅
 
-**Escena:** `scenes/memories/final_hospital/`. Día, **blanco**, calma total, sin agua. Todo suena seco.
+**Escena:** `scenes/memories/awakening.tscn` ✅ greybox (CL-060). Día, **blanco**, calma total, sin agua. Todo suena seco.
 
 | Elemento | Rol | Etapa 0 |
 |---|---|---|
@@ -328,9 +447,9 @@ El bote se da vuelta (último rápido) o se hunde (3 golpes) → el protagonista
 - **El barquito, el reloj, la luna, la tormenta y el pulso del bip** son compartidos: se hacen una vez, antes de que dos escenas los necesiten.
 
 ## 7. Pendientes ❓
-1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, faro) y 1 distractor: el barco (sin marea ni pescador). El barco es además el juguete favorito que hay que llevarse para salir.
+1. ~~Puzzle de M1~~ ✅ 5 piezas (luna, red, ola, ancla, sirena; la sirena reemplaza al faro en CL-071), 1 distractor (barco) y el papel de la abuela con la canción. Total: 6 objetos agarrables. La `ola` y la `luna` usan modelos 3D externos.
 2. ~~M1: dónde se ordena y dónde está el acertijo~~ ✅ repisa de los juguetes + papel de la abuela.
-3. **M1:** ¿cómo sale el jugador? ¿Se abre la puerta al resolver?
+3. ~~**M1:** ¿cómo sale el jugador?~~ ✅ Al resolver se abre la puerta y se sale sin condiciones (sin `ItemGate`). El barquito del estante se enciende pero queda fuera de alcance.
 4. ~~M1: quién felicita~~ ✅ la mamá.
 5. ~~La hora del accidente~~ ✅ **3:00 am** (todos los relojes).
 6. ~~**M2:** ¿la mochila con el barquito se ve en escena?~~ ✅ Se sacó la mochila (CL-034): el barquito solo aparece encendido en el final.

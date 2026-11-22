@@ -13,11 +13,11 @@ extends Resource
 @export var cut_prompt: String = "(E) Cortar"
 @export var urge_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Dale, cortala!", "PADRE: ¡Rápido, hijo!"])
 @export var follow_line: String = "PADRE: ¡Rápido, hijo, seguime! ¡No te separes de la luz!"
-@export var row_hint: String = "Q / E: remar con el remo izquierdo / derecho · A / D: remo atrás · S: frenar"
-@export var call_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Hijo! ¡Por acá!", "PADRE: ¡Seguí mi luz!", "PADRE: ¡No te quedes atrás!"])
+@export var row_hint: String = "A / D: remo izquierdo / derecho (tocá la tecla, alterná para ir derecho) · S: los dos remos atrás"
+@export var call_lines: PackedStringArray = PackedStringArray(["PADRE: ¡Por acá, hijo! ¡Seguí la luz!", "PADRE: ¡No te quedes atrás! ¡Seguí mi luz!", "PADRE: ¡Seguime, hijo! ¡No me pierdas de vista!"])
 @export var hit_lines: PackedStringArray = PackedStringArray(["(el bote cruje: entra agua)", "(otro golpe: el agua sube)"])
 @export var gust_line: String = "PADRE: ¡Cuidado con el viento! ¡Remá del otro lado!"
-@export var rapids_line: String = "PADRE: ¡Rápidos! ¡Agarrate fuerte!"
+@export var rapids_line: String = "PADRE: ¡Rápido! ¡Agarrate fuerte!"
 @export var tree_line: String = "PADRE: ¡Cuidado, el árbol!"
 @export var dark_line: String = "PADRE: ¡No se ve nada! ¡Seguí mi luz y alumbrá adelante!"
 @export var capsize_line: String = "(el bote se da vuelta)"
@@ -53,7 +53,7 @@ extends Resource
 @export_range(0.0, 0.2, 0.001) var storm_fog_density: float = 0.03
 ## Olas del lago en calma y con tormenta (altura del shader del agua).
 @export_range(0.0, 1.0, 0.01) var calm_waves: float = 0.03
-@export_range(0.0, 1.0, 0.01) var storm_waves: float = 0.09
+@export_range(0.0, 1.0, 0.01) var storm_waves: float = 0.22
 ## Copos de la nieve liviana y de la nieve de tormenta.
 @export_range(0, 4000, 10) var calm_snow: int = 250
 @export_range(0, 4000, 10) var storm_snow: int = 900
@@ -107,6 +107,113 @@ extends Resource
 @export_range(0.0, 30.0, 0.1) var father_light_energy: float = 7.0
 ## Fundido a negro final.
 @export_range(0.1, 5.0, 0.05, "suffix:s") var end_fade_time: float = 1.4
+@export_subgroup("Nadar")
+## Después de caer, sale a la superficie y nada un poco, medio ahogándose, antes de los flashbacks.
+## Cuánto dura.
+@export_range(2.0, 60.0, 0.5, "suffix:s") var swim_time: float = 12.0
+## Cuánto tarda en salir a la superficie.
+@export_range(0.2, 5.0, 0.05, "suffix:s") var emerge_time: float = 1.6
+## Velocidad nadando (W/A/S/D).
+@export_range(0.0, 4.0, 0.05, "suffix:m/s") var swim_speed: float = 0.7
+## A qué altura quedan los ojos sobre el agua mientras flota (si queda en 0, la cámara corta la superficie).
+@export_range(0.0, 0.5, 0.01, "suffix:m") var eye_above_water: float = 0.16
+## Cuánto sube y baja la cabeza con el agua.
+@export_range(0.0, 1.0, 0.01, "suffix:m") var swim_bob: float = 0.1
+## Cada cuánto se le hunde la cabeza (al azar entre estos valores).
+@export_range(0.5, 20.0, 0.1, "suffix:s") var dip_interval_min: float = 2.2
+@export_range(0.5, 20.0, 0.1, "suffix:s") var dip_interval_max: float = 4.2
+## Cuánto se hunde y cuánto dura cada hundida.
+@export_range(0.0, 3.0, 0.05, "suffix:m") var dip_depth: float = 0.55
+@export_range(0.1, 3.0, 0.05, "suffix:s") var dip_time: float = 0.9
+## Lo que se oye al salir de cada hundida.
+@export var gasp_lines: PackedStringArray = PackedStringArray(["(tose y escupe agua)", "(traga agua)", "(jadea)"])
+## El bote del padre buscándolo queda armado como el pesquero de la M4 visto desde el agua (el
+## flashback "B"): adelante, casi al centro, con la luz cruzando hacia la derecha.
+## A qué distancia está.
+@export_range(5.0, 120.0, 1.0, "suffix:m") var father_far_distance: float = 18.0
+## Hacia qué lado queda respecto de hacia donde mira el jugador al salir (positivo = a la izquierda).
+@export_range(-90.0, 90.0, 1.0, "suffix:°") var father_far_angle: float = 2.0
+## Hacia dónde apunta la proa (y la linterna), medido desde la línea que va del jugador al bote:
+## 90 = cruza de izquierda a derecha, más de 90 = además se aleja.
+@export_range(0.0, 180.0, 1.0, "suffix:°") var father_far_heading: float = 100.0
+## Tamaño del foco de la linterna mientras busca lejos (1 = el real; más grande = se ve como el
+## reflector del pesquero de la M4).
+@export_range(1.0, 10.0, 0.1) var father_far_lens_scale: float = 8.0
+## Cuánto barre con la luz mientras busca (para cada lado), y qué tan rápido.
+@export_range(0.0, 120.0, 1.0, "suffix:°") var father_search_sweep: float = 15.0
+@export_range(0.01, 2.0, 0.01, "suffix:Hz") var father_search_rate: float = 0.12
+## Lo que grita el padre mientras lo busca, y cada cuánto.
+@export var search_lines: PackedStringArray = PackedStringArray(["PADRE: ¡HIJO! ¡¿DÓNDE ESTÁS?!", "PADRE: ¡Contestame, hijo!", "PADRE: ¡HIJOOO!"])
+@export_range(1.0, 20.0, 0.5, "suffix:s") var search_line_interval: float = 3.6
+
+@export_subgroup("Rescate")
+## Después de los flashbacks: el padre llega con su bote y lo alumbra desde arriba.
+## Pose del padre inclinado sobre el borde con el brazo estirado.
+@export var father_rescue_pose: CharacterPose
+## Cuánto tarda el bote del padre en llegar al lado del jugador.
+@export_range(0.5, 10.0, 0.1, "suffix:s") var rescue_boat_time: float = 3.2
+## A qué distancia queda el bote (del centro del bote a los ojos del jugador).
+@export_range(0.5, 4.0, 0.05, "suffix:m") var rescue_distance: float = 1.15
+## Hueso de la mano que sostiene la linterna (alcanza con el comienzo del nombre). Si el modelo no lo
+## tiene, la linterna queda en `rescue_light_offset`.
+@export var rescue_light_bone: String = "hand_left"
+## Corrimiento de la linterna desde ese hueso (en metros, en ejes del mundo; y = arriba).
+@export var rescue_light_bone_offset: Vector3 = Vector3(0.0, 0.08, 0.0)
+## Dónde está la linterna si no se encuentra el hueso, respecto del bote (x hacia el jugador, y arriba, z adelante).
+@export var rescue_light_offset: Vector3 = Vector3(0.45, 1.25, -0.2)
+## Tamaño del brillo de la linterna.
+@export_range(0.02, 2.0, 0.01) var rescue_glow_scale: float = 0.2
+## A qué altura del bote mira el jugador cuando llega el padre (su cara, más o menos).
+@export_range(0.0, 2.5, 0.05, "suffix:m") var rescue_look_height: float = 1.1
+## Cuánto flota la cabeza durante el rescate, en fracción de `swim_bob` (más bajo = cámara más quieta).
+@export_range(0.0, 1.0, 0.05) var rescue_bob: float = 0.3
+## Cuánto se queda alumbrado antes del fundido final.
+@export_range(0.0, 10.0, 0.1, "suffix:s") var rescue_hold_time: float = 2.4
+
 ## Color y densidad de la niebla bajo el agua.
 @export var underwater_fog_color: Color = Color(0.01, 0.03, 0.045)
 @export_range(0.0, 1.0, 0.005) var underwater_fog_density: float = 0.22
+
+@export_group("Sonido y clima (mezcla con la M2 de Mica)")
+## Voz del padre para cada frase de `call_lines` (mismo orden). Voces provisorias.
+@export var call_voices: Array[AudioStream] = []
+## Voz del padre en el rescate (frase `father_line`).
+@export var rescue_voice: AudioStream
+## Voces del padre para el resto de las frases (cada una con su texto). Vacía = solo subtítulo.
+@export var wake_voice: AudioStream
+@export var net_voice: AudioStream
+@export var storm_voice: AudioStream
+@export var cut_voice: AudioStream
+## Una voz por frase de `urge_lines` (mismo orden).
+@export var urge_voices: Array[AudioStream] = []
+@export var follow_voice: AudioStream
+@export var gust_voice: AudioStream
+@export var rapids_voice: AudioStream
+@export var tree_voice: AudioStream
+@export var dark_voice: AudioStream
+## Una voz por frase de `search_lines` (mismo orden).
+@export var search_voices: Array[AudioStream] = []
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var voice_db: float = -3.0
+## Rugido de la ola que da vuelta el bote, y chapuzón al caer al agua.
+@export var capsize_roar_sound: AudioStream
+@export var capsize_splash_sound: AudioStream
+## Jadeo al salir a la superficie y cada vez que la cabeza se hunde.
+@export var gasp_sound: AudioStream
+## Latido mientras nada medio ahogado (se apaga en el rescate).
+@export var heartbeat_sound: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var heartbeat_db: float = -14.0
+## Música de caja que suena cuando llega el padre.
+@export var lullaby_sound: AudioStream
+@export_range(-60.0, 6.0, 0.5, "suffix:dB") var lullaby_db: float = -16.0
+## Sonido de la mano del padre agarrándolo.
+@export var hand_grab_sound: AudioStream
+## La red cayendo al agua, la red trabada (soga tirante) y cada corte del cuchillo.
+@export var net_throw_sound: AudioStream
+@export var net_stuck_sound: AudioStream
+@export var knife_cut_sound: AudioStream
+@export_range(-40.0, 6.0, 0.5, "suffix:dB") var sfx_db: float = -2.0
+## Cuánta lluvia hay en calma y con la tormenta al máximo (0 = nada, 1 = la lluvia entera).
+@export_range(0.0, 1.0, 0.01) var rain_calm: float = 0.0
+@export_range(0.0, 1.0, 0.01) var rain_storm: float = 1.0
+## Cuánta agua hay en la lente de la cámara con la tormenta al máximo (gotas en la pantalla).
+@export_range(0.0, 1.0, 0.01) var lens_wet_storm: float = 0.5

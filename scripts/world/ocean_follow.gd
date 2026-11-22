@@ -14,9 +14,9 @@ const _FREQS: Array[float] = [0.11, 0.19, 0.31, 0.53, 0.87, 0.045]
 const _AMPS: Array[float] = [1.0, 0.62, 0.34, 0.16, 0.07, 1.0]
 const _SPEEDS: Array[float] = [0.9, 1.2, 1.6, 2.1, 2.9, 0.62]
 
-## Mismo valor que `wave_height` en ocean.gdshader (si se cambia allá, cambiarlo acá).
+## Valores de respaldo: los mismos que tienen por defecto los parámetros del shader. Si el material de la
+## escena los cambia (la M2 baja las olas y apaga el mar de fondo), `height_at` usa los del material.
 const WAVE_HEIGHT: float = 1.0
-## Mismos valores que `calm_center`, `calm_radius`, `far_radius`, `far_scale`, `big_swell_*` del shader.
 const CALM_CENTER: Vector2 = Vector2.ZERO
 const CALM_RADIUS: float = 28.0
 const FAR_RADIUS: float = 110.0
@@ -26,9 +26,19 @@ const BIG_SWELL_FAR: float = 2.3
 
 var sea_time: float = 0.0
 
+var _wave_height: float = WAVE_HEIGHT
+var _calm_center: Vector2 = CALM_CENTER
+var _calm_radius: float = CALM_RADIUS
+var _far_radius: float = FAR_RADIUS
+var _far_scale: float = FAR_SCALE
+var _swell_near: float = BIG_SWELL_NEAR
+var _swell_far: float = BIG_SWELL_FAR
+var _params_frame: int = -1
+
 
 func _process(delta: float) -> void:
 	sea_time += delta
+	_refresh_params()
 	(material_override as ShaderMaterial).set_shader_parameter("sea_time", sea_time)
 	if target == null:
 		return
@@ -38,15 +48,41 @@ func _process(delta: float) -> void:
 
 ## Altura del oleaje (sobre el nivel medio del mar) en un punto del mundo.
 func height_at(world_x: float, world_z: float) -> float:
+	_refresh_params()
 	var point: Vector2 = Vector2(world_x, world_z)
 	var height: float = 0.0
 	# Igual que far_factor() del shader: cerca del centro el mar es más manso.
-	var far_f: float = smoothstep(CALM_RADIUS, FAR_RADIUS, point.distance_to(CALM_CENTER))
-	var scl: float = lerpf(1.0, FAR_SCALE, far_f)
+	var far_f: float = smoothstep(_calm_radius, _far_radius, point.distance_to(_calm_center))
+	var scl: float = lerpf(1.0, _far_scale, far_f)
 	for i: int in _DIRS.size():
 		var phase: float = point.dot(_DIRS[i].normalized()) * _FREQS[i] + sea_time * _SPEEDS[i]
-		var amp: float = _AMPS[i] * WAVE_HEIGHT * scl
+		var amp: float = _AMPS[i] * _wave_height * scl
 		if i == 5:
-			amp = WAVE_HEIGHT * lerpf(BIG_SWELL_NEAR, BIG_SWELL_FAR, far_f)
+			amp = _wave_height * lerpf(_swell_near, _swell_far, far_f)
 		height += sin(phase) * amp
 	return height
+
+
+## Lee del material los parámetros que mueven las olas, una vez por cuadro, para que la altura que
+## calcula el código sea la que se ve en pantalla.
+func _refresh_params() -> void:
+	var frame: int = Engine.get_process_frames()
+	if frame == _params_frame:
+		return
+	_params_frame = frame
+	var mat: ShaderMaterial = material_override as ShaderMaterial
+	if mat == null:
+		return
+	_wave_height = _param(mat, "wave_height", WAVE_HEIGHT)
+	_calm_radius = _param(mat, "calm_radius", CALM_RADIUS)
+	_far_radius = _param(mat, "far_radius", FAR_RADIUS)
+	_far_scale = _param(mat, "far_scale", FAR_SCALE)
+	_swell_near = _param(mat, "big_swell_near", BIG_SWELL_NEAR)
+	_swell_far = _param(mat, "big_swell_far", BIG_SWELL_FAR)
+	var center: Variant = mat.get_shader_parameter("calm_center")
+	_calm_center = center as Vector2 if center is Vector2 else CALM_CENTER
+
+
+func _param(mat: ShaderMaterial, key: String, fallback: float) -> float:
+	var value: Variant = mat.get_shader_parameter(key)
+	return float(value) if value != null else fallback

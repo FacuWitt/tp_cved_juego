@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bvc83oc7jfsfo"
+path="res://.godot/imported/degrade (2).mp3-4d3d65633ae535c477463b4adc5a0983.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/m3/degrade (2).mp3"
+dest_files=["res://.godot/imported/degrade (2).mp3-4d3d65633ae535c477463b4adc5a0983.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

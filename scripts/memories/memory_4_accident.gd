@@ -10,7 +10,7 @@ extends Memory
 ## 6) LUZ: aparece la luz del helicóptero y la memoria se completa.
 ## Este script solo ordena las etapas; cada pieza (ola, rayos, soga, evento rápido) vive en su propia clase.
 
-enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
+enum Stage { DECK, ANCHOR, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 
 @export var settings: Memory4Settings
 @export var player: Player
@@ -41,6 +41,8 @@ enum Stage { DECK, WARNING, WAVE, COVERED, SURFACE, DESCENT, RESCUE }
 @export var reticle: InteractionPrompt
 ## El tripulante en la cabina (opcional): mira el hacha cuando avisa dónde está.
 @export var crew: CharacterRig
+## El malacate del ancla (opcional). Si está, después de las sogas hay que subir el ancla.
+@export var anchor_winch: AnchorWinch
 
 var stage: Stage = Stage.DECK
 
@@ -48,6 +50,14 @@ var _wet: WetFx
 var _post_fx: PostFx
 var _lens_wet: float = 0.0
 var _head: Node3D
+var _storm_audio: StormAudio
+var _ship_creak: AudioStreamPlayer
+var _engine: AudioStreamPlayer
+var _hull_timer: float = 3.0
+var _chain: AudioStreamPlayer
+var _chain_slip: AudioStreamPlayer
+var _horn_played: bool = false
+var _voice: AudioStreamPlayer
 var _camera: Camera3D
 var _axe: AxeView
 var _has_axe: bool = false
@@ -73,8 +83,14 @@ var _last_safe: Vector3 = Vector3.ZERO
 # Giro automático de la vista hacia el hacha (< 0 = no está girando).
 var _axe_look_t: float = -1.0
 var _axe_look_from: Vector2 = Vector2.ZERO
+# A qué mira la vista mientras gira sola (el hacha o la manivela).
+var _look_target: Node3D = null
 var _axe_point_cooldown: float = 0.0
 var _crew_look_timer: float = 0.0
+# Manivela del ancla.
+var _cranking: bool = false
+var _anchor_urge_cd: float = 0.0
+var _crank_kick: Tween
 
 
 func _ready() -> void:
@@ -90,6 +106,11 @@ func _ready() -> void:
 	_axe.player = player
 	_camera.add_child(_axe)
 	axe_item.equipped.connect(_on_axe_equipped)
+	_setup_storm_audio()
+	_ship_creak = _make_loop("ShipCreak", settings.ship_creak_loop)
+	_engine = _make_loop("ShipEngine", settings.engine_loop)
+	_chain = _make_loop("AnchorChain", settings.chain_loop)
+	_chain_slip = _make_loop("AnchorChainSlip", settings.chain_slip_loop)
 	_debug = DebugTools.new()
 	_debug.name = "DebugTools"
 	_debug.player = player
@@ -97,13 +118,13 @@ func _ready() -> void:
 	_debug.enabled = debug_keys
 	add_child(_debug)
 	_debug.skip_requested.connect(_debug_cut_all_ropes)
+	if anchor_winch != null:
+		anchor_winch.raised.connect(_on_anchor_raised)
 
 	prompt_label.text = settings.rope_prompt
 	prompt_label.visible = false
 	reticle.override_text = ""
-	rain.amount = settings.rain_amount
-	rain.top_level = true
-	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
+	_setup_rain()
 	_setup_wet_fx()
 	deck_slip.strength = settings.slip_strength
 	deck_slip.enabled = true
@@ -135,6 +156,7 @@ func _begin_level() -> void:
 	if settings.play_intro:
 		await _play_intro()
 		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
+		_say_voice(settings.intro_voice)
 		lightning.start()
 	else:
 		lightning.start()
@@ -145,6 +167,7 @@ func _say_intro() -> void:
 	await get_tree().create_timer(settings.intro_delay).timeout
 	if stage == Stage.DECK and subtitles.text == "":
 		subtitles.show_line(settings.intro_line % settings.protagonist_name, settings.line_duration * 1.6)
+		_say_voice(settings.intro_voice)
 
 
 ## El jugador despierta en lo alto de la escalera, a oscuras. Un relámpago largo le muestra la tormenta
@@ -176,11 +199,12 @@ func _process(delta: float) -> void:
 	_time += delta
 	if _axe != null:
 		_axe.boat_roll_degrees = _camera.rotation_degrees.z if _camera != null else 0.0
+	_update_ship_sound(delta)
 	_roll_deg = settings.deck_roll + _roll_extra + sin(_time * TAU / settings.sway_period) * settings.sway_roll
 	deck_slip.roll_degrees = _roll_deg
 	deck_slip.enabled = stage <= Stage.WARNING and not _overboard and not _intro_active and not _debug.is_flying
 	# Mientras corta una soga tiene los pies firmes: si no, no habría forma de apuntar el golpe.
-	deck_slip.planted = stage == Stage.DECK and _busy and not _overboard
+	deck_slip.planted = ((stage == Stage.DECK and _busy) or _cranking) and not _overboard
 	_update_camera_motion(delta)
 	_update_rain()
 	_update_abyss()
@@ -191,12 +215,15 @@ func _process(delta: float) -> void:
 		Stage.DECK:
 			_update_rope_aim()
 			_update_axe_hint(delta)
+		Stage.ANCHOR:
+			_update_crank(delta)
 		Stage.SURFACE, Stage.DESCENT:
 			if not _debug.is_flying:
 				_update_float()
 			if stage == Stage.SURFACE and _under_view and _camera.global_position.y > settings.sea_level + 0.1:
 				_set_underwater_view(false)
 				rain.emitting = true
+				_play_ship_horn()
 	if stage >= Stage.SURFACE:
 		_float_ship()
 	if stage >= Stage.SURFACE and searchlight != null:
@@ -250,6 +277,9 @@ func _watch_edges() -> void:
 
 ## SOLO PARA PRUEBAS: corta todas las sogas y sigue el flujo normal (aviso, ola, etc.).
 func _debug_cut_all_ropes() -> void:
+	if stage == Stage.ANCHOR and anchor_winch != null and not _overboard:
+		anchor_winch.complete_now()
+		return
 	if stage != Stage.DECK or _overboard:
 		return
 	qte.cancel()
@@ -261,8 +291,20 @@ func _debug_cut_all_ropes() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if stage == Stage.ANCHOR and event.is_action_pressed("interact") and not _overboard:
+		if _cranking:
+			anchor_winch.press()
+			_play_random(settings.crank_sounds)
+			_kick_crank_camera()
+		elif _aiming_crank():
+			_engage_crank()
+		return
 	if stage == Stage.DECK and event.is_action_pressed("interact") and _active_rope != null and _has_axe and not _busy and not _overboard:
 		_start_chop(_active_rope)
+	elif stage == Stage.DECK and event.is_action_pressed("interact") and anchor_winch != null \
+			and _active_rope == null and not _busy and not _overboard and not _intro_active and _aiming_crank():
+		# La manivela antes de tiempo: el tripulante avisa que primero van las sogas.
+		_warn_crank_too_early()
 	elif stage == Stage.DECK and event.is_action_pressed("interact") and settings.axe_point_on_interact \
 			and not _has_axe and not _busy and not _overboard and not _intro_active:
 		# Si está apuntando al hacha, la agarra (lo hace el Player): no hay que señalarla.
@@ -289,6 +331,7 @@ func _begin_qte() -> void:
 
 func _on_qte_hit() -> void:
 	_axe.swing_hit()
+	_play_random(settings.axe_chop_sounds)
 	_shake_amount = 0.05
 	if _chop_rope != null:
 		_chop_rope.add_hit()
@@ -309,9 +352,13 @@ func _on_qte_missed() -> void:
 	_roll_extra = minf(_roll_extra + settings.roll_per_miss, 8.0)
 	_shake_amount = 0.12
 	_axe.swing_miss()
+	_play_sfx(settings.axe_miss_sound)
 	if not settings.urge_lines.is_empty():
-		var line: String = settings.urge_lines[randi() % settings.urge_lines.size()]
+		var urge: int = randi() % settings.urge_lines.size()
+		var line: String = settings.urge_lines[urge]
 		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+		if urge < settings.urge_voices.size():
+			_say_voice(settings.urge_voices[urge])
 	await get_tree().create_timer(settings.retry_delay).timeout
 	if stage == Stage.DECK:
 		_busy = false
@@ -330,16 +377,20 @@ func _update_rope_aim() -> void:
 				aimed = rope
 	_active_rope = aimed
 	reticle.override_text = "" if aimed == null else (settings.rope_prompt if _has_axe else settings.axe_needed_prompt)
+	if aimed == null and anchor_winch != null and not _busy and not _overboard and _aiming_crank():
+		reticle.override_text = settings.crank_prompt
 
 
 func _on_axe_equipped(from_global: Transform3D) -> void:
 	_has_axe = true
 	_axe.shiver = 0.0
 	_axe.equip(from_global)
+	_play_sfx(settings.axe_pickup_sound)
 
 
 func _on_rope_severed() -> void:
 	_ropes_cut += 1
+	_play_sfx(settings.rope_snap_sound)
 	_axe.shiver = axe_settings.shiver_per_rope * float(_ropes_cut)
 	_shake_amount = 0.2
 	_active_rope = null
@@ -365,6 +416,7 @@ func _fall_overboard() -> void:
 	_shake_amount = 0.6
 	if splash_player != null:
 		splash_player.play()
+	_set_storm_underwater(true)
 	# Golpe de frío: el campo de visión se abre de golpe y todo se va a negro.
 	var dive: Tween = create_tween().set_parallel(true)
 	dive.tween_property(_camera, "fov", _base_fov + 22.0, 0.25).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
@@ -389,21 +441,135 @@ func _fall_overboard() -> void:
 	_roll_extra = minf(_roll_extra + settings.fall_roll_penalty, 8.0)
 	if stage <= Stage.WARNING:
 		player.set_physics_process(true)
+	_set_storm_underwater(false)
 	var back_tween: Tween = create_tween().set_parallel(true)
 	back_tween.tween_property(_camera, "fov", _base_fov, 1.0)
 	back_tween.tween_property(black_overlay, "modulate:a", 0.0, 1.0)
 	back_tween.tween_property(water_overlay, "modulate:a", 0.0, 1.6)
 	subtitles.show_line(settings.fall_rescue_line % settings.protagonist_name, settings.line_duration)
+	_say_voice(settings.fall_rescue_voice)
 	await back_tween.finished
 	_overboard = false
-	if stage == Stage.DECK:
+	if stage == Stage.DECK or stage == Stage.ANCHOR:
 		_busy = false
 		deck_slip.enabled = true
+
+
+# ---------- Ancla ----------
+
+## Terminó las sogas: falta subir el ancla con la manivela de popa.
+func _begin_anchor() -> void:
+	stage = Stage.ANCHOR
+	_busy = false
+	anchor_winch.is_active = true
+	await get_tree().create_timer(settings.success_delay).timeout
+	while _overboard:
+		await get_tree().process_frame
+	var line: String = settings.anchor_line
+	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration * 1.4)
+	_say_voice(settings.anchor_voice)
+	# Como con el hacha: la vista gira sola hacia la manivela y el tripulante la mira.
+	if crew != null:
+		crew.look_target = anchor_winch.aim_area
+		_crew_look_timer = settings.crew_look_axe_time
+	if settings.anchor_look_on_start and stage == Stage.ANCHOR and not _cranking and not _overboard:
+		_start_auto_look(anchor_winch.aim_area)
+
+
+## Apretó (E) en la manivela antes de cortar todas las sogas.
+func _warn_crank_too_early() -> void:
+	if _axe_point_cooldown > 0.0:
+		return
+	_axe_point_cooldown = settings.axe_point_cooldown
+	var line: String = settings.crank_too_early_line
+	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+	_say_voice(settings.crank_too_early_voice)
+
+
+func _aiming_crank() -> bool:
+	var ray: RayCast3D = _camera.get_node("InteractionRay") as RayCast3D
+	if not ray.is_colliding():
+		return false
+	var hit: Object = ray.get_collider()
+	return hit is Area3D and (hit as Area3D).get_meta("winch", null) == anchor_winch
+
+
+func _update_crank(delta: float) -> void:
+	_anchor_urge_cd = maxf(_anchor_urge_cd - delta, 0.0)
+	if _overboard:
+		reticle.override_text = ""
+		return
+	if _cranking:
+		reticle.override_text = settings.crank_active_prompt
+		for action: String in ["move_forward", "move_back", "move_left", "move_right"]:
+			if Input.is_action_just_pressed(action):
+				_leave_crank()
+				return
+	else:
+		reticle.override_text = settings.crank_prompt if _aiming_crank() else ""
+	if anchor_winch.is_slipping() and anchor_winch.progress > 0.05 and _anchor_urge_cd <= 0.0:
+		_anchor_urge_cd = settings.anchor_urge_interval
+		var line: String = settings.anchor_urge_line
+		subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+		_say_voice(settings.anchor_urge_voice)
+
+
+## Se para frente a la manivela: no camina (puede mirar) hasta soltarla o terminar.
+func _engage_crank() -> void:
+	_cranking = true
+	player.set_physics_process(false)
+	player.velocity = Vector3.ZERO
+	_axe.visible = false
+	var stand: Node3D = anchor_winch.stand_point
+	var yaw: float = stand.global_basis.get_euler().y
+	var crank_pos: Vector3 = anchor_winch.aim_area.global_position
+	var eye: Vector3 = stand.global_position + Vector3.UP * (_camera.global_position.y - player.global_position.y)
+	var to_crank: Vector3 = crank_pos - eye
+	var pitch: float = atan2(to_crank.y, Vector2(to_crank.x, to_crank.z).length())
+	var t: Tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	t.tween_property(player, "global_position", stand.global_position, anchor_winch.settings.engage_time)
+	t.tween_method(func(k: float) -> void: player.rotation.y = lerp_angle(player.rotation.y, yaw, k), 0.0, 1.0, anchor_winch.settings.engage_time)
+	t.tween_property(_head, "rotation:x", pitch, anchor_winch.settings.engage_time)
+
+
+func _leave_crank() -> void:
+	if not _cranking:
+		return
+	_cranking = false
+	reticle.override_text = ""
+	player.set_physics_process(true)
+	_axe.visible = _has_axe
+
+
+## Cada (E) en la manivela: la cabeza acompaña el esfuerzo con un golpecito hacia abajo.
+func _kick_crank_camera() -> void:
+	if _crank_kick != null and _crank_kick.is_valid():
+		_crank_kick.kill()
+	var kick: float = deg_to_rad(anchor_winch.settings.press_camera_kick)
+	var base: float = _head.rotation.x
+	_crank_kick = create_tween()
+	_crank_kick.tween_property(_head, "rotation:x", base - kick, 0.05)
+	_crank_kick.tween_property(_head, "rotation:x", base, 0.12)
+
+
+func _on_anchor_raised() -> void:
+	_play_sfx(settings.anchor_top_sound)
+	_leave_crank()
+	anchor_winch.is_active = false
+	_finish_deck()
 
 
 # ---------- Aviso y ola ----------
 
 func _on_all_ropes_cut() -> void:
+	if anchor_winch != null:
+		_begin_anchor()
+	else:
+		_finish_deck()
+
+
+## Terminaron las tareas de cubierta: festejo, el grito de advertencia y la ola.
+func _finish_deck() -> void:
 	stage = Stage.WARNING
 	_busy = true
 	prompt_label.visible = false
@@ -412,10 +578,13 @@ func _on_all_ropes_cut() -> void:
 	while _overboard:
 		await get_tree().process_frame
 	subtitles.show_line(settings.success_line, settings.line_duration)
+	# El festejo va aparte de la voz de los gritos: el "¡CUIDADO!" se le superpone sin cortarlo.
+	_play_sfx(settings.success_voice, settings.voice_db - settings.sfx_db)
 	await get_tree().create_timer(settings.warning_delay).timeout
 	# El grito de advertencia y un rayo que deja ver lo que viene.
 	lightning.flash_now(1.0)
 	subtitles.show_line(settings.warning_line % settings.protagonist_name, settings.line_duration)
+	_say_voice(settings.warning_voice)
 	_start_wave()
 
 
@@ -457,6 +626,8 @@ func _on_wave_covered() -> void:
 	if _has_axe:
 		_axe.torn_away()
 		player.clear_held_object()
+	_set_storm_underwater(true)
+	_play_sfx(settings.capsize_sound)
 	var slam: Tween = create_tween()
 	slam.tween_property(slam_overlay, "modulate:a", 1.0, 0.35).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	await slam.finished
@@ -575,11 +746,13 @@ func _go_underwater_after_dip() -> void:
 		return
 	world_environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	_set_underwater_view(true)
+	_play_sfx(settings.bubbles_sound)
 
 
 ## Bajo el agua no existe nada más que la oscuridad: ni el barco, ni sus luces, ni la lluvia, ni el mar, ni el cielo.
 func _set_underwater_view(underwater: bool) -> void:
 	_under_view = underwater
+	_set_storm_underwater(underwater)
 	var env: Environment = world_environment.environment
 	env.background_mode = Environment.BG_COLOR if underwater else Environment.BG_SKY
 	env.background_color = Color.BLACK
@@ -617,6 +790,109 @@ func _show_rescue_light() -> void:
 	complete()
 
 
+# ---------- Sonido de la tormenta ----------
+
+## Arma el sonido de la tormenta (el mismo `StormAudio` de la M2) con la tormenta al máximo,
+## y hace que cada rayo traiga su trueno.
+func _setup_storm_audio() -> void:
+	if settings.storm_audio == null:
+		return
+	_storm_audio = StormAudio.new()
+	_storm_audio.name = "StormAudio"
+	_storm_audio.settings = settings.storm_audio
+	add_child(_storm_audio)
+	_storm_audio.set_storm(1.0)
+	lightning.flashed.connect(_storm_audio.on_flash)
+
+
+## El ambiente del barco suena mientras se está en cubierta (no al caerse al agua ni después de la ola).
+func _update_ship_sound(delta: float) -> void:
+	var on_deck: bool = stage <= Stage.WAVE and not _overboard
+	var follow: float = clampf(delta * 2.0, 0.0, 1.0)
+	if _ship_creak != null:
+		_ship_creak.volume_db = lerpf(_ship_creak.volume_db, settings.ship_creak_db if on_deck else -80.0, follow)
+	if _engine != null:
+		_engine.volume_db = lerpf(_engine.volume_db, settings.engine_db if on_deck else -80.0, follow)
+	# La cadena del ancla suena mientras sube o mientras se resbala para abajo.
+	if anchor_winch != null:
+		var chain_follow: float = clampf(delta * 10.0, 0.0, 1.0)
+		var slipping: bool = not _overboard and anchor_winch.is_slipping() and anchor_winch.progress > 0.0
+		var rising: bool = not _overboard and anchor_winch.is_cranking()
+		# Con sonido propio para el resbalón, la cadena normal suena solo al subir.
+		if _chain_slip != null:
+			_chain_slip.volume_db = lerpf(_chain_slip.volume_db, settings.chain_db if slipping else -80.0, chain_follow)
+			slipping = false
+		if _chain != null:
+			_chain.volume_db = lerpf(_chain.volume_db, settings.chain_db if (rising or slipping) else -80.0, chain_follow)
+			_chain.pitch_scale = settings.chain_slip_pitch if slipping else 1.0
+	if on_deck and not settings.hull_wave_sounds.is_empty():
+		_hull_timer -= delta
+		if _hull_timer <= 0.0:
+			_hull_timer = randf_range(settings.hull_wave_interval_min, settings.hull_wave_interval_max)
+			_play_random(settings.hull_wave_sounds, settings.hull_wave_db - settings.sfx_db)
+
+
+func _make_loop(node_name: String, stream: AudioStream) -> AudioStreamPlayer:
+	if stream == null:
+		return null
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.name = node_name
+	var looped: AudioStream = stream.duplicate() as AudioStream
+	if looped is AudioStreamOggVorbis:
+		(looped as AudioStreamOggVorbis).loop = true
+	p.stream = looped
+	p.volume_db = -80.0
+	add_child(p)
+	p.play()
+	return p
+
+
+## Suena un efecto una vez (si hay audio). `offset_db` se suma al volumen de los efectos.
+func _play_sfx(stream: AudioStream, offset_db: float = 0.0) -> void:
+	if stream == null:
+		return
+	var p: AudioStreamPlayer = AudioStreamPlayer.new()
+	p.stream = stream
+	p.volume_db = settings.sfx_db + offset_db
+	p.pitch_scale = randf_range(0.95, 1.05)
+	add_child(p)
+	p.finished.connect(p.queue_free)
+	p.play()
+
+
+func _play_random(pool: Array[AudioStream], offset_db: float = 0.0) -> void:
+	if not pool.is_empty():
+		_play_sfx(pool[randi() % pool.size()], offset_db)
+
+
+## Grita un tripulante (si hay audio). Una voz a la vez: la nueva corta a la anterior.
+func _say_voice(stream: AudioStream) -> void:
+	if stream == null:
+		return
+	if _voice == null:
+		_voice = AudioStreamPlayer.new()
+		_voice.name = "CrewVoice"
+		add_child(_voice)
+	_voice.stream = stream
+	_voice.volume_db = settings.voice_db
+	_voice.play()
+
+
+## Al sacar la cabeza del agua, el barco que se aleja toca la bocina a lo lejos (una sola vez).
+func _play_ship_horn() -> void:
+	if _horn_played or settings.ship_horn_sound == null:
+		return
+	_horn_played = true
+	await get_tree().create_timer(settings.ship_horn_delay).timeout
+	if stage == Stage.SURFACE:
+		_play_sfx(settings.ship_horn_sound, settings.ship_horn_db - settings.sfx_db)
+
+
+## Bajo el agua la tormenta se apaga y suena ahogado; al salir vuelve.
+func _set_storm_underwater(value: bool) -> void:
+	if _storm_audio != null:
+		_storm_audio.set_underwater(value)
+
 # ---------- Lluvia y abismo ----------
 
 ## Gotas cercanas, bruma fría, aliento y gotas en la lente: que todo se sienta mojado y helado.
@@ -651,14 +927,21 @@ func _point_to_axe(turn_view: bool) -> void:
 	_axe_hint_timer = -1.0
 	var line: String = settings.axe_hint_line
 	subtitles.show_line(line % settings.protagonist_name if line.contains("%s") else line, settings.line_duration)
+	_say_voice(settings.axe_hint_voice)
 	if crew != null:
 		crew.look_target = axe_item
 		_crew_look_timer = settings.crew_look_axe_time
 	if turn_view:
-		_axe_look_t = 0.0
-		_axe_look_from = Vector2(player.rotation.y, _head.rotation.x)
-		# Mientras gira, el mouse no mueve la vista.
-		player.set_process_unhandled_input(false)
+		_start_auto_look(axe_item)
+
+
+## La vista del jugador gira sola hacia `target` (el hacha o la manivela). Mientras gira, el
+## mouse no mueve la vista.
+func _start_auto_look(target: Node3D) -> void:
+	_look_target = target
+	_axe_look_t = 0.0
+	_axe_look_from = Vector2(player.rotation.y, _head.rotation.x)
+	player.set_process_unhandled_input(false)
 
 
 func _update_axe_pointing(delta: float) -> void:
@@ -669,11 +952,16 @@ func _update_axe_pointing(delta: float) -> void:
 			crew.look_target = player
 	if _axe_look_t < 0.0:
 		return
-	if _has_axe or _overboard or stage != Stage.DECK:
+	var cancel: bool = _overboard or _look_target == null
+	if _look_target == axe_item:
+		cancel = cancel or _has_axe or stage != Stage.DECK
+	else:
+		cancel = cancel or stage != Stage.ANCHOR or _cranking
+	if cancel:
 		_end_axe_look()
 		return
 	_axe_look_t += delta
-	var dir: Vector3 = axe_item.global_position - _camera.global_position
+	var dir: Vector3 = _look_target.global_position - _camera.global_position
 	var yaw: float = atan2(-dir.x, -dir.z)
 	var limit: float = deg_to_rad(player.settings.pitch_limit)
 	var pitch: float = clampf(atan2(dir.y, Vector2(dir.x, dir.z).length()), -limit, limit)
@@ -686,6 +974,7 @@ func _update_axe_pointing(delta: float) -> void:
 
 func _end_axe_look() -> void:
 	_axe_look_t = -1.0
+	_look_target = null
 	player.set_process_unhandled_input(true)
 
 
@@ -700,6 +989,40 @@ func _update_wet_fx() -> void:
 		_post_fx.set_lens_wet(_lens_wet)
 
 
+## La lluvia cae inclinada por el viento, como en la M2 pero más de costado.
+func _setup_rain() -> void:
+	rain.amount = settings.rain_amount
+	rain.top_level = true
+	rain.global_transform = Transform3D(Basis.IDENTITY, rain.global_position)
+	(rain.mesh as BoxMesh).size = Vector3(settings.rain_width, settings.rain_length, settings.rain_width)
+	rain.emission_box_extents = Vector3(settings.rain_area.x, 0.1, settings.rain_area.y)
+	rain.lifetime = settings.rain_lifetime
+	rain.preprocess = settings.rain_lifetime * 2.0
+	rain.speed_scale = 1.0
+	var vel: Vector3 = _wind_dir() * settings.rain_slant + Vector3.DOWN * settings.rain_fall
+	rain.direction = vel.normalized()
+	rain.spread = 2.0
+	rain.gravity = Vector3(0.0, -6.0, 0.0)
+	rain.initial_velocity_min = vel.length() * 0.92
+	rain.initial_velocity_max = vel.length() * 1.08
+	# Las rayas de lluvia dentro del haz del reflector (light_beam.gdshader) caen con la misma inclinación.
+	for node: Node in find_children("*", "GeometryInstance3D", true, false):
+		var mat: ShaderMaterial = (node as GeometryInstance3D).material_override as ShaderMaterial
+		if mat != null and mat.get_shader_parameter("rain_dir") != null:
+			mat.set_shader_parameter("rain_dir", vel.normalized())
+
+
+func _wind_dir() -> Vector3:
+	var a: float = deg_to_rad(settings.rain_wind_heading)
+	return Vector3(cos(a), 0.0, sin(a))
+
+
+## Dónde nace la lluvia para que, ya inclinada, caiga sobre el punto `over`.
+func _rain_origin(over: Vector3) -> Vector3:
+	var drift: float = settings.rain_slant * settings.rain_height / maxf(settings.rain_fall, 0.1)
+	return over + Vector3.UP * settings.rain_height - _wind_dir() * drift * 0.6
+
+
 func _update_rain() -> void:
 	_update_wet_fx()
 	var material: StandardMaterial3D = rain.material_override as StandardMaterial3D
@@ -707,10 +1030,10 @@ func _update_rain() -> void:
 	var alpha: float
 	if stage >= Stage.SURFACE:
 		# Lejos del barco solo se ve la lluvia que cae donde están sus luces, y apenas.
-		rain.global_position = ship.global_position + ship.global_transform.basis * Vector3(0.0, 9.0, -6.0)
+		rain.global_position = _rain_origin(ship.global_position + ship.global_transform.basis * Vector3(0.0, 0.0, -6.0))
 		alpha = settings.rain_alpha_far * (1.0 + level * 1.2)
 	else:
-		rain.global_position = player.global_position + Vector3(0.0, 9.0, 0.0)
+		rain.global_position = _rain_origin(player.global_position)
 		alpha = settings.rain_alpha_lit + level * settings.rain_alpha_flash
 	var color: Color = material.albedo_color
 	color.a = alpha
@@ -734,7 +1057,7 @@ func _update_camera_motion(delta: float) -> void:
 	_shake_amount = move_toward(_shake_amount, 0.0, delta * 0.35)
 	_camera.position = Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), 0.0) * _shake_amount
 	match stage:
-		Stage.DECK, Stage.WARNING, Stage.WAVE, Stage.COVERED:
+		Stage.DECK, Stage.ANCHOR, Stage.WARNING, Stage.WAVE, Stage.COVERED:
 			# El barco escorado: la cámara queda torcida y se mece con el oleaje.
 			# El barco se inclina a lo largo: de frente a la proa o a la popa se ve toda la inclinación, de costado casi nada.
 			var facing: float = -player.global_transform.basis.z.z

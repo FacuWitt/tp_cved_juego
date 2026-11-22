@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/dream_night_sky.gdshader" id="1_sky"]
+
+[resource]
+shader = ExtResource("1_sky")
+shader_parameter/zenith_color = Color(0.006, 0.01, 0.035, 1)
+shader_parameter/horizon_color = Color(0.07, 0.1, 0.2, 1)
+shader_parameter/horizon_glow_color = Color(0.12, 0.17, 0.32, 1)
+shader_parameter/horizon_glow = 0.8
+shader_parameter/moon_color = Color(1, 0.94, 0.78, 1)
+shader_parameter/moon_size = 0.09
+shader_parameter/moon_energy = 4.0
+shader_parameter/crescent = 0.62
+shader_parameter/crescent_angle = 0.6
+shader_parameter/halo_strength = 0.35
+shader_parameter/halo_size = 0.45
+shader_parameter/star_density = 0.006
+shader_parameter/star_brightness = 2.5

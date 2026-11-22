@@ -10,6 +10,9 @@ signal solved
 signal failed
 ## Cambió la cantidad de casilleros ocupados (sirve para dar feedback de progreso).
 signal progress_changed(filled: int, total: int)
+## Se encastró una pieza: avisa si es la que va en ese casillero según el orden correcto.
+## Sale apenas se coloca, sin esperar a que estén todos ocupados (sirve para el sonido por pieza).
+signal piece_checked(index: int, correct: bool)
 
 @export var config: SequencePuzzleConfig
 ## Casilleros en orden: el primero de la lista es el casillero 1.
@@ -45,6 +48,8 @@ func get_filled_count() -> int:
 
 func _on_object_placed(object: PickupObject, index: int) -> void:
 	_placed[index] = object
+	var piece: PuzzlePiece = object as PuzzlePiece
+	piece_checked.emit(index, piece != null and piece.piece_id == config.correct_order[index])
 	progress_changed.emit(get_filled_count(), slots.size())
 	_evaluate()
 

@@ -1,0 +1,198 @@
+[gd_scene format=3 uid="uid://c83xprs5dtd5a"]
+
+[ext_resource type="Script" uid="uid://biglhdpypumlj" path="res://scripts/memories/memory_3_house.gd" id="1_mem"]
+[ext_resource type="Resource" uid="uid://xn50rhkovbtj" path="res://config/memory_3_settings.tres" id="2_mem"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/house_layout.tscn" id="3_house"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/daughter_room.tscn" id="4_room"]
+[ext_resource type="PackedScene" uid="uid://dxq6uxxmwwbww" path="res://scenes/player/player.tscn" id="5_player"]
+[ext_resource type="Resource" path="res://config/player_settings.tres" id="6_player"]
+[ext_resource type="Script" path="res://scripts/fx/held_item_view.gd" id="7_held"]
+[ext_resource type="Resource" path="res://config/held_boat.tres" id="8_held"]
+[ext_resource type="Script" uid="uid://bu2boxmolyxg4" path="res://scripts/world/lightning_controller.gd" id="9_light"]
+[ext_resource type="Resource" path="res://config/lightning_m3.tres" id="10_light"]
+[ext_resource type="Script" uid="uid://codyk5enk2h2b" path="res://scripts/fx/wake_up_intro.gd" id="11_wake"]
+[ext_resource type="Resource" path="res://config/wake_up_m3.tres" id="12_wake"]
+[ext_resource type="Script" uid="uid://cux5xbbpfsu1o" path="res://scripts/debug/debug_tools.gd" id="13_dbg"]
+[ext_resource type="Script" uid="uid://ca85vpobuc806" path="res://scripts/ui/interaction_prompt.gd" id="14_prompt"]
+[ext_resource type="Resource" path="res://config/interaction_prompt_settings.tres" id="15_prompt"]
+[ext_resource type="Script" uid="uid://bgkai17h72nrl" path="res://scripts/ui/reticle_dot.gd" id="16_dot"]
+[ext_resource type="Script" uid="uid://bs67gb2yivlh5" path="res://scripts/ui/subtitle_display.gd" id="17_sub"]
+[ext_resource type="Script" uid="uid://bcr25yw0wfh1c" path="res://scripts/fx/dream_effects.gd" id="18_dream"]
+[ext_resource type="Resource" path="res://config/dream_m3.tres" id="19_dream"]
+[ext_resource type="Script" uid="uid://71oowyuusnc8" path="res://scripts/fx/dream_shifter.gd" id="20_shift"]
+[ext_resource type="Script" uid="uid://cr5bihlbolf31" path="res://scripts/fx/hallway_dead_end.gd" id="21_dead"]
+[ext_resource type="Script" uid="uid://cv3s10c0pq4eq" path="res://scripts/fx/rising_water.gd" id="22_water"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_mensajes.tscn" id="23_msgs"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/pasillo_hospital.tscn" id="24_hosp"]
+[ext_resource type="PackedScene" path="res://scenes/memories/m3_casa/sala_barcos.tscn" id="25_boats"]
+[ext_resource type="PackedScene" path="res://assets/models/m3/barquito_mano.glb" id="26_boat"]
+[ext_resource type="Resource" path="res://config/memory_3_audio.tres" id="27_audio"]
+
+[sub_resource type="Environment" id="Environment_m3"]
+background_mode = 1
+background_color = Color(0.01, 0.015, 0.02, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.35, 0.36, 1)
+ambient_light_energy = 0.35
+tonemap_mode = 2
+
+[node name="M3Casa" type="Node3D" unique_id=842157114 node_paths=PackedStringArray("player", "subtitles", "prompt", "lightning", "wake_up", "debug_tools", "boat_view", "dream", "shifter", "dead_end", "rising_water", "hallway", "portals", "landing_doors", "door_glows", "hallway_start", "kitchen_back", "room_arrival", "daughter_voice", "interludes", "world_environment", "water", "repeating_photos", "cold_lights", "room_door", "daughter", "given_boat", "room_end_wall", "room_layout_exit", "front_door", "exit")]
+script = ExtResource("1_mem")
+settings = ExtResource("2_mem")
+audio_settings = ExtResource("27_audio")
+player = NodePath("Player")
+subtitles = NodePath("HUD/Subtitles")
+prompt = NodePath("HUD/Center/Reticle")
+lightning = NodePath("Lightning")
+wake_up = NodePath("WakeUp")
+debug_tools = NodePath("DebugTools")
+boat_view = NodePath("Player/Head/Camera3D/BoatView")
+dream = NodePath("Dream")
+shifter = NodePath("DreamShifter")
+dead_end = NodePath("HallwayDeadEnd")
+rising_water = NodePath("RisingWater")
+hallway = NodePath("HouseLayout/Hallway")
+portals = [NodePath("HouseLayout/Hallway/FarEnd/Portal0"), NodePath("HouseLayout/Hallway/FarEnd/Portal1"), NodePath("HouseLayout/Hallway/FarEnd/Portal2")]
+landing_doors = [NodePath("HouseLayout/Hallway/FarEnd/Door0Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door1Hinge"), NodePath("HouseLayout/Hallway/FarEnd/Door2Hinge")]
+door_glows = [NodePath("HouseLayout/Hallway/FarEnd/Glow0"), NodePath("HouseLayout/Hallway/FarEnd/Glow1"), NodePath("HouseLayout/Hallway/FarEnd/Glow2")]
+hallway_start = NodePath("HouseLayout/Anchors/HallwayStart")
+kitchen_back = NodePath("HouseLayout/Anchors/KitchenBack")
+room_arrival = NodePath("DaughterRoom/Anchors/RoomArrival")
+daughter_voice = NodePath("HouseLayout/Hallway/FarEnd/DaughterVoice")
+interludes = [NodePath("SalaMensajes"), NodePath("PasilloHospital"), NodePath("SalaBarcos")]
+world_environment = NodePath("WorldEnvironment")
+water = [NodePath("HouseLayout/Water"), NodePath("DaughterRoom/Water")]
+repeating_photos = NodePath("HouseLayout/Hallway/Photos")
+cold_lights = [NodePath("HouseLayout/Kitchen/KitchenLight"), NodePath("HouseLayout/Hallway/FarEnd/LandingLight"), NodePath("DaughterRoom/CorridorLight"), NodePath("DaughterRoom/Entrance/EntranceLight")]
+room_door = NodePath("DaughterRoom/RoomLayout/DoorHinge")
+daughter = NodePath("DaughterRoom/Daughter")
+given_boat = NodePath("DaughterRoom/Daughter/GivenBoat")
+room_end_wall = NodePath("DaughterRoom/RoomLayout/Corridor/WallEnd")
+room_layout_exit = NodePath("DaughterRoom/RoomLayout/Exit")
+front_door = NodePath("DaughterRoom/Entrance/FrontDoorHinge")
+exit = NodePath("DaughterRoom/Entrance/Exit")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=271463020]
+environment = SubResource("Environment_m3")
+
+[node name="HouseLayout" parent="." unique_id=358254534 instance=ExtResource("3_house")]
+
+[node name="DaughterRoom" parent="." unique_id=218986543 instance=ExtResource("4_room")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+
+[node name="SalaMensajes" parent="." unique_id=650007254 instance=ExtResource("23_msgs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
+
+[node name="PasilloHospital" parent="." unique_id=1534849689 instance=ExtResource("24_hosp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 0, 0)
+
+[node name="SalaBarcos" parent="." unique_id=2067938539 instance=ExtResource("25_boats")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220, 0, 0)
+
+[node name="LightningLight" type="DirectionalLight3D" parent="." unique_id=2109568436]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.86603, 0, 0.86603, 0.5, 0, 30, 0)
+light_color = Color(0.75, 0.85, 1, 1)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="Lightning" type="Node" parent="." unique_id=1164678132 node_paths=PackedStringArray("light", "world_environment")]
+script = ExtResource("9_light")
+lightning_settings = ExtResource("10_light")
+light = NodePath("../LightningLight")
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="Player" parent="." unique_id=775122427 instance=ExtResource("5_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.85)
+settings = ExtResource("6_player")
+
+[node name="BoatView" type="Node3D" parent="Player/Head/Camera3D" node_paths=PackedStringArray("player")]
+script = ExtResource("7_held")
+settings = ExtResource("8_held")
+player = NodePath("../../..")
+
+[node name="Barquito" parent="Player/Head/Camera3D/BoatView" instance=ExtResource("26_boat")]
+transform = Transform3D(0.18, 0, 0, 0, 0.18, 0, 0, 0, 0.18, 0, 0.07, 0)
+
+[node name="WakeUp" type="CanvasLayer" parent="." unique_id=217703542 node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("11_wake")
+settings = ExtResource("12_wake")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="DebugTools" type="Node" parent="." unique_id=1527164094 node_paths=PackedStringArray("player", "lightning")]
+script = ExtResource("13_dbg")
+player = NodePath("../Player")
+lightning = NodePath("../Lightning")
+
+[node name="Dream" type="CanvasLayer" parent="." unique_id=740770440 node_paths=PackedStringArray("player")]
+script = ExtResource("18_dream")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+
+[node name="DreamShifter" type="Node" parent="." unique_id=236127395 node_paths=PackedStringArray("player", "loose_props")]
+script = ExtResource("20_shift")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+loose_props = [NodePath("../HouseLayout/Kitchen/Cup"), NodePath("../DaughterRoom/Props/Osito"), NodePath("../DaughterRoom/Props/Cubitos"), NodePath("../DaughterRoom/Props/Pelota")]
+
+[node name="HallwayDeadEnd" type="Node" parent="." unique_id=1368584483 node_paths=PackedStringArray("player", "hallway")]
+script = ExtResource("21_dead")
+settings = ExtResource("19_dream")
+player = NodePath("../Player")
+hallway = NodePath("../HouseLayout/Hallway")
+
+[node name="RisingWater" type="Node3D" parent="." unique_id=1501187175]
+script = ExtResource("22_water")
+settings = ExtResource("19_dream")
+areas = Array[AABB]([AABB(-3.3, 0, -2.7, 6.6, 0, 5.4), AABB(-0.8, 0, 2.7, 1.6, 0, 2.45), AABB(-12.9, 0, -46.6, 25.8, 0, 43.9)])
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=724704661]
+
+[node name="Center" type="CenterContainer" parent="HUD" unique_id=1416477687]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Reticle" type="VBoxContainer" parent="HUD/Center" unique_id=1551782899 node_paths=PackedStringArray("player")]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+script = ExtResource("14_prompt")
+player = NodePath("../../../Player")
+settings = ExtResource("15_prompt")
+
+[node name="Dot" type="Control" parent="HUD/Center/Reticle" unique_id=1415556465]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+script = ExtResource("16_dot")
+
+[node name="Label" type="Label" parent="HUD/Center/Reticle" unique_id=2045371649]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 3
+horizontal_alignment = 1
+
+[node name="Subtitles" type="Label" parent="HUD" unique_id=931248526]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -130.0
+offset_right = -80.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("17_sub")

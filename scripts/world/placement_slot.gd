@@ -23,6 +23,9 @@ const GROUP_NAME := &"placement_slots"
 ## Nodo opcional que se muestra mientras el jugador apunta a este casillero con algo en la mano
 ## (p. ej. un recuadro iluminado). Arranca oculto.
 @export var aim_indicator: Node3D
+## Si está activo, solo encastran piezas de puzzle (PuzzlePiece): un banquito u otro objeto
+## agarrable que se apoye encima no ocupa el casillero.
+@export var only_puzzle_pieces: bool = false
 
 var _placed_object: PickupObject = null
 
@@ -48,10 +51,15 @@ func get_placed_object() -> PickupObject:
 	return _placed_object
 
 
+## true si este casillero admite ese objeto (ver only_puzzle_pieces), esté libre o no.
+func accepts(object: PickupObject) -> bool:
+	return object != null and (not only_puzzle_pieces or object is PuzzlePiece)
+
+
 ## Encastra el objeto acá, esté donde esté (lo anima hasta snap_point).
-## Devuelve false si el casillero ya está ocupado.
+## Devuelve false si el casillero ya está ocupado o no admite el objeto.
 func place(object: PickupObject) -> bool:
-	if _placed_object != null or object == null:
+	if _placed_object != null or not accepts(object):
 		return false
 	_place(object)
 	return true
@@ -73,7 +81,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	for body in get_overlapping_bodies():
 		var object: PickupObject = body as PickupObject
-		if object == null or object.is_held or _is_in_any_slot(object):
+		if object == null or object.is_held or not accepts(object) or _is_in_any_slot(object):
 			continue
 		# Si el objeto toca varios casilleros libres, se lo queda el más cercano.
 		if _closest_free_slot_overlapping(object) != self:
@@ -114,7 +122,7 @@ func _closest_free_slot_overlapping(object: PickupObject) -> PlacementSlot:
 	var best_distance: float = INF
 	for node in get_tree().get_nodes_in_group(GROUP_NAME):
 		var slot: PlacementSlot = node as PlacementSlot
-		if not slot.is_free() or not slot.get_overlapping_bodies().has(object):
+		if not slot.is_free() or not slot.accepts(object) or not slot.get_overlapping_bodies().has(object):
 			continue
 		var distance: float = slot.snap_point.global_position.distance_to(object.global_position)
 		if distance < best_distance:

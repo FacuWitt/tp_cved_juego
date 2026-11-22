@@ -1,12 +1,11 @@
 [gd_resource type="Resource" script_class="FlashbackSettings" format=3]
 
 [ext_resource type="Script" path="res://scripts/config/flashback_settings.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/01_mar.jpg" id="2"]
-[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/02_soga.jpg" id="3"]
-[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/03_ola.jpg" id="4"]
-[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/04_cubierta.jpg" id="5"]
-[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/05_luz.jpg" id="6"]
+[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/06_padre_lejos.jpg" id="2"]
+[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/07_pesquero_lejos.jpg" id="3"]
+[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/08_padre_luz.jpg" id="4"]
+[ext_resource type="Texture2D" path="res://assets/textures/flashbacks/09_pesquero_luz.jpg" id="5"]
 
 [resource]
 script = ExtResource("1")
-images = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6")])
+images = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])

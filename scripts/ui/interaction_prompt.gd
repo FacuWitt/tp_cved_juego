@@ -1,12 +1,15 @@
 class_name InteractionPrompt
 extends VBoxContainer
 ## Mira contextual: avisa con (E) qué se puede hacer según a qué apunta el jugador
-## o si ya tiene algo agarrado. Se fija en el Player que se le asigne en el Inspector.
+## (agarrar, colocar, o lo que diga un Interactable: abrir, leer...) o si ya tiene algo agarrado.
+## Mientras el jugador no tiene control, no muestra nada. Se fija en el Player que se le asigne en el Inspector.
 
 @export var player: Player
 @export var settings: InteractionPromptSettings
 @export var pickup_label_text: String = "(E) Agarrar"
 @export var place_label_text: String = "(E) Colocar"
+## Se muestra (sin resaltar la mira) al apuntar a algo puesto en alto que todavía no se alcanza.
+@export var out_of_reach_label_text: String = "No llego"
 
 @onready var _dot: ReticleDot = $Dot
 @onready var _label: Label = $Label
@@ -33,6 +36,12 @@ func _process(_delta: float) -> void:
 		_set_highlighted(true)
 		_label.text = override_text
 		return
+	# Sin control (inspeccionando algo o en una cinemática) la mira no muestra nada.
+	if not player.is_processing_unhandled_input():
+		_update_aimed_slot(null)
+		_set_highlighted(false)
+		_label.text = ""
+		return
 	var held: PickupObject = player.get_held_object()
 	var target: PickupObject = player.get_interactable_under_crosshair()
 	var aimed_slot: PlacementSlot = player.get_aimed_slot()
@@ -42,12 +51,18 @@ func _process(_delta: float) -> void:
 	# porque la mira apunta a uno libre, o porque el objeto ya está encima de uno.
 	var can_place: bool = held != null and (aimed_slot != null or _is_over_free_slot(held))
 
-	_set_highlighted(can_place or (held == null and target != null))
+	var reachable: bool = target != null and player.can_reach(target)
+	var usable: Interactable = player.get_aimed_interactable()
+	_set_highlighted(can_place or (held == null and reachable) or usable != null)
 
 	if can_place:
 		_label.text = place_label_text
-	elif held == null and target != null:
+	elif usable != null:
+		_label.text = usable.prompt_text
+	elif held == null and reachable:
 		_label.text = pickup_label_text
+	elif held == null and target != null:
+		_label.text = out_of_reach_label_text
 	else:
 		_label.text = ""
 

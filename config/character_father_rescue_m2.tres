@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="CharacterPose" format=3]
+
+[ext_resource type="Script" path="res://scripts/config/character_pose.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+bones = Dictionary[StringName, Vector3]({
+&"spine_02": Vector3(-22, -10, -24),
+&"chest_03": Vector3(-14, 0, -12),
+&"thigh_left_020": Vector3(88, 0, -6),
+&"thigh_right_023": Vector3(80, 0, 14),
+&"shin.L_021": Vector3(-80, 0, 0),
+&"shin.R_024": Vector3(-75, 0, 0),
+&"upper_arm_right_014": Vector3(55, 0, 40),
+&"forearm_right_015": Vector3(10, 0, 5),
+&"hand_right_016": Vector3(-20, 0, 0),
+&"upper_arm_left_07": Vector3(95, 0, -35),
+&"forearm_left_08": Vector3(35, 0, -10)
+})
+breath_angle = 3.0
+breath_rate = 0.5
+talk_bones = Dictionary[StringName, Vector3]({
+&"chest_03": Vector3(-4, 0, 0)
+})
+talk_shake = Dictionary[StringName, Vector3]({
+&"upper_arm_right_014": Vector3(6, 0, 0)
+})
+talk_shake_rate = 1.4
+look_max_yaw = 80.0
+look_max_pitch = 60.0
+look_speed = 2.0
