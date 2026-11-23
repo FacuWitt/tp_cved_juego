@@ -1,87 +1,91 @@
 # Cable a Tierra
 
-Prototipo de videojuego en primera persona hecho en **Godot 4** para la materia *Creatividad y Desarrollo de Entornos Virtuales* (UTN FRC).
+Entorno virtual narrativo en primera persona, hecho en **Godot 4.7** para la materia *Creatividad y Desarrollo de Entornos Virtuales* (UTN FRC, 2026). Grupo 10.
 
-El protagonista está en coma después de un accidente en el mar. El juego es el viaje interno hacia el despertar: recorre recuerdos de su vida, cada vez más deformados, hasta llegar al momento del trauma (el ahogo) y alcanzar un "cable a tierra" que lo hace despertar.
+Un pescador cae al mar en una tormenta y queda en coma. Para despertar, recorre cuatro recuerdos de su vida (la infancia, la adolescencia, la adultez y el accidente), cada uno un poco más roto que el anterior. Los une un barquito de madera que le talló su abuelo: su cable a tierra. El juego nunca dice que el protagonista está en coma: lo cuenta con la luz, el agua y el sonido.
 
-Estética objetivo: *"PS1 con esteroides"* — low-poly y texturas crudas combinadas con iluminación y post-procesado modernos.
+## Cómo jugarlo
 
-> El diseño narrativo y la arquitectura todavía se están definiendo. Este README cubre cómo levantar el proyecto y cómo trabajamos como equipo, no el diseño del juego.
+1. Instalá **Godot Engine 4.7.x**, versión estándar (no la .NET), desde [godotengine.org/download](https://godotengine.org/download). Funciona en Windows, Mac y Linux.
+2. Descargá el proyecto: botón **Code → Download ZIP** en esta página (o `git clone https://github.com/FacuWitt/tp_cved_juego.git`) y descomprimilo.
+3. Abrí Godot, tocá **Importar**, elegí la carpeta del proyecto (el archivo `project.godot`) y **Importar y editar**. La primera vez tarda un rato en importar los modelos, las texturas y los sonidos.
+4. Apretá **F5**. El juego arranca en la Memoria 1 y sigue solo hasta el final.
 
-## Requisitos
+Dura **unos 10 minutos**. Se recomienda jugarlo **con auriculares**: el sonido es parte del diseño y algunos sonidos vienen de un lugar concreto del espacio.
 
-- **Godot Engine 4.7.x**, versión estándar (no la build .NET/C#). Se descarga desde [godotengine.org/download](https://godotengine.org/download).
-- Windows, Mac o Linux (el proyecto no usa nada específico de plataforma).
-- Git. Opcionalmente [GitHub Desktop](https://desktop.github.com/) si no manejan la terminal.
+## El recorrido
 
-No hace falta instalar nada más: no usamos .NET, ni assets con licencias que requieran activación.
+| Escena | Qué pasa | Qué hace el jugador |
+|---|---|---|
+| **Memoria 1 · La infancia** | La habitación de la abuela, a la altura de un nene de siete años. Por la ventana se ve el mar, más alto que el piso | Encuentra la canción de cuna en un libro y ordena los juguetes en la alfombra del mar siguiendo sus versos. Mueve un banquito para alcanzar la luna |
+| **Memoria 2 · La adolescencia** | Pesca con el padre en un lago hasta que llega la tormenta | Pesca, corta la red trabada y huye remando por el río detrás de la luz del padre |
+| **Memoria 3 · La adultez** | La madrugada antes de embarcar, en una casa que se repite y se degrada | Busca el cuarto de su hija eligiendo entre tres puertas: la buena tiene la luz del velador abajo. Le deja el barquito: "Cuidámelo hasta que vuelva" |
+| **Memoria 4 · El accidente** | La cubierta del pesquero en plena tormenta | Corta con un hacha las sogas de las redes trabadas y sube el ancla, hasta que llega la ola |
+| **El despertar** | La habitación del hospital | La hija le devuelve el barquito |
 
-## Cómo levantar el proyecto
+Entre una memoria y la siguiente hay un **pasaje**: se camina sobre un mar negro hacia una luz, mientras se escuchan voces del hospital cada vez más claras.
 
-1. Cloná el repo:
-   ```
-   git clone https://github.com/FacuWitt/tp_cved_juego.git
-   ```
-2. Abrí **Godot 4.7**, entrá al *Project Manager* y click en **Importar** → seleccioná la carpeta clonada → abrí el proyecto.
-3. La primera vez que abre, Godot importa todos los assets (puede tardar un rato y quedan archivos `.import` — es normal, se versionan).
-4. Con el proyecto abierto, **F5** lo corre. La escena principal actual es un sandbox de prueba (terreno con plataformas), no el juego final.
+No hay forma de perder: equivocarse o caerse sube la tensión, pero nunca obliga a empezar de nuevo.
 
-Si Godot pregunta por una escena principal o tira un error de escena faltante, revisá que estés parado en la rama `main` y que hiciste `git pull`.
-
-### Controles actuales (sandbox de prueba)
+## Controles
 
 | Acción | Tecla |
 |---|---|
-| Moverse | `W A S D` o flechas |
+| Moverse / mirar | `W A S D` (o flechas) y mouse |
 | Correr | `Shift` |
-| Saltar | `Espacio` (mantenido = salto más alto) |
-| Interactuar | `E` (todavía sin efecto) |
-| Soltar el mouse | `Esc` |
-| Capturar el mouse de nuevo | Clic izquierdo |
+| Saltar | `Espacio` |
+| Interactuar (agarrar, colocar, leer, abrir, cortar, tirar la red) | `E` |
+| Pelear un pez (Memoria 2) | `W` / `S` para mantener el punto en la zona verde |
+| Remar (Memoria 2) | `A` remo izquierdo, `D` remo derecho (alternar avanza derecho), `S` los dos hacia atrás |
+| Evento rápido de corte (Memorias 2 y 4) | `E` en el momento justo |
+| Soltar el mouse / volver a capturarlo | `Esc` / clic izquierdo |
 
-Los controles se definen en **Proyecto → Configuración del Proyecto → Mapa de Entrada**, nunca como tecla fija dentro de un script.
+### Teclas de prueba
+
+Solo para desarrollo y para mostrar el juego. No hace falta usarlas para jugar.
+
+| Tecla | Qué hace |
+|---|---|
+| `F9` | Pasa a la escena siguiente |
+| `F10` | Reinicia la escena actual |
+| `8` | Cámara libre |
+| `9` | Deja fija la luz de un rayo |
+| `0` | Saltea la etapa actual de la memoria |
+| `7` | Dispara un flashback (Memoria 2) |
+
+`F9` y `F10` solo funcionan al correr el juego desde el editor. Las otras se apagan con la propiedad `debug_keys` de cada memoria.
 
 ## Estructura del proyecto
 
 ```
-assets/
-  shaders/        shaders (por ahora, material de grilla provisorio)
-config/           Resources .tres con los valores de "feel" (velocidad, FOV, sensibilidad...)
 scenes/
-  player/         escena del jugador en primera persona
-  sandbox/        escena de prueba para probar movimiento y plataformas
-scripts/
-  config/         definición de los Resources de config (PlayerSettings, etc.)
-  player/         lógica del jugador
-  world/          lógica de elementos del nivel (KillZone, etc.)
+  memories/     una carpeta o escena por memoria (m1_habitacion, m2_lago, m3_casa, memory_4) y el despertar (awakening)
+  passages/     los pasajes entre memorias
+  player/       el jugador en primera persona
+  characters/, props/, interaction/, ui/   personajes, objetos, interacción e interfaz
+scripts/        la lógica (core: el flujo entre escenas; memories: una clase por memoria; world, fx, ui, puzzles...)
+config/         los valores ajustables (velocidades, tiempos, luces, textos) en Resources .tres, editables desde el Inspector
+assets/         modelos, texturas, sonidos, shaders y fuentes
+docs/           documentación de diseño y de trabajo
+tools/          herramientas y una prueba automática que recorre la Memoria 3 caminando
 ```
 
-Esta estructura va a crecer (`ui/`, más carpetas en `assets/`, escenas de niveles) a medida que se defina la arquitectura final. Se va a documentar en `docs/` cuando esté cerrada.
+El orden de las escenas está en `config/memory_sequence.tres`. Las memorias no se conocen entre sí: cada una avisa cuando termina y el autoload `GameFlow` carga la siguiente con un fundido.
 
-## Cómo trabajamos (git)
+## Documentación
 
-- **`main`** siempre tiene que quedar jugable. Evitá pushear directo ahí si el cambio es grande o experimental: usá una rama y avisá en el grupo antes de mergear.
-- **Ramas de trabajo:**
-  - `feature/<algo>` para cambios de una persona del equipo (ej. `feature/puzzle-recuerdo-1`).
-  - `claude/<algo>` para lo que arma Claude Code en una sesión.
-- **Commits chicos**, con el formato `tipo(ámbito): descripción` en español. Ejemplos:
-  - `feat(player): agrega salto variable`
-  - `fix(sandbox): corrige colisión de la rampa`
-  - `chore(assets): limpia texturas sin usar`
-- **Nunca hacer `push --force`** sobre una rama que ya bajó otra persona, y nunca borrar una rama que no es tuya.
-- **Antes de commitear una escena `.tscn`**, avisá si otra persona la está tocando en simultáneo. Los archivos de escena son binarios en la práctica (aunque se vean como texto): dos personas editando el mismo `.tscn` al mismo tiempo casi siempre termina en conflicto irresoluble. Cuando definamos las escenas grandes del juego, vamos a asignar un dueño por escena.
-- **No edites `.godot/`** (carpeta de caché del editor, ya está en `.gitignore`) ni el contenido de `addons/` de terceros a mano.
+- `CHANGELOG.md`: el registro de cada decisión de diseño, con el problema que resolvía y las alternativas descartadas.
+- `docs/ELEMENTOS_ESCENAS.md`: qué hay en cada escena y qué representa.
+- `docs/arquitectura.md`: cómo se encadenan las memorias.
+- `docs/GIT_WORKFLOW.md`: cómo trabajó el equipo (etapas, ramas, reglas para no pisarse).
+- El *Solution Design Document* (SDD), que cuenta la evolución de la idea, se entrega por separado.
 
-## Reglas de código (resumen)
+## Equipo
 
-- Godot 4 con **tipado estático obligatorio** (`var x: float`, `func foo() -> void`).
-- `class_name` en las clases reutilizables (`Player`, `PlayerSettings`, etc.).
-- Archivos y carpetas en `snake_case`. Identificadores en inglés, comentarios en español.
-- **Cero valores de "feel" hardcodeados** en scripts: todo lo que sea sensación de juego (velocidad, sensibilidad, FOV, tiempos, volúmenes) va en un `Resource` propio dentro de `config/`, editable desde el Inspector.
-- Señales en pasado (`memory_completed`, no `complete_memory`).
+Grupo 10: Matías Zuber Schachener, Theo Ledesma, Micaela Sol Acuña, Facundo Witt, Camila Arce Sayago e Ignacio García Goroj. Los roles de cada integrante están en el SDD.
 
-Estas reglas se van a expandir en un `CLAUDE.md` y en `docs/` cuando cerremos la arquitectura definitiva; por ahora este README es la referencia.
+## Herramientas y recursos
 
-## Estado actual
-
-Hay un sandbox de prueba (terreno, plataformas y jugador en primera persona) para validar que el movimiento y el salto se sienten bien. Todavía **no hay** menú, niveles reales, ni sistema de guardado de progreso — eso es lo próximo que se va a diseñar y documentar antes de programarlo.
+- **Motor:** Godot Engine 4.7, GDScript y física Jolt.
+- **Inteligencia artificial:** Claude Code (Anthropic) para la implementación en Godot y la documentación; Meshy para modelos 3D de la Memoria 4; Gemini para texturas e imágenes de referencia; ElevenLabs y Piper para voces provisorias. El diseño, las pruebas y las decisiones son del equipo.
+- **Recursos de terceros:** algunos modelos, texturas y sonidos vienen de repositorios externos. El detalle está en el SDD. El modelo de la hija en el hospital es provisorio y sirve solo para el prototipo de la cátedra.
